@@ -1,0 +1,33 @@
+version: '3.8'
+services:
+  web:
+    build: .
+    ports:
+      # - "8000:443"
+      - 8000:8000
+    volumes:
+      - ./backend:/backend
+    command: python manage.py runsslserver --certificate /etc/ssl/certs/cert.pem --key /etc/ssl/private/cert-key.pem 0.0.0.0:8000
+
+    # command: gunicorn --certfile=/etc/ssl/certs/cert.pem --keyfile=/etc/ssl/private/cert-key.pem transcendence.wsgi:application --bind 0.0.0.0:443
+    entrypoint: /entrypoint.sh
+    env_file:
+      - .env
+    depends_on:
+      - db
+    restart: always
+  db:
+    image: postgres:15.6
+    container_name: db
+    env_file:
+      - .env
+    ports:
+      - 0.0.0.0:5432:5432
+    # entrypoint: bash -c "sleep infinity"
+    # command: bash -c "groupadd -g 2019 2019 && useradd -u 1000 -g 2019 -m aharrass && chmod -R 700 /var/lib/postgresql/data && gosu aharrass /usr/local/bin/docker-entrypoint.sh postgres"
+    command: postgres
+    # volumes:
+    #   - /nfs/homes/aharrass/data/postgres:/var/lib/postgresql/data
+
+# volumes:
+#   postgres_data:
