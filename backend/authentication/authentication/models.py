@@ -86,8 +86,10 @@ from django.dispatch import receiver
 
 class CustomUserProfile(models.Model):
     user = models.OneToOneField(User, related_name='profile', on_delete=models.CASCADE)
-    avatar = models.ImageField(default='avatars/avatar-default.png', upload_to='avatars/')
+    avatar = models.ImageField(default='avatars/avatar-default.webp', upload_to='avatars/')
+    friends = models.ManyToManyField('self', blank=True)
     updated_at = models.DateTimeField(auto_now=True)
+    is_online = models.BooleanField(default=False)
 
     def __str__(self):
         return self.user.username + '/`s Profile'
@@ -96,3 +98,11 @@ class CustomUserProfile(models.Model):
 def create_user_profile(sender, instance=None, created=False, **kwargs):
     if created:
         CustomUserProfile.objects.create(user=instance)
+
+class FriendRequest(models.Model):
+    from_user = models.ForeignKey(User, related_name='from_user', on_delete=models.CASCADE)
+    to_user = models.ForeignKey(User, related_name='to_user', on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'{self.from_user.username} sent friend request to {self.to_user.username}'

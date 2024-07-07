@@ -1,0 +1,18 @@
+
+{
+    "user 1": "",
+    "message": "User created but waiting for email verification",
+    "token": {
+        "refresh": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTcyMjkzMDUwMSwiaWF0IjoxNzIwMzM4NTAxLCJqdGkiOiJmNzA2NDc1OWFhZGE0YzdhOGM2MjZkNzAxYjRhNjdjYSIsInVzZXJfaWQiOjJ9.NVr924DFyof1kpXiu76nUArehTN6oiRX97pj-Cf5KPM",
+        "access": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzIwMzM4ODAxLCJpYXQiOjE3MjAzMzg1MDEsImp0aSI6ImE5YzEzMzdhNThiMzQzNzQ5MjM3YWUyNzFiNTQxODY3IiwidXNlcl9pZCI6Mn0.BfVajKMH6tUlI3V-1cLIhMz-puCvC5e7ri_5dB5b2Kk"
+    }
+}
+
+{
+    "user 2": "",
+    "message": "User created but waiting for email verification",
+    "token": {
+        "refresh": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTcyMjkzMDY3NCwiaWF0IjoxNzIwMzM4Njc0LCJqdGkiOiI3MDIwYzBkNmJiNDI0N2YwODRjNzM3NTMwNzBiYTk2NyIsInVzZXJfaWQiOjN9.HKC0-Cuhtg9VS9NStkIW8x-P2NceXS2WqeU9zZLMm_Q",
+        "access": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzIwMzM4OTc0LCJpYXQiOjE3MjAzMzg2NzQsImp0aSI6ImE1OWE1NWMxZmQzNTQzNDY4MjZkMmUyNTY3NjQ5ZmYxIiwidXNlcl9pZCI6M30.FHF-aZC8QsXnME36G1MBfVI-aOWPF7eOXi4QtrKzXoU"
+    }
+}

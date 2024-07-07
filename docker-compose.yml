@@ -1,43 +1,98 @@
-version: '3.8'
+# compose_version: '3.8'
 services:
   auth-api:
-    build: ./backend/authentication
+    image: auth
+    container_name: auth-api
+    build: ./backend/auth
     ports:
       # - "8000:443"
       - 8000:8000
     volumes:
-      - ./backend/authentication:/authentication
+      - auth:/authentication
     command: python manage.py runsslserver --certificate /etc/ssl/certs/cert.pem --key /etc/ssl/private/cert-key.pem 0.0.0.0:8000
 
-    # command: gunicorn --certfile=/etc/ssl/certs/cert.pem --keyfile=/etc/ssl/private/cert-key.pem transcendence.wsgi:application --bind 0.0.0.0:443
+    # command: gunicorn --certfile=/etc/ssl/certs/cert.pem --keyfile=/etc/ssl/private/cert-key.pem auth_backend.wsgi:application --bind 0.0.0.0:8000
+    entrypoint: /entrypoint.sh
+    env_file:
+      - .env
+    depends_on:
+      - db
+      - user-management-api
+    restart: always
+    networks:
+      - my_network
+  user-management-api:
+    image: user-management
+    container_name: user-management-api
+    build: ./backend/user_management
+    ports:
+      - 8001:8001
+    volumes:
+      - user-manage:/user_management
     entrypoint: /entrypoint.sh
     env_file:
       - .env
     depends_on:
       - db
     restart: always
-  frontend:
-    container_name: front
-    build: ./frontend
+    networks:
+      - my_network
+    command: python manage.py runsslserver --certificate /etc/ssl/certs/cert.pem --key /etc/ssl/private/cert-key.pem 0.0.0.0:8001
+  server:
+    image: server
+    container_name: server
+    build: ./server
     ports:
       - 0.0.0.0:9002:443
       - 0.0.0.0:9003:80
-    # restart: always
+      - 0.0.0.0:9004:9004
+      - 0.0.0.0:9005:9005
+    restart: always
     volumes:
       - ./frontend/front:/var/www/pong.com
-      - ./backend/authentication/media:/media
+      - ./backend/auth/media:/media
+    networks:
+      - my_network
   db:
-    image: postgres:15.6
+    # image: postgres:15.6
+    image: db
+    build:
+      context: ./db
+      args:
+        - AUTH_DB=${AUTH_DB}
+        - USER_MANAGEMENT_DB=${USER_MANAGEMENT_DB}
     container_name: db
     env_file:
       - .env
     ports:
       - 0.0.0.0:5432:5432
+    restart: always
     # entrypoint: bash -c "sleep infinity"
     # command: bash -c "groupadd -g 2019 2019 && useradd -u 1000 -g 2019 -m aharrass && chmod -R 700 /var/lib/postgresql/data && gosu aharrass /usr/local/bin/docker-entrypoint.sh postgres"
+    # user: "postgres:postgres"
+    # entrypoint: /db.sh
     command: postgres
+    networks:
+      - my_network
+    # volumes: 
+    #   - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     # volumes:
     #   - /nfs/homes/aharrass/data/postgres:/var/lib/postgresql/data
 
-# volumes:
-#   postgres_data:
+volumes:
+  auth:
+    driver: local
+    driver_opts:
+      type: none
+      device: ./backend/auth
+      o: bind
+  user-manage:
+    driver: local
+    driver_opts:
+      type: none
+      device: ./backend/user_management
+      o: bind
+
+networks:
+  my_network:
+    driver: bridge
