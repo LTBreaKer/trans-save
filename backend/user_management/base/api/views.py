@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from base.serializers import UserProfileSerializer, FriendRequestSerializer
 from .helpers import check_auth, get_user
+import json
 import requests
 
 @api_view(['POST'])
@@ -22,19 +23,18 @@ def sendFriendRequest(request, *args, **kwargs):
         return Response(data=response.json(), status=response.status_code)
     from_user_id = response.json()['user_data']['id']
     from_user_profile = UserProfile.objects.get(user_id = from_user_id)
-    print(from_user_profile)
     to_user_id = request.data.get('to_user_id')
 
     if not to_user_id:
         return Response({'message': 'to_user_id is required'}, status=400)
     
-    if to_user_id == from_user_id:
-        return Response({'message': 'Cannot send friend request to self'}, status=400)
-    
     response = get_user(to_user_id, request.META.get('HTTP_AUTHORIZATION'))
 
+    if int(to_user_id) == int(from_user_id):
+        return Response({'message': 'Cannot send friend request to self'}, status=400)
+    
     if response.status_code != 200:
-        return Response(data=response, status=response.status_code)
+        return Response(data=response.json(), status=response.status_code)
     
     if from_user_profile.friends.filter(user_id=to_user_id).exists():
         return Response({'message': 'Already friends'}, status=400)
@@ -44,10 +44,8 @@ def sendFriendRequest(request, *args, **kwargs):
     
     if FriendRequest.objects.filter(from_user_id=to_user_id, to_user_id=from_user_id).exists():
         return Response({'message': 'Already have a pending friend request from this user'}, status=400)
-
     FriendRequest.objects.create(from_user_id=from_user_id, to_user_id=to_user_id)
     return Response(data={'message': 'Friend request sent'}, status=201)
-
 
 @api_view(['GET'])
 def get_friend_requests(request, *args, **kwargs):

@@ -1,6 +1,9 @@
 all:
 	docker-compose up --build
 
+blockchain:
+	docker-compose up -d blockchain --build
+
 down:
 	docker-compose down -v
 

@@ -6,16 +6,16 @@ from rest_framework_simplejwt.views import (
 )
 
 urlpatterns = [
-    path('login/', views.CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-    path('register/', views.registerView, name='register_user'),
-    path('logout/', views.LogoutView.as_view(), name='logout_user'),
-    path('login_42/', views.login_42, name='login_42'),
-    path('callback_42/', views.callback_42, name='callback_42'),
-    path('verify_token/', views.verify_token, name='verify_token'),
-    path('get_user/', views.get_user, name='get_user'),
-    path('get_user_by_id/', views.get_user_by_id, name='get_user_by_id'),
-    path('update_user/', views.update_user, name='update_user'),
-    path('verify_otp/', views.verifyOtpView, name='verify_otp'),
-    path('resend_otp/', views.resendOtpView, name='resend_otp'),
+    path('login/', views.CustomTokenObtainPairView.as_view(), name='token-obtain-pair'),
+    path('token/refresh/', TokenRefreshView.as_view(), name='token-refresh'),
+    path('register/', views.registerView, name='register-user'),
+    path('logout/', views.LogoutView.as_view(), name='logout-user'),
+    path('login-42/', views.login_42, name='login-42'),
+    path('callback-42/', views.callback_42, name='callback-42'),
+    path('verify-token/', views.verify_token, name='verify-token'),
+    path('get-user/', views.get_user, name='get-user'),
+    path('get-user-by-id/', views.get_user_by_id, name='get_user-by-id'),
+    path('update-user/', views.update_user, name='update-user'),
+    path('verify-otp/', views.verifyOtpView, name='verify-otp'),
+    path('resend-otp/', views.resendOtpView, name='resend-otp'),
 ]

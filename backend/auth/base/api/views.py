@@ -312,7 +312,7 @@ def get_user_by_id(request, *args, **kwargs):
         return Response({'message': 'user_id required'}, status=400)
     try:
         requested_user = User.objects.get(id=id)
-    except User.DoesNotExist:
+    except Exception:
         return Response({'message': 'user not found'}, status=404)
     serializer = UserSerializer(requested_user)
     data = {

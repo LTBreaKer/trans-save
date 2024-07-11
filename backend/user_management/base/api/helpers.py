@@ -10,7 +10,6 @@ def check_auth(auth_header):
     return response
 
 def get_user(user_id, auth_header):
-    print('user_id', user_id)
     endpoint = 'https://server:9004/api/auth/get_user_by_id/'
     headers = {
         'Authorization': auth_header,
