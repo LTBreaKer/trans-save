@@ -27,17 +27,24 @@ from email.mime.multipart import MIMEMultipart
 import string, random, datetime
 from requests.exceptions import RequestException
 
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def test_token(request):
+    AUTH_HEADER = request.META.get('HTTP_AUTHORIZATION')
+    token = AUTH_HEADER.split(' ')[1]
+    # r_token = RefreshToken(token)
+    # print(r_token)
+    return Response(status=200)
 
 class CustomTokenObtainPairView(TokenObtainPairView):
     def post(self, request: Request, *args, **kwargs) -> Response:
         try:
             user = User.objects.get(username=request.data.get('username'))
-            if not user.email_verified and not user.is_staff:
-                return Response({'message': 'user email not verified'}, status=403)
             if user.is_authentication_completed:
                 return Response({'message': 'user already logged in'}, status=400)
             response = super().post(request, args, kwargs)
             user.is_online = True
+            user.is_logged_out = False
             user.save()
             
             #need to generate otp and send it to user email
@@ -75,6 +82,7 @@ class LogoutView(TokenBlacklistView):
             user = request.user
             user.is_online = False
             user.is_authentication_completed = False
+            user.is_logged_out = True
             user.save()
             return Response({'message': 'User logged out'}, status=200)
         except Exception as e:
@@ -85,9 +93,13 @@ class LogoutView(TokenBlacklistView):
 @permission_classes([IsAuthenticated])
 def verifyOtpView(request, *args, **kwargs):
     user = request.user
+    if user.is_logged_out:
+        return Response({'message': 'user logged out'}, status=403)
     otp = request.data.get('otp')
     if not otp:
         return Response({'message': 'otp is required'}, statu=400)
+    if user.is_authentication_completed == True:
+        return Response({'message': 'user already authenticated'})
     if user.otp_expiry <= timezone.now():
         return Response({'message': 'otp expired'})
     if otp != user.otp:
@@ -98,7 +110,6 @@ def verifyOtpView(request, *args, **kwargs):
         user.max_otp_try = 3
         user.otp_max_out = None
 
-        user.email_verified = True
         user.is_authentication_completed = True
         user.is_online = True
 
@@ -173,7 +184,7 @@ def registerView(request, *args, **kwargs):
             return Response({'message': str(e)}, status=500)
         try:
             response = requests.post(
-                'https://server:9005/api/user/create_profile/',
+                'https://server:9005/api/user/create-profile/',
                 data={'user_id': user.id},
                 verify=False
             )
@@ -269,7 +280,6 @@ def callback_42(request):
         user.set_unusable_password()
     user.is_online = True
     user.is_authentication_completed = True
-    user.email_verified = True
     user.save()
     refresh = RefreshToken.for_user(user)
     token = {
@@ -292,7 +302,7 @@ def verify_token(request, *args, **kwargs):
 @permission_classes([IsAuthenticated])
 def get_user(request, *args, **kwargs):
     user = request.user
-    if not user.is_authentication_completed or not user.email_verified:
+    if not user.is_authentication_completed:
         return Response({'message': 'User not authenticated properly'}, status=403)
     serializer = UserSerializer(user)
     data = {
@@ -305,7 +315,7 @@ def get_user(request, *args, **kwargs):
 @permission_classes([IsAuthenticated])
 def get_user_by_id(request, *args, **kwargs):
     user = request.user
-    if not user.is_authentication_completed or not user.email_verified:
+    if not user.is_authentication_completed:
         return Response({'message': 'User not authenticated properly'}, status=403)
     id = request.data.get('user_id')
     if not id:

@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
     token = JSON.parse(token_string)
     // console.log(token.access);
     const csrftoken = getCookie('csrftoken'); // Replace with your method of retrieving the CSRF token
-    fetch(api + 'auth/get_user/', {
+    fetch(api + 'auth/get-user/', {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',

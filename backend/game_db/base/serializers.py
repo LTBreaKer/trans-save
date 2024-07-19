@@ -13,5 +13,5 @@ class GameDbSerialiser(serializers.ModelSerializer):
         ]
     
     def create(self, validated_data, *args, **kwargs):
-        game = GameDb.objects.create(validated_data)
+        game = GameDb.objects.create(**validated_data)
         return game

@@ -28,11 +28,7 @@ class User(AbstractUser):
     email = models.EmailField(unique=True, blank=False, null=False)
     avatar = models.ImageField(default='avatars/avatar-default.webp', upload_to='avatars/')
     is_online = models.BooleanField(default=False)
-    email_verified = models.BooleanField(
-        default=False,
-        error_messages={
-            "unique": _("A user with that email already exists."),
-        })
+    is_logged_out = models.BooleanField(default=False)
     is_authentication_completed = models.BooleanField(default=False)
     otp = models.CharField(max_length=6, blank=True, null=True)
     otp_expiry = models.DateTimeField(blank=True, null=True)

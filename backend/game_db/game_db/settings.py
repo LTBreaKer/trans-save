@@ -35,6 +35,8 @@ ALLOWED_HOSTS = [host, '127.0.0.1', 'localhost', '10.14.8.9', '10.14.6.10', 'use
 
 # Application definition
 
+GAME_QUEUE = []
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -108,6 +110,9 @@ DATABASES = {
         'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
         'HOST': 'db',
         'PORT': '5432',
+        # 'OPTIONS': {
+        #     'async': True,
+        # }
     }
 }
 

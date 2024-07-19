@@ -10,7 +10,7 @@ services:
       - auth:/authentication
     command: python manage.py runsslserver --certificate /etc/ssl/certs/cert.pem --key /etc/ssl/private/cert-key.pem 0.0.0.0:8000
 
-    # command: gunicorn --certfile=/etc/ssl/certs/cert.pem --keyfile=/etc/ssl/private/cert-key.pem auth_backend.wsgi:application --bind 0.0.0.0:8000
+    # command: gunicorn --certfile=/etc/ssl/certs/cert.pem --keyfile=/etc/ssl/private/cert-key.pem auth.wsgi:application --bind 0.0.0.0:8000
     entrypoint: /entrypoint.sh
     env_file:
       - .env
@@ -63,9 +63,10 @@ services:
       - 0.0.0.0:9003:80
       - 0.0.0.0:9004:9004
       - 0.0.0.0:9005:9005
+      - 0.0.0.0:9006:9006
     restart: always
     volumes:
-      - ./frontend/front:/var/www/pong.com
+      - front:/var/www/pong.com
       - ./backend/auth/media:/media
     networks:
       - my_network
@@ -123,6 +124,12 @@ volumes:
     driver_opts:
       type: none
       device: ./backend/game_db
+      o: bind
+  front:
+    driver: local
+    driver_opts:
+      type: none
+      device: ./server/front
       o: bind
 
 networks:

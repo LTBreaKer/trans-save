@@ -29,7 +29,7 @@ function getCookie(name) {
 const csrftoken = getCookie('csrftoken');
 token  = localStorage.getItem('token');
 if (token){
-    fetch(api + 'auth/get_user/', {
+    fetch(api + 'auth/get-user/', {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -54,7 +54,7 @@ if (token){
 const params = getQueryParams();
 const code = params.code;
 if (code) {
-    fetch(api + 'auth/callback_42/', {
+    fetch(api + 'auth/callback-42/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -109,8 +109,9 @@ document.getElementById("login-form").addEventListener("submit", async function(
     console.log('data', data);
     console.log('response', response);
     if (response.status === 200) {
-        token = data.token;
-        localStorage.setItem('token', token);
+        token = data;
+        console.log('token=', token)
+        localStorage.setItem('token', JSON.stringify(token));
         window.location.href = '/index.html';
     }
     else {
@@ -143,7 +144,7 @@ document.getElementById("login-form").addEventListener("submit", async function(
 const login_42_btn = document.getElementById('login-42');
 login_42_btn.addEventListener('click', function(event) {
     event.preventDefault();
-    fetch(api + 'auth/login_42/', {
+    fetch(api + 'auth/login-42/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
