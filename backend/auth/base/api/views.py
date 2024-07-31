@@ -160,6 +160,8 @@ def registerView(request, *args, **kwargs):
             data = {'message': str(e)}
             return Response(data=data, content_type='application/json', status=400)
         user.set_password(request.data.get('password'))
+        user.is_authentication_completed = True
+        user.is_online = True
         user.save()
 
         refresh = RefreshToken.for_user(user)
@@ -168,20 +170,20 @@ def registerView(request, *args, **kwargs):
             'refresh': str(refresh),
             'access': str(refresh.access_token)
         }
-        otp = generate_otp()
-        otp_expiry = timezone.now() + datetime.timedelta(minutes=5)
-        max_otp_try = int(user.max_otp_try) - 1
+        # otp = generate_otp()
+        # otp_expiry = timezone.now() + datetime.timedelta(minutes=5)
+        # max_otp_try = int(user.max_otp_try) - 1
 
-        user.otp = otp
-        user.otp_expiry = otp_expiry
-        user.max_otp_try = max_otp_try
-        user.save()
+        # user.otp = otp
+        # user.otp_expiry = otp_expiry
+        # user.max_otp_try = max_otp_try
+        # user.save()
 
         # need to send the otp to user email
-        try:
-            send_otp_email(user.otp, user.email)
-        except Exception as e:
-            return Response({'message': str(e)}, status=500)
+        # try:
+        #     send_otp_email(user.otp, user.email)
+        # except Exception as e:
+        #     return Response({'message': str(e)}, status=500)
         try:
             response = requests.post(
                 'https://server:9005/api/user/create-profile/',
@@ -194,7 +196,7 @@ def registerView(request, *args, **kwargs):
         # Handle the error appropriately
         # response_data = response.json()
         # print(response_data)
-        return Response(data={'message':'User created but waiting for email verification', 'token':token}, status=201)
+        return Response(data={'message':'User created', 'token':token}, status=201)
     else:
         data = {'message': serializer.errors}
         return Response(data=data, content_type='application/json', status=400)
