@@ -20,6 +20,17 @@ document.addEventListener('DOMContentLoaded', function(event) {
     
     const token_string = localStorage.getItem('token');
     token = JSON.parse(token_string)
+    console.log("access = ", token.access)
+    const socket = new WebSocket('wss://127.0.0.1:9005/ws/online-status/', ['token', token.access])
+
+    socket.onopen = function() {
+        console.log("WebSocket connection established.")
+    }
+
+    socket.onmessage = function(event) {
+        const data = JSON.parse(event.data)
+        console.log("data = ", data)
+    }
     // console.log(token.access);
     const csrftoken = getCookie('csrftoken'); // Replace with your method of retrieving the CSRF token
     fetch(api + 'auth/get-user/', {
@@ -99,8 +110,8 @@ logoutButton.addEventListener('click', async function(event) {
     console.log('data', data);
     console.log('response', response);
     if (response.status === 200) {
-        localStorage.removeItem('token');
         if (data.message === 'User logged out') {
+            localStorage.removeItem('token');
             window.location.href = '/login.html';
         }
 

@@ -39,6 +39,7 @@ def test_token(request):
 class CustomTokenObtainPairView(TokenObtainPairView):
     def post(self, request: Request, *args, **kwargs) -> Response:
         try:
+            # raise Exception
             user = User.objects.get(username=request.data.get('username'))
             if user.is_authentication_completed:
                 return Response({'message': 'user already logged in'}, status=400)
@@ -48,27 +49,31 @@ class CustomTokenObtainPairView(TokenObtainPairView):
             user.save()
             
             #need to generate otp and send it to user email
-            if int(user.max_otp_try) == 0 and user.otp_max_out:
-                t = user.otp_max_out - timezone.now()
-                diff = t.total_seconds() / 60
-                data = {
-                    'message': f"try again in {round(diff, 2)} minutes"
-                }
-                return Response(data=data, status=400)
-            otp = generate_otp()
-            otp_expiry = timezone.now() + datetime.timedelta(minutes=5)
-            max_otp_try = int(user.max_otp_try) - 1
-            otp_max_out = timezone.now() + datetime.timedelta(hours=1) if max_otp_try == 0 else None
+            if user.twofa_active:
+                if int(user.max_otp_try) == 0 and user.otp_max_out:
+                    t = user.otp_max_out - timezone.now()
+                    diff = t.total_seconds() / 60
+                    data = {
+                        'message': f"try again in {round(diff, 2)} minutes"
+                    }
+                    return Response(data=data, status=400)
+                otp = generate_otp()
+                otp_expiry = timezone.now() + datetime.timedelta(minutes=5)
+                max_otp_try = int(user.max_otp_try) - 1
+                otp_max_out = timezone.now() + datetime.timedelta(hours=1) if max_otp_try == 0 else None
 
-            user.otp = otp
-            user.otp_expiry = otp_expiry
-            user.max_otp_try = max_otp_try
-            user. otp_max_out = otp_max_out
-            user.save()
-    
-            # need to send the otp to user email
-            send_otp_email(user.otp, user.email)
-            return response  
+                user.otp = otp
+                user.otp_expiry = otp_expiry
+                user.max_otp_try = max_otp_try
+                user. otp_max_out = otp_max_out
+                user.save()
+        
+                # send the otp to user email
+                send_otp_email(user.otp, user.email)
+            else:
+                user.is_authentication_completed = True
+                user.save()
+            return response
         except Exception as e:
             raise InvalidToken(str(e))
         

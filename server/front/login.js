@@ -82,6 +82,17 @@ if (code) {
 
 }
 
+const socket = new WebSocket('wss://127.0.0.1:9005/ws/online-status/')
+
+socket.onopen = function() {
+    console.log("WebSocket connection established.")
+}
+
+socket.onmessage = function(event) {
+    const data = JSON.parse(event.data)
+    console.log("data = ", data)
+}
+
 document.getElementById("login-form").addEventListener("submit", async function(event) {
     event.preventDefault(); // Prevent the default form submission
     console.log('cookie = ', document.cookie);

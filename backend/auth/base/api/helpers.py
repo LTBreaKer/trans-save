@@ -20,21 +20,6 @@ def send_otp_email(otp, receiver_email):
         f"<p>Best regards,<br>"
         f"The ft_transcendence Team</p>"
     )
-    # message = f"""
-
-    #             <html>
-
-    #                 <body>
-
-    #                     <p>Hi, here is your OTP <b>{otp}</b></p>
-
-    #                     <p>Use this to authenticate. It will expire in 5 minutes.</p>
-
-    #                 </body>
-
-    #             </html>
-
-    #             """
     send_mail(
         subject,
         message,

@@ -37,6 +37,8 @@ ALLOWED_HOSTS = [host, '127.0.0.1', 'localhost', '10.14.8.9', '10.14.6.10', 'use
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
+    'channels',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -50,6 +52,17 @@ INSTALLED_APPS = [
     'sslserver',
     'base',
 ]
+
+ASGI_APPLICATION = 'user_management.asgi.application'
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("redis_c", 6380)],
+        }
+    }
+}
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
@@ -67,10 +80,10 @@ MIDDLEWARE = [
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 CORS_ALLOWED_ORIGINS = [
-    'https://127.0.0.1:9002',
+    'https://127.0.0.1:9005',
 ]
 CSRF_TRUSTED_ORIGINS = [
-        'https://127.0.0.1:9002',
+        'https://127.0.0.1:9005',
 ]
 # CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True

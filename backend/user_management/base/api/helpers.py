@@ -2,7 +2,7 @@ from rest_framework.response import Response
 import requests
 
 def check_auth(auth_header):
-    endpoint = 'https://server:9004/api/auth/get_user/'
+    endpoint = 'https://server:9004/api/auth/get-user/'
     headers = {
         'Authorization': auth_header,
     }
@@ -10,7 +10,7 @@ def check_auth(auth_header):
     return response
 
 def get_user(user_id, auth_header):
-    endpoint = 'https://server:9004/api/auth/get_user_by_id/'
+    endpoint = 'https://server:9004/api/auth/get-user-by-id/'
     headers = {
         'Authorization': auth_header,
     }

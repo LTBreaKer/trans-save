@@ -16,3 +16,10 @@ class FriendRequest(models.Model):
 
     def __str__(self):
         return f'user with id: {self.from_user_id} sent friend request to user with id: {self.to_user_id}'
+
+class OnlineStatus(models.Model):
+    user_profile = models.OneToOneField(UserProfile, on_delete=models.CASCADE)
+    is_online = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"user with id {self.user_profile.user_id} is {'online' if self.is_online else 'offline'}"

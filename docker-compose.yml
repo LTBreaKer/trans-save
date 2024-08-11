@@ -9,7 +9,7 @@ services:
     volumes:
       - auth:/authentication
     command: python manage.py runsslserver --certificate /etc/ssl/certs/cert.pem --key /etc/ssl/private/cert-key.pem 0.0.0.0:8000
-
+    # command: python -m gunicorn auth.asgi:application -k uvicorn.workers.UvicornWorker --certfile=/etc/ssl/certs/cert.pem --keyfile=/etc/ssl/private/cert-key.pem --bind 0.0.0.0:8000
     # command: gunicorn --certfile=/etc/ssl/certs/cert.pem --keyfile=/etc/ssl/private/cert-key.pem auth.wsgi:application --bind 0.0.0.0:8000
     entrypoint: /entrypoint.sh
     env_file:
@@ -36,7 +36,8 @@ services:
     restart: always
     networks:
       - my_network
-    command: python manage.py runsslserver --certificate /etc/ssl/certs/cert.pem --key /etc/ssl/private/cert-key.pem 0.0.0.0:8001
+    # command: python manage.py runsslserver --certificate /etc/ssl/certs/cert.pem --key /etc/ssl/private/cert-key.pem 0.0.0.0:8001
+    command: python -m gunicorn user_management.asgi:application -k uvicorn.workers.UvicornWorker --certfile=/etc/ssl/certs/cert.pem --keyfile=/etc/ssl/private/cert-key.pem --bind 0.0.0.0:8001
   game-db:
     image: game-db
     container_name: game-db-api
@@ -68,6 +69,10 @@ services:
     volumes:
       - front:/var/www/pong.com
       - ./backend/auth/media:/media
+    depends_on:
+      - auth-api
+      - user-management-api
+      - game-db
     networks:
       - my_network
   db:
@@ -96,6 +101,18 @@ services:
     #   - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     # volumes:
     #   - /nfs/homes/aharrass/data/postgres:/var/lib/postgresql/data
+  redis:
+    image: redis_i
+    build:
+      context: ./redis
+    container_name: redis_c
+    ports:
+     - 6380:6380
+    restart: always
+    networks:
+      - my_network
+    command: redis-server /etc/redis/redis.conf
+
   blockchain:
     image: blockchain
     build: ./backend/blockchain

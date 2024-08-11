@@ -30,6 +30,7 @@ class User(AbstractUser):
     is_online = models.BooleanField(default=False)
     is_logged_out = models.BooleanField(default=False)
     is_authentication_completed = models.BooleanField(default=False)
+    twofa_active = models.BooleanField(default=False)
     otp = models.CharField(max_length=6, blank=True, null=True)
     otp_expiry = models.DateTimeField(blank=True, null=True)
     max_otp_try = models.CharField(max_length=2, default=3)
