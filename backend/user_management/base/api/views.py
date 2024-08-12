@@ -26,12 +26,15 @@ def sendFriendRequest(request, *args, **kwargs):
     from_user_data = response.json()['user_data']
     from_user_id = from_user_data['id']
     from_user_profile = UserProfile.objects.get(user_id = from_user_id)
-    to_user_id = request.data.get('to_user_id')
+    to_user_username = request.data.get('username')
 
-    if not to_user_id:
-        return Response({'message': 'to_user_id is required'}, status=400)
+    if not to_user_username:
+        return Response({'message': 'username is required'}, status=400)
+
+    to_user_id = get_user(username=to_user_username, auth_header=request.META.get('HTTP_AUTHORIZATION')).json()['user_data']['id']
+
     
-    response = get_user(to_user_id, request.META.get('HTTP_AUTHORIZATION'))
+    response = get_user(user_id=to_user_id, auth_header=request.META.get('HTTP_AUTHORIZATION'))
 
     if int(to_user_id) == int(from_user_id):
         return Response({'message': 'Cannot send friend request to self'}, status=400)
@@ -165,7 +168,7 @@ def get_friend_list(request):
 
     data = {
         'friend_list': {
-            friend.id: get_user(friend.user_id, AUTH_HEADER).json()['user_data'] for friend in friends
+            friend.id: get_user(user_id=friend.user_id, auth_header=AUTH_HEADER).json()['user_data'] for friend in friends
         }
     }
 

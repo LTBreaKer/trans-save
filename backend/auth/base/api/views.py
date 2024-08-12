@@ -333,7 +333,29 @@ def get_user_by_id(request, *args, **kwargs):
         return Response({'message': 'user not found'}, status=404)
     serializer = UserSerializer(requested_user)
     data = {
-        'message': 'User fround',
+        'message': 'User found',
+        'user_data': serializer.data
+    }
+    return Response(data, status=200)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_user_by_username(request):
+    user = request.user
+    if not user.is_authentication_completed:
+        return Response({'message': 'User not authenticated properly'}, status=403)
+    
+    username = request.data.get('username')
+    if not username:
+        return Response({'message': 'username required'}, status=400)
+    
+    try:
+        requested_user = User.objects.get(username=username)
+    except Exception:
+        return Response({'message': 'user not found'}, status=404)
+    serializer = UserSerializer(requested_user)
+    data = {
+        'message': 'User Found',
         'user_data': serializer.data
     }
     return Response(data, status=200)
