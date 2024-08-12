@@ -5,6 +5,8 @@ from base.serializers import UserProfileSerializer, FriendRequestSerializer
 from .helpers import check_auth, get_user
 import json
 import requests
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
 
 @api_view(['POST'])
 def create_profile(request, *args, **kwargs):
@@ -21,7 +23,8 @@ def sendFriendRequest(request, *args, **kwargs):
     response = check_auth(request.META.get('HTTP_AUTHORIZATION'))
     if response.status_code != 200:
         return Response(data=response.json(), status=response.status_code)
-    from_user_id = response.json()['user_data']['id']
+    from_user_data = response.json()['user_data']
+    from_user_id = from_user_data['id']
     from_user_profile = UserProfile.objects.get(user_id = from_user_id)
     to_user_id = request.data.get('to_user_id')
 
@@ -44,7 +47,22 @@ def sendFriendRequest(request, *args, **kwargs):
     
     if FriendRequest.objects.filter(from_user_id=to_user_id, to_user_id=from_user_id).exists():
         return Response({'message': 'Already have a pending friend request from this user'}, status=400)
-    FriendRequest.objects.create(from_user_id=from_user_id, to_user_id=to_user_id)
+    friend_request = FriendRequest.objects.create(from_user_id=from_user_id, to_user_id=to_user_id)
+
+    channel_layer = get_channel_layer()
+    
+    async_to_sync(channel_layer.group_send)(
+        f"friends_{to_user_id}",
+        {
+            "type": "friend_request_received",
+            "friend_request": {
+                "id": friend_request.id,
+                "sender_data": from_user_data,
+                "message": f"{from_user_data['username']} has sent you a friend request."
+            }
+        }
+    )
+
     return Response(data={'message': 'Friend request sent'}, status=201)
 
 @api_view(['GET'])
@@ -131,3 +149,24 @@ def delete_friend(request, *args, **kwargs):
     
     user_profile.friends.remove(friend_profile)
     return Response({'message': 'Friend removed'}, status=200)
+
+@api_view(['GET'])
+def get_friend_list(request):
+    AUTH_HEADER = request.META.get('HTTP_AUTHORIZATION')
+    response = check_auth(AUTH_HEADER)
+    if response.status_code != 200:
+        return Response(response.json(), status=response.status_code)
+    
+    user_id = response.json()['user_data']['id']
+
+    user_profile = UserProfile.objects.get(user_id=user_id)
+
+    friends = user_profile.friends.all()
+
+    data = {
+        'friend_list': {
+            friend.id: get_user(friend.user_id, AUTH_HEADER).json()['user_data'] for friend in friends
+        }
+    }
+
+    return Response(data, status=200)

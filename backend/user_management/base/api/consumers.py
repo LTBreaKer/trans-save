@@ -1,6 +1,6 @@
 from channels.generic.websocket import AsyncWebsocketConsumer
 import json
-from .helpers import check_auth
+from .helpers import check_auth, get_user
 from asgiref.sync import sync_to_async
 # from base.models import OnlineStatus, UserProfile
 
@@ -70,8 +70,64 @@ class OnlineStatusConsumer(AsyncWebsocketConsumer):
                 }
             )
 
+class FriendRequestConsumer(AsyncWebsocketConsumer):
+    async def connect(self):
+        from base.models import FriendRequest
+        self.user_id = -1
+        token = self.scope.get('subprotocols')[1] if self.scope.get('subprotocols') and len(self.scope.get('subprotocols')) > 1 else None
+        if not token:
+            await self.close(code=4000)
+            return
+        
+        auth_header = f"Bearer {token}"
 
+        response = await sync_to_async(check_auth)(auth_header)
+        
+        
+        if response.status_code == 200:
+            user_data = await sync_to_async(response.json)()
+            self.user_id = user_data['user_data']['id']
+            # Token is valid, accept the connection
+            await self.channel_layer.group_add(
+                f"friends_{self.user_id}", self.channel_name
+            )
+            await self.accept(subprotocol='token')
 
+            friend_requests = await sync_to_async(lambda: list(FriendRequest.objects.filter(to_user_id=self.user_id)))()
+
+            for friend_request in friend_requests:
+                response = await sync_to_async(get_user)(friend_request.from_user_id, auth_header)
+                from_user_data = await sync_to_async(response.json)()
+                await self.channel_layer.group_send(
+                    f"friends_{self.user_id}",
+                    {
+                        'type': 'friend_request_received',
+                        'friend_request': {
+                            'id': friend_request.id,
+                            'sender_data': from_user_data['user_data'],
+                            'message': f"{from_user_data['user_data']['username']} has sent you a friend request"
+                        }
+                    }
+                )
+        else:
+            await self.close(code=4001)
+
+    async def disconnect(self, code):
+        if self.user_id == -1:
+            return
+        
+        await self.channel_layer.group_discard(
+            f"friends_{self.user_id}", self.channel_name
+        )
+
+    async def friend_request_received(self, event):
+        friend_request_data = event['friend_request']
+
+        # Send the friend request data to the WebSocket
+        await self.send(text_data=json.dumps({
+            'type': 'friend_request',
+            'friend_request': friend_request_data
+        }))
     # async def send_data(self):
     #     scope_data = self.prepare_scope_data()
     #     await self.send(text_data=json.dumps({"scope": scope_data}))

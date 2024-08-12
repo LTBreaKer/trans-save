@@ -7,5 +7,6 @@ urlpatterns = [
     path('get-friend-requests/', views.get_friend_requests, name='get-friend-requests'),
     path('accept-friend-request/', views.accept_friend_request, name='accept-friend-request'),
     path('deny-friend-request/', views.deny_friend_request, name='deny-friend-request'),
-    path('remove-friend/', views.delete_friend, name="remove-friend")
+    path('remove-friend/', views.delete_friend, name="remove-friend"),
+    path('get-friend-list/', views.get_friend_list, name='get-friend-list'),
 ]

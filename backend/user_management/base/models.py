@@ -10,8 +10,8 @@ class UserProfile(models.Model):
         return f"{self.user_id}'s Profile"
 
 class FriendRequest(models.Model):
-    from_user_id = models.IntegerField(null=False, blank=False, unique=True)
-    to_user_id = models.IntegerField(null=False, blank=False, unique=True)
+    from_user_id = models.IntegerField(null=False, blank=False)
+    to_user_id = models.IntegerField(null=False, blank=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
