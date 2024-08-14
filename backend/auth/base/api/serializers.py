@@ -26,6 +26,7 @@ class UserSerializer(serializers.ModelSerializer):
             'last_name',
             'email',
             'avatar',
+            'twofa_active',
             'is_online'
         ]
         extra_kwargs = {
@@ -39,7 +40,9 @@ class UserSerializer(serializers.ModelSerializer):
         
         def update(self, instance, validated_data, *args, **kwargs):
             instance.username = validated_data.get('username', instance.username)
+            instance.email = validated_data.get('email', instance.email)
             instance.first_name = validated_data.get('first_name', instance.first_name)
             instance.last_name = validated_data.get('last_name', instance.last_name)
+            instance.twofa_active = validated_data.get('twofa_active', instance.twofa_active)
             instance.save()
             return instance
