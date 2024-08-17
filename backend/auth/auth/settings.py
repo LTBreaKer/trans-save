@@ -86,8 +86,8 @@ CORS_ALLOW_HEADERS = [
 
 OAUTH2_PROVIDER = {
     'CLIENT_ID': 'u-s4t2ud-ce1bbd56610daa62e5cd08d1c413cd6ddbb88b04c99ace9e6bb7a87dd6d1dbd8',
-    'CLIENT_SECRET': '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',
-    'REDIRECT_URI': 'https://127.0.0.1:9002/login.html',
+    'CLIENT_SECRET': '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',
+    'REDIRECT_URI': 'https://127.0.0.1:9002/',
 }
 
 CSRF_COOKIE_SECURE = True

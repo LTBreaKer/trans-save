@@ -80,7 +80,7 @@ MIDDLEWARE = [
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 CORS_ALLOWED_ORIGINS = [
-    'https://127.0.0.1:9005',
+    'https://127.0.0.1:9002',
 ]
 CSRF_TRUSTED_ORIGINS = [
         'https://127.0.0.1:9005',

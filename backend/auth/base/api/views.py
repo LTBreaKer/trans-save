@@ -293,6 +293,15 @@ def callback_42(request):
         'refresh': str(refresh),
         'access': str(refresh.access_token)
     }
+    try:
+        response = requests.post(
+            'https://server:9005/api/user/create-profile/',
+            data={'user_id': user.id},
+            verify=False
+        )
+        # response.raise_for_status()  # Raise an exception for HTTP errors
+    except RequestException as e:
+        return Response({'message': str(e)}, status=500)
     return Response(data={'message': 'Login successful', 'token': token}, status=201)
 
 @api_view(['POST'])

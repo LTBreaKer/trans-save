@@ -17,14 +17,9 @@ def check_user_availablity(request):
             'is_available': False,
             'res': Response(data=auth_check_response.json(), status=auth_check_response.status_code)
             }
-    player_id = auth_check_response.json()['user_data']['id']
-    user_response = get_user_info(player_id, AUTH_HEADER)
-    if user_response.status_code != 200:
-        return {
-            'is_available': False,
-            'res': Response(data=user_response.json(), status=user_response.status_code)
-            }
-    
+    user_data = auth_check_response.json()['user_data']
+    player_id = user_data['id']
+
     if GameDb.objects.filter(
         Q(player1_id=player_id) | Q(player2_id=player_id),
         is_active=True
@@ -46,7 +41,7 @@ def check_user_availablity(request):
 
 
 @api_view(['POST'])
-def create_game(request):
+def create_remote_game(request):
     user_availablity = check_user_availablity(request)
     if not user_availablity['is_available']:
         return user_availablity['res']
@@ -69,7 +64,7 @@ def create_game(request):
         return Response({'message': 'waiting for second player to join'}, status=200)
     
 @api_view(['POST'])
-def cancel_game_creation(request):
+def cancel_remote_game_creation(request):
     AUTH_HEADER = request.META.get('HTTP_AUTHORIZATION')
     auth_check_response = check_auth(AUTH_HEADER)
     if auth_check_response.status_code != 200:
@@ -87,18 +82,22 @@ def add_game_score(request):
     auth_check_response = check_auth(AUTH_HEADER)
     if auth_check_response.status_code != 200:
         return Response(data=auth_check_response.json(), status=auth_check_response.status_code)
+    game_id = request.data.get('game_id')
     player1_id = request.data.get('player1_id')
     player2_id = request.data.get('player2_id')
     player1_score = request.data.get('player1_score')
     player2_score = request.data.get('player2_score')
-    if not player1_id or not player2_id or not player1_score or not player2_score:
+    if not game_id or not player1_id or not player2_id or not player1_score or not player2_score:
         return Response({'message': 'invalid data'}, status=400)
     try:
-        game = GameDb.objects.get(player1_id=player1_id, player2_id=player2_id, is_active=True)
+        game = GameDb.objects.get(id=game_id, is_active=True)
     except GameDb.DoesNotExist:
         return Response({'message': 'no active game found between the two provided players'}, status=404)
-    game.player1_score = player1_score
-    game.player2_score = player2_score
+    players_ids = [game.player1_id, game.player2_id]
+    if player1_id not in players_ids or player2_id not in players_ids:
+        return Response({'message': 'invalid player id'}, status=400)
+    game.player1_score = player1_score if game.player1_id == player1_id else player2_score
+    game.player2_score = player2_score if game.player2_id == player2_id else player1_score
     game.is_active = False
     game.save()
     return Response({'message': 'game score added'}, status=200)

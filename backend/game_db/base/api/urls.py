@@ -3,6 +3,6 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('create-game/', views.create_game, name='create-game'),
+    path('create-remote-game/', views.create_remote_game, name='create-remote-game'),
     path('get-game-history/', views.get_game_history, name='get-game-history'),
 ]

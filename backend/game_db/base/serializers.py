@@ -10,6 +10,7 @@ class GameDbSerialiser(serializers.ModelSerializer):
             'player1_score',
             'player2_score',
             'is_active',
+            'created_at',
         ]
     
     def create(self, validated_data, *args, **kwargs):
