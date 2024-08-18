@@ -1,0 +1,658 @@
+
+/* here i fixed dives position and content displayed */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    height: 100vh;
+    background: var(--body-color);
+  }
+  
+
+  :root {
+    /* ===== Colors ===== */
+    --body-color: #262b36;
+    --sidebar-color: #e8ebfb;
+    --primary-color: #695cfe;
+    --primary-color-light: #f6f5ff;
+    --toggle-color: #DDD;
+    --text-color: #707070;
+  
+    --tran-02: all 0.2s ease;
+    --tran-03: all 0.3s ease;
+    --tran-04: all 0.4s ease;
+    --tran-05: all 0.5s ease;
+  }
+  
+  
+  .container {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    min-height: 100vh;
+  }
+  
+  .container .header {  
+    position: fixed;
+    margin: 0;
+    padding-left: 7.2em;
+    height: 100px;
+    width: 100%;
+  }
+  
+  .container .navbar {
+    position: fixed;
+    min-height: 100vh;
+    width: 5em;
+  }
+  
+  .container .main-content {
+    padding-top: 11vh;
+    padding-left: 7.2em;
+    height: 100vh;
+    width: 100%;
+  }
+  
+  /* ==============  here i will work with header content  ============== */
+  #butt {
+    display: none;
+  }
+  
+  .header {
+    position: relative; 
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: space-between;
+    align-items: center;
+    transition: var(--tran-05);
+  }
+  
+  .header .profile {
+    right: 8px;
+    position: relative;
+    display: flex;
+    padding: 7px;
+    align-items: center;
+  }
+  
+  .header .profile .image img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-left: 5px;
+  }
+  
+  .header .profile .text {
+    color: #e8ebfb;
+  }
+  
+  .header .notification {
+    font-size: 18px;
+    color: #e8ebfb;
+    padding-right: 17px;
+  }
+  
+  .sear {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .sear .seafr.active {
+    display: flex;
+  }
+  
+  .sear .seafr {
+    display: none;
+    flex-direction: column;
+    position: absolute;
+    margin-top: 6vh;
+    min-height: 100px;
+    width: 260px;
+    border-radius: 25px;
+    /* background-color: red; */
+  }
+  
+  .sear .seafr ul {
+    background-color: rgb(155, 150, 150);
+    border-radius: 20px;
+  }
+  .sear .seafr ul li {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 5px;
+  
+  }
+  
+  .sear .seafr #click_btn {
+    padding: 5px;
+    background-color: rgb(251, 251, 244);
+    border-radius: 25px;
+  }
+  
+  .sear .seafr img {
+    width: 50px;
+  }
+  
+  /* ==============  here i will work with navbar content  ============== */
+  
+  .sidebar {
+    position: relative;
+    top: 0;
+    margin-top: 80px;
+    left: 0;
+    height: calc(100vh - 80px);
+    border-radius: 25px;
+    width: 88px;
+    padding: 10px 14px;
+    background-color: var(--sidebar-color);
+    transition: var(--tran-05);
+  }
+  
+  .sidebar .image {
+    min-width: 60px;
+    display: flex;
+    align-items: center;
+  }
+  
+  .sidebar li {
+    height: 50px;
+    margin-top: 10px;
+    list-style: none;
+    display: flex;
+    align-items: center;
+  }
+  
+  .sidebar li .icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 60px;
+    font-size: 20px;
+  }
+  
+  .sidebar li .icon {
+    color: var(--text-color);   
+    transition: var(--tran-02); 
+  }
+  
+  .sidebar header {
+    position: relative;
+  }
+  
+  .navbar .image-text img {
+    /* width: 70px; */
+    position: absolute;
+    border-radius: 6px;
+    top: -140px;
+    left: -140px;
+    z-index: -1;
+  }
+
+
+  .sidebar li a {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    border-radius: 6px;
+    transition: var(--tran-04);
+  }
+  
+  .sidebar li a:hover {
+    background: var(--primary-color);
+  }
+  
+  .sidebar li a:hover .icon {
+    color: var(--sidebar-color);
+  }
+  
+  .sidebar .menu-bar {
+    /* margin-top: 20px; */
+    height: calc(100% - 20px);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  
+  /* // =========================== here i will work with media =========================== */
+  
+  @media (min-width: 445px) and (max-width: 515px) {
+    .sear .seafr {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        margin-top: 6vh;
+        min-height: 100px;
+        width: 260px;
+        border-radius: 25px;
+        margin-left: 95px;
+    }
+    
+    .sear {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+  }
+  
+  @media (max-width: 444px) {
+  
+    .sear .seafr {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        margin-top: 8vh;
+        min-height: 100px;
+        width: 260px;
+        border-radius: 25px;
+        margin-left: 190px;
+    }
+  
+    .sidebar {
+    margin-top: 80px;
+  
+        position: relative;
+        top: 0;
+        left: 0;
+        border-radius: 25px;
+        height: 1px;
+        width: 88px;
+        padding: 3px 14px;
+        background-color: var(--body-color);
+        transition: var(--tran-05);
+        overflow: hidden;
+    }
+  
+    .sidebar.active {
+        
+        height: 100vh;
+        padding: 10px 14px;
+        background-color: var(--sidebar-color);
+    }
+  
+    #butt {
+        display: flex;
+        /* width: 45px; */
+        font-size: 30px;
+        cursor: pointer;
+        color: #e8ebfb;
+    }
+  }
+  
+  @media (max-width: 380px) {
+    .sear .seafr {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        margin-top: 6vh;
+        min-height: 100px;
+        width: 260px;
+        border-radius: 25px;
+        margin-left: 100px;
+    }
+  }
+  
+  @media (max-width: 350px) {
+  
+    #butt {
+        display: flex;
+        /* width: 45px; */
+        font-size: 30px;
+        cursor: pointer;
+        color: #e8ebfb;
+    }
+
+    /* .sidebar .image-text img {
+        width: 70px;
+        border-radius: 6px;
+        padding-top: 3px;
+    } */
+  }
+  
+  @media (max-width: 400px) {
+    .header .profile .image img {
+        display: none;
+    }
+  
+  }
+
+  /* here i will work with main content  */
+
+  .main-content .main {
+    /* background-color: red; */
+    /* top: 20px; */
+    display: flex;
+    height: 88vh;
+    width: 98%;
+    justify-content: space-between;
+  }
+
+  .main .content {
+    width: 80%;
+    margin: 5px;
+    /* background-color: yellow; */
+    height: 87vh;
+  }
+
+  .content .profile {
+    width: 99%;
+    margin: 3px;
+    height: 40vh;
+    /* background-color: blue; */
+  }
+
+  .content .profile #img_profile  {
+    width: 100%;
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+    height: 35vh;
+  }
+
+  .content .profile #avatar  {
+    position: absolute;
+    width: 80px;
+    object-fit: cover;
+    height: 80px;
+    border-radius: 50%;
+    top: 41vh;
+    left: 140px;
+
+  }
+
+  .content .profile .text  {
+    display: flex;
+    transform: translateY(-11px);
+    /* transform: translateX(520); */
+    width: 94%;
+    /* justify-content: center; */
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .content .profile #profile_username  {
+    /* justify-content: center; */
+    display: flex;
+    align-items: center;
+    font-size: 25px;
+    padding-left: 100px;
+    color: #e8ebfb;
+  }
+
+  .content .profile #edit_profile  {
+    /* border: 5px #e8ebfb; */
+    padding: 8px 14px;
+    background-color: #e8ebfb;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 15px;
+  }
+
+  .content .matches {
+    width: 99%;
+    margin: 3px;
+    height: 45.5vh;
+    /* background-color: aqua; */
+    display: flex;
+    justify-content: space-between;
+    /* align-items: center; */
+}
+
+
+  .content .matches .match_wl {
+    width: 43%;
+    height: 45vh;
+    /* background-color: darkgrey; */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    /* margin: 15px; */
+}
+
+.content .matches .match_wl .l_w {
+width: 80%;
+margin-top: 35px;
+
+display: flex;
+/* align-items: center; */
+margin: 5px;
+justify-content: space-between;
+
+
+}
+
+.content .matches .match_wl  .matchess{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 5% 10%;
+    background-color: #e8ebfb;
+    border-radius: 25px;
+    /* border-radius: 25px; */
+}
+
+.content .matches .match_wl .l_w .loss,
+.content .matches .match_wl .l_w .won {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 5% 14%;
+    background-color: #e8ebfb;
+    border-radius: 25px;
+    margin-top: 15px;
+
+}
+
+
+.content .matches .match_history {
+  width: 55%;
+  display: flex;
+  flex-direction: column;
+  height: 45vh;
+  background-color: #474554;
+  align-items: center;
+  overflow-y: auto;
+  border-radius: 25px;
+  /* justify-content: center; */
+
+}
+
+.content .matches .match_history::-webkit-scrollbar {
+  display: none;  /* Hides the scrollbar */
+}
+
+.content .matches .match_history .match {
+  margin-top: 10px;
+}
+
+
+.content .matches .match_history img {
+
+width: 50px;  
+}
+
+
+.play {
+  display: flex;        
+  align-items: center; 
+  justify-content: space-between;
+  margin-top: 15px;
+}
+
+.play h2 {
+  margin: 0 15px; 
+}
+
+/* here i will add friend list  */
+
+.main .friends_list {
+  width: 20%;
+  height: 87vh;
+  margin: 5px;
+  background-color: #587579;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-y: auto;
+  border-radius: 25px;
+}
+
+.main .friends_list::-webkit-scrollbar {
+  display: none;  
+}
+
+
+.main .friends_list .send_friend {
+  display: flex;
+  margin-top: 19px;
+  margin-bottom: 19px;
+}
+
+.main .friends_list .send_friend input{
+  background-color: rgb(73, 70, 70);
+  border: none;
+  padding: 15px 20px;
+  border-radius: 20px;
+  color: white;
+  box-shadow: #5b6164 0px 10px 10px -5px;
+  border-inline: 2px solid transparent;
+}
+
+
+.main .friends_list #text {
+  font-size: 30px;
+}
+
+.main .friends_list .friends{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.main .friends_list img {
+  width: 45px;
+}
+
+.main .friends_list .friends .friend{
+
+  display: flex;
+  align-items: center;
+  margin-top: 11px;
+}
+
+
+.friend h2 {
+  margin: 0 5px; 
+}
+
+
+
+/* here i will set code of update profile  */
+
+.main-content .update_data {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5); /* Background with opacity */
+  align-items: center;
+  justify-content: center;
+}
+
+.main-content .update_data.active  {
+  display: flex;
+}
+
+.main-content .update_data .profile i{
+  color: #f6f5ff;
+  font-size: 25px;
+  width: 100%;
+  cursor: pointer;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.update_data .profile {
+  width: 530px;
+  height: 70vh;
+  background-color: #262b36;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+
+.update_data .profile #update_img_profile {
+  width: 98%;
+  margin: 5px;
+  height: 25vh;
+  display: flex;
+  cursor: pointer;
+}
+
+.update_data .profile .update_avatar {
+  cursor: pointer;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.update_data .profile #update_avatar {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  display: flex;
+  top: -60px;
+}
+
+.update_data .profile .form {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  flex-direction: column;
+}
+
+.update_data .profile .form .input {
+  width: 60%;
+  justify-content: center;
+  background: rgb(73, 70, 70);
+  border: none;
+  padding: 15px 20px;
+  margin: 25px 20px;
+  border-radius: 20px;
+  box-shadow: #5b6164 0px 10px 10px -5px;
+  border-inline: 2px solid transparent;
+}
+
+
+.update_data .profile  .form .input:focus {
+  outline: none;
+}
+
+.update_data .profile .form .login-button {
+  width: 40%;
+  cursor: pointer;
+  font-weight: bold;
+  background: rgb(73, 70, 70);
+  color: white;
+  padding-block: 15px;
+  margin: 20px auto;
+  border-radius: 20px;
+  box-shadow: #5b6164 0px 10px 10px -5px;
+  border: none;
+  transition: all 0.2s ease-in-out;
+
+}
