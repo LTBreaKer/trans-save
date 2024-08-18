@@ -28,5 +28,5 @@ def get_user(user_id=None, username=None, auth_header=None):
         data = {
             'username': username,
         }
-    response = requests.get(endpoint, headers=headers, data=data, verify=False)
+    response = requests.get(url=endpoint, headers=headers, data=data, verify=False)
     return response

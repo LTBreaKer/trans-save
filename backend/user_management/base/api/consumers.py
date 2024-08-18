@@ -96,15 +96,16 @@ class FriendRequestConsumer(AsyncWebsocketConsumer):
             friend_requests = await sync_to_async(lambda: list(FriendRequest.objects.filter(to_user_id=self.user_id)))()
 
             for friend_request in friend_requests:
-                response = await sync_to_async(get_user)(friend_request.from_user_id, auth_header)
+                response = await sync_to_async(get_user)(user_id=friend_request.from_user_id, auth_header=auth_header)
                 from_user_data = await sync_to_async(response.json)()
+                print(from_user_data, "")
                 await self.channel_layer.group_send(
                     f"friends_{self.user_id}",
                     {
                         'type': 'friend_request_received',
                         'friend_request': {
                             'id': friend_request.id,
-                            'sender_data': from_user_data['user_data'],
+                            'sender_data': from_user_data,
                             'message': f"{from_user_data['user_data']['username']} has sent you a friend request"
                         }
                     }
