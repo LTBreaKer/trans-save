@@ -228,21 +228,65 @@ body {
 
 .notifi_btn {
   display: none;
-  width: 190px;
+  width: 200px;
   height: 250px;
-  background-color: darkblue;
+  background-color: #474554;
   position: absolute;
   right: 120px;
   top: 65px;
   border-radius: 25px;
+  overflow-y: auto;
+  
 }
+
+.notifi_btn::-webkit-scrollbar {
+display: none;
+}
+
 
 .notifi_btn.active {
   display: flex;
 
 }
 
+.notifi_btn .send_request {
+  width: 100%;
+  height: 55px;
+  border-radius: 15px;
+  background-color: #7c7d85;
+  padding: 3px;
+  display: flex;
+  justify-content: center;
+  /* align-items: center; */
+}
 
+.send_request .img_text {
+  /* justify-content: center; */
+  align-items: center;
+  display: flex;
+}
+
+.send_request .img_text h5{
+  text-align:start;
+  width: 80px;
+  
+}
+
+.send_request .img_text img{
+  width: 45px;
+}
+
+.send_request .acc_dec button  {
+  /* justify-content: center;
+  align-items: center; */
+  /* width: 25px; */
+  width: 50px;  
+  margin: 1px;
+  border-radius: 15px;
+  border: none;
+  height: 20px;
+  cursor: pointer;
+}
 
 /* // =========================== here i will work with media =========================== */
 
