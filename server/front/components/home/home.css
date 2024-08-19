@@ -93,6 +93,7 @@ body {
   font-size: 18px;
   color: #e8ebfb;
   padding-right: 17px;
+  cursor: pointer;
 }
 
 /* .sear {
@@ -219,6 +220,29 @@ body {
   flex-direction: column;
   justify-content: space-between;
 }
+
+
+/* ?notification 0 */
+
+
+
+.notifi_btn {
+  display: none;
+  width: 190px;
+  height: 250px;
+  background-color: darkblue;
+  position: absolute;
+  right: 120px;
+  top: 65px;
+  border-radius: 25px;
+}
+
+.notifi_btn.active {
+  display: flex;
+
+}
+
+
 
 /* // =========================== here i will work with media =========================== */
 

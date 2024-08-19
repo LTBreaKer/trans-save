@@ -53,6 +53,14 @@ document.addEventListener('click', (event) => {
   }
 });
 
+const notific = document.querySelector('.notification');
+const notifi_display = document.querySelector('.notifi_btn');
+
+notific.addEventListener('click', function() {
+  notifi_display.classList.toggle('active');
+})
+
+
 }
 
 
@@ -172,3 +180,27 @@ async function fetchUserHomeData() {
 // #262b36
 // #e8ebfb
 export default Home;
+
+
+
+
+
+
+
+// const serch_butt = document.querySelector('.search-btn');
+// const search_btnn = document.querySelector('.search-btn');
+
+
+// const  seafr = document.querySelector('.seafr');
+// serch_butt.addEventListener('click', ()=> {
+//   seafr.classList.add('active')
+//   search_btnn.classList.add('active');
+//   console.log('Hello we are here in search bar');
+// });
+
+// document.addEventListener('click', (event) => {
+//   if (!serch_butt.contains(event.target) && !seafr.contains(event.target)) {
+//     seafr.classList.remove('active');
+//     search_btnn.classList.remove('active');
+//   }
+// });

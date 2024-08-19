@@ -22,7 +22,7 @@ let socket = new WebSocket("wss://127.0.0.1:9005/ws/friend-requests/", ["token",
 
 socket.onopen = function () {
 console.log('its working just i dont know why data not working ===== ');
-alert('hhhhh khdam aslan');
+// alert('hhhhh khdam aslan');
 }
 
 socket.onmessage = function(event) {
