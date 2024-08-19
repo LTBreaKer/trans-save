@@ -36,9 +36,28 @@ def check_user_availablity(request):
     return {
         'is_available' : True,
         'res': None,
-        'player_id': player_id
+        'player_id': player_id,
         }
 
+@api_view(['POST'])
+def create_local_game(request):
+    user_availablity = check_user_availablity(request)
+    if not user_availablity['is_available']:
+        return user_availablity['res']
+    if user_availablity['player_id'] in game_queue:
+        return Response({'message': 'can\'t create a game while in game queue'}, status=400)
+    player2_name = request.data.get('player2_name')
+    if not player2_name:
+        return Response({'message': 'player2_name required'}, status=400)
+    serializer = GameDbSerialiser(data={'player1_id': -1, 'player2_id': -1, 'is_remote': False, 'player2_name': player2_name})
+    if serializer.is_valid():
+        serializer.save()
+        return Response({
+                'message': 'game created',
+                'player2_name': player2_name,
+            },
+            status=201
+            )
 
 @api_view(['POST'])
 def create_remote_game(request):
@@ -56,7 +75,7 @@ def create_remote_game(request):
             return Response({'message': 'game created',
                             'player1_id': player1_id,
                             'player2_id': player2_id},
-                            status=200
+                            status=201
                     )
         else:
             return Response({'message': 'invalid data'}, status=400)
