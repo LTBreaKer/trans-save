@@ -59,6 +59,8 @@ async function update_profile_fun() {
   const new_password = document.getElementById('new_password');
   const old_password = document.getElementById('old_password');
   const check_box = document.getElementById('check_box');
+  // document.getElementById('file-input').addEventListener('change', function(event) {
+  //   const file = event.target.files[0];
 
   var boll = true;
   if (update_Email.value !== '') 
@@ -79,12 +81,16 @@ async function update_profile_fun() {
     console.log('email=>  *', update_Email.value.trim(), "*");
     console.log("hello hello hello hello hello hello hello");
     const data = {
-      username: update_UserName.value.trim(),
-      email: update_Email.value.trim(),
       twofa_active: check_box.checked,
-      // password: new_password.value.trim(),
-      // old_password: old_password.value.trim(), 
     }
+    if (update_UserName.value !== '')
+      data.username = update_UserName.value;
+    if (update_Email.value !== '')
+      data.email = update_Email.value;
+    if (new_password.value !== '')
+      data.password = new_password.value;
+    if (old_password.value !== '')
+      data.old_password = old_password.value;
     await update_backend(data);
   }
 
