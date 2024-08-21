@@ -1,5 +1,5 @@
 
-import { loadHTML, loadCSS } from '../../utils.js';
+import { loadHTML, loadCSS, player_webSocket } from '../../utils.js';
 import { login ,log_out_func, logoutf, get_localstorage, getCookie } from '../../auth.js';
 
 
@@ -8,17 +8,27 @@ import { login ,log_out_func, logoutf, get_localstorage, getCookie } from '../..
 var api = "https://127.0.0.1:9004/api/";
 async function Home() {
   const html = await loadHTML('./components/home/home.html');
-  loadCSS('./components/home/home.css');
-
+  
   const app = document.getElementById('app');
   app.innerHTML = html;
+  await loadCSS('./components/home/home.css');
   
 
   var csrftoken = getCookie('csrftoken');
 
 await checkFirst();
-// -------------------------------------------
 
+
+fetchNotificatoins();
+
+
+
+
+
+
+
+
+console.log("------fanti -------");
   const logout = document.getElementById('logout')
   logout.addEventListener('click', log_out_func);
 
@@ -64,27 +74,101 @@ notific.addEventListener('click', function() {
 }
 
 
+
+
+
+// ---------------------------------------------------------------------------------------------
+
+
+
+
+
+async function fetchNotificatoins() {
+  try {
+    const simulatedResponse = await player_webSocket();
+    console.log("ress ==========   ",simulatedResponse);
+    const response = new Promise((resolve) => {
+      setTimeout(() => resolve({ json: () => Promise.resolve(simulatedResponse) }), 1000);
+  });
+
+    // Check if simulatedResponse and its data property are defined
+    const data = await response;
+    const notificationsData = await data.json();
+    console.log("----------->     " ,notificationsData);
+  
+    displayNotifications(notificationsData);
+} catch (e) {
+    console.error('Error fetching notifications:', e);
+}
+
+}
+
+
+function displayNotifications(notifications) {
+  notifications = JSON.parse(notifications);
+const notifi_display = document.querySelector('.notifi_btn');
+function displayNotifications(notifications) {
+  const notificationsArray = Array.isArray(notifications) ? notifications : [notifications];
+
+  notifi_display.innerHTML = notificationsArray.map(notifications => `
+    <div class="send_request">
+      <div class="img_text">
+        <img src="${notifications.friend_request.sender_data.user_data.avatar}" alt="">
+        <h6>${notifications.friend_request.message}</h6>
+      </div>
+      <div class="acc_dec">
+        <button class="accept">Accept</button>
+        <button class="decline">Decline</button>
+      </div>
+    </div>
+  `).join('');
+
+  // Add event listeners for the buttons
+  notifi_display.querySelectorAll('.accept').forEach(button => {
+    button.addEventListener('click', handleAccept);
+  });
+
+  notifi_display.querySelectorAll('.decline').forEach(button => {
+    button.addEventListener('click', handleDecline);
+  });
+}
+}
+
+
+
+
+
+
+
+
+function handleAccept(event) {
+  // Add your accept logic here
+  const notificationDiv = event.target.closest('.send_request');
+  notificationDiv.remove(); // Example action: remove notification
+  console.log('Notification accepted');
+}
+
+// Handler for decline button
+function handleDecline(event) {
+  // Add your decline logic here
+  const notificationDiv = event.target.closest('.send_request');
+  notificationDiv.remove(); // Example action: remove notification
+  console.log('Notification declined');
+}
+// ---------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
 async function changeAccess() {
   const data = {
     refresh: get_localstorage('refresh')
   };
   
 
-  // const response = await fetch(api + 'auth/token/refresh/', {
-  //       method: 'POST',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //       },
-  //       credentials: 'include',
-  //       body: JSON.stringify(data)
-  //     });
-
-  //     const jsonData = await response.json();
-  //     console.log('New tokens:', jsonData);
-
-  //     if (response === 200) {
-  //       await login(jsonData.access, jsonData.refresh);
-  //     }
 
   try {
     const response = await fetch(api + 'auth/token/refresh/', {
@@ -102,7 +186,7 @@ async function changeAccess() {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
     
-    // Update local storage with new tokens
+    // Update local storage with new tokens and new refresh 
     await login(jsonData.access, jsonData.refresh);
     
   } catch (error) {
@@ -114,23 +198,21 @@ async function changeAccess() {
 async function checkFirst() {
   const token = get_localstorage('token');
   
-  console.log('Token being checked:', token); // Debugging statement
+  console.log('Token being checked:', token);
   console.log("--------------------------------------", api);
   try {
     const response = await fetch(api + 'auth/verify-token/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        // 'X-CSRFToken': csrftoken, // Uncomment if needed
       },
       credentials: 'include',
-      body: JSON.stringify({ token }) // Sending token in the body
+      body: JSON.stringify({ token }) 
     });
     console.log(response);
     if (response.status !== 200) {
       console.log('Token is invalid. Attempting to refresh...');
       await changeAccess();
-      // After refreshing, retry fetching user data
       console.log("lkfjkdsjfkljsdlkfjklsdjflkjsdlkf");
       await fetchUserHomeData();
     } else if (!response.ok) {
@@ -168,8 +250,8 @@ async function fetchUserHomeData() {
     const change_user = document.getElementById('UserName');
     const change_imge = document.getElementById('image_user');
     
-    change_imge.src = userData.user_data.avatar;
     change_user.innerHTML = userData.user_data.username;
+    change_imge.src = userData.user_data.avatar;
   } catch(error)  {
     console.error('There was a problem with the fetch operation:', error);
   }

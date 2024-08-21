@@ -81,6 +81,7 @@
   .header .profile .image img {
     width: 50px;
     height: 50px;
+    object-fit: cover;
     border-radius: 50%;
     margin-left: 5px;
   }
@@ -587,9 +588,9 @@ width: 50px;
   background-color: #262b36;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
-  padding: 20px;
+  padding: 5px;
   border-radius: 10px;
 }
 
@@ -610,12 +611,14 @@ width: 50px;
 }
 
 .update_data .profile #update_avatar {
-  position: relative;
+  position: absolute;
+  object-fit: cover;
+  /* position: ; */
   width: 100px;
   height: 100px;
   border-radius: 50%;
   display: flex;
-  top: -60px;
+  top: 350px;
 }
 
 .update_data .profile .form {
@@ -626,15 +629,64 @@ width: 50px;
 }
 
 .update_data .profile .form .input {
-  width: 60%;
-  justify-content: center;
+  width: 72%;
+  justify-content: flex-end;
+
   background: rgb(73, 70, 70);
   border: none;
-  padding: 15px 20px;
-  margin: 25px 20px;
+  padding: 8px 20px;
+  margin: 15px 2px;
   border-radius: 20px;
   box-shadow: #5b6164 0px 10px 10px -5px;
   border-inline: 2px solid transparent;
+}
+
+.update_data .profile .form div {
+  width: 80%;
+}
+
+
+
+.update_data .profile .form #main_label {
+  margin-right: 34px;
+
+}
+
+
+.update_data .profile .form label {
+  margin: 15px;
+  color: white;
+}
+
+.cyberpunk-checkbox {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #30cfd0;
+  border-radius: 5px;
+  background-color: transparent;
+  display: inline-block;
+  position: relative;
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+.cyberpunk-checkbox:before {
+  content: "";
+  background-color: #30cfd0;
+  display: block;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  transition: all 0.3s ease-in-out;
+}
+
+.cyberpunk-checkbox:checked:before {
+  transform: translate(-50%, -50%) scale(1);
 }
 
 

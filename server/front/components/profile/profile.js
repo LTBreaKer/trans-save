@@ -1,4 +1,4 @@
-import { loadHTML, loadCSS } from '../../utils.js';
+import { loadHTML, loadCSS, player_webSocket } from '../../utils.js';
 import {log_out_func,  logoutf, get_localstorage, getCookie, login } from '../../auth.js';
 
 const api = "https://127.0.0.1:9004/api/";
@@ -13,10 +13,14 @@ async function Profile() {
   
   await checkFirst();
   
+  // await player_webSocket();
+
   const editProfileButton = document.querySelector('.edit_profi');
   const updateProfile = document.querySelector('.update_data');
   const close_edite = document.querySelector('.bi-x');
+  const update_btn = document.getElementById('update_btn');
 
+  update_btn.addEventListener('click', await update_profile_fun);
   editProfileButton.addEventListener('click', () => {
     updateProfile.classList.add('active');
   });
@@ -41,24 +45,80 @@ async function Profile() {
 
   })
 
-//   console.log("*******************************");
-//   const subprotocols = ['token', get_localstorage('token')];
+}
 
-//   console.log("*******************************");
-//   const socket = new WebSocket('wss://127.0.0.1:9005/ws/friend-requests/ ', subprotocols);
-//   socket.onmessage = function(event) {
-//     console.log('Message from server:', event.data);
-    
-//     try {
-//         const data = JSON.parse(event.data);
-//         console.log('Parsed data:', data);
-//     } catch (e) {
-//         console.error('Failed to parse message:', e);
-//     }
-// };
+const isValidEmail = signupemail => {
+  const re =  /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  return (re.test(String(signupemail).toLowerCase()));
+}
 
+
+async function update_profile_fun() {
+  const update_Email = document.getElementById('update_Email');
+  const update_UserName = document.getElementById('update_UserName');
+  const new_password = document.getElementById('new_password');
+  const old_password = document.getElementById('old_password');
+  const check_box = document.getElementById('check_box');
+
+  var boll = true;
+  if (update_Email.value !== '') 
+    if (!isValidEmail(update_Email.value)){
+      // set_error("Provide a Vallid email address");
+      boll = false;
+    }
+  if (new_password.value !== '')
+      if (new_password.length < 8){
+        // set_error('Password must be at least 8 characters')
+        boll = false;
+      }
+
+  if (boll === true) {
+    const fanti = update_Email.value.trim();
+    console.log('fanti  *', fanti.trim(), "*");
+    console.log('fanti  *', "hello", "*");
+    console.log('email=>  *', update_Email.value.trim(), "*");
+    console.log("hello hello hello hello hello hello hello");
+    const data = {
+      username: update_UserName.value.trim(),
+      email: update_Email.value.trim(),
+      twofa_active: check_box.checked,
+      // password: new_password.value.trim(),
+      // old_password: old_password.value.trim(), 
+    }
+    await update_backend(data);
+  }
+
+  console.log('username=>  ', update_UserName.value);
+  console.log('password=>  ', new_password.value);
+  console.log('old password=>  ', old_password.value);
+  console.log('check box=>  ', check_box.checked);
+}
+
+
+
+
+async function update_backend(data) {
+
+  const response = await fetch(api + 'auth/update-user/', {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      'AUTHORIZATION': "Bearer " + get_localstorage('token')
+    },
+    credentials: 'include',
+    body: JSON.stringify(data)
+  });
+  console.log("hello -----------------------------");
+  const jsonData = await response.json();
+  console.log(jsonData);
+
+  if (!response.ok) {
+    throw new Error(`HTTP error! Status: ${response.status}`);
+  }
+  
 
 }
+
 
 
 async function send_freinds_request(userna) {

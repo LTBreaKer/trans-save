@@ -376,6 +376,7 @@ def update_user(request, *args, **kwargs):
     # serializer = UserSerializer(data=request.data)
     # if not serializer.is_valid():
     #     return Response(data={'message': serializer.errors}, status=401)
+    print('data: ', request.data)
     serializer = UserSerializer(instance=user, data=request.data, partial=True)
     if not serializer.is_valid():
         return Response(data={'message': serializer.errors}, status=400)
@@ -403,7 +404,6 @@ def update_user(request, *args, **kwargs):
         except Exception as e:
             return Response(data={'message': str(e)}, status=400)
         user.password = make_password(new_password)
-
     user.save()
     serializer.save()
     return Response(data={'message': 'User updated'}, status=200)

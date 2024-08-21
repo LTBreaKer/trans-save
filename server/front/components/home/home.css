@@ -80,6 +80,7 @@ body {
 
 .header .profile .image img {
   width: 50px;
+  object-fit: cover;
   height: 50px;
   border-radius: 50%;
   margin-left: 5px;
