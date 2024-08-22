@@ -247,6 +247,7 @@ display: none;
 
 .notifi_btn.active {
   display: flex;
+  flex-direction: column;
 
 }
 
@@ -257,6 +258,7 @@ display: none;
   background-color: #7c7d85;
   padding: 3px;
   display: flex;
+  margin: 2px;
   justify-content: center;
   /* align-items: center; */
 }
@@ -267,14 +269,18 @@ display: none;
   display: flex;
 }
 
-.send_request .img_text h5{
+.send_request .img_text h6{
   text-align:start;
+  margin: 5px;
   width: 80px;
   
 }
 
 .send_request .img_text img{
   width: 45px;
+  height: 45px;
+  object-fit: cover;
+  border-radius: 50%;
 }
 
 .send_request .acc_dec button  {

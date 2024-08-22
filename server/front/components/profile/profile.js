@@ -4,6 +4,7 @@ import {log_out_func,  logoutf, get_localstorage, getCookie, login } from '../..
 const api = "https://127.0.0.1:9004/api/";
 const api_one = "https://127.0.0.1:9005/api/";
 // user/send-friend-request/
+var photo = "";
 async function Profile() {
   const html = await loadHTML('./components/profile/profile.html');
   loadCSS('./components/profile/profile.css');
@@ -45,6 +46,51 @@ async function Profile() {
 
   })
 
+
+  // const formData = new FormData();
+  // formData.append('profile_photo', file);
+
+
+const update_avatar = document.getElementById('update_avatar');
+if (update_avatar === null)
+    console.log("nothing");
+update_avatar.addEventListener('change', function(event) {
+  console.log("----------------ddd---------");
+  const file = event.target.files[0];
+
+  // photo = file;
+
+  const formData = new FormData();
+  formData.append('myFile', event.target.files[0]);
+  if (file) {
+
+    const formData = new FormData();
+    formData.append('avatar', file);
+
+    photo = formData;
+
+    const reader = new FileReader();
+        
+    reader.onloadend = function() {
+        const base64String = reader.result; // Remove the data URL prefix
+        // photo = base64String;
+        console.log(base64String);
+        // const jsonPayload = JSON.stringify({
+        //     avatar: base64String
+        // });
+
+    // const reader = new FileReader();
+    // console.log(reader);
+    // reader.onload = function(e) {
+    //     photo = e.target.result;
+    };
+    
+    // photo = reader.readAsDataURL(file);
+    console.log("reader ====>   ",reader.readAsDataURL(file));
+  }
+
+});
+
 }
 
 const isValidEmail = signupemail => {
@@ -59,9 +105,7 @@ async function update_profile_fun() {
   const new_password = document.getElementById('new_password');
   const old_password = document.getElementById('old_password');
   const check_box = document.getElementById('check_box');
-  // document.getElementById('file-input').addEventListener('change', function(event) {
-  //   const file = event.target.files[0];
-
+  
   var boll = true;
   if (update_Email.value !== '') 
     if (!isValidEmail(update_Email.value)){
@@ -75,6 +119,7 @@ async function update_profile_fun() {
       }
 
   if (boll === true) {
+    console.log("===================photo ===== >       ",photo);
     const fanti = update_Email.value.trim();
     console.log('fanti  *', fanti.trim(), "*");
     console.log('fanti  *', "hello", "*");
@@ -91,6 +136,8 @@ async function update_profile_fun() {
       data.password = new_password.value;
     if (old_password.value !== '')
       data.old_password = old_password.value;
+    if (photo !== "")
+        data.avatar = photo;
     await update_backend(data);
   }
 
