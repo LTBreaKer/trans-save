@@ -16,3 +16,4 @@ djangorestframework-simplejwt
 web3
 py-solc-x
 channels[daphne]
+python-magic

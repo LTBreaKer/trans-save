@@ -132,3 +132,25 @@ def get_game_history(request):
     serializer = GameDbSerialiser(games, many=True)
     return Response({serializer.data}, status=200)
     
+@api_view(['GET'])
+def is_available(request):
+    AUTH_HEADER = request.META.get('HTTP_AUTHORIZATION')
+    auth_check_response = check_auth(AUTH_HEADER)
+    if auth_check_response.status_code != 200:
+        return Response(data=auth_check_response.json(), status=auth_check_response.status_code)
+    
+    id = request.data.get('id')
+    if GameDb.objects.filter(
+        Q(player1_id=id) | Q(player2_id=id),
+        is_active=True
+    ).exists():
+        return {
+            'is_available': False,
+            'res': Response({'message': 'player is already in a game'}, status=400)
+            }
+    if id in game_queue:
+        return {
+            'is_available': False,
+            'res': Response({'message': 'player already in queue'}, status=400)
+            }
+    return Response({'message': 'user already in a game or in a queue'}, status=400)

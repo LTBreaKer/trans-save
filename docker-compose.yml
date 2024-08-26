@@ -55,6 +55,40 @@ services:
     networks:
       - my_network
     command: python manage.py runsslserver --certificate /etc/ssl/certs/cert.pem --key /etc/ssl/private/cert-key.pem 0.0.0.0:8002
+  tag-game-db:
+    image: tag-game-db
+    container_name: tag-game-api
+    build: ./backend/tag_game_db
+    ports:
+      - 8003:8003
+    volumes:
+      - tag-game-db:/tag_game_db
+    entrypoint: /entrypoint.sh
+    env_file:
+      - .env
+    depends_on:
+      - db
+    restart: always
+    networks:
+      - my_network
+    command: python manage.py runsslserver --certificate /etc/ssl/certs/cert.pem --key /etc/ssl/private/cert-key.pem 0.0.0.0:8003
+  tournament-db:
+    image: tournament-db
+    container_name: tournament-api
+    build: ./backend/tournament
+    ports:
+      - 8004:8004
+    volumes:
+      - tournament-db:/tournament
+    entrypoint: /entrypoint.sh
+    env_file:
+      - .env
+    depends_on:
+      - db
+    restart: always
+    networks:
+      - my_network
+    command: python manage.py runsslserver --certificate /etc/ssl/certs/cert.pem --key /etc/ssl/private/cert-key.pem 0.0.0.0:8004
   server:
     image: server
     container_name: server
@@ -65,6 +99,8 @@ services:
       - 0.0.0.0:9004:9004
       - 0.0.0.0:9005:9005
       - 0.0.0.0:9006:9006
+      - 0.0.0.0:9007:9007
+      - 0.0.0.0:9008:9008
     restart: always
     volumes:
       - front:/var/www/pong.com
@@ -84,6 +120,8 @@ services:
         - AUTH_DB=${AUTH_DB}
         - USER_MANAGEMENT_DB=${USER_MANAGEMENT_DB}
         - GAME_DB=${GAME_DB}
+        - TAG_GAME_DB=${TAG_GAME_DB}
+        - TOURNAMENT_DB=${TOURNAMENT_DB}
     container_name: db
     env_file:
       - .env
@@ -141,6 +179,18 @@ volumes:
     driver_opts:
       type: none
       device: ./backend/game_db
+      o: bind
+  tag-game-db:
+    driver: local
+    driver_opts:
+      type: none
+      device: ./backend/tag_game_db
+      o: bind
+  tournament-db:
+    driver: local
+    driver_opts:
+      type: none
+      device: ./backend/tournament
       o: bind
   front:
     driver: local
