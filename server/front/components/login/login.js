@@ -32,8 +32,8 @@ async function Login() {
 // fix input user check and save information 
 
 
-    const intra_login = document.getElementsByClassName('intra-login');
-    const intraa = document.getElementById('intraa');
+    // const intra_login = document.getElementsByClassName('intra-login');
+    // const intraa = document.getElementById('intraa');
     const sin_btn = document.getElementById('sin_btn');
     const sup_btn = document.getElementById('sup_btn');
     const sup_email = document.getElementById('sup_email');
@@ -87,8 +87,13 @@ async function Login() {
     }
     
 
-    intraa.addEventListener('click', e =>  {
-        e.preventDefault();
+    
+
+
+    // intraa.addEventListener('click', e =>  {
+        document.querySelectorAll('.intra-login').forEach(intraLogin => {
+            intraLogin.addEventListener('click', e => {
+                e.preventDefault();
         fetch(api + 'auth/login-42/', {
             method: 'POST',
             headers: {
@@ -114,7 +119,7 @@ async function Login() {
             console.error('There was a problem with the fetch operation:', error);
         });
     })
-
+});
     const validDataInput = () => {
         const usernameValue = username.value;
         const passwordValue = password.value;

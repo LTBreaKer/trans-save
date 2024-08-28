@@ -18,7 +18,7 @@ await checkFirst();
 
 player_webSocket();
 console.log("------fanti =============== ========= -------");
-await get_friends();
+// await get_friends();
 
 
 
@@ -55,56 +55,58 @@ notific.addEventListener('click', function() {
 })
 
 
-
-
-
-// notifi_display.querySelectorAll('.accept').forEach(button => {
-//   button.addEventListener('click', handleAccept);
-// });
-
-// notifi_display.querySelectorAll('.decline').forEach(button => {
-//   button.addEventListener('click', handleDecline);
-// });
-
-
-
-}
-
-async function get_friends() {
-  console.log("***************************************");
-  const response = await fetch(api1 + 'user/get-friend-list/', {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer ' + get_localstorage('token'),
-    },
-    credentials: 'include',
-  });
-  const jsonData = await response.json();
-  console.log("accept anvitation =>     ", jsonData);
-  if (!response.ok) {
-    console.log((`HTTP error! Status: ${response.status}`), Error);
-  }
-  console.log(jsonData.friend_list);
-  displayFriendList(jsonData.friend_list)
-  console.log("***********//////*****//////****");
-
-
 }
 
 
+//  i will need this to list friend list in home page dont forget that 
 
-function displayFriendList(friendList) {
-  if (Array.isArray(friendList)) {
-    friendList.forEach(friend => {
-      const username = friend.username;
-      const avatar = friend.avatar || 'default-avatar.png'; // Fallback to a default avatar if none is provided
+//  async function get_friends() {
+//   console.log("***************************************");
+//   const response = await fetch(api1 + 'user/get-friend-list/', {
+//     method: 'GET',
+//     headers: {
+//       'Content-Type': 'application/json',
+//       'Authorization': 'Bearer ' + get_localstorage('token'),
+//     },
+//     credentials: 'include',
+//   });
+//   console.log("response ==>   ",response);
+//   const jsonData = await response.json();
+//   console.log("accept anvitation =>     ", jsonData);
+//   console.log("==========================================");
+//   if (!response.ok) {
+//     console.log((`HTTP error! Status: ${response.status}`), Error);
+//   }
+//   console.log(jsonData.friend_list);
+//   displayFriendList(jsonData.friend_list)
+//   console.log("***********//////*****//////****");
 
-      console.log(`User: ${username}, Avatar: ${avatar}`);
-  });
+// }
 
-  }
-}
+
+
+// function displayFriendList(friendList) {
+//    friendList = Object.values(friendList);
+
+// console.log('hello we are from friend list list of them =========');
+// if (!friendList) {
+//   console.error('Notification display container not found');
+//   return;
+// }
+
+//   // const send_friend = document.querySelector('.send_friend .send_friend_list');
+  
+//   // send_friend.innerHTML = friendList.map( friend => ` 
+//   //   <div class="friend" data-id="${friend.id}">
+//   //   <img id="player1" src="${friend.avatar}" alt="">
+//   //   <h2 class="player1">${friend.username}</h2>
+
+//   // `).join('');
+
+// }
+
+
+
 async function changeAccess() {
   const data = {
     refresh: get_localstorage('refresh')
@@ -126,6 +128,7 @@ async function changeAccess() {
     await login(jsonData.access, jsonData.refresh);
     
   } catch (error) {
+    // logoutf();
     console.error('There was a problem with the fetch operation:', error);
   }
 }

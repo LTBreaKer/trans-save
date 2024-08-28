@@ -54,7 +54,8 @@ img {
     /* right: ; */
 
     width: 90%;
-    height: 90vh;
+    max-width: 90vh;
+    height: auto;
     overflow: hidden;
     z-index: -1;
   }
