@@ -3,7 +3,6 @@ import {log_out_func,  logoutf, get_localstorage, getCookie, login } from '../..
 
 const api = "https://127.0.0.1:9004/api/";
 const api_one = "https://127.0.0.1:9005/api/";
-// user/send-friend-request/
 var photo = null;
 async function Friends() {
   const html = await loadHTML('./components/profile/profile.html');
@@ -13,7 +12,7 @@ async function Friends() {
   app.innerHTML = html;
   
   await checkFirst();
-  // await player_webSocket();
+  player_webSocket();
   
   const editProfileButton = document.querySelector('.edit_profi');
   const updateProfile = document.querySelector('.update_data');
@@ -22,7 +21,15 @@ async function Friends() {
 
   
 
-  update_btn.addEventListener('click', await update_profile_fun);
+  update_btn.addEventListener('click', async () => {
+    await update_profile_fun();
+    updateProfile.classList.remove('active');
+    document.querySelector('.success_update').style.display = "flex";
+    setTimeout(function() {
+      document.querySelector('.success_update').style.display = 'none';
+  }, 2000);
+    
+  })
   editProfileButton.addEventListener('click', () => {
     updateProfile.classList.add('active');
   });
@@ -41,70 +48,38 @@ async function Friends() {
       
       const query = input_search.value;
       send_freinds_request(query);
-      console.log('Search query:', query);
-      
+      input_search.value = "";      
     }
     
-  })
-  
-  
-  // const formData = new FormData();
-  // formData.append('profile_photo', file);
-  
+  })  
   
   const update_avatar = document.getElementById('update_avatar');
-  
-  if (update_avatar === null)
-    console.log("nothing");
   update_avatar.addEventListener('click', function(event) {
-    
     document.getElementById('image_update_ava').click();
-    console.log('------------------------------------');
-    // if (document.getElementById('update_avatar').files) photo = document.getElementById('update_avatar').files[0];
-    // const file = event.target.files[0];
-    console.log('------------------------------------>    ', photo);
-  
-    
-    // photo = file;
-    
-    // formData.append('myFile', event.target.files[0]);
-    // if (file) {
+  });
+
+  await get_friends_home();
       
-    //   const formData = new FormData();
-    //   formData.append('avatar', file);
-      
-    //   photo = formData;
-      
-    //   const reader = new FileReader();
-    //       console.log("reader ====>   ",reader.readAsDataURL(file));
-    //     }
-        
-      });
+  document.getElementById('image_update_ava').addEventListener('change', function(event) {
+    var file = event.target.files[0];
+    if (file)
+          photo = file;
+  });
 
 
 
+  const notific = document.querySelector('.notification');
+  const notifi_display = document.querySelector('.notifi_btn');
 
-      await get_friends_home();
+  notific.addEventListener('click', function() {
+    notifi_display.classList.toggle('active');
+  })
 
 
-      // const friends = document.querySelector('.friends');
-    
 
-      // friends.addEventListener('click', readit); 
-      
-      document.getElementById('image_update_ava').addEventListener('change', function(event) {
-        var file = event.target.files[0];
-        if (file)
-              photo = file;
-      });
 }
 
-
-
-
-
-async function get_friends_home() {
-  console.log("***************************************");
+export async function get_friends_home() {
   const response = await fetch(api_one + 'user/get-friend-list/', {
     method: 'GET',
     headers: {
@@ -113,67 +88,46 @@ async function get_friends_home() {
     },
     credentials: 'include',
   });
-  console.log("response ==>   ",response);
   const jsonData = await response.json();
-  console.log("accept anvitation =>     ", jsonData);
-  console.log("==========================================");
   if (!response.ok) {
     console.log((`HTTP error! Status: ${response.status}`), Error);
   }
-  console.log(jsonData.friend_list);
   displayFriendList_home(jsonData.friend_list)
-
 }
 
 
 
- function displayFriendList_home(friendList) {
-   friendList =  Object.values(friendList);
+function displayFriendList_home(friendList) {
+  friendList =  Object.values(friendList);
 
-console.log('hello we are from friend list list of them =========');
-if (!friendList) {
-  console.error('Notification display container not found');
-  return;
+  if (!friendList) {
+    console.error('Notification display container not found');
+    return;
+  }
+    const send_friend = document.querySelector('.send_friend_list');
+    
+    send_friend.innerHTML = friendList.map( friend => ` 
+      <div class="friends" data-id="${friend.id}">
+      <div class="friend" id="user_id" data-id="${friend.id}">
+      <img id="player1" style="border-radius: 50%;" class="click_friend" data-name="${friend.username}" data-id="${friend.id}" class="proimage" src="${friend.avatar}" alt="">
+      <h2 class="player1" class="click_friend" >${friend.username}</h2>
+      </div>
+
+    `).join('');
+    send_friend.querySelectorAll('.click_friend').forEach(link => {
+      link.addEventListener('click', readit);
+    });
 }
 
-  const send_friend = document.querySelector('.send_friend_list');
-  
-  send_friend.innerHTML = friendList.map( friend => ` 
-    <div class="friends" data-id="${friend.id}">
-    <div class="friend" id="user_id" data-id="${friend.id}">
-    <img id="player1" style="border-radius: 50%;" class="click_friend" data-name="${friend.username}" data-id="${friend.id}" class="proimage" src="${friend.avatar}" alt="">
-    <h2 class="player1" class="click_friend" >${friend.username}</h2>
-    </div>
-
-  `).join('');
-  send_friend.querySelectorAll('.click_friend').forEach(link => {
-    link.addEventListener('click', readit);
-  });
-
-}
-
-var id_of_friends;
-var name_of_friends;
 function readit(event) {
-
-  id_of_friends = event.target.getAttribute('data-id');
-  name_of_friends = event.target.getAttribute('data-name');
-  console.log('hello wer are here fine', id_of_friends);
+  const name_of_friends = event.target.getAttribute('data-name');
   window.location.hash = `/user/${name_of_friends}`
 }
-
-export function return_id() {
-  
-  return id_of_friends;
-}
-
-
 
 const isValidEmail = signupemail => {
   const re =  /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   return (re.test(String(signupemail).toLowerCase()));
 }
-
 
 async function update_profile_fun() {
         
@@ -187,22 +141,19 @@ async function update_profile_fun() {
   var boll = true;
   if (update_Email.value !== '') 
     if (!isValidEmail(update_Email.value)){
-      // set_error("Provide a Vallid email address");
       boll = false;
     }
   if (new_password.value !== '')
       if (new_password.length < 8){
-        // set_error('Password must be at least 8 characters')
         boll = false;
       }
 
   if (boll === true) {
-    console.log("===================photo ===== >       ",photo);
-    const fanti = update_Email.value.trim();
-    console.log('fanti  *', fanti.trim(), "*");
-    console.log('fanti  *', "hello", "*");
-    console.log('email=>  *', update_Email.value.trim(), "*");
-    console.log("hello hello hello hello hello hello hello");
+    // const fanti = update_Email.value.trim();
+    // console.log('fanti  *', fanti.trim(), "*");
+    // console.log('fanti  *', "hello", "*");
+    // console.log('email=>  *', update_Email.value.trim(), "*");
+    // console.log("hello hello hello hello hello hello hello");
     let formData = new FormData();
 
     if (photo) formData.append('avatar', photo);
@@ -211,20 +162,9 @@ async function update_profile_fun() {
     if (new_password.value) formData.append('password', new_password.value);
     if (old_password.value) formData.append('old_password', old_password.value);
     formData.append('twofa_active', check_box.checked);
-    // const data = {
-    //   twofa_active: check_box.checked,
-    // }
-    // if (update_UserName.value !== '')
-    //   data.username = update_UserName.value;
-    // if (update_Email.value !== '')
-    //   data.email = update_Email.value;
-    // if (new_password.value !== '')
-    //   data.password = new_password.value;
-    // if (old_password.value !== '')
-    //   data.old_password = old_password.value;
-    // if (photo !== "")
-    //     data.avatar = photo;
+
     await update_backend(formData);
+    await fetchUserData();
   }
 
   console.log('username=>  ', update_UserName.value);
@@ -266,6 +206,7 @@ async function send_freinds_request(userna) {
   };
 
   try {
+    var jsonData;
     const response = await fetch(api_one + 'user/send-friend-request/', {
       method: 'POST',
       headers: {
@@ -276,20 +217,34 @@ async function send_freinds_request(userna) {
       body: JSON.stringify(data)
     });
     console.log("hello -----------------------------");
-    const jsonData = await response.json();
-    console.log(jsonData);
-
+     jsonData = await response.json();
+    console.log(jsonData.message);
+    if ("Friend request sent" === jsonData.message){
+      console.log("==--=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
+      document.querySelector('#send_friend_message_text').innerHTML = 'Friend Request Sent';
+      document.querySelector('.send_friend_message').style.display = 'flex';
+    }
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
-    }
-    
-    // await login(jsonData.access, jsonData.refresh);
-
+    }    
   } catch (error) {
+    if ("Friend request already sent" === jsonData.message){
+      document.querySelector('#send_friend_message_text').innerHTML = 'Request Already Sent';
+      document.querySelector('.send_friend_message').style.display = 'flex';
+    }
+    else{
+      document.querySelector('#send_friend_message_text').innerHTML = 'Friend Request Error';
+      document.querySelector('.send_friend_message').style.display = 'flex';
+    }
     console.error('There was a problem with the fetch operation:', error);
   }
+  setTimeout(function() {
+    document.querySelector('.send_friend_message').style.display = 'none';
+  }, 2000);
 
 }
+
+
 
 async function changeAccess() {
   const data = {
@@ -345,24 +300,22 @@ async function checkFirst() {
 
   const token = get_localstorage('token');
   
-  console.log('Token being checked:', token); // Debugging statement
+  console.log('Token being checked:', token); 
   console.log("--------------------------------------", api);
   try {
     const response = await fetch(api + 'auth/verify-token/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        // 'X-CSRFToken': csrftoken, // Uncomment if needed
+
       },
       credentials: 'include',
-      body: JSON.stringify({ token }) // Sending token in the body
+      body: JSON.stringify({ token }) 
     });
     console.log(response);
     if (response.status !== 200) {
       console.log('Token is invalid. Attempting to refresh...');
       await changeAccess();
-      // After refreshing, retry fetching user data
-      console.log("lkfjkdsjfkljsdlkfjklsdjflkjsdlkf");
       await fetchUserData();
     } else if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
@@ -377,7 +330,7 @@ async function checkFirst() {
     console.error('There was a problem with the fetch operation:', error);
   }
 }
-// Define a function to fetch user data
+
 async function fetchUserData() {
   try {
     const userResponse = await fetch(api + 'auth/get-user/', {

@@ -1,96 +1,71 @@
 import { loadHTML, loadCSS, player_webSocket } from '../../utils.js';
 import {log_out_func,  logoutf, get_localstorage, getCookie, login } from '../../auth.js';
-import { return_id } from '../profile/profile.js';
+
 const api = "https://127.0.0.1:9004/api/";
 const api_one = "https://127.0.0.1:9005/api/";
+var friend_user_id = 0;
+var friends_array = [];
+var friend_username = "";
+
 // user/send-friend-request/
-var photo = "";
-async function Profile() {
+var photo = null;
+async function Friends() {
   const html = await loadHTML('./components/friends/friends.html');
   loadCSS('./components/friends/friends.css');
-
   const app = document.getElementById('app');
   app.innerHTML = html;
-  
+
   await checkFirst();
   // await player_webSocket();
-  
-  const editProfileButton = document.querySelector('.edit_profi');
-  const updateProfile = document.querySelector('.update_data');
 
   const logout = document.getElementById('logout')
   logout.addEventListener('click', log_out_func);
   
-  // const input_search = document.getElementById('input_search');
-  // input_search.addEventListener('keydown', (event) => {
-  //   if (event.key === 'Enter') {
-  //     event.preventDefault();
+  const input_search = document.getElementById('input_search');
+  input_search.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
       
-  //     const query = input_search.value;
-  //     send_freinds_request(query);
-  //     console.log('Search query:', query);
-      
-  //   }
-    
-  // })
-  // 
-  
-  // const formData = new FormData();
-  // formData.append('profile_photo', file);
-  
-  
-  // const update_avatar = document.getElementById('update_avatar');
-  // if (update_avatar === null)
-  //   console.log("nothing");
-  // update_avatar.addEventListener('change', function(event) {
-  //   console.log("----------------ddd---------");
-  //   const file = event.target.files[0];
-    
-  //   // photo = file;
-    
-  //   const formData = new FormData();
-  //   formData.append('myFile', event.target.files[0]);
-  //   if (file) {
-      
-  //     const formData = new FormData();
-  //     formData.append('avatar', file);
-      
-  //     photo = formData;
-      
-  //     const reader = new FileReader();
-      
-  //     reader.onloadend = function() {
-  //       const base64String = reader.result; // Remove the data URL prefix
-  //       // photo = base64String;
-  //       console.log(base64String);
-  //       // const jsonPayload = JSON.stringify({
-  //         //     avatar: base64String
-  //         // });
-          
-  //         // const reader = new FileReader();
-  //         // console.log(reader);
-  //         // reader.onload = function(e) {
-  //           //     photo = e.target.result;
-  //         };
-          
-  //         // photo = reader.readAsDataURL(file);
-  //         console.log("reader ====>   ",reader.readAsDataURL(file));
-  //       }
-        
-  //     });
-  //     await get_friends_home();
+      const query = input_search.value;
+      input_search.value = "";
+      send_freinds_request(query);
+      console.log('Search query:', query);
+    }
+  })
 
+const cancel_friend = document.getElementById('cancel_friend');
 
-    var na = return_id();
-      console.log("hello it;a here hh");
-      console.log(na);
+cancel_friend.addEventListener('click', () => {
+
+  if (friends_array.includes(friend_username))
+    remove_friend();
+  else
+    send_freinds_request(friend_username);
+  console.log("hello we are here hhhh");
+})
 }
 
-
-
+async function remove_friend() {
+  const data = {
+    friend_id: friend_user_id
+  }
+  const response = await fetch(api_one + 'user/remove-friend/', {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + get_localstorage('token'),
+    },
+    credentials: 'include',
+    body: JSON.stringify(data)
+  });
+  const jsonData = await response.json();
+  console.log("accept anvitation =>     ", jsonData);
+  if (!response.ok) {
+    console.log((`HTTP error! Status: ${response.status}`), Error);
+  }
+}
 
 async function get_friends_home() {
-  console.log("***************************************");
   const response = await fetch(api_one + 'user/get-friend-list/', {
     method: 'GET',
     headers: {
@@ -99,158 +74,99 @@ async function get_friends_home() {
     },
     credentials: 'include',
   });
-  console.log("response ==>   ",response);
   const jsonData = await response.json();
-  console.log("accept anvitation =>     ", jsonData);
-  console.log("==========================================");
   if (!response.ok) {
     console.log((`HTTP error! Status: ${response.status}`), Error);
   }
   console.log(jsonData.friend_list);
   displayFriendList_home(jsonData.friend_list)
-
 }
 
-
-
- function displayFriendList_home(friendList) {
+function displayFriendList_home(friendList) {
    friendList =  Object.values(friendList);
-
-console.log('hello we are from friend list list of them =========');
+   friends_array = [];
 if (!friendList) {
   console.error('Notification display container not found');
   return;
 }
 
   const send_friend = document.querySelector('.send_friend_list');
-  
+  send_friend.innerHTML = friendList.map( friend => {
+    friends_array.push(friend.username);
+  });
   send_friend.innerHTML = friendList.map( friend => ` 
-    <div class="friends">
+    <div class="friends" data-id="${friend.id}">
     <div class="friend" id="user_id" data-id="${friend.id}">
-    <img id="player1" class="proimage" src="${friend.avatar}" alt="">
-    <h2 class="player1">${friend.username}</h2>
+    <img id="player1" style="border-radius: 50%;" class="click_friend" data-name="${friend.username}" data-id="${friend.id}" class="proimage" src="${friend.avatar}" alt="">
+    <h2 class="player1" class="click_friend" >${friend.username}</h2>
     </div>
 
   `).join('');
-
+  send_friend.querySelectorAll('.click_friend').forEach(link => {
+    link.addEventListener('click', readit);
+  });
+  console.log("here i will print my array =>    ", friends_array);
 }
 
+var id_of_friends;
+var name_of_friends;
+function readit(event) {
 
-
-
-
-
-
-const isValidEmail = signupemail => {
-  const re =  /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-  return (re.test(String(signupemail).toLowerCase()));
+  id_of_friends = event.target.getAttribute('data-id');
+  name_of_friends = event.target.getAttribute('data-name');
+  console.log('hello wer are here fine', id_of_friends);
+  window.location.hash = `/user/${name_of_friends}`
 }
 
-
-async function update_profile_fun() {
-  const update_Email = document.getElementById('update_Email');
-  const update_UserName = document.getElementById('update_UserName');
-  const new_password = document.getElementById('new_password');
-  const old_password = document.getElementById('old_password');
-  const check_box = document.getElementById('check_box');
+export function return_id() {
   
-  var boll = true;
-  if (update_Email.value !== '') 
-    if (!isValidEmail(update_Email.value)){
-      // set_error("Provide a Vallid email address");
-      boll = false;
-    }
-  if (new_password.value !== '')
-      if (new_password.length < 8){
-        // set_error('Password must be at least 8 characters')
-        boll = false;
-      }
-
-  if (boll === true) {
-    console.log("===================photo ===== >       ",photo);
-    const fanti = update_Email.value.trim();
-    console.log('fanti  *', fanti.trim(), "*");
-    console.log('fanti  *', "hello", "*");
-    console.log('email=>  *', update_Email.value.trim(), "*");
-    console.log("hello hello hello hello hello hello hello");
-    const data = {
-      twofa_active: check_box.checked,
-    }
-    if (update_UserName.value !== '')
-      data.username = update_UserName.value;
-    if (update_Email.value !== '')
-      data.email = update_Email.value;
-    if (new_password.value !== '')
-      data.password = new_password.value;
-    if (old_password.value !== '')
-      data.old_password = old_password.value;
-    if (photo !== "")
-        data.avatar = photo;
-    await update_backend(data);
-  }
-
-  console.log('username=>  ', update_UserName.value);
-  console.log('password=>  ', new_password.value);
-  console.log('old password=>  ', old_password.value);
-  console.log('check box=>  ', check_box.checked);
+  return id_of_friends;
 }
 
 
+// === here i can remove all this display flex and set just one before timeout 
 
+async function send_freinds_request(userna) {
+  const data = {
+  username: userna
+};
 
-async function update_backend(data) {
-
-  const response = await fetch(api + 'auth/update-user/', {
-    method: 'PUT',
+try {
+  var jsonData;
+  const response = await fetch(api_one + 'user/send-friend-request/', {
+    method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'AUTHORIZATION': "Bearer " + get_localstorage('token')
+      'Authorization': "Bearer " + get_localstorage('token')
     },
     credentials: 'include',
     body: JSON.stringify(data)
   });
   console.log("hello -----------------------------");
-  const jsonData = await response.json();
-  console.log(jsonData);
-
+   jsonData = await response.json();
+  console.log(jsonData.message);
+  if ("Friend request sent" === jsonData.message){
+    console.log("==--=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
+    document.querySelector('#send_friend_message_text').innerHTML = 'Friend Request Sent';
+    document.querySelector('.send_friend_message').style.display = 'flex';
+  }
   if (!response.ok) {
     throw new Error(`HTTP error! Status: ${response.status}`);
+  }    
+} catch (error) {
+  if ("Friend request already sent" === jsonData.message){
+    document.querySelector('#send_friend_message_text').innerHTML = 'Request Already Sent';
+    document.querySelector('.send_friend_message').style.display = 'flex';
   }
-  
-
+  else{
+    document.querySelector('#send_friend_message_text').innerHTML = 'Friend Request Error';
+    document.querySelector('.send_friend_message').style.display = 'flex';
+  }
+  console.error('There was a problem with the fetch operation:', error);
 }
-
-
-
-async function send_freinds_request(userna) {
-    const data = {
-    username: userna
-  };
-
-  try {
-    const response = await fetch(api_one + 'user/send-friend-request/', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': "Bearer " + get_localstorage('token')
-      },
-      credentials: 'include',
-      body: JSON.stringify(data)
-    });
-    console.log("hello -----------------------------");
-    const jsonData = await response.json();
-    console.log(jsonData);
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
-    }
-    
-    // await login(jsonData.access, jsonData.refresh);
-
-  } catch (error) {
-    console.error('There was a problem with the fetch operation:', error);
-  }
-
+setTimeout(function() {
+  document.querySelector('.send_friend_message').style.display = 'none';
+}, 2000);
 }
 
 async function changeAccess() {
@@ -300,44 +216,40 @@ async function checkFirst() {
       console.error('Failed to parse message:', e);
     }
   };
-  console.log("*******************************");
-
 
 
   const token = get_localstorage('token');
   
-  console.log('Token being checked:', token); // Debugging statement
+  console.log('Token being checked:', token); 
   console.log("--------------------------------------", api);
   try {
     const response = await fetch(api + 'auth/verify-token/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        // 'X-CSRFToken': csrftoken, // Uncomment if needed
       },
       credentials: 'include',
-      body: JSON.stringify({ token }) // Sending token in the body
+      body: JSON.stringify({ token })
     });
     console.log(response);
     if (response.status !== 200) {
       console.log('Token is invalid. Attempting to refresh...');
       await changeAccess();
-      // After refreshing, retry fetching user data
-      console.log("lkfjkdsjfkljsdlkfjklsdjflkjsdlkf");
+      await get_friends_home();
       await fetchUserData();
     } else if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     } else {
       const jsonData = await response.json();
       console.log(jsonData);
-      console.log('Token verification response:', jsonData);
+      await get_friends_home();
       await fetchUserData();
     }
-    
   } catch (error) {
     console.error('There was a problem with the fetch operation:', error);
   }
 }
+
 // Define a function to fetch user data
 async function fetchUserData() {
   try {
@@ -357,20 +269,52 @@ async function fetchUserData() {
     console.log('User data:', userData);
 
     const change_user = document.getElementById('UserName');
-    const avata = document.getElementById('avatar');
     const change_image = document.getElementById('image_user');
-    const profile_username = document.getElementById('profile_username');
-    // const update_avatar = document.getElementById('update_avatar');
-    
 
-    // update_avatar.src = userData.user_data.avatar;
-    avata.src = userData.user_data.avatar
     change_image.src = userData.user_data.avatar;
     change_user.innerHTML = userData.user_data.username;
-    profile_username.innerHTML = userData.user_data.username;
+    console.log("==================================");
   } catch (error) {
     console.error('There was a problem with the fetch operation:', error);
   }
+  await fetch_friend_data();
 }
 
-export default Profile;
+
+
+async function fetch_friend_data() {
+  const path = window.location.hash.slice(1);
+  const usern = path.split('/')[2]
+  const data = {
+    username: usern
+  };
+    const response = await fetch(api + 'auth/get-user-by-username/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'AUTHORIZATION': "Bearer " + get_localstorage('token')
+      },
+      credentials: 'include',
+      body: JSON.stringify(data)
+    });
+    
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    const jsonData = await response.json();
+    const avata = document.getElementById('avatar');
+    const profile_username = document.getElementById('profile_username');
+    const cancel_friend = document.getElementById('cancel_friend');
+
+    friend_user_id = jsonData.user_data.id;
+    avata.src = jsonData.user_data.avatar
+
+    profile_username.innerHTML = jsonData.user_data.username;
+    friend_username = jsonData.user_data.username;
+    if (friends_array.includes(jsonData.user_data.username))
+      cancel_friend.innerHTML = " Cancel Friend";
+    else
+      cancel_friend.innerHTML = " Send Friend";
+}
+
+export default Friends;

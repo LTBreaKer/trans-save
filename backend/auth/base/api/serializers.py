@@ -31,7 +31,7 @@ class UserSerializer(serializers.ModelSerializer):
         ]
         extra_kwargs = {
             'username': {'required': False},
-            # 'email': {'required': False},
+            # 'email': {'required': False}
         }
 
         def create(elf, validated_data, *args, **kwargs):

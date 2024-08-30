@@ -105,7 +105,7 @@ class FriendRequestConsumer(AsyncWebsocketConsumer):
                         'type': 'friend_request_received',
                         'friend_request': {
                             'id': friend_request.id,
-                            'sender_data': from_user_data,
+                            'sender_data': from_user_data['user_data'],
                             'message': f"{from_user_data['user_data']['username']} has sent you a friend request"
                         }
                     }

@@ -31,9 +31,6 @@ async function Login() {
 
 // fix input user check and save information 
 
-
-    // const intra_login = document.getElementsByClassName('intra-login');
-    // const intraa = document.getElementById('intraa');
     const sin_btn = document.getElementById('sin_btn');
     const sup_btn = document.getElementById('sup_btn');
     const sup_email = document.getElementById('sup_email');
@@ -85,12 +82,7 @@ async function Login() {
             console.error('There was a problem with the fetch operation:', error);
         });
     }
-    
 
-    
-
-
-    // intraa.addEventListener('click', e =>  {
         document.querySelectorAll('.intra-login').forEach(intraLogin => {
             intraLogin.addEventListener('click', e => {
                 e.preventDefault();
@@ -111,9 +103,6 @@ async function Login() {
             console.log(data);
             if (data.message === 'Redirecting to 42 login')
                 window.location.href = data.url;
-            // if (data.message === 'Login successful') {
-            //     // window.location.href = '/'
-            // }
         })
         .catch(error => {
             console.error('There was a problem with the fetch operation:', error);
@@ -169,19 +158,14 @@ async function Login() {
         }
     }
 
-
-
-
     const isValidEmail = signupemail => {
         const re =  /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         return (re.test(String(signupemail).toLowerCase()));
     }
 
-
     const setError = (element, message) => {
         const inputControl = element.parentElement;
         const errorDisplay = inputControl.querySelector('.error');
-
         errorDisplay.innerText = message;
         inputControl.classList.add('error');
         inputControl.classList.remove('success');
@@ -190,17 +174,12 @@ async function Login() {
     const setSuccess = element => {
         const inputControl = element.parentElement;
         const errorDisplay = inputControl.querySelector('.error');
-        
         errorDisplay.innerText = '';
         inputControl.classList.add('success');
         inputControl.classList.remove('error');
     }
 
-
 // here i will work with login and regester and other things 
-
-
-
 
 function getCookie(name) {
     let cookieValue = null;
@@ -235,12 +214,10 @@ const sign_up_data = () => {
         body: jsonData
     })
     .then(response=> {
-        if (!response.ok) {
+        if (!response.ok) 
             throw new Error('Network response was not ok');
-        }
         console.log(response);
         return response.json();
-
     })
     .then(data => {
         if (data.message === "User created"){
@@ -255,7 +232,6 @@ const sign_up_data = () => {
 
 const signindata = () => {
     let name = 0;
-    console.log('===========================');
     const data = {
         username: username.value,
         password: password.value
@@ -273,8 +249,7 @@ const signindata = () => {
     .then(response => {
         console.log(response);
         if (!response.ok){
-            console.log("hello");
-            // document.getElementById('login_error').innerHTML = "Invalid user or password!";
+            console.log("Eroor");
         }
         else if (response.status === 200)
             name = 1;
@@ -284,7 +259,6 @@ const signindata = () => {
         console.log(data)
         console.log(data.access)
         if (name === 1){
-            console.log("***-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-");
             login(data.access ,data.refresh)
             window.location.hash = '/';
         }
@@ -292,31 +266,6 @@ const signindata = () => {
     .catch(error => {
         console.error('there is error', error);
     });
-
-
-
-    // const response = fetch(api + 'auth/login/', {
-    //     method: 'POST',
-    //     headers: {
-    //         'Content-Type': 'application/json',
-    //     },
-    //     'X-CSRFToken': csrftoken,
-    //     credentials: 'include',
-    //     body: JSON.stringify(data)
-    // })
-    //  daa =  response.json();
-    // console.log('data', data);
-    // // console.log('response', response);
-    // if (response.status === 200) {
-    //     token = daa;
-    //     console.log('token=', token)
-    //     login(daa.token.access ,daa.token.refresh)
-
-    //     window.location.hash = '/';
-    // }
-    // else {
-    //     document.getElementById("error").innerHTML = data.message;
-    // }
 
 }
 

@@ -30,8 +30,10 @@ def sendFriendRequest(request, *args, **kwargs):
 
     if not to_user_username:
         return Response({'message': 'username is required'}, status=400)
-
-    to_user_id = get_user(username=to_user_username, auth_header=request.META.get('HTTP_AUTHORIZATION')).json()['user_data']['id']
+    rr = get_user(username=to_user_username, auth_header=request.META.get('HTTP_AUTHORIZATION'))
+    if rr.status_code != 200:
+        return Response({'message': 'cannot retrieve user data'}, status=400)
+    to_user_id = rr.json()['user_data']['id']
 
     
     response = get_user(user_id=to_user_id, auth_header=request.META.get('HTTP_AUTHORIZATION'))

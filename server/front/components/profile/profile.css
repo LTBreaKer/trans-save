@@ -94,9 +94,10 @@ body {
   font-size: 18px;
   color: #e8ebfb;
   padding-right: 17px;
+  cursor: pointer;
 }
 
-.sear {
+/* .sear {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -114,7 +115,6 @@ body {
   min-height: 100px;
   width: 260px;
   border-radius: 25px;
-  /* background-color: red; */
 }
 
 .sear .seafr ul {
@@ -138,7 +138,7 @@ body {
 
 .sear .seafr img {
   width: 50px;
-}
+} */
 
 /* ==============  here i will work with navbar content  ============== */
 
@@ -225,7 +225,7 @@ body {
 /* // =========================== here i will work with media =========================== */
 
 @media (min-width: 445px) and (max-width: 515px) {
-  .sear .seafr {
+  /* .sear .seafr {
       display: none;
       flex-direction: column;
       position: absolute;
@@ -240,12 +240,12 @@ body {
       display: flex;
       flex-direction: column;
       align-items: center;
-  }
+  } */
 }
 
 @media (max-width: 444px) {
 
-  .sear .seafr {
+  /* .sear .seafr {
       display: none;
       flex-direction: column;
       position: absolute;
@@ -254,7 +254,7 @@ body {
       width: 260px;
       border-radius: 25px;
       margin-left: 190px;
-  }
+  } */
 
   .sidebar {
   margin-top: 80px;
@@ -288,7 +288,7 @@ body {
 }
 
 @media (max-width: 380px) {
-  .sear .seafr {
+  /* .sear .seafr {
       display: none;
       flex-direction: column;
       position: absolute;
@@ -297,7 +297,7 @@ body {
       width: 260px;
       border-radius: 25px;
       margin-left: 100px;
-  }
+  } */
 }
 
 @media (max-width: 350px) {
@@ -542,6 +542,7 @@ flex-direction: column;
 .main .friends_list img {
 width: 45px;
 height: 45px;
+object-fit: center;
 /* border-radius: 50%; */
 }
 
@@ -629,7 +630,7 @@ width: 100px;
 height: 100px;
 border-radius: 50%;
 display: flex;
-top: 350px;
+top: 310px;
 }
 
 .update_data .profile .form {
@@ -718,4 +719,100 @@ box-shadow: #5b6164 0px 10px 10px -5px;
 border: none;
 transition: all 0.2s ease-in-out;
 
+}
+
+
+/* data was update successfully */
+
+.container .success_update {
+  /* display: flex; */
+  position: absolute;
+  width: 320px;
+  height: 55px;
+  background-color: white;
+  color: green;
+  align-items: center;
+  padding: 15px;
+  right: 0;
+  margin: 15px;
+  bottom: 0;
+  display: none;
+}
+
+.container .send_friend_message {
+  /* display: flex; */
+  position: absolute;
+  width: 320px;
+  height: 55px;
+  background-color: white;
+  color: green;
+  align-items: center;
+  padding: 15px;
+  right: 0;
+  margin: 15px;
+  bottom: 0;
+  display: none;
+}
+
+
+/* ?notification 0 */
+
+.notifi_btn {
+  display: none;
+  width: 200px;
+  height: 250px;
+  background-color: #474554;
+  position: absolute;
+  right: 120px;
+  top: 65px;
+  border-radius: 25px;
+  overflow-y: auto;
+}
+
+.notifi_btn::-webkit-scrollbar {
+display: none;
+}
+
+.notifi_btn.active {
+  display: flex;
+  flex-direction: column;
+}
+
+.notifi_btn .send_request {
+  width: 100%;
+  height: 55px;
+  border-radius: 15px;
+  background-color: #7c7d85;
+  padding: 3px;
+  display: flex;
+  margin: 2px;
+  justify-content: center;
+}
+
+
+.send_request .img_text {
+  align-items: center;
+  display: flex;
+}
+
+.send_request .img_text h6{
+  text-align:start;
+  margin: 5px;
+  width: 80px;
+}
+
+.send_request .img_text img{
+  width: 45px;
+  height: 45px;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.send_request .acc_dec button  {
+  width: 50px;  
+  margin: 1px;
+  border-radius: 15px;
+  border: none;
+  height: 20px;
+  cursor: pointer;
 }

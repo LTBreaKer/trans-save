@@ -97,50 +97,6 @@ body {
   cursor: pointer;
 }
 
-/* .sear {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.sear .seafr.active {
-  display: flex;
-}
-
-.sear .seafr {
-  display: none; 
-  flex-direction: column;
-  position: absolute;
-  margin-top: 6vh;
-  min-height: 100px;
-  width: 260px;
-  border-radius: 25px;
-  background-color: red;
-}
-
-.sear .seafr ul {
-  background-color: rgb(155, 150, 150);
-  border-radius: 20px;
-}
-.sear .seafr ul li {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  padding: 5px;
-
-}
-
-.sear .seafr #click_btn {
-  padding: 5px;
-  background-color: rgb(251, 251, 244);
-  border-radius: 25px;
-}
-
-.sear .seafr img {
-  width: 50px;
-} */
-
 /* ==============  here i will work with navbar content  ============== */
 
 .sidebar {
@@ -215,17 +171,13 @@ body {
 }
 
 .sidebar .menu-bar {
-  /* margin-top: 20px; */
   height: calc(100% - 20px);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 }
 
-
 /* ?notification 0 */
-
-
 
 .notifi_btn {
   display: none;
@@ -237,18 +189,15 @@ body {
   top: 65px;
   border-radius: 25px;
   overflow-y: auto;
-  
 }
 
 .notifi_btn::-webkit-scrollbar {
 display: none;
 }
 
-
 .notifi_btn.active {
   display: flex;
   flex-direction: column;
-
 }
 
 .notifi_btn .send_request {
@@ -260,11 +209,9 @@ display: none;
   display: flex;
   margin: 2px;
   justify-content: center;
-  /* align-items: center; */
 }
 
 .send_request .img_text {
-  /* justify-content: center; */
   align-items: center;
   display: flex;
 }
@@ -273,7 +220,6 @@ display: none;
   text-align:start;
   margin: 5px;
   width: 80px;
-  
 }
 
 .send_request .img_text img{
@@ -284,9 +230,6 @@ display: none;
 }
 
 .send_request .acc_dec button  {
-  /* justify-content: center;
-  align-items: center; */
-  /* width: 25px; */
   width: 50px;  
   margin: 1px;
   border-radius: 15px;
@@ -297,41 +240,10 @@ display: none;
 
 /* // =========================== here i will work with media =========================== */
 
-@media (min-width: 445px) and (max-width: 515px) {
-  /* .sear .seafr {
-      display: none;
-      flex-direction: column;
-      position: absolute;
-      margin-top: 6vh;
-      min-height: 100px;
-      width: 260px;
-      border-radius: 25px;
-      margin-left: 95px;
-  }
-  
-  .sear {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-  } */
-}
-
 @media (max-width: 444px) {
 
-  /* .sear .seafr {
-      display: none;
-      flex-direction: column;
-      position: absolute;
-      margin-top: 8vh;
-      min-height: 100px;
-      width: 260px;
-      border-radius: 25px;
-      margin-left: 190px;
-  } */
-
   .sidebar {
-  margin-top: 80px;
-
+      margin-top: 80px;
       position: relative;
       top: 0;
       left: 0;
@@ -345,7 +257,6 @@ display: none;
   }
 
   .sidebar.active {
-      
       height: 100vh;
       padding: 10px 14px;
       background-color: var(--sidebar-color);
@@ -353,47 +264,24 @@ display: none;
 
   #butt {
       display: flex;
-      /* width: 45px; */
       font-size: 30px;
       cursor: pointer;
       color: #e8ebfb;
   }
-}
-
-@media (max-width: 380px) {
-  /* .sear .seafr {
-      display: none;
-      flex-direction: column;
-      position: absolute;
-      margin-top: 6vh;
-      min-height: 100px;
-      width: 260px;
-      border-radius: 25px;
-      margin-left: 100px;
-  } */
 }
 
 @media (max-width: 350px) {
 
   #butt {
       display: flex;
-      /* width: 45px; */
       font-size: 30px;
       cursor: pointer;
       color: #e8ebfb;
-
   }
-
-  /* .sidebar .image-text img {
-      width: 70px;
-      border-radius: 6px;
-      padding-top: 3px;
-  } */
 }
 
 @media (max-width: 400px) {
   .header .profile .image img {
       display: none;
   }
-
 }

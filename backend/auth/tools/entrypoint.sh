@@ -25,5 +25,5 @@ python /authentication/manage.py makemigrations
 python /authentication/manage.py migrate
 
 # echo "from authentication.models import CustomUser; from django.contrib.auth import get_user_model; UserModel = get_user_model(); CustomUser.objects.create_superuser(username='admin', password='firstuser')" | python manage.py shell
-echo "from django.contrib.auth import get_user_model; User = get_user_model(); User.objects.create_superuser(username='admin', password='firstuser')" | python manage.py shell
+# echo "from django.contrib.auth import get_user_model; User = get_user_model(); User.objects.create_superuser(username='admin', password='firstuser')" | python manage.py shell
 exec "$@"

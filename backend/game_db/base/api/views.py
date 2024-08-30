@@ -36,9 +36,28 @@ def check_user_availablity(request):
     return {
         'is_available' : True,
         'res': None,
-        'player_id': player_id
+        'player_id': player_id,
         }
 
+@api_view(['POST'])
+def create_local_game(request):
+    user_availablity = check_user_availablity(request)
+    if not user_availablity['is_available']:
+        return user_availablity['res']
+    if user_availablity['player_id'] in game_queue:
+        return Response({'message': 'can\'t create a game while in game queue'}, status=400)
+    player2_name = request.data.get('player2_name')
+    if not player2_name:
+        return Response({'message': 'player2_name required'}, status=400)
+    serializer = GameDbSerialiser(data={'player1_id': -1, 'player2_id': -1, 'is_remote': False, 'player2_name': player2_name})
+    if serializer.is_valid():
+        serializer.save()
+        return Response({
+                'message': 'game created',
+                'player2_name': player2_name,
+            },
+            status=201
+            )
 
 @api_view(['POST'])
 def create_remote_game(request):
@@ -56,7 +75,7 @@ def create_remote_game(request):
             return Response({'message': 'game created',
                             'player1_id': player1_id,
                             'player2_id': player2_id},
-                            status=200
+                            status=201
                     )
         else:
             return Response({'message': 'invalid data'}, status=400)
@@ -113,3 +132,25 @@ def get_game_history(request):
     serializer = GameDbSerialiser(games, many=True)
     return Response({serializer.data}, status=200)
     
+@api_view(['GET'])
+def is_available(request):
+    AUTH_HEADER = request.META.get('HTTP_AUTHORIZATION')
+    auth_check_response = check_auth(AUTH_HEADER)
+    if auth_check_response.status_code != 200:
+        return Response(data=auth_check_response.json(), status=auth_check_response.status_code)
+    
+    id = request.data.get('id')
+    if GameDb.objects.filter(
+        Q(player1_id=id) | Q(player2_id=id),
+        is_active=True
+    ).exists():
+        return {
+            'is_available': False,
+            'res': Response({'message': 'player is already in a game'}, status=400)
+            }
+    if id in game_queue:
+        return {
+            'is_available': False,
+            'res': Response({'message': 'player already in queue'}, status=400)
+            }
+    return Response({'message': 'user already in a game or in a queue'}, status=400)

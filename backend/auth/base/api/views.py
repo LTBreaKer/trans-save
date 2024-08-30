@@ -24,7 +24,7 @@ import time
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-import string, random, datetime
+import string, random, datetime, mimetypes, magic
 from requests.exceptions import RequestException
 
 @api_view(['POST'])
@@ -327,7 +327,7 @@ def get_user(request, *args, **kwargs):
     }
     return Response(data, status=200)
 
-@api_view(['GET'])
+@api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def get_user_by_id(request, *args, **kwargs):
     user = request.user
@@ -347,7 +347,8 @@ def get_user_by_id(request, *args, **kwargs):
     }
     return Response(data, status=200)
 
-@api_view(['GET'])
+
+@api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def get_user_by_username(request):
     user = request.user
@@ -355,6 +356,7 @@ def get_user_by_username(request):
         return Response({'message': 'User not authenticated properly'}, status=403)
     
     username = request.data.get('username')
+    print('username: ', username)
     if not username:
         return Response({'message': 'username required'}, status=400)
     
@@ -381,10 +383,15 @@ def update_user(request, *args, **kwargs):
     if not serializer.is_valid():
         return Response(data={'message': serializer.errors}, status=400)
     if 'avatar' in request.data:
-        avatar = request.data.get('avatar')
+        avatar = request.FILES['avatar']
+
+        mime = magic.Magic(mime=True)
+        mime_type = mime.from_buffer(avatar.read(1024))
+        avatar.seek(0)
+        if mime_type not in ['image/jpeg', 'image/png', 'image/webp']:
+            return Response(data={'message': 'Only JPEG, PNG and webp formats are allowed.'}, status=400)
         try:
-            file = request.FILES['avatar']
-            file_content = ContentFile(file.read())
+            file_content = ContentFile(avatar.read())
         except Exception as e:
             return Response(data={'message': 'Invalid avatar file'}, status = 400)
         avatar_filename = f"avatars/{user.username}_avatar.jpg"
@@ -404,6 +411,7 @@ def update_user(request, *args, **kwargs):
         except Exception as e:
             return Response(data={'message': str(e)}, status=400)
         user.password = make_password(new_password)
+
     user.save()
     serializer.save()
     return Response(data={'message': 'User updated'}, status=200)

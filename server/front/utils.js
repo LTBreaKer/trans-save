@@ -1,7 +1,9 @@
 import { get_localstorage } from './auth.js';
+import { get_friends_home } from './components/profile/profile.js';
 
 
 export function loadHTML(url) {
+  console.log(url);
     return fetch(url).then(response => response.text());
   }
   
@@ -50,7 +52,7 @@ export async function player_webSocket() {
       if (!isDuplicate)
         accumulatedNotifications.push(newNotification);
 
-      displayNotifications(accumulatedNotifications);
+      await displayNotifications(accumulatedNotifications);
     };
 
     socket.onerror = function (error) {
@@ -63,11 +65,11 @@ export async function player_webSocket() {
   });
 }
 
-function displayNotifications(notifications) {
+async function displayNotifications(notifications) {
   console.log("hhhhhhhhhhhhhhhhhhhhh");
-  console.log(notifications);
-  const notificationsArray = Array.isArray(notifications) ? notifications : [notifications];
-  
+  console.log("notification here check what's the problem =>    ", notifications);
+  const notificationsArray =  Array.isArray(notifications) ? notifications : [notifications];
+  console.log(notificationsArray);
   const notifiDisplay = document.querySelector('.notifi_btn');
   if (!notifiDisplay) {
     console.error('Notification display container not found');
@@ -75,10 +77,13 @@ function displayNotifications(notifications) {
   }
 
   // Generate HTML for all notifications
+  if (!notificationsArray)
+      console.log("alaho akbar ");
+  // console.log("here is avatar==>    ", notificationsArray[0].friend_request.sender?_data.avatar);
   notifiDisplay.innerHTML = notificationsArray.map(notification => `
     <div class="send_request">
       <div class="img_text">
-        <img src="${notification.friend_request.sender_data.user_data.avatar}" alt="">
+        <img src="${notification.friend_request.sender_data.avatar}" alt="">
         <h6>${notification.friend_request.message}</h6>
       </div>
       <div class="acc_dec">
@@ -121,7 +126,7 @@ console.log(notificationId);
   if (!response.ok) {
     console.log((`HTTP error! Status: ${response.status}`), Error);
   }
-
+  await get_friends_home();
 
   
 }
