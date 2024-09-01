@@ -44,6 +44,55 @@ async function Home() {
   notific.addEventListener('click', function() {
     notifi_display.classList.toggle('active');
   })
+
+
+
+// ===== ====== ======= ======== here iwill work with games
+
+  const gamepage = document.getElementById('gamepage');
+
+  gamepage.addEventListener('click', () => {
+    console.log('hello iiiiiiiiii');
+    document.querySelector('.games').style.display = 'flex';
+    document.querySelector('.conta').style.display = 'flex';
+  })
+
+  const mer_game = document.getElementById('mer_game');
+  const mol_game = document.getElementById('mol_game');
+
+  mer_game.addEventListener('click', () => {
+    console.log("---------");
+    document.querySelector('.conta').style.display = 'none';
+    document.querySelector('.mer_cont').style.display = 'flex';
+
+  })
+
+
+
+
+const exitPups = document.querySelectorAll('.exit_pup');
+
+exitPups.forEach(exitPup => {
+    exitPup.addEventListener('click', () => {
+    document.querySelector('.mer_cont').style.display = 'none';
+    document.querySelector('.games').style.display = 'none';
+    document.querySelector('.conta').style.display = 'none';
+
+    });
+});
+
+// const mol_cont = document.querySelector('.moloaa');
+  mol_game.addEventListener('click', () => {
+    console.log("hello we are here ");
+    window.location.hash = '/pingpong';
+  })
+
+
+
+
+// ===== ===== ===== ====== ===== ====== ======
+
+
 }
 
 

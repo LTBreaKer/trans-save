@@ -77,6 +77,53 @@ async function Friends() {
 
 
 
+
+// ===== ====== ======= ======== here iwill work with games
+
+const gamepage = document.getElementById('gamepage');
+
+gamepage.addEventListener('click', () => {
+  console.log('hello iiiiiiiiii');
+  document.querySelector('.games').style.display = 'flex';
+  document.querySelector('.conta').style.display = 'flex';
+})
+
+const mer_game = document.getElementById('mer_game');
+const mol_game = document.getElementById('mol_game');
+
+mer_game.addEventListener('click', () => {
+  console.log("---------");
+  document.querySelector('.conta').style.display = 'none';
+  document.querySelector('.mer_cont').style.display = 'flex';
+
+})
+
+
+
+
+const exitPups = document.querySelectorAll('.exit_pup');
+
+exitPups.forEach(exitPup => {
+  exitPup.addEventListener('click', () => {
+              document.querySelector('.mer_cont').style.display = 'none';
+  document.querySelector('.games').style.display = 'none';
+  document.querySelector('.conta').style.display = 'none';
+
+  });
+});
+
+mol_game.addEventListener('click', () => {
+  console.log("hello we are here ");
+  window.location.hash = '/pingpong';
+})
+
+
+// ===== ===== ===== ====== ===== ====== ======
+
+
+
+
+
 }
 
 export async function get_friends_home() {
@@ -107,9 +154,12 @@ function displayFriendList_home(friendList) {
     const send_friend = document.querySelector('.send_friend_list');
     
     send_friend.innerHTML = friendList.map( friend => ` 
-      <div class="friends" data-id="${friend.id}">
+      <div class="friends"  data-id="${friend.id}">
       <div class="friend" id="user_id" data-id="${friend.id}">
-      <img id="player1" style="border-radius: 50%;" class="click_friend" data-name="${friend.username}" data-id="${friend.id}" class="proimage" src="${friend.avatar}" alt="">
+      <div>  
+      <i class="bi bi-octagon-fill"> </i>
+      <img  id="player1" style="border-radius: 50%;" class="click_friend" data-name="${friend.username}" data-id="${friend.id}"  class="proimage" src="${friend.avatar}" alt="">
+      </div>
       <h2 class="player1" class="click_friend" >${friend.username}</h2>
       </div>
 
