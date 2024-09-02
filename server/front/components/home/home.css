@@ -97,6 +97,7 @@ body {
   cursor: pointer;
 }
 
+<<<<<<< HEAD
 /* .sear {
   display: flex;
   flex-direction: column;
@@ -141,6 +142,8 @@ body {
   width: 50px;
 } */
 
+=======
+>>>>>>> fanti
 /* ==============  here i will work with navbar content  ============== */
 
 .sidebar {
@@ -215,18 +218,26 @@ body {
 }
 
 .sidebar .menu-bar {
+<<<<<<< HEAD
   /* margin-top: 20px; */
+=======
+>>>>>>> fanti
   height: calc(100% - 20px);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 }
 
+<<<<<<< HEAD
 
 /* ?notification 0 */
 
 
 
+=======
+/* ?notification 0 */
+
+>>>>>>> fanti
 .notifi_btn {
   display: none;
   width: 200px;
@@ -237,18 +248,27 @@ body {
   top: 65px;
   border-radius: 25px;
   overflow-y: auto;
+<<<<<<< HEAD
   
+=======
+>>>>>>> fanti
 }
 
 .notifi_btn::-webkit-scrollbar {
 display: none;
 }
 
+<<<<<<< HEAD
 
 .notifi_btn.active {
   display: flex;
   flex-direction: column;
 
+=======
+.notifi_btn.active {
+  display: flex;
+  flex-direction: column;
+>>>>>>> fanti
 }
 
 .notifi_btn .send_request {
@@ -260,11 +280,17 @@ display: none;
   display: flex;
   margin: 2px;
   justify-content: center;
+<<<<<<< HEAD
   /* align-items: center; */
 }
 
 .send_request .img_text {
   /* justify-content: center; */
+=======
+}
+
+.send_request .img_text {
+>>>>>>> fanti
   align-items: center;
   display: flex;
 }
@@ -273,7 +299,10 @@ display: none;
   text-align:start;
   margin: 5px;
   width: 80px;
+<<<<<<< HEAD
   
+=======
+>>>>>>> fanti
 }
 
 .send_request .img_text img{
@@ -284,9 +313,12 @@ display: none;
 }
 
 .send_request .acc_dec button  {
+<<<<<<< HEAD
   /* justify-content: center;
   align-items: center; */
   /* width: 25px; */
+=======
+>>>>>>> fanti
   width: 50px;  
   margin: 1px;
   border-radius: 15px;
@@ -297,6 +329,7 @@ display: none;
 
 /* // =========================== here i will work with media =========================== */
 
+<<<<<<< HEAD
 @media (min-width: 445px) and (max-width: 515px) {
   /* .sear .seafr {
       display: none;
@@ -332,6 +365,12 @@ display: none;
   .sidebar {
   margin-top: 80px;
 
+=======
+@media (max-width: 444px) {
+
+  .sidebar {
+      margin-top: 80px;
+>>>>>>> fanti
       position: relative;
       top: 0;
       left: 0;
@@ -345,7 +384,10 @@ display: none;
   }
 
   .sidebar.active {
+<<<<<<< HEAD
       
+=======
+>>>>>>> fanti
       height: 100vh;
       padding: 10px 14px;
       background-color: var(--sidebar-color);
@@ -353,13 +395,17 @@ display: none;
 
   #butt {
       display: flex;
+<<<<<<< HEAD
       /* width: 45px; */
+=======
+>>>>>>> fanti
       font-size: 30px;
       cursor: pointer;
       color: #e8ebfb;
   }
 }
 
+<<<<<<< HEAD
 @media (max-width: 380px) {
   /* .sear .seafr {
       display: none;
@@ -373,10 +419,13 @@ display: none;
   } */
 }
 
+=======
+>>>>>>> fanti
 @media (max-width: 350px) {
 
   #butt {
       display: flex;
+<<<<<<< HEAD
       /* width: 45px; */
       font-size: 30px;
       cursor: pointer;
@@ -389,11 +438,186 @@ display: none;
       border-radius: 6px;
       padding-top: 3px;
   } */
+=======
+      font-size: 30px;
+      cursor: pointer;
+      color: #e8ebfb;
+  }
+>>>>>>> fanti
 }
 
 @media (max-width: 400px) {
   .header .profile .image img {
       display: none;
   }
+<<<<<<< HEAD
 
 }
+=======
+}
+
+
+
+
+
+
+  /* game here -------- */
+
+  .container .games {
+    display: none;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+  left: 0;
+  align-items: center;
+  justify-content: center;
+}
+
+
+.games .conta {
+  width: 73%;
+  height: 60%;
+  background-color: red;
+  position: relative;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  margin-left: 91px;
+}
+
+.conta .meryem {
+  width: 40%;
+  height: 50%;
+  background-color: blue;
+  margin: 15px;
+  cursor: pointer;
+}
+
+.conta .moloaa {
+  width: 40%;
+  height: 50%;
+  background-color: rgb(129, 129, 148);
+  margin: 15px;
+  cursor: pointer;
+
+}
+
+
+/* mer_cont */
+
+.games .mer_cont {
+  width: 70%;
+  height: 60%;
+  background-image: url(../assets/back.jpg);
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  position: relative;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-right: 11%;
+  color: white;
+}
+
+.mer_cont .re_local {
+  width: 100%;
+  height: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.re_local #remote_game {
+  width: 290px;
+  height: 70%;
+  padding: 10px 15px 15px 15px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  background-color: rgba(25, 26, 29, 0.6);
+}
+
+.re_local #local_game {
+  width: 290px;
+  height: 70%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 10px 15px 15px 15px;
+  align-items: center;
+  background-color: rgba(25, 26, 29, 0.6);
+  
+}
+
+
+#local_game  .input {
+  width: 200px;
+  height: 40px;
+  border: none;
+  outline: none;
+  /* caret-color: rgb(255, 81, 0); */
+  background-color: rgb(255, 255, 255);
+  border-radius: 30px;
+  padding-left: 15px;
+  letter-spacing: 0.8px;
+  color: rgb(19, 19, 19);
+  font-size: 13.4px;
+}
+
+
+.mer_cont #butt_game {
+  padding: 11px;
+  background-color: black;
+  border-radius: 15px;
+  cursor: pointer;
+}
+
+
+.mer_cont .discription_game {
+  width: 100%;
+  display: flex;
+  padding: 15px;
+  justify-content: center;
+}
+
+.mer_cont .discription_game .text {
+  background-color: rgba(170, 81, 81, 0.8);
+  padding: 15px;
+  width: 35%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+
+
+/* moloaa cont */
+
+.games .mol_cont {
+  width: 73%;
+  height: 60%;
+  background-color: red;
+  position: relative;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  margin-left: 91px;
+}
+
+
+.exit_pup {
+  display: flex;
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  right: 0;
+  font-size: 25px;
+}
+
+
+ /*  ======= ====== ====== ======= ======= ====== ======= ======= */
+>>>>>>> fanti

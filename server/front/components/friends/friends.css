@@ -1,0 +1,452 @@
+
+/* here i fixed dives position and content displayed */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  height: 100vh;
+  background: var(--body-color);
+}
+
+:root {
+  /* ===== Colors ===== */
+  --body-color: #262b36;
+  --sidebar-color: #e8ebfb;
+  --primary-color: #695cfe;
+  --primary-color-light: #f6f5ff;
+  --toggle-color: #DDD;
+  --text-color: #707070;
+
+  --tran-02: all 0.2s ease;
+  --tran-03: all 0.3s ease;
+  --tran-04: all 0.4s ease;
+  --tran-05: all 0.5s ease;
+}
+
+
+.container {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 100vh;
+}
+
+.container .header {  
+  position: fixed;
+  margin: 0;
+  padding-left: 7.2em;
+  height: 100px;
+  width: 100%;
+}
+
+.container .navbar {
+  position: fixed;
+  min-height: 100vh;
+  width: 5em;
+}
+
+.container .main-content {
+  padding-top: 11vh;
+  padding-left: 7.2em;
+  height: 100vh;
+  width: 100%;
+}
+
+/* ==============  here i will work with header content  ============== */
+#butt {
+  display: none;
+}
+
+.header {
+  position: relative; 
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: space-between;
+  align-items: center;
+  transition: var(--tran-05);
+}
+
+.header .profile {
+  right: 8px;
+  position: relative;
+  display: flex;
+  padding: 7px;
+  align-items: center;
+}
+
+.header .profile .image img {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  border-radius: 50%;
+  margin-left: 5px;
+}
+
+.header .profile .text {
+  color: #e8ebfb;
+}
+
+.header .notification {
+  font-size: 18px;
+  color: #e8ebfb;
+  padding-right: 17px;
+}
+
+/* ==============  here i will work with navbar content  ============== */
+
+.sidebar {
+  position: relative;
+  top: 0;
+  margin-top: 80px;
+  left: 0;
+  height: calc(100vh - 80px);
+  border-radius: 25px;
+  width: 88px;
+  padding: 10px 14px;
+  background-color: var(--sidebar-color);
+  transition: var(--tran-05);
+}
+
+.sidebar .image {
+  min-width: 60px;
+  display: flex;
+  align-items: center;
+}
+
+.sidebar li {
+  height: 50px;
+  margin-top: 10px;
+  list-style: none;
+  display: flex;
+  align-items: center;
+}
+
+.sidebar li .icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 60px;
+  font-size: 20px;
+}
+
+.sidebar li .icon {
+  color: var(--text-color);   
+  transition: var(--tran-02); 
+}
+
+.sidebar header {
+  position: relative;
+}
+
+.navbar .image-text img {
+  position: absolute;
+  border-radius: 6px;
+  top: -140px;
+  left: -140px;
+  z-index: -1;
+}
+
+.sidebar li a {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  border-radius: 6px;
+  transition: var(--tran-04);
+}
+
+.sidebar li a:hover {
+  background: var(--primary-color);
+}
+
+.sidebar li a:hover .icon {
+  color: var(--sidebar-color);
+}
+
+.sidebar .menu-bar {
+  height: calc(100% - 20px);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* // =========================== here i will work with media =========================== */
+
+@media (max-width: 444px) {
+
+  .sidebar {
+  margin-top: 80px;
+
+      position: relative;
+      top: 0;
+      left: 0;
+      border-radius: 25px;
+      height: 1px;
+      width: 88px;
+      padding: 3px 14px;
+      background-color: var(--body-color);
+      transition: var(--tran-05);
+      overflow: hidden;
+  }
+
+  .sidebar.active {    
+      height: 100vh;
+      padding: 10px 14px;
+      background-color: var(--sidebar-color);
+  }
+
+  #butt {
+      display: flex;
+      /* width: 45px; */
+      font-size: 30px;
+      cursor: pointer;
+      color: #e8ebfb;
+  }
+}
+
+@media (max-width: 350px) {
+
+  #butt {
+      display: flex;
+      /* width: 45px; */
+      font-size: 30px;
+      cursor: pointer;
+      color: #e8ebfb;
+  }
+}
+
+@media (max-width: 400px) {
+  .header .profile .image img {
+      display: none;
+  }
+}
+
+/* here i will work with main content  */
+
+.main-content .main {
+  display: flex;
+  height: 88vh;
+  width: 98%;
+  justify-content: space-between;
+}
+
+.main .content {
+  width: 80%;
+  margin: 5px;
+  height: 87vh;
+}
+
+.content .profile {
+  width: 99%;
+  margin: 3px;
+  height: 40vh;
+}
+
+.content .profile #img_profile  {
+  width: 100%;
+  border-bottom-left-radius: 15px;
+  border-bottom-right-radius: 15px;
+  height: 35vh;
+}
+
+.content .profile #avatar  {
+  position: absolute;
+  width: 80px;
+  object-fit: cover;
+  height: 80px;
+  border-radius: 50%;
+  top: 41vh;
+  left: 140px;
+
+}
+
+.content .profile .text  {
+  display: flex;
+  transform: translateY(-11px);
+  width: 94%;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.content .profile #profile_username  {
+  display: flex;
+  align-items: center;
+  font-size: 25px;
+  padding-left: 100px;
+  color: #e8ebfb;
+}
+
+.content .profile #cancel_friend  {
+  padding: 8px 14px;
+  background-color: #e8ebfb;
+  border-radius: 25px;
+  cursor: pointer;
+  font-size: 15px;
+}
+
+.content .matches {
+  width: 99%;
+  margin: 3px;
+  height: 45.5vh;
+  display: flex;
+  justify-content: space-between;
+}
+
+
+.content .matches .match_wl {
+  width: 43%;
+  height: 45vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.content .matches .match_wl .l_w {
+width: 80%;
+margin-top: 35px;
+display: flex;
+margin: 5px;
+justify-content: space-between;
+}
+
+.content .matches .match_wl  .matchess{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 5% 10%;
+  background-color: #e8ebfb;
+  border-radius: 25px;
+}
+
+.content .matches .match_wl .l_w .loss,
+.content .matches .match_wl .l_w .won {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 5% 14%;
+  background-color: #e8ebfb;
+  border-radius: 25px;
+  margin-top: 15px;
+}
+
+.content .matches .match_history {
+width: 55%;
+display: flex;
+flex-direction: column;
+height: 45vh;
+background-color: #474554;
+align-items: center;
+overflow-y: auto;
+border-radius: 25px;
+}
+
+.content .matches .match_history::-webkit-scrollbar {
+display: none;
+}
+
+.content .matches .match_history .match {
+margin-top: 10px;
+}
+
+.content .matches .match_history img {
+
+width: 50px;  
+}
+
+.play {
+display: flex;        
+align-items: center; 
+justify-content: space-between;
+margin-top: 15px;
+}
+
+.play h2 {
+margin: 0 15px; 
+}
+
+/* here i will add friend list  */
+
+.main .friends_list {
+width: 20%;
+height: 87vh;
+margin: 5px;
+background-color: #587579;
+display: flex;
+flex-direction: column;
+align-items: center;
+overflow-y: auto;
+border-radius: 25px;
+}
+
+.main .friends_list::-webkit-scrollbar {
+display: none;  
+}
+
+.main .friends_list .send_friend {
+display: flex;
+margin-top: 19px;
+margin-bottom: 19px;
+}
+
+.main .friends_list .send_friend input{
+background-color: rgb(73, 70, 70);
+border: none;
+padding: 15px 20px;
+border-radius: 20px;
+width: 90%;
+margin-left: 9px;
+color: white;
+box-shadow: #5b6164 0px 10px 10px -5px;
+border-inline: 2px solid transparent;
+}
+
+.main .friends_list #text {
+font-size: 30px;
+}
+
+.main .friends_list .friends{
+display: flex;
+flex-direction: column;
+}
+
+.main .friends_list img {
+width: 45px;
+height: 45px;
+object-fit: cover;
+}
+
+.main .friends_list .proimage {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+}
+
+.main .friends_list .friends .friend{
+display: flex;
+align-items: center;
+margin-top: 11px;
+cursor: pointer;
+}
+
+.friend h2 {
+margin: 0 5px; 
+}
+
+.container .send_friend_message {
+  position: absolute;
+  width: 320px;
+  height: 55px;
+  background-color: white;
+  color: green;
+  align-items: center;
+  padding: 15px;
+  right: 0;
+  margin: 15px;
+  bottom: 0;
+  display: none;
+}

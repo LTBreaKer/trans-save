@@ -31,9 +31,12 @@ async function Login() {
 
 // fix input user check and save information 
 
+<<<<<<< HEAD
 
     const intra_login = document.getElementsByClassName('intra-login');
     const intraa = document.getElementById('intraa');
+=======
+>>>>>>> fanti
     const sin_btn = document.getElementById('sin_btn');
     const sup_btn = document.getElementById('sup_btn');
     const sup_email = document.getElementById('sup_email');
@@ -85,10 +88,17 @@ async function Login() {
             console.error('There was a problem with the fetch operation:', error);
         });
     }
+<<<<<<< HEAD
     
 
     intraa.addEventListener('click', e =>  {
         e.preventDefault();
+=======
+
+        document.querySelectorAll('.intra-login').forEach(intraLogin => {
+            intraLogin.addEventListener('click', e => {
+                e.preventDefault();
+>>>>>>> fanti
         fetch(api + 'auth/login-42/', {
             method: 'POST',
             headers: {
@@ -106,15 +116,22 @@ async function Login() {
             console.log(data);
             if (data.message === 'Redirecting to 42 login')
                 window.location.href = data.url;
+<<<<<<< HEAD
             // if (data.message === 'Login successful') {
             //     // window.location.href = '/'
             // }
+=======
+>>>>>>> fanti
         })
         .catch(error => {
             console.error('There was a problem with the fetch operation:', error);
         });
     })
+<<<<<<< HEAD
 
+=======
+});
+>>>>>>> fanti
     const validDataInput = () => {
         const usernameValue = username.value;
         const passwordValue = password.value;
@@ -164,19 +181,28 @@ async function Login() {
         }
     }
 
+<<<<<<< HEAD
 
 
 
+=======
+>>>>>>> fanti
     const isValidEmail = signupemail => {
         const re =  /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         return (re.test(String(signupemail).toLowerCase()));
     }
 
+<<<<<<< HEAD
 
     const setError = (element, message) => {
         const inputControl = element.parentElement;
         const errorDisplay = inputControl.querySelector('.error');
 
+=======
+    const setError = (element, message) => {
+        const inputControl = element.parentElement;
+        const errorDisplay = inputControl.querySelector('.error');
+>>>>>>> fanti
         errorDisplay.innerText = message;
         inputControl.classList.add('error');
         inputControl.classList.remove('success');
@@ -185,18 +211,26 @@ async function Login() {
     const setSuccess = element => {
         const inputControl = element.parentElement;
         const errorDisplay = inputControl.querySelector('.error');
+<<<<<<< HEAD
         
+=======
+>>>>>>> fanti
         errorDisplay.innerText = '';
         inputControl.classList.add('success');
         inputControl.classList.remove('error');
     }
 
+<<<<<<< HEAD
 
 // here i will work with login and regester and other things 
 
 
 
 
+=======
+// here i will work with login and regester and other things 
+
+>>>>>>> fanti
 function getCookie(name) {
     let cookieValue = null;
     if (document.cookie && document.cookie !== '') {
@@ -230,12 +264,19 @@ const sign_up_data = () => {
         body: jsonData
     })
     .then(response=> {
+<<<<<<< HEAD
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }
         console.log(response);
         return response.json();
 
+=======
+        if (!response.ok) 
+            throw new Error('Network response was not ok');
+        console.log(response);
+        return response.json();
+>>>>>>> fanti
     })
     .then(data => {
         if (data.message === "User created"){
@@ -250,7 +291,10 @@ const sign_up_data = () => {
 
 const signindata = () => {
     let name = 0;
+<<<<<<< HEAD
     console.log('===========================');
+=======
+>>>>>>> fanti
     const data = {
         username: username.value,
         password: password.value
@@ -268,8 +312,12 @@ const signindata = () => {
     .then(response => {
         console.log(response);
         if (!response.ok){
+<<<<<<< HEAD
             console.log("hello");
             // document.getElementById('login_error').innerHTML = "Invalid user or password!";
+=======
+            console.log("Eroor");
+>>>>>>> fanti
         }
         else if (response.status === 200)
             name = 1;
@@ -279,7 +327,10 @@ const signindata = () => {
         console.log(data)
         console.log(data.access)
         if (name === 1){
+<<<<<<< HEAD
             console.log("***-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-");
+=======
+>>>>>>> fanti
             login(data.access ,data.refresh)
             window.location.hash = '/';
         }
@@ -288,6 +339,7 @@ const signindata = () => {
         console.error('there is error', error);
     });
 
+<<<<<<< HEAD
 
 
     // const response = fetch(api + 'auth/login/', {
@@ -313,6 +365,8 @@ const signindata = () => {
     //     document.getElementById("error").innerHTML = data.message;
     // }
 
+=======
+>>>>>>> fanti
 }
 
 

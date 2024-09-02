@@ -11,6 +11,7 @@ async function Home() {
   app.innerHTML = html;
   await loadCSS('./components/home/home.css');
   
+<<<<<<< HEAD
 
   var csrftoken = getCookie('csrftoken');
 
@@ -29,10 +30,22 @@ console.log("------fanti -------");
 
 
 
+=======
+  var csrftoken = getCookie('csrftoken');
+
+  await checkFirst();
+  player_webSocket();
+  // await get_friends();
+
+  const logout = document.getElementById('logout')
+  logout.addEventListener('click', log_out_func);
+
+>>>>>>> fanti
 // =========================== here i will work with media ===========================
 
 // i will work with #butt
 
+<<<<<<< HEAD
 const butt = document.querySelector('#butt');
 const side = document.querySelector('.sidebar');
 
@@ -105,6 +118,80 @@ function displayFriendList(friendList) {
 
   }
 }
+=======
+  const butt = document.querySelector('#butt');
+  const side = document.querySelector('.sidebar');
+
+  butt.addEventListener('click', function() {
+    
+    side.classList.toggle('active');
+  });
+
+  document.addEventListener('click', (event) => {
+    if (!side.contains(event.target) && !butt.contains(event.target)) {
+      side.classList.remove('active');
+    }
+  });
+
+  const notific = document.querySelector('.notification');
+  const notifi_display = document.querySelector('.notifi_btn');
+
+  notific.addEventListener('click', function() {
+    notifi_display.classList.toggle('active');
+  })
+
+
+
+// ===== ====== ======= ======== here iwill work with games
+
+  const gamepage = document.getElementById('gamepage');
+
+  gamepage.addEventListener('click', () => {
+    console.log('hello iiiiiiiiii');
+    document.querySelector('.games').style.display = 'flex';
+    document.querySelector('.conta').style.display = 'flex';
+  })
+
+  const mer_game = document.getElementById('mer_game');
+  const mol_game = document.getElementById('mol_game');
+
+  mer_game.addEventListener('click', () => {
+    console.log("---------");
+    document.querySelector('.conta').style.display = 'none';
+    document.querySelector('.mer_cont').style.display = 'flex';
+
+  })
+
+
+
+
+const exitPups = document.querySelectorAll('.exit_pup');
+
+exitPups.forEach(exitPup => {
+    exitPup.addEventListener('click', () => {
+    document.querySelector('.mer_cont').style.display = 'none';
+    document.querySelector('.games').style.display = 'none';
+    document.querySelector('.conta').style.display = 'none';
+
+    });
+});
+
+// const mol_cont = document.querySelector('.moloaa');
+  mol_game.addEventListener('click', () => {
+    console.log("hello we are here ");
+    window.location.hash = '/pingpong';
+  })
+
+
+
+
+// ===== ===== ===== ====== ===== ====== ======
+
+
+}
+
+
+>>>>>>> fanti
 async function changeAccess() {
   const data = {
     refresh: get_localstorage('refresh')
@@ -151,15 +238,21 @@ async function checkFirst() {
       const jsonData = await response.json();
       await fetchUserHomeData();
     }
+<<<<<<< HEAD
     
+=======
+>>>>>>> fanti
   } catch (error) {
     console.error('There was a problem with the fetch operation:', error);
   }
 }
 
 async function fetchUserHomeData() {
+<<<<<<< HEAD
   
   
+=======
+>>>>>>> fanti
   try {
     const userResponse = await fetch(api + 'auth/get-user/', {
       method: 'GET',
@@ -183,7 +276,10 @@ async function fetchUserHomeData() {
   } catch(error)  {
     console.error('There was a problem with the fetch operation:', error);
   }
+<<<<<<< HEAD
   
+=======
+>>>>>>> fanti
 }
 
 export default Home;

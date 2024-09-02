@@ -13,7 +13,7 @@ function isAuthenticated() {
     localStorage.setItem('refresh', refresh);
 }
   
-  function logoutf(semo) {
+  function logoutf() {
     localStorage.removeItem('token'); 
     localStorage.removeItem('refresh'); 
   }

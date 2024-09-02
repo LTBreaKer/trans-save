@@ -162,6 +162,15 @@ services:
     entrypoint: sleep infinity
     networks:
       - my_network
+  backend:
+    container_name: back
+    build: ./backend/Tag
+    ports:
+      - 8005:8000 
+    command: python manage.py runserver 0.0.0.0:8000
+    
+    volumes:
+      - ./backend/Tag/project:/usr/src/app/vv
 volumes:
   auth:
     driver: local
