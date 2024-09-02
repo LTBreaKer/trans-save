@@ -121,15 +121,15 @@ function isAuthenticated() {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'X-CSRFToken': getCookie('csrftoken'),
             'AUTHORIZATION': 'Bearer ' + get_localstorage('token')
         },
-        'X-CSRFToken': getCookie('csrftoken'),
         credentials: 'include',
         body: JSON.stringify(bod)
     })
     .then(response => {
         console.log(response);
+        console.log(response.data);
+        // console.log(response.);
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }
@@ -139,6 +139,7 @@ function isAuthenticated() {
         console.log(data);
         
         if (data.message === 'User logged out') {
+          console.log("==== ===== ===== ===== ===== ===== ===== ");
           logoutf();
             window.location.hash = '/login';
         }

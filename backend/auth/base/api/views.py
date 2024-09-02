@@ -90,7 +90,6 @@ class LogoutView(TokenBlacklistView):
             user.is_authentication_completed = False
             user.is_logged_out = True
             user.save()
-            BlacklistedToken.objects.create(token=request.auth)
             return Response({'message': 'User logged out'}, status=200)
         except Exception as e:
             raise(InvalidToken(str(e)))
