@@ -37,11 +37,12 @@ const cancel_friend = document.getElementById('cancel_friend');
 
 cancel_friend.addEventListener('click', () => {
 
-  if (friends_array.includes(friend_username))
+  // if (friends_array.includes(friend_username))
     remove_friend();
-  else
-    send_freinds_request(friend_username);
-  console.log("hello we are here hhhh");
+  // else
+  //   send_freinds_request(friend_username);
+  // console.log("hello we are here hhhh");
+  window.location.hash = '/';
 })
 }
 
@@ -84,16 +85,16 @@ async function get_friends_home() {
 
 function displayFriendList_home(friendList) {
    friendList =  Object.values(friendList);
-   friends_array = [];
+  //  friends_array = [];
 if (!friendList) {
   console.error('Notification display container not found');
   return;
 }
 
   const send_friend = document.querySelector('.send_friend_list');
-  send_friend.innerHTML = friendList.map( friend => {
-    friends_array.push(friend.username);
-  });
+  // send_friend.innerHTML = friendList.map( friend => {
+  //   friends_array.push(friend.username);
+  // });
   send_friend.innerHTML = friendList.map( friend => ` 
     <div class="friends" data-id="${friend.id}">
     <div class="friend" id="user_id" data-id="${friend.id}">
@@ -105,7 +106,7 @@ if (!friendList) {
   send_friend.querySelectorAll('.click_friend').forEach(link => {
     link.addEventListener('click', readit);
   });
-  console.log("here i will print my array =>    ", friends_array);
+  // console.log("here i will print my array =>    ", friends_array);
 }
 
 var id_of_friends;
@@ -304,17 +305,17 @@ async function fetch_friend_data() {
     const jsonData = await response.json();
     const avata = document.getElementById('avatar');
     const profile_username = document.getElementById('profile_username');
-    const cancel_friend = document.getElementById('cancel_friend');
+    // const cancel_friend = document.getElementById('cancel_friend');
 
     friend_user_id = jsonData.user_data.id;
     avata.src = jsonData.user_data.avatar
 
     profile_username.innerHTML = jsonData.user_data.username;
     friend_username = jsonData.user_data.username;
-    if (friends_array.includes(jsonData.user_data.username))
-      cancel_friend.innerHTML = " Cancel Friend";
-    else
-      cancel_friend.innerHTML = " Send Friend";
+    // if (friends_array.includes(jsonData.user_data.username))
+    //   cancel_friend.innerHTML = " Cancel Friend";
+    // else
+    //   cancel_friend.innerHTML = " Send Friend";
 }
 
 export default Friends;

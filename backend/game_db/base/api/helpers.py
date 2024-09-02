@@ -20,5 +20,5 @@ def get_user_info(user_id, auth_header):
     data = {
         'user_id': user_id,
     }
-    response = requests.get(endpoint, headers=headers, data=data, verify=False)
+    response = requests.post(endpoint, headers=headers, data=data, verify=False)
     return response

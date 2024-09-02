@@ -11,9 +11,9 @@ async function Friends() {
   const app = document.getElementById('app');
   app.innerHTML = html;
   
+  await check_friends_status();
   await checkFirst();
   player_webSocket();
-  
   const editProfileButton = document.querySelector('.edit_profi');
   const updateProfile = document.querySelector('.update_data');
   const close_edite = document.querySelector('.bi-x');
@@ -156,8 +156,8 @@ function displayFriendList_home(friendList) {
     send_friend.innerHTML = friendList.map( friend => ` 
       <div class="friends"  data-id="${friend.id}">
       <div class="friend" id="user_id" data-id="${friend.id}">
-      <div>  
-      <i class="bi bi-octagon-fill"> </i>
+      <div >  
+      <i class="bi bi-octagon-fill click_friend" data-name="${friend.username}"> </i>
       <img  id="player1" style="border-radius: 50%;" class="click_friend" data-name="${friend.username}" data-id="${friend.id}"  class="proimage" src="${friend.avatar}" alt="">
       </div>
       <h2 class="player1" class="click_friend" >${friend.username}</h2>
@@ -326,25 +326,56 @@ async function changeAccess() {
   }
 }
 
+
+async function check_friends_status() {
+  console.log("*******************************");
+  let friendsocket = new WebSocket("wss://127.0.0.1:9005/ws/online-status/", ["token", get_localstorage('token')]);
+    
+  friendsocket.onopen = function () {
+    console.log('Websocket connection established.');
+  };
+  
+  friendsocket.onmessage = async function(event) {
+    const newNotification = await JSON.parse(event.data);
+    console.log("here are socket of friends online => ", newNotification)
+    // const isDuplicate = accumulatedNotifications.some(notification => notification.friend_request.id === newNotification.friend_request.id
+    // );
+    // if (!isDuplicate)
+    //   accumulatedNotifications.push(newNotification);
+
+    // await displayNotifications(accumulatedNotifications);
+  };
+
+  friendsocket.onerror = function (error) {
+    console.error('Websocket error:', error);
+  };
+
+  friendsocket.onclose = function () {
+    console.log('Websocket connection closed.');
+  };
+
+}
+
+
 // Define the `checkFirst` function
 async function checkFirst() {
 
 
-  console.log("*******************************");
-  const subprotocols = ['token', get_localstorage('token')];
+  // console.log("*******************************");
+  // const subprotocols = ['token', get_localstorage('token')];
 
-  const socket = new WebSocket('wss://127.0.0.1:9005/ws/friend-requests/ ', subprotocols);
-  socket.onmessage = function(event) {
-    console.log('Message from server:', event.data);
+  // const socket = new WebSocket('wss://127.0.0.1:9005/ws/friend-requests/ ', subprotocols);
+  // socket.onmessage = function(event) {
+  //   console.log('Message from server:', event.data);
     
-    try {
-      const data = JSON.parse(event.data);
-      console.log('Parsed data:', data);
-    } catch (e) {
-      console.error('Failed to parse message:', e);
-    }
-  };
-  console.log("*******************************");
+  //   try {
+  //     const data = JSON.parse(event.data);
+  //     console.log('Parsed data:', data);
+  //   } catch (e) {
+  //     console.error('Failed to parse message:', e);
+  //   }
+  // };
+  // console.log("*******************************");
 
 
 
