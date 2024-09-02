@@ -153,4 +153,4 @@ def is_available(request):
             'is_available': False,
             'res': Response({'message': 'player already in queue'}, status=400)
             }
-    return Response({'message': 'user already in a game or in a queue'}, status=400)
+    return Response({'message': 'user is available'}, status=200)

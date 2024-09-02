@@ -21,12 +21,14 @@ class TournamentParticipant(models.Model):
     
 class Match(models.Model):
     tournament = models.ForeignKey(Tournament, related_name='matches', on_delete=models.CASCADE)
+    match_number = models.IntegerField(default=-1, null=False, blank=False)
     player_one = models.ForeignKey(TournamentParticipant, related_name='matches_as_player_one', on_delete=models.CASCADE)
     player_two = models.ForeignKey(TournamentParticipant, related_name='matches_as_player_two', on_delete=models.CASCADE)
     player_one_score = models.IntegerField(default=0)
     player_two_score = models.IntegerField(default=0)
-    winner = models.ForeignKey(TournamentParticipant, related_name='won_matches', on_delete=models.CASCADE)
-    status = models.CharField(max_length=50, choices=[('upcoming', 'Upcoming'), ('ongoing', 'Ongoing'), ('complete', 'Complete')], default='upcoming')
+    winner = models.ForeignKey(TournamentParticipant, related_name='won_matches', on_delete=models.CASCADE, null=True, blank=True)
+    status = models.CharField(max_length=50, default='upcoming')
+    stage = models.CharField(max_length=50, default='1/4')
 
     def __str__(self) -> str:
         return f"Match: {self.player_one.username} vs {self.player_two.username} in tournament id {self.tournament.id}"

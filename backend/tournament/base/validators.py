@@ -10,3 +10,6 @@ class CustomUsernameValidator(validators.RegexValidator):
         "numbers, and @/./+/-/_ characters"
     )
     flags = 0
+    def __call__(self, value):
+        print(f"Validating username: {value}")  # Debug statement
+        super().__call__(value)

@@ -7,6 +7,10 @@ class TournamentParticipantSerializer(serializers.ModelSerializer):
         model = TournamentParticipant
         fields =['id', 'username']
 
+    def validate_username(self, value):
+        # This ensures that the custom validator is applied.
+        return super().validate_username(value)
+
 class MatchSrializer(serializers.ModelSerializer):
 
     player_one = TournamentParticipantSerializer()
@@ -16,13 +20,14 @@ class MatchSrializer(serializers.ModelSerializer):
     class Meta:
         model = Match
         fields = [
-            'id',
+            'match_number',
             'player_one',
             'player_two',
             'player_one_score',
             'player_two_score',
             'winner',
             'status',
+            'stage',
         ]
 
 class TournamentSerializer(serializers.ModelSerializer):
