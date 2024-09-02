@@ -3,49 +3,22 @@ import {log_out_func,  logoutf, get_localstorage, getCookie, login } from '../..
 
 const api = "https://127.0.0.1:9004/api/";
 const api_one = "https://127.0.0.1:9005/api/";
-<<<<<<< HEAD
-// user/send-friend-request/
-// let photo = "";
-async function Profile() {
-=======
 var photo = null;
 async function Friends() {
->>>>>>> fanti
   const html = await loadHTML('./components/profile/profile.html');
   loadCSS('./components/profile/profile.css');
 
   const app = document.getElementById('app');
   app.innerHTML = html;
   
-<<<<<<< HEAD
-  await checkFirst();
-  
-  // await player_webSocket();
-
-=======
   await check_friends_status();
   await checkFirst();
   player_webSocket();
->>>>>>> fanti
   const editProfileButton = document.querySelector('.edit_profi');
   const updateProfile = document.querySelector('.update_data');
   const close_edite = document.querySelector('.bi-x');
   const update_btn = document.getElementById('update_btn');
 
-<<<<<<< HEAD
-  update_btn.addEventListener('click', await update_profile_fun);
-  editProfileButton.addEventListener('click', () => {
-    updateProfile.classList.add('active');
-  });
-
-  close_edite.addEventListener('click', () => {
-    updateProfile.classList.remove('active');
-  });
-
-  const logout = document.getElementById('logout')
-  logout.addEventListener('click', log_out_func);
-
-=======
   
 
   update_btn.addEventListener('click', async () => {
@@ -68,67 +41,10 @@ async function Friends() {
   const logout = document.getElementById('logout')
   logout.addEventListener('click', log_out_func);
   
->>>>>>> fanti
   const input_search = document.getElementById('input_search');
   input_search.addEventListener('keydown', (event) => {
     if (event.key === 'Enter') {
       event.preventDefault();
-<<<<<<< HEAD
-
-      const query = input_search.value;
-      send_freinds_request(query);
-      console.log('Search query:', query);
-
-  }
-
-  })
-
-
-  // const formData = new FormData();
-  // formData.append('profile_photo', file);
-
-
-// const update_avatar = document.getElementById('update_avatar');
-// if (update_avatar === null)
-//     console.log("nothing");
-// update_avatar.addEventListener('change', function(event) {
-//   console.log("----------------ddd---------");
-//   const file = event.target.files[0];
-
-//   // photo = file;
-
-//   const formData = new FormData();
-//   formData.append('myFile', event.target.files[0]);
-//   if (file) {
-
-//     const formData = new FormData();
-//     formData.append('avatar', file);
-
-//     photo = formData;
-
-//     const reader = new FileReader();
-        
-//     reader.onloadend = function() {
-//         const base64String = reader.result; // Remove the data URL prefix
-//         // photo = base64String;
-//         console.log(base64String);
-//         // const jsonPayload = JSON.stringify({
-//         //     avatar: base64String
-//         // });
-
-//     // const reader = new FileReader();
-//     // console.log(reader);
-//     // reader.onload = function(e) {
-//     //     photo = e.target.result;
-//     };
-    
-//     // photo = reader.readAsDataURL(file);
-//     console.log("reader ====>   ",reader.readAsDataURL(file));
-//   }
-
-// });
-
-=======
       
       const query = input_search.value;
       send_freinds_request(query);
@@ -256,7 +172,6 @@ function displayFriendList_home(friendList) {
 function readit(event) {
   const name_of_friends = event.target.getAttribute('data-name');
   window.location.hash = `/user/${name_of_friends}`
->>>>>>> fanti
 }
 
 const isValidEmail = signupemail => {
@@ -264,63 +179,32 @@ const isValidEmail = signupemail => {
   return (re.test(String(signupemail).toLowerCase()));
 }
 
-<<<<<<< HEAD
-
-async function update_profile_fun() {
-  let photo = null
-
-  if (document.getElementById('update_avatar').files) photo = document.getElementById('update_avatar').files[0]
-  // const photo = document.getElementById('update_avatar').files[0];
-=======
 async function update_profile_fun() {
         
->>>>>>> fanti
   const update_Email = document.getElementById('update_Email');
   const update_UserName = document.getElementById('update_UserName');
   const new_password = document.getElementById('new_password');
   const old_password = document.getElementById('old_password');
   const check_box = document.getElementById('check_box');
-<<<<<<< HEAD
-  
-  var boll = true;
-  if (update_Email.value !== '') 
-    if (!isValidEmail(update_Email.value)){
-      // set_error("Provide a Vallid email address");
-=======
 
 
   var boll = true;
   if (update_Email.value !== '') 
     if (!isValidEmail(update_Email.value)){
->>>>>>> fanti
       boll = false;
     }
   if (new_password.value !== '')
       if (new_password.length < 8){
-<<<<<<< HEAD
-        // set_error('Password must be at least 8 characters')
-=======
->>>>>>> fanti
         boll = false;
       }
 
   if (boll === true) {
-<<<<<<< HEAD
-    // console.log("===================photo ===== >       ",photo);
-    const fanti = update_Email.value.trim();
-    // console.log('fanti  *', fanti.trim(), "*");
-    // console.log('fanti  *', "hello", "*");
-    // console.log('email=>  *', update_Email.value.trim(), "*");
-    console.log("hello hello hello hello hello hello hello");
-    const formData = new FormData();
-=======
     // const fanti = update_Email.value.trim();
     // console.log('fanti  *', fanti.trim(), "*");
     // console.log('fanti  *', "hello", "*");
     // console.log('email=>  *', update_Email.value.trim(), "*");
     // console.log("hello hello hello hello hello hello hello");
     let formData = new FormData();
->>>>>>> fanti
 
     if (photo) formData.append('avatar', photo);
     if (update_Email.value) formData.append('email', update_Email.value);
@@ -328,28 +212,9 @@ async function update_profile_fun() {
     if (new_password.value) formData.append('password', new_password.value);
     if (old_password.value) formData.append('old_password', old_password.value);
     formData.append('twofa_active', check_box.checked);
-<<<<<<< HEAD
-    console.log('--------formData---------: ', formData);
-    // const data = {
-    //   twofa_active: check_box.checked,
-    // }
-    // if (update_UserName.value !== '')
-    //   data.username = update_UserName.value;
-    // if (update_Email.value !== '')
-    //   data.email = update_Email.value;
-    // if (new_password.value !== '')
-    //   data.password = new_password.value;
-    // if (old_password.value !== '')
-    //   data.old_password = old_password.value;
-    // if (photo !== "")
-    //     data.avatar = photo;
-    // console.log('-------------------------data: ', data);
-    await update_backend(formData);
-=======
 
     await update_backend(formData);
     await fetchUserData();
->>>>>>> fanti
   }
 
   console.log('username=>  ', update_UserName.value);
@@ -360,20 +225,12 @@ async function update_profile_fun() {
 
 
 
-<<<<<<< HEAD
-=======
-
->>>>>>> fanti
 async function update_backend(data) {
 
   const response = await fetch(api + 'auth/update-user/', {
     method: 'PUT',
     headers: {
-<<<<<<< HEAD
-      // 'Content-Type': 'application/json',
-=======
       // 'Content-Type': 'multipart/form-data',
->>>>>>> fanti
       'AUTHORIZATION': "Bearer " + get_localstorage('token')
     },
     credentials: 'include',
@@ -398,10 +255,7 @@ async function send_freinds_request(userna) {
   };
 
   try {
-<<<<<<< HEAD
-=======
     var jsonData;
->>>>>>> fanti
     const response = await fetch(api_one + 'user/send-friend-request/', {
       method: 'POST',
       headers: {
@@ -412,23 +266,6 @@ async function send_freinds_request(userna) {
       body: JSON.stringify(data)
     });
     console.log("hello -----------------------------");
-<<<<<<< HEAD
-    const jsonData = await response.json();
-    console.log(jsonData);
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
-    }
-    
-    // await login(jsonData.access, jsonData.refresh);
-
-  } catch (error) {
-    console.error('There was a problem with the fetch operation:', error);
-  }
-
-}
-
-=======
      jsonData = await response.json();
     console.log(jsonData.message);
     if ("Friend request sent" === jsonData.message){
@@ -458,7 +295,6 @@ async function send_freinds_request(userna) {
 
 
 
->>>>>>> fanti
 async function changeAccess() {
   const data = {
     refresh: get_localstorage('refresh')
@@ -484,16 +320,11 @@ async function changeAccess() {
     await login(jsonData.access, jsonData.refresh);
 
   } catch (error) {
-<<<<<<< HEAD
-=======
     // logoutf();
->>>>>>> fanti
     console.error('There was a problem with the fetch operation:', error);
   }
 }
 
-<<<<<<< HEAD
-=======
 
 async function check_friends_status() {
   console.log("*******************************");
@@ -525,28 +356,10 @@ async function check_friends_status() {
 }
 
 
->>>>>>> fanti
 // Define the `checkFirst` function
 async function checkFirst() {
 
 
-<<<<<<< HEAD
-  console.log("*******************************");
-  const subprotocols = ['token', get_localstorage('token')];
-
-  const socket = new WebSocket('wss://127.0.0.1:9005/ws/friend-requests/ ', subprotocols);
-  socket.onmessage = function(event) {
-    console.log('Message from server:', event.data);
-    
-    try {
-      const data = JSON.parse(event.data);
-      console.log('Parsed data:', data);
-    } catch (e) {
-      console.error('Failed to parse message:', e);
-    }
-  };
-  console.log("*******************************");
-=======
   // console.log("*******************************");
   // const subprotocols = ['token', get_localstorage('token')];
 
@@ -562,44 +375,27 @@ async function checkFirst() {
   //   }
   // };
   // console.log("*******************************");
->>>>>>> fanti
 
 
 
   const token = get_localstorage('token');
   
-<<<<<<< HEAD
-  console.log('Token being checked:', token); // Debugging statement
-=======
   console.log('Token being checked:', token); 
->>>>>>> fanti
   console.log("--------------------------------------", api);
   try {
     const response = await fetch(api + 'auth/verify-token/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-<<<<<<< HEAD
-        // 'X-CSRFToken': csrftoken, // Uncomment if needed
-      },
-      credentials: 'include',
-      body: JSON.stringify({ token }) // Sending token in the body
-=======
 
       },
       credentials: 'include',
       body: JSON.stringify({ token }) 
->>>>>>> fanti
     });
     console.log(response);
     if (response.status !== 200) {
       console.log('Token is invalid. Attempting to refresh...');
       await changeAccess();
-<<<<<<< HEAD
-      // After refreshing, retry fetching user data
-      console.log("lkfjkdsjfkljsdlkfjklsdjflkjsdlkf");
-=======
->>>>>>> fanti
       await fetchUserData();
     } else if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
@@ -614,11 +410,6 @@ async function checkFirst() {
     console.error('There was a problem with the fetch operation:', error);
   }
 }
-<<<<<<< HEAD
-// Define a function to fetch user data
-=======
-
->>>>>>> fanti
 async function fetchUserData() {
   try {
     const userResponse = await fetch(api + 'auth/get-user/', {
@@ -653,8 +444,4 @@ async function fetchUserData() {
   }
 }
 
-<<<<<<< HEAD
-export default Profile;
-=======
 export default Friends;
->>>>>>> fanti

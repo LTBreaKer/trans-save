@@ -11,26 +11,6 @@ async function Home() {
   app.innerHTML = html;
   await loadCSS('./components/home/home.css');
   
-<<<<<<< HEAD
-
-  var csrftoken = getCookie('csrftoken');
-
-await checkFirst();
-
-player_webSocket();
-console.log("------fanti =============== ========= -------");
-await get_friends();
-
-
-
-
-console.log("------fanti -------");
-  const logout = document.getElementById('logout')
-  logout.addEventListener('click', log_out_func);
-
-
-
-=======
   var csrftoken = getCookie('csrftoken');
 
   await checkFirst();
@@ -40,85 +20,10 @@ console.log("------fanti -------");
   const logout = document.getElementById('logout')
   logout.addEventListener('click', log_out_func);
 
->>>>>>> fanti
 // =========================== here i will work with media ===========================
 
 // i will work with #butt
 
-<<<<<<< HEAD
-const butt = document.querySelector('#butt');
-const side = document.querySelector('.sidebar');
-
-butt.addEventListener('click', function() {
-  
-  side.classList.toggle('active');
-});
-
-document.addEventListener('click', (event) => {
-  if (!side.contains(event.target) && !butt.contains(event.target)) {
-    side.classList.remove('active');
-  }
-});
-
-const notific = document.querySelector('.notification');
-const notifi_display = document.querySelector('.notifi_btn');
-
-notific.addEventListener('click', function() {
-  notifi_display.classList.toggle('active');
-})
-
-
-
-
-
-// notifi_display.querySelectorAll('.accept').forEach(button => {
-//   button.addEventListener('click', handleAccept);
-// });
-
-// notifi_display.querySelectorAll('.decline').forEach(button => {
-//   button.addEventListener('click', handleDecline);
-// });
-
-
-
-}
-
-async function get_friends() {
-  console.log("***************************************");
-  const response = await fetch(api1 + 'user/get-friend-list/', {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer ' + get_localstorage('token'),
-    },
-    credentials: 'include',
-  });
-  const jsonData = await response.json();
-  console.log("accept anvitation =>     ", jsonData);
-  if (!response.ok) {
-    console.log((`HTTP error! Status: ${response.status}`), Error);
-  }
-  console.log(jsonData.friend_list);
-  displayFriendList(jsonData.friend_list)
-  console.log("***********//////*****//////****");
-
-
-}
-
-
-
-function displayFriendList(friendList) {
-  if (Array.isArray(friendList)) {
-    friendList.forEach(friend => {
-      const username = friend.username;
-      const avatar = friend.avatar || 'default-avatar.png'; // Fallback to a default avatar if none is provided
-
-      console.log(`User: ${username}, Avatar: ${avatar}`);
-  });
-
-  }
-}
-=======
   const butt = document.querySelector('#butt');
   const side = document.querySelector('.sidebar');
 
@@ -191,7 +96,6 @@ exitPups.forEach(exitPup => {
 }
 
 
->>>>>>> fanti
 async function changeAccess() {
   const data = {
     refresh: get_localstorage('refresh')
@@ -238,21 +142,12 @@ async function checkFirst() {
       const jsonData = await response.json();
       await fetchUserHomeData();
     }
-<<<<<<< HEAD
-    
-=======
->>>>>>> fanti
   } catch (error) {
     console.error('There was a problem with the fetch operation:', error);
   }
 }
 
 async function fetchUserHomeData() {
-<<<<<<< HEAD
-  
-  
-=======
->>>>>>> fanti
   try {
     const userResponse = await fetch(api + 'auth/get-user/', {
       method: 'GET',
@@ -276,10 +171,6 @@ async function fetchUserHomeData() {
   } catch(error)  {
     console.error('There was a problem with the fetch operation:', error);
   }
-<<<<<<< HEAD
-  
-=======
->>>>>>> fanti
 }
 
 export default Home;
