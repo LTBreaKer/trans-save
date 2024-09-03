@@ -2,134 +2,132 @@
 import { socket } from './game.js';
 import {imageR1, imageL1, imageIR1, imageIL1, imageR2, imageL2, imageIR2, imageIL2, arrow, go_arrow, numbers, background, platform} from './image_src.js';
 
-const canvas = document.querySelector('canvas');
-console.log(canvas);
-
-const c = canvas.getContext("2d");
-canvas.width = 0;
-
-function load_draw(image, x, y, width, height)
-{
-    if (image.complete)
-        c.drawImage(image, x, y, width, height);
-    else 
-        image.onload = () => c.drawImage(image, x, y, width, height);
-}
-
-class Player{
-    constructor({imgR, imgL, imgIR, imgIL}) {
-        this.imageR = imgR
-        this.imageL = imgL
-        this.imageIdlR = imgIR
-        this.imageIdlL = imgIL
-
-        this.image = new Image()
-        this.image = this.imageIdlR[2]
-
-        this.tagger = true
-        
-        this.width = 40
-        this.height = 40
-
-        this.position= {
-            x: 0,
-            y: 0,
-        }
-
-        this.keyStatus={
-            rightPressed: false,
-            leftPressed: false,
-            upPressed: true,
-            upreleased: true,
-        }
-
-    }
-
-    draw() {
-        load_draw(this.image, this.position.x ,this.position.y, this.width, this.height)
-    }
-}
-
-class Platform{
-
-    width = 0
-    height = 20
-
-    position= {
-        x: 0,
-        y: 0,
-    }
-
-    draw() {
-        c.save()
-
-        c.shadowColor = 'rgba(32, 174, 221, 0.8)'; 
-        c.shadowBlur = 30;                    // Blur radius for the shadow
-        c.shadowOffsetX = 2;                 // Horizontal shadow offset
-        c.shadowOffsetY = 2;                 // Vertical shadow offset
-        load_draw(platform, this.position.x ,this.position.y, this.width, this.height)
-        c.restore()
-    }
-}
-
-function draw_arrow(player)
-{
-    c.drawImage(arrow, player.position.x + player.width/4, player.position.y - player.height, player.width/2, player.height/2)
-}
-
-function draw_go(player)
-{
-    c.drawImage(go_arrow, player.position.x, player.position.y - player.height, player.width, player.height)
-}
-
-function draw_timer(time, player)
-{
-    let dec = Math.floor(time/10)
-    let uni = time%10
-    load_draw(numbers[dec], canvas.width/2, player.height, player.width, player.height)
-    load_draw(numbers[uni], canvas.width/2 + player.width, player.height, player.width, player.height)
-}
-
-async function rain()
-{
-    let raindrops = [];
-    let count = 60;
-
-    for (let i = 0; i < count; i++) {
-        raindrops.push({
-            x: Math.random() * canvas.width,
-            y: Math.random() * canvas.height,
-            speedX: -20, // Horizontal wind effect
-            length: Math.random() * 20 + 30
-        });
-    }
-
-    raindrops.forEach(raindrop => {
-        // Create a gradient for the raindrop
-        let grd = c.createLinearGradient(raindrop.x, raindrop.y, raindrop.x + raindrop.speedX, raindrop.y + raindrop.length);
-        grd.addColorStop(0, "rgba(255, 255, 255, 0.2)");
-        grd.addColorStop(1, "rgba(255, 255, 255, 0)");
-
-        c.strokeStyle = grd;
-        c.lineWidth = 3.5;
-
-        c.beginPath();
-        c.moveTo(raindrop.x, raindrop.y);
-        c.lineTo(raindrop.x + raindrop.speedX, raindrop.y + raindrop.length);
-        c.stroke();
-    });
-}
-
-const platforms = Array.from({ length: 12 }, () => new Platform())
-const players = [new Player({imgR:imageR1, imgL:imageL1, imgIR:imageIR1, imgIL:imageIL1}), new Player({imgR:imageR2, imgL:imageL2, imgIR:imageIR2, imgIL:imageIL2})]
-let GO = false
-let time = 1
-let winner
-let esc = false
 
 function start_game()
 {
+    const canvas = document.getElementById('canva');
+    
+    const c = canvas.getContext("2d");
+    canvas.width = 0;
 
+    function load_draw(image, x, y, width, height)
+    {
+        if (image.complete && image.naturalWidth !== 0)
+        {
+            c.drawImage(image, x, y, width, height)
+        }
+        else
+        {
+            image.onerror = ()=>{
+                console.error("Failed to load the image.", image.src);
+                return 0
+            }
+            image.onload = ()=>{
+                c.drawImage(image, x, y, width, height)
+            }
+        }
+    }
+    
+    class Player{
+        constructor({imgR, imgL, imgIR, imgIL}) {
+            this.imageR = imgR
+            this.imageL = imgL
+            this.imageIdlR = imgIR
+            this.imageIdlL = imgIL
+    
+            this.image = new Image()
+            this.image = this.imageIdlR[2]
+    
+            this.tagger = true
+            
+            this.width = 40
+            this.height = 40
+    
+            this.position= {
+                x: 0,
+                y: 0,
+            }
+    
+            this.keyStatus={
+                rightPressed: false,
+                leftPressed: false,
+                upPressed: true,
+                upreleased: true,
+            }
+    
+        }
+    
+        draw() {
+            load_draw(this.image, this.position.x ,this.position.y, this.width, this.height)
+        }
+    }
+    
+    class Platform{
+    
+        width = 0
+        height = 20
+    
+        position= {
+            x: 0,
+            y: 0,
+        }
+    
+        draw() {
+            c.save()
+    
+            c.shadowColor = 'rgba(32, 174, 221, 0.8)'; 
+            c.shadowBlur = 30;                    // Blur radius for the shadow
+            c.shadowOffsetX = 2;                 // Horizontal shadow offset
+            c.shadowOffsetY = 2;                 // Vertical shadow offset
+            load_draw(platform, this.position.x ,this.position.y, this.width, this.height)
+            c.restore()
+        }
+    }
+    
+    function draw_timer(time, player)
+    {
+        let dec = Math.floor(time/10)
+        let uni = time%10
+        load_draw(numbers[dec], canvas.width/2, player.height, player.width, player.height)
+        load_draw(numbers[uni], canvas.width/2 + player.width, player.height, player.width, player.height)
+    }
+    
+    async function rain()
+    {
+        let raindrops = [];
+        let count = 60;
+    
+        for (let i = 0; i < count; i++) {
+            raindrops.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                speedX: -20, // Horizontal wind effect
+                length: Math.random() * 20 + 30
+            });
+        }
+    
+        raindrops.forEach(raindrop => {
+            // Create a gradient for the raindrop
+            let grd = c.createLinearGradient(raindrop.x, raindrop.y, raindrop.x + raindrop.speedX, raindrop.y + raindrop.length);
+            grd.addColorStop(0, "rgba(255, 255, 255, 0.2)");
+            grd.addColorStop(1, "rgba(255, 255, 255, 0)");
+    
+            c.strokeStyle = grd;
+            c.lineWidth = 3.5;
+    
+            c.beginPath();
+            c.moveTo(raindrop.x, raindrop.y);
+            c.lineTo(raindrop.x + raindrop.speedX, raindrop.y + raindrop.length);
+            c.stroke();
+        });
+    }
+    
+    const platforms = Array.from({ length: 15 }, () => new Platform())
+    const players = [new Player({imgR:imageR1, imgL:imageL1, imgIR:imageIR1, imgIL:imageIL1}), new Player({imgR:imageR2, imgL:imageL2, imgIR:imageIR2, imgIL:imageIL2})]
+    let GO = false
+    let time = 1
+    let winner
+    let esc = false
     resizeWindow()
     animation()
 
@@ -205,6 +203,11 @@ function start_game()
         if (time === 0)
         {
             document.getElementById('overlay').style.visibility = 'visible'
+            if (winner === '𝙍𝙚𝙙')
+                document.getElementById('overlay').style.textShadow = '2px 0px 8px rgba(207, 62, 90, 0.8)'
+            else
+                document.getElementById('overlay').style.textShadow = '2px 0px 8px rgba(32, 174, 221, 0.8)'
+
             const overlay = document.querySelector('.overlay-text')
             overlay.textContent = winner + ' 𝙬𝙞𝙣𝙨'
             socket.close()
@@ -410,11 +413,19 @@ function start_game()
         }
     })
     
-    let button = document.querySelector('.overlay-button')
-
-    button.addEventListener("click", ()=>{
+    function quitgame()
+    {
         socket.close()
-    })
+        window.location.hash = '/'
+        if (esc)
+        {
+            esc = false
+            document.getElementById('overlay').style.visibility = 'hidden';
+        }
+    }
+
+    let button = document.querySelector('.overlay-button')
+    button.addEventListener("click", quitgame)
 
     window.addEventListener("blur", ()=>{
     
@@ -438,4 +449,3 @@ function start_game()
 }
 
 export {start_game}
-// export {players, time, esc, socket}

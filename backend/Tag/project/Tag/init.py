@@ -23,14 +23,16 @@ class gameMonitor:
             Platform(1245, 400, 135),
             Platform(0, 472, 359),
             Platform(636, 480, 180),
+            Platform(1520, 560, 100),
 
-            Platform(1526, 540, 77),
-
-            Platform(1070, 700, 245),
+            Platform(1070, 675, 245),
             Platform(545, 700, 351),
             Platform(0, 800, 300),
-            Platform(1114, 855, 277),
-            Platform(1480, 855, 222),
+            Platform(1200, 840, 275),
+
+            Platform(0, 935, 375),
+            Platform(375, 935, 375),
+            Platform(750, 935, 377),
         ]
         
         self.canvas_width = 0
