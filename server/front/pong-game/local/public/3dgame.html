@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="pong-game/local/src/styles/main.css">    
+    <title>Pong Game</title>
+</head>
+<body>
+
+  <div style="z-index: 101; padding-bottom: 5px; background: white; width: 100%; margin: 0px; padding-top: 5px;"
+      class="p_box_result">
+    <button style="margin-right: 3px;" id="login">Login</button>
+    <button style="margin-right: 3px;" id="connect">Connect Game</button>
+    <button style="margin-right: 3px;" id="connect_ai">Connect AI</button>
+    <button style="margin-right: 3px;" id="runButton">Start Game</button>
+  </div>
+
+    <div class="p_box_result">
+      <div class="p_first" id="first_player">0</div>
+      <div class="p_second" id="second_player">0</div>
+    </div>
+    <dev class="p_container">
+      <dev style="display: flex; position: absolute; z-index: 1; width: 100vw; height: 100vh; background-color: rgba(1,1,1,0.2);"></dev>
+      <dev class="p_canvas_background">
+        <img src="/images/pong/images/background-desert-road.jpg" alt="" style="width: 100vw; height: 100vh;">
+      </dev>
+      <canvas id="c"></canvas>
+    </dev>
+
+</body>
+</html>

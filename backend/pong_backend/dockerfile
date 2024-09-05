@@ -1,0 +1,25 @@
+FROM python:3.9
+
+WORKDIR /app/pong_game/pong_game
+
+RUN apt-get update \
+	&& apt-get install -y --no-install-recommends \
+		postgresql-client \
+	&& rm -rf /var/lib/apt/lists/*
+RUN pip install --upgrade pip && pip install psycopg
+RUN pip3 install pipenv
+RUN pipenv install django
+RUN	python -m pip install django-debug-toolbar
+RUN pip install djangorestframework
+RUN pip install drf-nested-routers
+RUN pip install django-filter
+RUN pip install djoser
+RUN pip install djangorestframework_simplejwt
+RUN python -m pip install -U 'channels[daphne]'
+RUN python -m pip install channels_redis
+RUN pip install --no-cache-dir pandas numpy tensorflow
+
+
+EXPOSE 8006
+
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8006"]
