@@ -34,7 +34,7 @@ async function Router() {
     if (path.startsWith('/user')){
       component = routes['/user'];
       usern = path.split('/')[2];
-      console.log(usern);
+      //console.log(usern);
     }
     const data = {
       username: usern
@@ -49,9 +49,9 @@ async function Router() {
       //   credentials: 'include',
       //   body: JSON.stringify(data)
       // });
-      // console.log("DATA OF USER -----------------------------");
+      // //console.log("DATA OF USER -----------------------------");
       // const jsonData = await response.json();
-      // console.log(jsonData);
+      // //console.log(jsonData);
     
       // if (!response.ok) {
       //   throw new Error(`HTTP error! Status: ${response.status}`);
@@ -80,7 +80,7 @@ async function Router() {
   if (path.startsWith('/user')){
     component = routes['/user'];
     usern = path.split('/')[2];
-    console.log(usern);
+    //console.log(usern);
   }
 
   await component();

@@ -30,7 +30,7 @@ async function Game() {
   
           // Reject the promise if the WebSocket connection is closed unexpectedly
           socket.onclose = (event) => {
-              console.log('WebSocket connection closed', event);
+            //   console.log('WebSocket connection closed', event);
               reject(new Error('WebSocket connection closed'));
           };
       });

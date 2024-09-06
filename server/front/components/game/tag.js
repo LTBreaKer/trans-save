@@ -158,8 +158,10 @@ function start_game()
 
     function animation()
     {
+
+
         if (socket.readyState === WebSocket.OPEN)
-        {    
+        {
             socket.send(JSON.stringify({
                 'action': 'key update',
                 'P0_rightPressed': players[0].keyStatus.rightPressed,
@@ -200,9 +202,9 @@ function start_game()
         rain();
 
         draw_timer(time, players[0])
-        if (time === 0)
+        if (time === 0 && socket.readyState === WebSocket.OPEN) //announce the winner I'm still in the game
         {
-            document.getElementById('overlay').style.visibility = 'visible'
+            pause_game()
             if (winner === '𝙍𝙚𝙙')
                 document.getElementById('overlay').style.textShadow = '2px 0px 8px rgba(207, 62, 90, 0.8)'
             else
@@ -211,6 +213,13 @@ function start_game()
             const overlay = document.querySelector('.overlay-text')
             overlay.textContent = winner + ' 𝙬𝙞𝙣𝙨'
             socket.close()
+            time = 1
+        }
+        if (window.location.hash !== "#/game")
+        {
+            socket.close()
+            window.removeEventListener("keydown", handleKeydown)
+            window.removeEventListener("keyup", handleKeyup)
         }
     }
     
@@ -290,6 +299,7 @@ function start_game()
     
     function pause_game()
     {
+        // console.log(window.location.hash)
         if (!esc)
         {
             document.getElementById('overlay').style.visibility = 'visible';
@@ -304,8 +314,9 @@ function start_game()
         }
     }
 
-    window.addEventListener("keydown", (event)=> {
-        if (time == 0)
+    function handleKeydown(event)
+    {
+        if (time === 0)
         {
             players.forEach((player)=>{
                 player.keyStatus.leftPressed = false
@@ -359,10 +370,11 @@ function start_game()
                 break
             }
         }
-    })
-    
-    window.addEventListener("keyup", (event)=> {
-        if (time == 0 || esc)
+    }
+
+    function handleKeyup(event)
+    {
+        if (time === 0 || esc)
         {
             players.forEach((player)=>{
                 player.keyStatus.leftPressed = false
@@ -411,20 +423,23 @@ function start_game()
                 break
             }
         }
-    })
+    }
+
+    window.addEventListener("keydown", handleKeydown) 
+    window.addEventListener("keyup", handleKeyup)
     
     function quitgame()
     {
         socket.close()
+        document.getElementById('overlay').style.visibility = 'hidden';
+        esc = false
+        window.removeEventListener("keydown", handleKeydown)
+        window.removeEventListener("keyup", handleKeyup)
         window.location.hash = '/'
-        if (esc)
-        {
-            esc = false
-            document.getElementById('overlay').style.visibility = 'hidden';
-        }
     }
 
     let button = document.querySelector('.overlay-button')
+
     button.addEventListener("click", quitgame)
 
     window.addEventListener("blur", ()=>{

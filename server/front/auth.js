@@ -56,11 +56,11 @@ function isAuthenticated() {
       body: JSON.stringify(data)
   })
   .then(response => {
-      console.log(response);
+      //console.log(response);
       return response.json();
   })
   .then(data => {
-      console.log(data);
+      //console.log(data);
       if (data.message === 'Redirecting to 42 login')
           window.location.href = data.url;
      
@@ -88,16 +88,16 @@ function isAuthenticated() {
       body: JSON.stringify(data)
       })
       .then(response => {
-          console.log(response);
+          //console.log(response);
           return response.json();
       })
       .then(data => {
-          console.log(data);
-          console.log(data.message, "    <=  message");
-          // console.log("it is okay=>  ", response.ok);
+          //console.log(data);
+          //console.log(data.message, "    <=  message");
+          // //console.log("it is okay=>  ", response.ok);
           if (data.message === 'Invalid token'){
             const hd = get_localstorage("token");
-            console.log(hd);
+            //console.log(hd);
           }
         
       })
@@ -129,14 +129,14 @@ function isAuthenticated() {
         body: JSON.stringify(bod)
     })
     .then(response => {
-        console.log(response);
+        //console.log(response);
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }
         return response.json();
     })
     .then(data => {
-        console.log(data);
+        //console.log(data);
         
         if (data.message === 'User logged out') {
           logoutf();
