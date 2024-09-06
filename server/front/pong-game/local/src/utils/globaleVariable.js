@@ -7,7 +7,7 @@ export const paddleWidth = 10;
 export const ballRaduis = 6;
 
 export const TABLE_DEPTH = 0.012 * width;
-export const TABLE_WIDTH = 0.01 * width;
+export const TABLE_WIDTH = 0.007 * width;
 export const TABLE_HEIGHT = 0.1;
 export const BALL_RADUIS = ballRaduis * TABLE_WIDTH / height;
 export const PADDLE_LONG = paddleHeight * TABLE_WIDTH / height;

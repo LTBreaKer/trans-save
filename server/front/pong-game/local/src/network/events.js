@@ -13,14 +13,19 @@ import { moveCamera } from '../components/camera.js';
  
 function resizeCanvas(){
 	let minHW = Math.min(window.innerWidth*0.99, window.innerHeight*0.99);
-	canvas.style.width = minHW + "px";
-	canvas.style.height = minHW + "px";
+	canvas.style.width = (minHW - 100) + "px";
+	canvas.style.height = (minHW - 100) + "px";
 	canvas.style.marginTop = ((0.99 * window.innerHeight - minHW) * 0.5) + "px";
 	canvas.style.marginLeft = ((0.99 * window.innerWidth - minHW) / 2) + "px";
 	canvas.style.marginBottom = (0.01 * window.innerHeight) + "px";
+	console.log("11 canvas.style.marginLeft: ", canvas.style.marginLeft);
+	console.log("11 box_result.style.width: ", box_result.style.width);
+	
 	box_result.style.width = canvas.clientWidth + "px";
-	first_player_goal.style.width = canvas.clientWidth / 2 + "px";
-	second_player_goal.style.width = canvas.clientWidth / 2 + "px";
+	box_result.style.marginLeft = canvas.style.marginLeft;
+	console.log("12 box_result.style.width: ", box_result.style.width);
+	first_player_goal.style.width = (canvas.clientWidth * 0.9) / 2 + "px";
+	second_player_goal.style.width = (canvas.clientWidth * 0.9) / 2 + "px";
 	let padding_top =  canvas.clientWidth * 0.06;
 	let padding_left = canvas.clientWidth * 0.05;
 	first_player_goal.style.paddingTop = padding_top + "px";
@@ -57,7 +62,8 @@ export function setupEventListeners() {
 	connect_ai.addEventListener("click", () => {
 		connectAI();
 	})
-	
+	canvas.clientWidth
+canvas.clientWidth
 	const login_button = document.querySelector("#login");
 	login_button.addEventListener("click", login);
 

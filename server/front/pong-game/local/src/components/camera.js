@@ -28,10 +28,10 @@ export function moveCamera() {
     // }
     let nwidth = canvas.clientWidth * 0.01
     // camera.lookAt(0, 0, 0 );
-    camera.position.x = +paddle_way * ((TABLE_WIDTH / 2) + 3.5);
+    camera.position.x = +paddle_way * ((TABLE_WIDTH / 2) + 5);
     // camera.lookAt(0, 0, 0 );
     // camera.rotation.x += Math.PI/2;
-    camera.position.z = 5;
+    camera.position.z = 3;
     camera.lookAt(0, 0, 0 );
     // camera.position.y = 0;
     // if (paddle_way < 0)

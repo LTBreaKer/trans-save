@@ -51,8 +51,8 @@ function resizeRendererToDisplaySize(renderer) {
 	// camera.aspect = canvas.clientWidth / canvas.clientHeight;
 	// camera.updateProjectionMatrix();
 	const pixelRatio = window.devicePixelRatio;
-	const width  = Math.floor( canvas.clientWidth * pixelRatio);
-	const height = Math.floor( canvas.clientHeight * pixelRatio);
+	const width  = Math.floor( canvas.clientWidth * pixelRatio) - 100;
+	const height = Math.floor( canvas.clientHeight * pixelRatio) - 100;
 	const needResize = canvas.width !== width || canvas.height !== height;
 	if (needResize) {
 		console.log("width: ", width);
@@ -65,13 +65,21 @@ function resizeRendererToDisplaySize(renderer) {
 		// renderer.setSize(width, height, true);
 		renderer.setSize(width, height, false);
 		box_result.style.width = canvas.clientWidth + "px";
+		console.log("0box_result.style.width: ", box_result.style.width);
 		first_player_goal.style.width = canvas.clientWidth / 2 + "px";
 		second_player_goal.style.width = canvas.clientWidth / 2 + "px";
+		let padding_top =  canvas.clientWidth * 0.06;
+		let padding_left = canvas.clientWidth * 0.05;
+		first_player_goal.style.paddingTop = padding_top + "px";
+		first_player_goal.style.paddingLeft = padding_left + "px";
+		second_player_goal.style.paddingTop = padding_top + "px";
+		second_player_goal.style.paddingRight = padding_left + "px";
 	}
 	return (needResize);
 }
 
 box_result.style.width = canvas.clientWidth + "px";
+console.log("2box_result.style.width: ", box_result.style.width);
 first_player_goal.style.width = canvas.clientWidth / 2 + "px";
 second_player_goal.style.width = canvas.clientWidth / 2 + "px";
 // first_player_goal.style.color = 'rgb(204, 45, 45)';
