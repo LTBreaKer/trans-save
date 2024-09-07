@@ -78,6 +78,5 @@ class MyConsumer(AsyncWebsocketConsumer):
             self.monitor.esc = text_data_json.get('esc')
 
     async def disconnect(self, close_code):
-        print("-------------------------------disconnect")
         self.is_open = False
         pass

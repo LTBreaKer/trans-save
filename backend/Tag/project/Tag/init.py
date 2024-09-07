@@ -109,6 +109,7 @@ class gameMonitor:
 
             except Exception as e:
                 print(f"Error game loop: {e}")
+                self.gameconsumer.is_open = False
 
     def checkCollision(self, id):
         for self.platform in self.platforms:

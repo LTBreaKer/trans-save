@@ -95,14 +95,14 @@ function start_game()
     async function rain()
     {
         let raindrops = [];
-        let count = 60;
+        let count = canvas.width * 60 / 1697;//
     
         for (let i = 0; i < count; i++) {
             raindrops.push({
                 x: Math.random() * canvas.width,
                 y: Math.random() * canvas.height,
-                speedX: -20, // Horizontal wind effect
-                length: Math.random() * 20 + 30
+                speedX: canvas.width * -20 / 1697, // Horizontal wind effect          //
+                length: canvas.height * (Math.random() * 20 + 30) / 955 //
             });
         }
     
@@ -113,7 +113,7 @@ function start_game()
             grd.addColorStop(1, "rgba(255, 255, 255, 0)");
     
             c.strokeStyle = grd;
-            c.lineWidth = 3.5;
+            c.lineWidth = canvas.height * 3.5 / 955;//
     
             c.beginPath();
             c.moveTo(raindrop.x, raindrop.y);
@@ -220,6 +220,7 @@ function start_game()
             socket.close()
             window.removeEventListener("keydown", handleKeydown)
             window.removeEventListener("keyup", handleKeyup)
+            window.removeEventListener("blur", handleblur)
         }
     }
     
@@ -435,6 +436,7 @@ function start_game()
         esc = false
         window.removeEventListener("keydown", handleKeydown)
         window.removeEventListener("keyup", handleKeyup)
+        window.removeEventListener("blur", handleblur)
         window.location.hash = '/'
     }
 
@@ -442,8 +444,8 @@ function start_game()
 
     button.addEventListener("click", quitgame)
 
-    window.addEventListener("blur", ()=>{
-    
+    function handleblur()
+    {
         players.forEach(player=>{
             if (player.keyStatus.leftPressed)
                 {
@@ -460,7 +462,8 @@ function start_game()
                 if (!player.keyStatus.upreleased)
                     player.keyStatus.upreleased = true
         })
-    })
+    }
+    window.addEventListener("blur", handleblur)
 }
 
 export {start_game}
