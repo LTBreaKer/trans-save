@@ -6,24 +6,28 @@ import Friends from './components/friends/friends.js';
 import Game from './components/game/game.js';
 import PingPong from './components/pingpong/ping.js';
 import { isAuthenticated, get_localstorage } from './auth.js';
+import Ta from './components/ta/script.js';
+import Ping from './components/ping/script.js';
 
 const api_one = "https://127.0.0.1:9005/api/";
 let friends_array = [];
-
-
+let component;
 const routes = {
   '/': Home,
+  '/ta': Ta,
   '/profile': Profile,
   '/login': Login,
   '/notfound': NotFound,
   '/user': Friends,
   '/game': Game,
   '/pingpong': PingPong,
+  '/ping': Ping,
 };
+// let delete_component = routes[path];
 
 async function Router() {
 
-
+  // delete_component().clear();
   const response = await fetch(api_one + 'user/get-friend-list/', {
     method: 'GET',
     headers: {
@@ -41,11 +45,13 @@ async function Router() {
 
 
 
-console.log("here i will print aray hhh==>>  ", friends_array)
+  console.log("here i will print aray hhh==>>  ", friends_array)
   var usern;
   window.addEventListener('hashchange', async () => {
     const path = window.location.hash.slice(1);
-    var component = routes[path] || NotFound;
+    // if (component)
+    //  component.destroy();
+    component = routes[path] || NotFound;
     if (!isAuthenticated() && path !== '/login') {
       window.location.hash = '/login';
     }
@@ -59,9 +65,10 @@ console.log("here i will print aray hhh==>>  ", friends_array)
       else 
         component = routes['/user'];
     }
+    // delete_component = component();
     await component();
   });
-
+  console.log("==================================== 0000000000");
   const path = window.location.hash.slice(1) || '/';
   let component = routes[path] || NotFound;
 
@@ -78,7 +85,7 @@ console.log("here i will print aray hhh==>>  ", friends_array)
     else 
       component = routes['/user'];
   }
-
+  // delete_component = component();
   await component();
 
 }

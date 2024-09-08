@@ -12,6 +12,17 @@ html, body {
     height: 100%;
 }
 
+/* .navbar .image-text img {
+    /* width: 70px; */
+    position: absolute;
+    border-radius: 6px;
+    /* top: -140px;
+    left: -140px; */
+    /* z-index: -1; */
+    padding: 15px;
+  } */
+  
+
 #overlay {
     position: absolute;
     top: 0;
