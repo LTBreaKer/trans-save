@@ -1,6 +1,6 @@
 #!/bin/bash
 
-sleep 5
+# sleep 5
 
 echo db:5432:$TOURNAMENT_DB:$POSTGRES_USER:$POSTGRES_PASSWORD > ~/.pgpass
 

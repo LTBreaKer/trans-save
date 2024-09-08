@@ -109,6 +109,15 @@ def accept_friend_request(request, *args, **kwargs):
     
     user_profile = UserProfile.objects.get(user_id=user_id)
     user_profile.friends.add(from_user_profile)
+    channel_layer = get_channel_layer()
+    from_user_data = get_user(user_id=from_user_id, auth_header=request.META.get('HTTP_AUTHORIZATION'))
+    async_to_sync(channel_layer.group_send)(
+        f"friends_{from_user_id}",
+        {
+            "type": "accepted_friend_request",
+            "user_data": from_user_data['user_data']
+        }
+    )
     friend_request.delete()
     return Response({'message': 'Friend request accepted'}, status=200)
     
