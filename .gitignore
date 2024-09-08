@@ -4,4 +4,5 @@ user.json
 # index.*
 # login.*
 # style.*
+*.pyc
 .gitignore
