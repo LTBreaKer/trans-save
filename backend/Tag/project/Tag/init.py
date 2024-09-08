@@ -66,8 +66,7 @@ class gameMonitor:
                         self.winner = "𝙍𝙚𝙙"
                     else:
                         self.winner = "𝘽𝙡𝙪𝙚"
-
-                collision = False
+                collision = None
                 for self.player in self.players:
                     self.player.fall(self)
                     
@@ -84,19 +83,19 @@ class gameMonitor:
                         elif self.player.leftCollision(self.platform):
                             self.player.velocity['x'] = 0
                             self.player.position['x'] = self.platform.position['x'] - self.player.width
-                            collision = True
+                            collision = "left"
 
                         elif self.player.rightCollision(self.platform):
                             self.player.velocity['x'] = 0
                             self.player.position['x'] = self.platform.position['x'] + self.platform.width
-                            collision = True
-                        
+                            collision = "right"
+
                     if self.player.tagger:
                         self.player.tagVel = self.player.vitesse['right'] / 3
                     else:
                         self.player.tagVel = 0
-                    if not collision:
-                        self.player.left_right(self)
+                    # if not collision:
+                    self.player.left_right(self, collision)
                 
                 if time.time() - self.time_tag > 3:
                     self.GO = True
@@ -228,15 +227,15 @@ class Player:
                 self.velocity['y'] = 0
             self.key['upPressed'] = False
 
-    def left_right(self, game_monitor):
+    def left_right(self, game_monitor, collision):
 
         if (self.key['right'] and self.key['left']):
             self.velocity['x'] = 0
         
-        elif self.key['right']:
+        elif self.key['right'] and collision != "left":
             self.velocity['x'] = self.vitesse['right'] + self.tagVel
 
-        elif self.key['left']:
+        elif self.key['left'] and collision != "right":
             self.velocity['x'] = self.vitesse['left'] - self.tagVel
         
         else:
