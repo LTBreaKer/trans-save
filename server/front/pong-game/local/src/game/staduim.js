@@ -12,16 +12,16 @@ export function zoomCamera(e) {
 	if (paddle_way < 0) camera.rotation.z += Math.PI;
 }
 
-export function rotateTable(e) {
-	if (!startGame && pointerMouse !== -99999999 && e.clientY !== pointerMouse) {
-		(e.clientY < pointerMouse) ?
-		(camera.position.z -= 0.01) :
-		(camera.position.z += 0.01)
-		camera.lookAt(0, 0, 0 );
-		if (paddle_way < 0) camera.rotation.z += Math.PI;
-		pointerMouse = e.clientY;
-	}
-}
+// export function rotateTable(e) {
+// 	if (!startGame && pointerMouse !== -99999999 && e.clientY !== pointerMouse) {
+// 		(e.clientY < pointerMouse) ?
+// 		(camera.position.z -= 0.01) :
+// 		(camera.position.z += 0.01)
+// 		camera.lookAt(0, 0, 0 );
+// 		if (paddle_way < 0) camera.rotation.z += Math.PI;
+// 		pointerMouse = e.clientY;
+// 	}
+// }
 
 export function setPointerMouse(y) {
 	pointerMouse = y;

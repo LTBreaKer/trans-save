@@ -37,9 +37,6 @@ class GameConsumer(AsyncWebsocketConsumer):
           
         print("receive message: ", type, file=sys.stderr)
         if (type == "update_paddle"):
-            print("text_data_json['lpaddle']: ", text_data_json['lpaddle'], file=sys.stderr)
-            print("text_data_json['lpaddle']['ps']: ", text_data_json['lpaddle']['ps'], file=sys.stderr)
-            print("text_data_json['lpaddle']['ps']['x']: ", text_data_json['lpaddle']['ps']['x'], file=sys.stderr)
             self.lpaddle.update(text_data_json['lpaddle']['ps'])
             self.rpaddle.update(text_data_json['rpaddle']['ps'])
         elif (type == 'play'):
@@ -50,9 +47,14 @@ class GameConsumer(AsyncWebsocketConsumer):
 
     async def update_ball(self, event):
         print("game_over: ", self.ball.gameOver, file=sys.stderr)
+        time = 0.0
         while (not self.gameOver):
+            print("self.ball.vel: ", self.ball.vel, file=sys.stderr)
             self.ball.update(self.rpaddle, self.lpaddle)
+            if (time.is_integer()):
+                self.ball.vel += 0.2
             await asyncio.sleep(0.015625)
+            time += 0.015625
             await self.send(text_data=json.dumps({
                 'type': 'draw_info',
                 'ball': self.ball.fn_str(),

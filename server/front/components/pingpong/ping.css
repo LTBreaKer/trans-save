@@ -5,11 +5,14 @@ body {
     color: #333;
     padding: 50px;
     margin: 0;
+    /* min-width: 350px;
+    overflow: hidden; */
   }
   
   .container {
     max-width: 600px;
     margin: 0 auto;
+    min-width: 350px;
   }
   
   h1 {

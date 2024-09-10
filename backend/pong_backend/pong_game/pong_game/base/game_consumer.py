@@ -58,6 +58,11 @@ class GameConsumer(AsyncWebsocketConsumer):
 			self.channel_name
 		)
 
+	# async def ball_is_connected(self, event):
+	# 	await self.channel_layer.send(
+	# 		event["player_channel_name"],
+	# 		{ 'is_connected': 'true' })
+
 	async def deconnect_ball(self, event):
 		await self.close(code=1000)
 

@@ -15,9 +15,9 @@ class Paddle():
 	def ai_update(self, y):
 		y = max(min(y, height - paddleHeight), 0)
 		if (y < self.y):
-			self.y = max(self.y - 7, y)
+			self.y = max(self.y - 5, y)
 		elif (y > self.y):
-			self.y = min(self.y + 7, y)
+			self.y = min(self.y + 5, y)
 
 	
 	def fn_str(self):

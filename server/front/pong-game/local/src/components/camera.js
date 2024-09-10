@@ -26,16 +26,13 @@ export function moveCamera() {
     //     camera.position.z = 3;
     //     // camera.position.set(0, -(TABLE_DEPTH / 2) - 4.5, 3);
     // }
-    let nwidth = canvas.clientWidth * 0.01
-    // camera.lookAt(0, 0, 0 );
-    camera.position.x = +paddle_way * ((TABLE_WIDTH / 2) + 5);
-    // camera.lookAt(0, 0, 0 );
     // camera.rotation.x += Math.PI/2;
-    camera.position.z = 3;
+    // camera.position.x = +paddle_way * ((TABLE_WIDTH / 2) + 5);
+    camera.position.z = 5.8;
     camera.lookAt(0, 0, 0 );
     // camera.position.y = 0;
     // if (paddle_way < 0)
-        camera.rotation.z += Math.PI/2;
+        camera.rotation.z += 3 * Math.PI / 2;
 }
 moveCamera();
 

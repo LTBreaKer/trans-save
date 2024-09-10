@@ -1,64 +1,24 @@
-/* html, body {
-	margin: 0;
-  }
-  
-  html {
-	font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-	height: 100%;
-	width: 100%;
-  }
-  
-  body {
-	overflow: hidden;
-	height: inherit;
-	height: 100%;
-	width: 100%;
-  }
-  
-  h1 {
-	font-size: 2rem;
-	letter-spacing: -1px;
-	position: absolute;
-	margin: 0;
-	top: -4px;
-	right: 5px;
-  
-	color: transparent;
-	text-shadow: 0 0 4px white;
-  }
-
-  canvas {
-	padding: 5px;
-	margin: 10px;
-	z-index: 10;
-  }
-
-  button {
-	display: block;
-  } */
-
 .p_box_result {
 	position:absolute;
 	z-index: 100;
 	display: flex;
-	margin-top: calc((99vh - min(99vw, 99vh)) * 0.1);
-	margin-left: calc((99vw - min(99vw, 99vh)) / 2);
-	/* margin: 15px; */
-	/* width: 720px; */
+	margin-top: calc((((99vh - min(99vw, 99vh)) * 0.1) + 100px / 2));
+	margin-left: calc((((99vw - min(99vw, 99vh)) / 2)));
+	width: calc(( min(99vw, 99vh) - 100px));
 }
 
 .p_container {
 	position: relative;
-	width: 100vw;
-	height: 100vh;
+	width: calc(100vw - 100px);
+	height: calc(100vh - 100px);
 }
 
 .p_canvas_background {
 	position: absolute;
 	color: rgba(0, 0, 0, 1);
 	z-index: 0;
-	width: 100vw;
-	height: 100vh;
+	width: calc(100vw - 100px);
+	height: calc(100vh - 100px);
 	display: flex;
 }
 
@@ -93,8 +53,8 @@
 	z-index: 1;
 	padding: 0px;
 	margin: 0px;
-	margin-top: calc((99vh - min(99vw, 99vh)) * 0.1);
-	margin-left: calc((99vw - min(99vw, 99vh)) / 2);
+	margin-top: calc(((99vh - min(99vw, 99vh)) * 0.1) - 100px / 2);
+	margin-left: calc(((99vw - min(99vw, 99vh)) / 2) - 100px / 2);
 	margin-bottom: 1%;
 	padding-left: -4rem;
 }

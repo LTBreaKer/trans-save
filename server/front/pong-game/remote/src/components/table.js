@@ -8,7 +8,8 @@ const table_geometry = new THREE.BoxGeometry( TABLE_WIDTH, TABLE_DEPTH, TABLE_HE
 const table_milieu_geometry = new THREE.BoxGeometry( TABLE_WIDTH, TABLE_DEPTH / 75, TABLE_HEIGHT + 0.001);
 const table_milieu_material = new THREE.MeshPhongMaterial( { color: 0xffffff } );
 const table_milieu = new THREE.Mesh( table_milieu_geometry, table_milieu_material);
-const table_material = new THREE.MeshPhongMaterial( { map: texture } );
+// const table_material = new THREE.MeshPhongMaterial( { map: texture } );
+const table_material = new THREE.MeshPhongMaterial( { color: 0x0000ff } );
 const table = new THREE.Mesh( table_geometry, table_material);
 
 const side_geometry = new THREE.BoxGeometry(TABLE_HEIGHT, TABLE_DEPTH, PADDLE_HEIGHT * 2);

@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import {canvas, click, TABLE_WIDTH, paddleHeight, height, box_result, first_player_goal, second_player_goal} from '../utils/globaleVariable.js';
 import { lpaddle, rpaddle } from '../game/paddle.js';
 // import { setPointerMouse} from '../game/staduim.js'
-import { rotateTable, zoomCamera } from '../game/staduim.js'
+import { zoomCamera } from '../game/staduim.js'
 // import { setPointerMouse, rotateTable, zoomCamera } from '../game/staduim.js'
 import { connectBallSocket } from '../network/socket.js';
 import { connectAI, connectPaddleSocket, launchGame } from '../game/game.js';
@@ -42,8 +42,8 @@ export function setupEventListeners() {
 		resizeCanvas();
 		moveCamera();
 	})
-	window.addEventListener('mousemove', rotateTable);
-	window.addEventListener('wheel', zoomCamera);
+	// window.addEventListener('mousemove', rotateTable);
+	// window.addEventListener('wheel', zoomCamera);
 	// document.addEventListener("mouseup", () => setPointerMouse(-99999999))
 	// document.addEventListener("mousedown", (e) => {
 	// 	setPointerMouse(e.clientY);
@@ -73,24 +73,24 @@ canvas.clientWidth
 	function keyDownHandler(e) {
 		console.log(e.key);
 		if (e.key === "Right" || e.key === "ArrowUp")
-			rpaddle.rightPressed = true;
-		else if (e.key === "Left" || e.key === "ArrowDown")
-			rpaddle.leftPressed = true;
-		if (e.key === "w" || e.key === "W")
-			lpaddle.rightPressed = true;
-		else if (e.key === "s" || e.key === "S")
 			lpaddle.leftPressed = true;
+		else if (e.key === "Left" || e.key === "ArrowDown")
+			lpaddle.rightPressed = true;
+		if (e.key === "w" || e.key === "W")
+			rpaddle.leftPressed = true;
+		else if (e.key === "s" || e.key === "S")
+			rpaddle.rightPressed = true;
 	}
 	
 	function keyUpHandler(e) {
 		if (e.key === "Right" || e.key === "ArrowUp")
-			rpaddle.rightPressed = false;
-		else if (e.key === "Left" || e.key === "ArrowDown")
-			rpaddle.leftPressed = false;
-		if (e.key === "w" || e.key === "W")
-			lpaddle.rightPressed = false;
-		else if (e.key === "s" || e.key === "S")
 			lpaddle.leftPressed = false;
+		else if (e.key === "Left" || e.key === "ArrowDown")
+			lpaddle.rightPressed = false;
+		if (e.key === "w" || e.key === "W")
+			rpaddle.leftPressed = false;
+		else if (e.key === "s" || e.key === "S")
+			rpaddle.rightPressed = false;
 	}
 	  
 }

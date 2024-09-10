@@ -51,8 +51,8 @@ function resizeRendererToDisplaySize(renderer) {
 	// camera.aspect = canvas.clientWidth / canvas.clientHeight;
 	// camera.updateProjectionMatrix();
 	const pixelRatio = window.devicePixelRatio;
-	const width  = Math.floor( canvas.clientWidth * pixelRatio);
-	const height = Math.floor( canvas.clientHeight * pixelRatio);
+	const width  = Math.floor( canvas.clientWidth * pixelRatio) - 100;
+	const height = Math.floor( canvas.clientHeight * pixelRatio) - 100	;
 	const needResize = canvas.width !== width || canvas.height !== height;
 	if (needResize) {
 		console.log("width: ", width);

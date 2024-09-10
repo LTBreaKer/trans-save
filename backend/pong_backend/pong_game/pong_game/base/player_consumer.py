@@ -68,20 +68,19 @@ class PlayerConsumer(AsyncWebsocketConsumer):
 		self.ai = False
 
 	async def connect(self):
-		# await self.login_user(self.scope["query_string"].decode("utf-8"))
-		# self.room_name = self.scope["user"].id
-		# print("---> user: ", self.scope["user"].id, file=sys.stderr)
+		self.room_name = "g1"
 		self.room_group_name = 'game_%s' % self.room_name
 		await self.channel_layer.group_add(
 			self.room_group_name,
 			self.channel_name
 		)
 		await self.accept()
-		# player = await get_player(self.scope["user"])
-		# player.channel_name = self.channel_name
-		# player.room_group_name = self.room_group_name
-		# await database_sync_to_async(player.save)()
-		# print("current gamer: ", player.id, file=sys.stderr)
+		await self.channel_layer.group_send(
+			self.room_group_name, 
+			{
+				'type': "connect_to_game",
+				'player_channel_name': self.channel_name
+			})
 	
 	async def connect_ai(self):
 		print("connect_ai: ", file=sys.stderr)
@@ -92,24 +91,11 @@ class PlayerConsumer(AsyncWebsocketConsumer):
 		}))
 
 	async def connect_to_game(self, e):
-		print("shared group: ", file=sys.stderr)
-		print("shared group: ", e["group"], file=sys.stderr)
-		await self.channel_layer.group_discard(
-			self.room_group_name,
-			self.channel_name
-		)
-		self.room_group_name = e["group"]
-		await self.channel_layer.group_add(
-			self.room_group_name,
-			self.channel_name
-		)
-		player = await get_player(self.scope["user"])
-		player.room_group_name = self.room_group_name
-		await database_sync_to_async(player.save)()
-		await self.send(text_data=json.dumps({
-			'message': 'create_ball_socket',
-			'group_name': self.room_group_name
-		}))
+		if (self.channel_name != e['player_channel_name']):
+			await self.send(text_data=json.dumps({
+				'message': 'create_ball_socket',
+				'group_name': self.room_group_name
+			}))
 
 	async def disconnect(self, close_code):
 		await self.channel_layer.send(
@@ -119,9 +105,9 @@ class PlayerConsumer(AsyncWebsocketConsumer):
 			self.room_group_name,
 			self.channel_name
 		)
-		player = await get_player(self.scope["user"])
-		player.channel_name = '_'
-		await database_sync_to_async(player.save)()
+		# player = await get_player(self.scope["user"])
+		# player.channel_name = '_'
+		# await database_sync_to_async(player.save)()
 
 	async def receive(self, text_data):
 		text_data_json = json.loads(text_data)
@@ -143,42 +129,9 @@ class PlayerConsumer(AsyncWebsocketConsumer):
 			if (self.ball_channel_name != ''):
 				await self.channel_layer.send(
 				self.ball_channel_name,
-				{
-					'type': 'move'
-				})
+				{ 'type': 'move'})
 		elif (type == "connect_ai"):
 			await self.connect_ai()
-		elif (type == "invitation"):
-			await self.channel_layer.send(
-				text_data_json['channel_name'],
-				{
-					'type': 'invitation',
-					'channel_name': self.channel_name,
-					'group_name': self.room_group_name,
-					'user_name': self.scope["user"].first_name,
-				}
-			)
-		elif (type == "accept_invitation"):
-			print("accept inivtation: ", text_data, file=sys.stderr)
-			await self.connect_to_game(text_data_json)
-
-	async def invitation(self, text_data):
-		await self.send(text_data=json.dumps({
-			'message': 'invitation',
-			'channel_name': text_data['channel_name'],
-			'group_name': text_data['group_name'],
-			'user_name': text_data['user_name']
-		}))
-	
-	async def login_user(self, text_data):
-		token = text_data.split('=', 1)[1]
-		print("-------------token: ", token, file=sys.stderr)
-		
-		if (self.scope["user"] == AnonymousUser() and token):
-			user_id = get_user_id(token)
-			user = await get_user(user_id)
-			await login(self.scope, user)
-			await database_sync_to_async(self.scope["session"].save)()
  
 	async def paddle_info_to_game(self, event):
 		self.ball_channel_name = event['ball_channel_name']
@@ -220,3 +173,11 @@ class PlayerConsumer(AsyncWebsocketConsumer):
 			'left_paddle': event['left_paddle'],
 			'right_paddle': event['right_paddle']
 		}))
+
+	# async def ball_is_connected(self, event):
+	# 	pass
+
+	async def already_one_player_connected(self, event):
+		await self.channel_layer.send(
+			event["player_channel_name"],
+			{ 'is_connected': 'true' })
