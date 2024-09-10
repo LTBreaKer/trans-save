@@ -117,6 +117,8 @@ def add_game_score(request):
         winner_id = request.data.get('winner_id')
         if not winner_id:
             return Response({'message': 'winner_id required'}, status=400)
+        if winner_id != game.player1_id and winner_id != game.player2_id:
+            return Response({'message': 'no player in this game with the provided id'}, status=400)
         game.winner_id = winner_id
     else:
         winner_name = request.data.get('winner_name')

@@ -24,13 +24,13 @@ img {
   }
 
   .logo{
-  width: 100%;
-  height: 50%;
+  /* width: 100%;
+  height: 50%; */
   position: absolute;
 
   display: flex;
-  left: -150px;
-  top: -150px;
+  /* left: -150px;
+  top: -150px; */
   width: 500px;
 }
 
@@ -197,4 +197,74 @@ img {
 
 .error {
   position: absolute;
+}
+
+
+/* ============= ===================== otp container div here  */
+
+.container .otp {
+  display: none;
+  width: 100%;
+  height: 100vh;
+  position: fixed;
+  justify-content: center;
+  align-items: center;
+}
+
+.container .otp .otp_container {
+  width: 380px;
+  height: 500px;
+  background-color: rgba(1,1,1,0.5);
+}
+
+.otp .otp_container .otp_image {
+  width: 100%;
+  height: 30vh;
+  display: flex;
+  justify-content: center;
+}
+
+.otp_container .otp_image img {
+  width: 19em;
+}
+
+.container .otp .otp_content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: white;
+}
+
+.otp .otp_content input {
+  background-color: #eee;
+  border: none;
+  padding: 1rem;
+  font-size: 1rem;
+  margin-top: 15px;
+  border-radius: 1rem;
+  cursor: pointer;
+}
+
+.otp .otp_content input:focus {
+  outline-color: lightcoral;
+}
+
+.container .otp .sub_can {
+  display: flex;
+  width: 100%;
+  justify-content: space-evenly;
+  align-items: center;
+  margin-top: 11px;
+}
+
+
+.otp .sub_can h2 {
+  /* display: flex; */
+  padding: 9px 19px;
+  background-color: #e8ebfb;
+  margin-top: 25px;
+  cursor: pointer;
+  color: black;
+  border-radius: 15px;
 }

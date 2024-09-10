@@ -190,9 +190,10 @@ body {
   /* width: 70px; */
   position: absolute;
   border-radius: 6px;
-  top: -140px;
+  /* top: -140px;
   left: -140px;
-  z-index: -1;
+  z-index: -1; */
+  padding: 15px;
 }
 
 

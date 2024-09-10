@@ -31,7 +31,7 @@ DEBUG = True
 
 host = os.getenv('HOST')
 
-ALLOWED_HOSTS = [host, '127.0.0.1', 'localhost', '10.14.8.9', '10.14.6.10', 'user-management-api', 'auth-api', 'server', 'game-db']
+ALLOWED_HOSTS = [host, '127.0.0.1', 'localhost', '10.14.8.9', '10.14.6.10', 'user-management-api', 'auth-api', 'server', 'game-db-api']
 
 # Application definition
 
@@ -51,6 +51,18 @@ INSTALLED_APPS = [
     'sslserver',
 ]
 
+ASGI_APPLICATION = 'game_db.asgi.application'
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer"
+        # "BACKEND": "channels_redis.core.RedisChannelLayer",
+        # "CONFIG": {
+        #     "hosts": [("redis_c", 6380)],
+        # }
+    }
+}
+
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
 
@@ -63,11 +75,12 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+
 CORS_ALLOWED_ORIGINS = [
-    'https://127.0.0.1:9006',
+    'https://127.0.0.1:9002',
 ]
 CSRF_TRUSTED_ORIGINS = [
-    'https://127.0.0.1:9006',
+    'https://127.0.0.1:9002',
 ]
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_HEADERS = [

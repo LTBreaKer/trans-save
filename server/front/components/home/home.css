@@ -49,12 +49,12 @@ body {
   width: 5em;
 }
 
-.container .main-content {
+/* .container .main-content {
   padding-top: 11vh;
   padding-left: 7.2em;
   height: 100vh;
   width: 100%;
-}
+} */
 
 /* ==============  here i will work with header content  ============== */
 #butt {
@@ -147,9 +147,10 @@ body {
   /* width: 70px; */
   position: absolute;
   border-radius: 6px;
-  top: -140px;
-  left: -140px;
-  z-index: -1;
+  /* top: -140px;
+  left: -140px; */
+  /* z-index: -1; */
+  padding: 15px;
 }
 
 .sidebar li a {
@@ -450,3 +451,111 @@ display: none;
 
 
  /*  ======= ====== ====== ======= ======= ====== ======= ======= */
+
+
+   
+  /* // =========================== here i will work with home content =========================== */
+  
+  .container .main-content {
+    /* background-color: green; */
+    width: 100%;
+    padding-top: 12.5vh;
+    padding-left: 7.6em;
+    height: 100vh;
+    color: white;
+  }
+
+  .container .image_content {
+    /* background-color: blue; */
+    background-image: url(../../images/home/backgroundgame.jpg);
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    width: 90%;
+    height: 40vh;
+    margin: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-left: 90px;
+    /* color: white; */
+    /* left: 20%; */
+  }
+  
+  .container .image_content img {
+    width: 90px;
+    transform: translateY(-89px);
+    /* left: 20%; */
+  }
+  
+  /* .container .image_content .imagess {
+    width: 100%;
+    justify-content: space-around;
+  } */
+
+  .container .image_content .one img {
+    /* position: absolute;; */
+    width: 250px;
+    padding-left: 70px;
+  }
+  
+  .container .image_content .two img {
+    /* position: absolute;; */
+    width: 350px;
+    padding-left: 20px;
+    /* transform: translateY(-56px);
+    transform: translateX(66px); */
+  }
+  .container .image_content .three img {
+    /* position: absolute;; */
+    width: 390px;
+    padding-right: 40px;
+  }
+
+/* here i will work with games  */
+
+  .container .games_btn {
+    /* background-color: greenyellow; */
+    width: 90%;
+    height: 40vh;
+    margin: 15px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+  }
+
+  .games_btn .pingpong {
+    display: flex;
+    justify-content: center;
+  }
+
+  .games_btn .pingpong h1 {
+    position: absolute;
+  }
+
+  .games_btn .pingpong #pingimage {
+    width: 19em;
+    cursor: pointer;
+  }
+
+ .games_btn .tel img {
+    width: 10em;
+  } 
+
+  .games_btn .tag {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    align-items: center;
+  }
+
+.games_btn .tag h1 {
+  margin-bottom: 35px;
+}
+
+.games_btn .tag #backimage {
+  width: 19em;
+  padding-bottom: 45px;
+  cursor: pointer;
+}
+
+/* ===== ======= ======= ====== ======= ====== ======== ======= ======= ======= */

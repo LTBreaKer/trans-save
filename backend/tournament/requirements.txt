@@ -14,3 +14,7 @@ whiteNoise
 djangorestframework-simplejwt
 web3
 py-solc-x
+web3[tester]
+eth-tester
+eth-tester[py-evm]
+py-solc-x

@@ -54,7 +54,8 @@ services:
     restart: always
     networks:
       - my_network
-    command: python manage.py runsslserver --certificate /etc/ssl/certs/cert.pem --key /etc/ssl/private/cert-key.pem 0.0.0.0:8002
+    command: python -m gunicorn game_db.asgi:application -k uvicorn.workers.UvicornWorker --certfile=/etc/ssl/certs/cert.pem --keyfile=/etc/ssl/private/cert-key.pem --bind 0.0.0.0:8002
+    # command: python manage.py runsslserver --certificate /etc/ssl/certs/cert.pem --key /etc/ssl/private/cert-key.pem 0.0.0.0:8002
   tag-game-db:
     image: tag-game-db
     container_name: tag-game-api
@@ -85,7 +86,7 @@ services:
       - .env
     depends_on:
       - db
-      - blockchain
+      # - blockchain
     restart: always
     networks:
       - my_network
@@ -153,16 +154,16 @@ services:
       - my_network
     command: redis-server /etc/redis/redis.conf
 
-  blockchain:
-    image: blockchain
-    build: ./backend/blockchain
-    container_name: blockchain
-    ports:
-      - 9545:9545
-    restart: always
-    entrypoint: sleep infinity
-    networks:
-      - my_network
+  # blockchain:
+  #   image: blockchain
+  #   build: ./backend/blockchain
+  #   container_name: blockchain
+  #   ports:
+  #     - 9545:9545
+  #   restart: always
+  #   entrypoint: truffle develop > /hmmm
+  #   networks:
+  #     - my_network
   backend:
     container_name: back
     build: ./backend/Tag

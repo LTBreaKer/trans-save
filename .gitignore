@@ -1,4 +1,8 @@
 venv
 user.json
-.gitignore
+.env
+# index.*
+# login.*
+# style.*
 *.pyc
+.gitignore

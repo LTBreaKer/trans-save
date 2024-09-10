@@ -1,6 +1,8 @@
 import { loadHTML, loadCSS, player_webSocket } from '../../utils.js';
 import {log_out_func,  logoutf, get_localstorage, getCookie, login } from '../../auth.js';
 
+
+
 const api = "https://127.0.0.1:9004/api/";
 const api_one = "https://127.0.0.1:9005/api/";
 var friend_user_id = 0;
@@ -16,7 +18,7 @@ async function Friends() {
   app.innerHTML = html;
 
   await checkFirst();
-  // await player_webSocket();
+  await player_webSocket();
 
   const logout = document.getElementById('logout')
   logout.addEventListener('click', log_out_func);
