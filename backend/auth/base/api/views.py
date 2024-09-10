@@ -21,6 +21,7 @@ from urllib.parse import urlencode
 from .helpers import generate_otp, send_otp_email
 import requests
 import os
+import sys
 import time
 import smtplib
 from email.mime.text import MIMEText
@@ -336,6 +337,12 @@ def callback_42(request):
 def verify_token(request, *args, **kwargs):
     try:
         access_token = AccessToken(request.data.get('token'))
+
+        # try:
+        #     user_id = access_token['user_id']
+        #     user = User.objects.get(id=user_id)
+        # except (TokenError, InvalidToken) as e:
+        #     return Response(data={'message': 'Invalid user'}, status=402)
 
         return Response(data={'message': 'Token is Valid'})
     except (TokenError, InvalidToken) as e:

@@ -236,7 +236,10 @@ async function checkFirst() {
     });
     console.log(response);
     if (response.status !== 200) {
-      console.log('Token is invalid. Attempting to refresh...');
+      console.log('Token is invalid. Attempting to refresh....');
+      console.log(response);
+      // console.log(await response.json());
+
       await changeAccess();
       await get_friends_home();
       await fetchUserData();

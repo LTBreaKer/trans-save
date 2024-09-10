@@ -393,14 +393,31 @@ async function checkFirst() {
       credentials: 'include',
       body: JSON.stringify({ token }) 
     });
+          const jsonData = await response.json();
+      console.log(jsonData);
+
     console.log(response);
+    // if (response.status === 402) {
+    //   console.log("hhhhhh olah ta hbil");
+    // }
+
     if (response.status !== 200) {
+      // const jsonData = await response.json();
+      // console.log(jsonData);
+      console.log("=====0000----0000====0000------");
+      console.log(response.message);
+      // console.log(await response.json());
       console.log('Token is invalid. Attempting to refresh...');
+      // const jsonData = await response.json();
+      // console.log(jsonData)
       await changeAccess();
       await fetchUserData();
-    } else if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
-    } else {
+    } 
+    else if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      } 
+      else {
+      console.log("==99999999999999999999999999999----");
       const jsonData = await response.json();
       console.log(jsonData);
       console.log('Token verification response:', jsonData);
