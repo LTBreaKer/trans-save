@@ -86,7 +86,7 @@ CORS_ALLOW_HEADERS = [
 
 OAUTH2_PROVIDER = {
     'CLIENT_ID': 'u-s4t2ud-ce1bbd56610daa62e5cd08d1c413cd6ddbb88b04c99ace9e6bb7a87dd6d1dbd8',
-    'CLIENT_SECRET': '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',
+    'CLIENT_SECRET': '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',
     'REDIRECT_URI': 'https://127.0.0.1:9002/',
 }
 

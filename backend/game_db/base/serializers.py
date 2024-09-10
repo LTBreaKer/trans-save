@@ -11,6 +11,7 @@ class GameDbSerialiser(serializers.ModelSerializer):
             'player2_score',
             'is_active',
             'is_remote',
+            'player1_name',
             'player2_name',
             'created_at',
         ]

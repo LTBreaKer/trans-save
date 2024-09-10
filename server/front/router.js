@@ -28,35 +28,23 @@ const routes = {
 async function Router() {
 
   // delete_component().clear();
-  const response = await fetch(api_one + 'user/get-friend-list/', {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer ' + get_localstorage('token'),
-    },
-    credentials: 'include',
-  });
-  const jsonData = await response.json();
-  if (!response.ok) {
-    console.log((`HTTP error! Status: ${response.status}`), Error);
-  }
-  add_friendstoarray(jsonData.friend_list)
-
-
-
+  if (get_localstorage('token'))
+    await get_friends_list();
 
   console.log("here i will print aray hhh==>>  ", friends_array)
   var usern;
   window.addEventListener('hashchange', async () => {
+    console.log("---------------0--0-0-0-00-0-0--0-0-0-0");
     const path = window.location.hash.slice(1);
-    // if (component)
-    //  component.destroy();
     component = routes[path] || NotFound;
     if (!isAuthenticated() && path !== '/login') {
       window.location.hash = '/login';
+      return;
     }
-    if (isAuthenticated() && path === "/login")
+    if (isAuthenticated() && path === "/login"){
       window.location.hash = '/';
+      return;
+    }
     usern = path.split('/')[2];
 
     if (path.startsWith('/user') || (path == '/user' && !friends_array.includes(usern))){
@@ -74,9 +62,12 @@ async function Router() {
 
   if (!isAuthenticated() && path !== '/login') {
     window.location.hash = '/login';
+    return;
   }
-  if (isAuthenticated() && path === "/login")
+  if (isAuthenticated() && path === "/login") {
     window.location.hash = '/';
+    return;
+  }
   
   usern = path.split('/')[2];
   if (path.startsWith('/user') || (path == '/user' && !friends_array.includes(usern))){
@@ -85,12 +76,12 @@ async function Router() {
     else 
       component = routes['/user'];
   }
-  // delete_component = component();
   await component();
 
 }
 
 async function get_friends_list() {
+  console.log("=======hello ======");
   const response = await fetch(api_one + 'user/get-friend-list/', {
     method: 'GET',
     headers: {

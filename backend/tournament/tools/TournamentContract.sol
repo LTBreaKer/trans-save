@@ -59,20 +59,52 @@ contract TournamentContract {
         }
     }
 
-    function    getInitialTournamentMatches(uint256 _tournamentId) public view returns (Match[4] memory _matches) {
-        Match[4] memory returnMatches;
-        uint index = 0;
+    function    getTournamentMatches(uint256 _tournamentId) public view returns (Match[] memory _matches) {
 
-        require(_tournamentId != 0, "no tournament found with the provided id");
-        require(_tournamentId <= tournaments.length, "no tournament found with the provided id");
+        require(tournaments.length > 0, "No tournaments exist");
+        require(_tournamentId < tournaments.length, "no tournament found with the provided id");
 
+        uint count = 0;
         for (uint256 i = 0; i < matches.length; i++) {
             if (matches[i].tournamentId == _tournamentId) {
-                returnMatches[index++] = matches[i];
+                count++;
+            }
+        }
+
+        Match[] memory returnMatches =  new Match[](count);
+
+        uint index = 0;
+        for (uint256 i = 0; i < matches.length; i++) {
+            if (matches[i].tournamentId == _tournamentId) {
+                returnMatches[index++] = Match({
+                    tournamentId: matches[i].tournamentId,
+                    matchNumber: matches[i].matchNumber,
+                    playerOneId: matches[i].playerOneId,
+                    playerTwoId: matches[i].playerTwoId,
+                    playerOneScore: matches[i].playerOneScore,
+                    playerTwoScore: matches[i].playerTwoScore,
+                    winnerId: matches[i].winnerId,
+                    status: matches[i].status,
+                    stage: matches[i].stage
+                });
             }
         }
         return (returnMatches);
     }
+    
+    function startMatch(uint256 _matchNumber, uint256 _tournamentId) public {
+        bool matchFound = false;
+
+        for (uint256 i = 0; i < matches.length; i++) {
+            if (matches[i].tournamentId == _tournamentId && matches[i].matchNumber == _matchNumber) {
+                matches[i].status = "ongoing";
+                matchFound = true;
+                break;
+            }
+        }
+        require(matchFound == true, "no match found with the provided match_number and tournament_id");
+    }
+
     // struct Match {
     //     string username_one;
     //     string username_two;
