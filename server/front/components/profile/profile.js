@@ -418,9 +418,9 @@ async function checkFirst() {
       } 
       else {
       console.log("==99999999999999999999999999999----");
-      const jsonData = await response.json();
-      console.log(jsonData);
-      console.log('Token verification response:', jsonData);
+      // const jsonData = await response.json();
+      // console.log(jsonData);
+      // console.log('Token verification response:', jsonData);
       await fetchUserData();
     }
     

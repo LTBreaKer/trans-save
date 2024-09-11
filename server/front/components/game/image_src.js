@@ -6,7 +6,7 @@ const background = new Image()
 const platform = new Image()
 
 background.src = "components/assets/back.jpg"
-platform.src = "components/assets/test.png"
+platform.src = "components/assets/platform.png"
 const imageIR1 = []
 const imageIL1 = []
 

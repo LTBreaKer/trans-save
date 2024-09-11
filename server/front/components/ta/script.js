@@ -52,7 +52,9 @@ async function localgame_tag() {
       player1_name: player1_name,
       player2_name: player2_name,
     }
-
+    if (response.status === 201)
+      window.location.hash = '/game'
+    
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
@@ -60,6 +62,7 @@ async function localgame_tag() {
   } catch (error) {
     console.error('There was a problem with the fetch operation:', error);
   }
+  
 
 }
 

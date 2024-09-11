@@ -342,7 +342,7 @@ def verify_token(request, *args, **kwargs):
         #     user_id = access_token['user_id']
         #     user = User.objects.get(id=user_id)
         # except (TokenError, InvalidToken) as e:
-        #     return Response(data={'message': 'Invalid user'}, status=402)
+        #     return Response(data={'message': 'Invalid user'}, status=404)
 
         return Response(data={'message': 'Token is Valid'})
     except (TokenError, InvalidToken) as e:

@@ -201,7 +201,7 @@ async function checkFirst() {
       credentials: 'include',
       body: JSON.stringify({ token }) 
     });
-    console.log(response);
+    console.log("=====code status-->    ",response.status);
     if (response.status !== 200) {
       await changeAccess();
       await fetchUserHomeData();
