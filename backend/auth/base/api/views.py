@@ -268,6 +268,7 @@ def callback_42(request):
     }
     try:
         user = User.objects.get(first_name=first_name)
+        user.is_logged_out = False
     except User.DoesNotExist:
         response = requests.get(avatar)
         if response.status_code == 200:
@@ -287,8 +288,8 @@ def callback_42(request):
         user = User.objects.get(username=username)
         user.avatar = f"avatars/{username}_avatar.jpg"
         user.set_unusable_password()
+        user.is_authentication_completed = True
     user.is_online = True
-    user.is_authentication_completed = True
     user.save()
     refresh = RefreshToken.for_user(user)
     token = {
@@ -326,6 +327,9 @@ def callback_42(request):
         # send the otp to user email
         send_otp_email(user.otp, user.email)
         return Response({'message': 'Waiting for otp verification', 'token': token}, status=200)
+    else:
+        user.is_authentication_completed = True
+        user.save()
     return Response(data={'message': 'Login successful', 'token': token}, status=201)
 
 @api_view(['POST'])
@@ -333,7 +337,13 @@ def verify_token(request, *args, **kwargs):
     try:
         access_token = AccessToken(request.data.get('token'))
 
-        return Response(data={'message': 'Token is Valid'})
+        user_id = access_token['user_id']
+
+        try:
+            user = User.objects.get(id=user_id)
+            return Response(data={'message': 'Token is Valid'})
+        except User.DoesNotExist:
+            return Response({'message': 'user does not exist'}, status=404)    
     except (TokenError, InvalidToken) as e:
         return Response(data={'message': 'Invalid token'}, status=401)
 

@@ -53,7 +53,7 @@ def create_local_game(request):
     player2_name = request.data.get('player2_name')
     if not player2_name:
         return Response({'message': 'player2_name required'}, status=400)
-    serializer = GameDbSerialiser(data={'player1_id': user_availablity['player_id'], 'player2_id': -1, 'is_remote': False, 'player2_name': player2_name, 'player2_name': user_availablity['username']})
+    serializer = GameDbSerialiser(data={'player1_id': user_availablity['player_id'], 'player2_id': -1, 'is_remote': False, 'player2_name': player2_name, 'player1_name': user_availablity['username']})
     if serializer.is_valid():
         instance = serializer.save()
         return Response({
@@ -64,6 +64,7 @@ def create_local_game(request):
             },
             status=201
             )
+    return Response({'message': serializer.errors}, status=400)
 
 @api_view(['POST'])
 def create_remote_game(request):

@@ -77,10 +77,10 @@ MIDDLEWARE = [
 
 
 CORS_ALLOWED_ORIGINS = [
-    'https://127.0.0.1:9006',
+    'https://127.0.0.1:9002',
 ]
 CSRF_TRUSTED_ORIGINS = [
-    'https://127.0.0.1:9006',
+    'https://127.0.0.1:9002',
 ]
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_HEADERS = [
