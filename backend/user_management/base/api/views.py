@@ -30,10 +30,12 @@ def sendFriendRequest(request, *args, **kwargs):
 
     if not to_user_username:
         return Response({'message': 'username is required'}, status=400)
-    rr = get_user(username=to_user_username, auth_header=request.META.get('HTTP_AUTHORIZATION'))
-    if rr.status_code != 200:
-        return Response({'message': 'cannot retrieve user data'}, status=400)
-    to_user_id = rr.json()['user_data']['id']
+
+    to_user_request = get_user(username=to_user_username, auth_header=request.META.get('HTTP_AUTHORIZATION'))
+    if to_user_request.status_code != 200:
+        return Response({'message': 'user not found'}, status=404)
+
+    to_user_id = to_user_request.json()['user_data']['id']
 
     
     response = get_user(user_id=to_user_id, auth_header=request.META.get('HTTP_AUTHORIZATION'))
@@ -107,6 +109,15 @@ def accept_friend_request(request, *args, **kwargs):
     
     user_profile = UserProfile.objects.get(user_id=user_id)
     user_profile.friends.add(from_user_profile)
+    channel_layer = get_channel_layer()
+    from_user_data = get_user(user_id=from_user_id, auth_header=request.META.get('HTTP_AUTHORIZATION'))
+    async_to_sync(channel_layer.group_send)(
+        f"friends_{from_user_id}",
+        {
+            "type": "accepted_friend_request",
+            "user_data": from_user_data['user_data']
+        }
+    )
     friend_request.delete()
     return Response({'message': 'Friend request accepted'}, status=200)
     

@@ -27,8 +27,8 @@ compiled_sol = compile_standard({
 with open("compiled_code.json", "w") as file:
     json.dump(compiled_sol, file)
 
-byte_code = compiled_sol["contracts"]["TournamentHistory.sol"]["TournamentHistory"]["evm"]["bytecode"]["object"]
-abi = compiled_sol["contracts"]["TournamentHistory.sol"]["TournamentHistory"]["abi"]
+byte_code = compiled_sol["contracts"]["TournamentHistory.sol"]["TournamentContract"]["evm"]["bytecode"]["object"]
+abi = compiled_sol["contracts"]["TournamentHistory.sol"]["TournamentContract"]["abi"]
 
 try:
     w = Web3(Web3.HTTPProvider('http://127.0.0.1:9545'))
@@ -36,10 +36,10 @@ except Exception as e:
     print("ff")
 chain_id = 1337
 
-address = "0x2eb9714b4f8c38bf89aeb401642dfe5b72c49459"
+address = "0x20d06180d6129e2ffbea854b3053a94c94f7c688"
 address = Web3.to_checksum_address(address)
 
-private_key = "1c55e1fbbfadcff586c9474f9a0dfc598b01c5609a95a5403ac03969ed77f19c"
+private_key = "5aa29c45a7e157a7a404fb6d97976d41cc4bac07c4521dddf75a18f152349529"
 
 TournamentHistory = w.eth.contract(abi=abi, bytecode=byte_code)
 
@@ -73,7 +73,8 @@ print(balance_ether)
 
 tournament_history = w.eth.contract(address=contract_address, abi=abi)
 
-add_tournament_tx = tournament_history.functions.addTournament(5461, [342, 456, 213, 676]).build_transaction(
+
+create_tournament_tx = tournament_history.functions.createTournament(1, 1, ["hhhh", "hhhq", "hhhw", "hhhe", "hhhr", "hhht", "hhhy", "hhhu"]).build_transaction(
     {
         "chainId": chain_id,
         "gasPrice": w.eth.gas_price,
@@ -83,23 +84,49 @@ add_tournament_tx = tournament_history.functions.addTournament(5461, [342, 456, 
 
 )
 
-signed_add_tournament_tx = w.eth.account.sign_transaction(add_tournament_tx, private_key=private_key)
-add_tournament_tx_hash = w.eth.send_raw_transaction(signed_add_tournament_tx.rawTransaction)
-w.eth.wait_for_transaction_receipt(add_tournament_tx_hash)
- 
-response = tournament_history.functions.getTournament(5461).call()
-print("getting tournament", json.dumps(response))
-add_match_tx = tournament_history.functions.addMatch(5461, 342, 213, 5).build_transaction(
+signed_create_tournament_tx = w.eth.account.sign_transaction(create_tournament_tx, private_key=private_key)
+create_tournament_tx_hash = w.eth.send_raw_transaction(signed_create_tournament_tx.rawTransaction)
+w.eth.wait_for_transaction_receipt(create_tournament_tx_hash)
+
+response = tournament_history.functions.getInitialTournamentMatches(1).call()
+
+for match in response:
+    print(f"Match: {match}")
+    print(f"Match: Player One ID {match[2]}, Player Two ID {match[3]}, Status: {match[7]}")
+
+create_tournament_tx = tournament_history.functions.createTournament(2, 1, ["hhhh", "hhhq", "hhhw", "hhhe", "hhhr", "hhht", "hhhy", "hhhu"]).build_transaction(
     {
         "chainId": chain_id,
         "gasPrice": w.eth.gas_price,
         "from": address,
         "nonce": nonce + 1,
     }
-)
-signed_add_match_tx = w.eth.account.sign_transaction(add_match_tx, private_key=private_key)
-add_match_tx_hash = w.eth.send_raw_transaction(signed_add_match_tx.rawTransaction)
-w.eth.wait_for_transaction_receipt(add_match_tx_hash)
 
-response = tournament_history.functions.getTournament(2).call()
-print("getting tournament", json.dumps(response))
+)
+
+signed_create_tournament_tx = w.eth.account.sign_transaction(create_tournament_tx, private_key=private_key)
+create_tournament_tx_hash = w.eth.send_raw_transaction(signed_create_tournament_tx.rawTransaction)
+w.eth.wait_for_transaction_receipt(create_tournament_tx_hash)
+
+response = tournament_history.functions.getInitialTournamentMatches(2).call()
+
+for match in response:
+    print(f"Match: {match}")
+    print(f"Match: Player One ID {match[2]}, Player Two ID {match[3]}, Status: {match[7]}")
+
+# response = tournament_history.functions.getTournament(5461).call()
+# print("getting tournament", json.dumps(response))
+# add_match_tx = tournament_history.functions.addMatch(5461, 342, 213, 5).build_transaction(
+#     {
+#         "chainId": chain_id,
+#         "gasPrice": w.eth.gas_price,
+#         "from": address,
+#         "nonce": nonce + 1,
+#     }
+# )
+# signed_add_match_tx = w.eth.account.sign_transaction(add_match_tx, private_key=private_key)
+# add_match_tx_hash = w.eth.send_raw_transaction(signed_add_match_tx.rawTransaction)
+# w.eth.wait_for_transaction_receipt(add_match_tx_hash)
+
+# response = tournament_history.functions.getTournament(2).call()
+# print("getting tournament", json.dumps(response))

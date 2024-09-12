@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# sleep 5
+
 echo db:5432:$TOURNAMENT_DB:$POSTGRES_USER:$POSTGRES_PASSWORD > ~/.pgpass
 
 chmod 0600 ~/.pgpass

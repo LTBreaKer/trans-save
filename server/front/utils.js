@@ -3,7 +3,7 @@ import { get_friends_home } from './components/profile/profile.js';
 
 
 export function loadHTML(url) {
-  //console.log(url);
+  console.log(url);
     return fetch(url).then(response => response.text());
   }
   
@@ -42,7 +42,7 @@ export async function player_webSocket() {
     let socket = new WebSocket("wss://127.0.0.1:9005/ws/friend-requests/", ["token", get_localstorage('token')]);
     
     socket.onopen = function () {
-      //console.log('WebSocket connection established.');
+      console.log('WebSocket connection established.');
     };
     
     socket.onmessage = async function(event) {
@@ -60,16 +60,16 @@ export async function player_webSocket() {
     };
 
     socket.onclose = function () {
-      //console.log('WebSocket connection closed.');
+      console.log('WebSocket connection closed.');
     };
   });
 }
 
 async function displayNotifications(notifications) {
-  //console.log("hhhhhhhhhhhhhhhhhhhhh");
-  //console.log("notification here check what's the problem =>    ", notifications);
+  console.log("hhhhhhhhhhhhhhhhhhhhh");
+  console.log("notification here check what's the problem =>    ", notifications);
   const notificationsArray =  Array.isArray(notifications) ? notifications : [notifications];
-  //console.log(notificationsArray);
+  console.log(notificationsArray);
   const notifiDisplay = document.querySelector('.notifi_btn');
   if (!notifiDisplay) {
     console.error('Notification display container not found');
@@ -78,8 +78,8 @@ async function displayNotifications(notifications) {
 
   // Generate HTML for all notifications
   if (!notificationsArray)
-      //console.log("alaho akbar ");
-  // //console.log("here is avatar==>    ", notificationsArray[0].friend_request.sender?_data.avatar);
+      console.log("alaho akbar ");
+  // console.log("here is avatar==>    ", notificationsArray[0].friend_request.sender?_data.avatar);
   notifiDisplay.innerHTML = notificationsArray.map(notification => `
     <div class="send_request">
       <div class="img_text">
@@ -106,9 +106,9 @@ async function displayNotifications(notifications) {
 async function handleAccept(event) {
   const notificationDiv = event.target.closest('.send_request');
   const notificationId = event.target.getAttribute('data-id');
-  //console.log(`Declined notification with ID: ${notificationId}`);
+  console.log(`Declined notification with ID: ${notificationId}`);
   notificationDiv.remove(); 
-//console.log(notificationId);
+console.log(notificationId);
   const data = {
     id: notificationId
   }
@@ -122,9 +122,9 @@ async function handleAccept(event) {
     body: JSON.stringify(data)
   });
   const jsonData = await response.json();
-  //console.log("accept anvitation =>     ", jsonData);
+  console.log("accept anvitation =>     ", jsonData);
   if (!response.ok) {
-    //console.log((`HTTP error! Status: ${response.status}`), Error);
+    console.log((`HTTP error! Status: ${response.status}`), Error);
   }
   await get_friends_home();
 
@@ -134,7 +134,7 @@ async function handleAccept(event) {
 async function handleDecline(event) {
   const notificationDiv = event.target.closest('.send_request');
   const notificationId = event.target.getAttribute('data-id');
-  //console.log(`Declined notification with ID: ${notificationId}`);
+  console.log(`Declined notification with ID: ${notificationId}`);
   notificationDiv.remove(); 
 
   const data = {
@@ -150,9 +150,9 @@ async function handleDecline(event) {
     body: JSON.stringify(data)
   });
   const jsonData = await response.json();
-  //console.log("accept anvitation =>     ", jsonData);
+  console.log("accept anvitation =>     ", jsonData);
   if (!response.ok) {
-    //console.log((`HTTP error! Status: ${response.status}`), Error);
+    console.log((`HTTP error! Status: ${response.status}`), Error);
   }
 
 

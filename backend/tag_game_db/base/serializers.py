@@ -5,13 +5,15 @@ class TagGameDbSerialiser(serializers.ModelSerializer):
     class Meta:
         model   = TagGameDb
         fields  = [
+            'id',
             'player1_id',
             'player2_id',
-            'player1_score',
-            'player2_score',
             'is_active',
             'is_remote',
+            'player1_name',
             'player2_name',
+            'winner_name',
+            'winner_id',
             'created_at',
         ]
     

@@ -8,9 +8,12 @@ python-dotenv
 dj_database_url
 Pillow
 gunicorn
+uvicorn[standard]
 django-cors-headers
 django-sslserver
 whiteNoise
 djangorestframework-simplejwt
 web3
 py-solc-x
+channels[daphne]
+channels_redis

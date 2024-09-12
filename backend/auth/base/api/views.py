@@ -7,6 +7,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenBlacklistView
 from rest_framework_simplejwt.tokens import AccessToken
 from rest_framework_simplejwt.exceptions import TokenError, InvalidToken
+from rest_framework_simplejwt.token_blacklist.models import BlacklistedToken
 from .serializers import UserSerializer
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from django.contrib.auth.password_validation import validate_password
@@ -20,6 +21,7 @@ from urllib.parse import urlencode
 from .helpers import generate_otp, send_otp_email
 import requests
 import os
+import sys
 import time
 import smtplib
 from email.mime.text import MIMEText
@@ -70,10 +72,11 @@ class CustomTokenObtainPairView(TokenObtainPairView):
         
                 # send the otp to user email
                 send_otp_email(user.otp, user.email)
+                return Response({'message': 'Waiting for otp verification', 'token': response.data}, status=200)
             else:
                 user.is_authentication_completed = True
                 user.save()
-            return response
+                return response
         except Exception as e:
             raise InvalidToken(str(e))
         
@@ -265,7 +268,8 @@ def callback_42(request):
         'last_name': last_name
     }
     try:
-        user = User.objects.get(username=username)
+        user = User.objects.get(first_name=first_name)
+        user.is_logged_out = False
     except User.DoesNotExist:
         response = requests.get(avatar)
         if response.status_code == 200:
@@ -285,8 +289,8 @@ def callback_42(request):
         user = User.objects.get(username=username)
         user.avatar = f"avatars/{username}_avatar.jpg"
         user.set_unusable_password()
+        user.is_authentication_completed = True
     user.is_online = True
-    user.is_authentication_completed = True
     user.save()
     refresh = RefreshToken.for_user(user)
     token = {
@@ -302,15 +306,45 @@ def callback_42(request):
         # response.raise_for_status()  # Raise an exception for HTTP errors
     except RequestException as e:
         return Response({'message': str(e)}, status=500)
+    if user.twofa_active:
+        if int(user.max_otp_try) == 0 and user.otp_max_out:
+                t = user.otp_max_out - timezone.now()
+                diff = t.total_seconds() / 60
+                data = {
+                    'message': f"try again in {round(diff, 2)} minutes"
+                }
+                return Response(data=data, status=400)
+        otp = generate_otp()
+        otp_expiry = timezone.now() + datetime.timedelta(minutes=5)
+        max_otp_try = int(user.max_otp_try) - 1
+        otp_max_out = timezone.now() + datetime.timedelta(hours=1) if max_otp_try == 0 else None
+
+        user.otp = otp
+        user.otp_expiry = otp_expiry
+        user.max_otp_try = max_otp_try
+        user. otp_max_out = otp_max_out
+        user.save()
+
+        # send the otp to user email
+        send_otp_email(user.otp, user.email)
+        return Response({'message': 'Waiting for otp verification', 'token': token}, status=200)
+    else:
+        user.is_authentication_completed = True
+        user.save()
     return Response(data={'message': 'Login successful', 'token': token}, status=201)
 
 @api_view(['POST'])
 def verify_token(request, *args, **kwargs):
     try:
         access_token = AccessToken(request.data.get('token'))
-        payload = access_token.payload
 
-        return Response(data={'message': 'Token is Valid', 'user_id': payload['user_id']})
+        # try:
+        #     user_id = access_token['user_id']
+        #     user = User.objects.get(id=user_id)
+        # except (TokenError, InvalidToken) as e:
+        #     return Response(data={'message': 'Invalid user'}, status=404)
+
+        return Response(data={'message': 'Token is Valid'})
     except (TokenError, InvalidToken) as e:
         return Response(data={'message': 'Invalid token'}, status=401)
 
@@ -347,7 +381,6 @@ def get_user_by_id(request, *args, **kwargs):
     }
     return Response(data, status=200)
 
-
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def get_user_by_username(request):
@@ -356,7 +389,6 @@ def get_user_by_username(request):
         return Response({'message': 'User not authenticated properly'}, status=403)
     
     username = request.data.get('username')
-    print('username: ', username)
     if not username:
         return Response({'message': 'username required'}, status=400)
     

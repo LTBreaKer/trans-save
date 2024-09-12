@@ -1,6 +1,8 @@
 import { loadHTML, loadCSS, player_webSocket } from '../../utils.js';
 import {log_out_func,  logoutf, get_localstorage, getCookie, login } from '../../auth.js';
 
+
+
 const api = "https://127.0.0.1:9004/api/";
 const api_one = "https://127.0.0.1:9005/api/";
 var friend_user_id = 0;
@@ -16,7 +18,7 @@ async function Friends() {
   app.innerHTML = html;
 
   await checkFirst();
-  // await player_webSocket();
+  await player_webSocket();
 
   const logout = document.getElementById('logout')
   logout.addEventListener('click', log_out_func);
@@ -29,7 +31,7 @@ async function Friends() {
       const query = input_search.value;
       input_search.value = "";
       send_freinds_request(query);
-      //console.log('Search query:', query);
+      console.log('Search query:', query);
     }
   })
 
@@ -37,11 +39,12 @@ const cancel_friend = document.getElementById('cancel_friend');
 
 cancel_friend.addEventListener('click', () => {
 
-  if (friends_array.includes(friend_username))
+  // if (friends_array.includes(friend_username))
     remove_friend();
-  else
-    send_freinds_request(friend_username);
-  //console.log("hello we are here hhhh");
+  // else
+  //   send_freinds_request(friend_username);
+  // console.log("hello we are here hhhh");
+  window.location.hash = '/';
 })
 }
 
@@ -59,9 +62,9 @@ async function remove_friend() {
     body: JSON.stringify(data)
   });
   const jsonData = await response.json();
-  //console.log("accept anvitation =>     ", jsonData);
+  console.log("accept anvitation =>     ", jsonData);
   if (!response.ok) {
-    //console.log((`HTTP error! Status: ${response.status}`), Error);
+    console.log((`HTTP error! Status: ${response.status}`), Error);
   }
 }
 
@@ -76,24 +79,24 @@ async function get_friends_home() {
   });
   const jsonData = await response.json();
   if (!response.ok) {
-    //console.log((`HTTP error! Status: ${response.status}`), Error);
+    console.log((`HTTP error! Status: ${response.status}`), Error);
   }
-  //console.log(jsonData.friend_list);
+  console.log(jsonData.friend_list);
   displayFriendList_home(jsonData.friend_list)
 }
 
 function displayFriendList_home(friendList) {
    friendList =  Object.values(friendList);
-   friends_array = [];
+  //  friends_array = [];
 if (!friendList) {
   console.error('Notification display container not found');
   return;
 }
 
   const send_friend = document.querySelector('.send_friend_list');
-  send_friend.innerHTML = friendList.map( friend => {
-    friends_array.push(friend.username);
-  });
+  // send_friend.innerHTML = friendList.map( friend => {
+  //   friends_array.push(friend.username);
+  // });
   send_friend.innerHTML = friendList.map( friend => ` 
     <div class="friends" data-id="${friend.id}">
     <div class="friend" id="user_id" data-id="${friend.id}">
@@ -105,7 +108,7 @@ if (!friendList) {
   send_friend.querySelectorAll('.click_friend').forEach(link => {
     link.addEventListener('click', readit);
   });
-  //console.log("here i will print my array =>    ", friends_array);
+  // console.log("here i will print my array =>    ", friends_array);
 }
 
 var id_of_friends;
@@ -114,7 +117,7 @@ function readit(event) {
 
   id_of_friends = event.target.getAttribute('data-id');
   name_of_friends = event.target.getAttribute('data-name');
-  //console.log('hello wer are here fine', id_of_friends);
+  console.log('hello wer are here fine', id_of_friends);
   window.location.hash = `/user/${name_of_friends}`
 }
 
@@ -142,11 +145,11 @@ try {
     credentials: 'include',
     body: JSON.stringify(data)
   });
-  //console.log("hello -----------------------------");
+  console.log("hello -----------------------------");
    jsonData = await response.json();
-  //console.log(jsonData.message);
+  console.log(jsonData.message);
   if ("Friend request sent" === jsonData.message){
-    //console.log("==--=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
+    console.log("==--=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
     document.querySelector('#send_friend_message_text').innerHTML = 'Friend Request Sent';
     document.querySelector('.send_friend_message').style.display = 'flex';
   }
@@ -189,7 +192,7 @@ async function changeAccess() {
     }
 
     const jsonData = await response.json();
-    //console.log('New tokens:', jsonData);
+    console.log('New tokens:', jsonData);
     
     await login(jsonData.access, jsonData.refresh);
 
@@ -202,16 +205,16 @@ async function changeAccess() {
 async function checkFirst() {
 
 
-  //console.log("*******************************");
+  console.log("*******************************");
   const subprotocols = ['token', get_localstorage('token')];
 
   const socket = new WebSocket('wss://127.0.0.1:9005/ws/friend-requests/ ', subprotocols);
   socket.onmessage = function(event) {
-    //console.log('Message from server:', event.data);
+    console.log('Message from server:', event.data);
     
     try {
       const data = JSON.parse(event.data);
-      //console.log('Parsed data:', data);
+      console.log('Parsed data:', data);
     } catch (e) {
       console.error('Failed to parse message:', e);
     }
@@ -220,8 +223,8 @@ async function checkFirst() {
 
   const token = get_localstorage('token');
   
-  //console.log('Token being checked:', token); 
-  //console.log("--------------------------------------", api);
+  console.log('Token being checked:', token); 
+  console.log("--------------------------------------", api);
   try {
     const response = await fetch(api + 'auth/verify-token/', {
       method: 'POST',
@@ -231,9 +234,12 @@ async function checkFirst() {
       credentials: 'include',
       body: JSON.stringify({ token })
     });
-    //console.log(response);
+    console.log(response);
     if (response.status !== 200) {
-      //console.log('Token is invalid. Attempting to refresh...');
+      console.log('Token is invalid. Attempting to refresh....');
+      console.log(response);
+      // console.log(await response.json());
+
       await changeAccess();
       await get_friends_home();
       await fetchUserData();
@@ -241,7 +247,7 @@ async function checkFirst() {
       throw new Error(`HTTP error! Status: ${response.status}`);
     } else {
       const jsonData = await response.json();
-      //console.log(jsonData);
+      console.log(jsonData);
       await get_friends_home();
       await fetchUserData();
     }
@@ -266,14 +272,14 @@ async function fetchUserData() {
       throw new Error('Network response was not ok');
     }
     const userData = await userResponse.json();
-    //console.log('User data:', userData);
+    console.log('User data:', userData);
 
     const change_user = document.getElementById('UserName');
     const change_image = document.getElementById('image_user');
 
     change_image.src = userData.user_data.avatar;
     change_user.innerHTML = userData.user_data.username;
-    //console.log("==================================");
+    console.log("==================================");
   } catch (error) {
     console.error('There was a problem with the fetch operation:', error);
   }
@@ -304,17 +310,17 @@ async function fetch_friend_data() {
     const jsonData = await response.json();
     const avata = document.getElementById('avatar');
     const profile_username = document.getElementById('profile_username');
-    const cancel_friend = document.getElementById('cancel_friend');
+    // const cancel_friend = document.getElementById('cancel_friend');
 
     friend_user_id = jsonData.user_data.id;
     avata.src = jsonData.user_data.avatar
 
     profile_username.innerHTML = jsonData.user_data.username;
     friend_username = jsonData.user_data.username;
-    if (friends_array.includes(jsonData.user_data.username))
-      cancel_friend.innerHTML = " Cancel Friend";
-    else
-      cancel_friend.innerHTML = " Send Friend";
+    // if (friends_array.includes(jsonData.user_data.username))
+    //   cancel_friend.innerHTML = " Cancel Friend";
+    // else
+    //   cancel_friend.innerHTML = " Send Friend";
 }
 
 export default Friends;

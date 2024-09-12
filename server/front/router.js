@@ -4,69 +4,59 @@ import Login from './components/login/login.js';
 import NotFound from './components/notfound/notfound.js';
 import Friends from './components/friends/friends.js';
 import Game from './components/game/game.js';
+import PingPong from './components/pingpong/ping.js';
 import { isAuthenticated, get_localstorage } from './auth.js';
+import Ta from './components/ta/script.js';
+import Ping from './components/ping/script.js';
 
-
-const api = "https://127.0.0.1:9004/api/";
-
+const api_one = "https://127.0.0.1:9005/api/";
+let friends_array = [];
+let component;
 const routes = {
   '/': Home,
+  '/ta': Ta,
   '/profile': Profile,
   '/login': Login,
   '/notfound': NotFound,
   '/user': Friends,
   '/game': Game,
+  '/pingpong': PingPong,
+  '/ping': Ping,
 };
+// let delete_component = routes[path];
 
 async function Router() {
 
+  // delete_component().clear();
+  if (get_localstorage('token'))
+    await get_friends_list();
+
+  console.log("here i will print aray hhh==>>  ", friends_array)
   var usern;
   window.addEventListener('hashchange', async () => {
+    console.log("---------------0--0-0-0-00-0-0--0-0-0-0");
     const path = window.location.hash.slice(1);
-    var component = routes[path] || NotFound;
-
+    component = routes[path] || NotFound;
     if (!isAuthenticated() && path !== '/login') {
       window.location.hash = '/login';
       return;
     }
-    if (isAuthenticated() && path === "/login")
+    if (isAuthenticated() && path === "/login"){
       window.location.hash = '/';
-    if (path.startsWith('/user')){
-      component = routes['/user'];
-      usern = path.split('/')[2];
-      //console.log(usern);
+      return;
     }
-    const data = {
-      username: usern
-    };
-    
-      // const response = await fetch(api + 'auth/get-user-by-username/', {
-      //   method: 'POST',
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //     'AUTHORIZATION': "Bearer " + get_localstorage('token')
-      //   },
-      //   credentials: 'include',
-      //   body: JSON.stringify(data)
-      // });
-      // //console.log("DATA OF USER -----------------------------");
-      // const jsonData = await response.json();
-      // //console.log(jsonData);
-    
-      // if (!response.ok) {
-      //   throw new Error(`HTTP error! Status: ${response.status}`);
-      // }
-    
+    usern = path.split('/')[2];
 
-
-
-
-
-
-    // }
+    if (path.startsWith('/user') || (path == '/user' && !friends_array.includes(usern))){
+      if (typeof usern === 'undefined' || usern === null || !friends_array.includes(usern) ) 
+        component = NotFound;
+      else 
+        component = routes['/user'];
+    }
+    // delete_component = component();
     await component();
   });
-
+  console.log("==================================== 0000000000");
   const path = window.location.hash.slice(1) || '/';
   let component = routes[path] || NotFound;
 
@@ -74,16 +64,50 @@ async function Router() {
     window.location.hash = '/login';
     return;
   }
-  if (isAuthenticated() && path === "/login")
+  if (isAuthenticated() && path === "/login") {
     window.location.hash = '/';
-
-  if (path.startsWith('/user')){
-    component = routes['/user'];
-    usern = path.split('/')[2];
-    //console.log(usern);
+    return;
   }
-
+  
+  usern = path.split('/')[2];
+  if (path.startsWith('/user') || (path == '/user' && !friends_array.includes(usern))){
+    if (typeof usern === 'undefined' || usern === null ||  !friends_array.includes(usern) ) 
+      component = NotFound;
+    else 
+      component = routes['/user'];
+  }
   await component();
+
 }
 
+async function get_friends_list() {
+  console.log("=======hello ======");
+  const response = await fetch(api_one + 'user/get-friend-list/', {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + get_localstorage('token'),
+    },
+    credentials: 'include',
+  });
+  const jsonData = await response.json();
+  if (!response.ok) {
+    console.log((`HTTP error! Status: ${response.status}`), Error);
+  }
+  add_friendstoarray(jsonData.friend_list)
+}
+
+
+function add_friendstoarray(friendList) {
+  if (!friendList) {
+    console.error('Notification display container not found');
+    return;
+  }
+  
+  friendList =  Object.values(friendList);
+  friends_array = [];
+ friendList.map( friend => {
+   friends_array.push(friend.username);
+ });
+}
 export default Router;

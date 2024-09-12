@@ -10,3 +10,5 @@ class CustomUsernameValidator(validators.RegexValidator):
         "numbers, and @/./+/-/_ characters"
     )
     flags = 0
+    def __call__(self, value):
+        super().__call__(value)

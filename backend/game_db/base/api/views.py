@@ -4,8 +4,10 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from base.models import GameDb
 from base.serializers import GameDbSerialiser
-from .helpers import check_auth, get_user_info, is_user_authenticated
+from .helpers import check_auth, get_user, is_user_authenticated
 import base.global_vars as global_vars
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
 
 game_queue = global_vars.game_queue
 
@@ -19,6 +21,7 @@ def check_user_availablity(request):
             }
     user_data = auth_check_response.json()['user_data']
     player_id = user_data['id']
+    username = user_data['username']
 
     if GameDb.objects.filter(
         Q(player1_id=player_id) | Q(player2_id=player_id),
@@ -37,6 +40,7 @@ def check_user_availablity(request):
         'is_available' : True,
         'res': None,
         'player_id': player_id,
+        'username': username
         }
 
 @api_view(['POST'])
@@ -49,18 +53,22 @@ def create_local_game(request):
     player2_name = request.data.get('player2_name')
     if not player2_name:
         return Response({'message': 'player2_name required'}, status=400)
-    serializer = GameDbSerialiser(data={'player1_id': -1, 'player2_id': -1, 'is_remote': False, 'player2_name': player2_name})
+    serializer = GameDbSerialiser(data={'player1_id': user_availablity['player_id'], 'player2_id': -1, 'is_remote': False, 'player2_name': player2_name, 'player1_name': user_availablity['username']})
     if serializer.is_valid():
-        serializer.save()
+        instance = serializer.save()
         return Response({
                 'message': 'game created',
+                'game_id': instance.id,
+                'player1_name': instance.player1_name,
                 'player2_name': player2_name,
             },
             status=201
             )
+    return Response({'message': 'Error: game not created'}, status=400)
 
 @api_view(['POST'])
 def create_remote_game(request):
+    AUTH_HEADER = request.META.get('HTTP_AUTHORIZATION')
     user_availablity = check_user_availablity(request)
     if not user_availablity['is_available']:
         return user_availablity['res']
@@ -71,14 +79,38 @@ def create_remote_game(request):
         player2_id = game_queue.pop()
         serializer = GameDbSerialiser(data={'player1_id': player1_id, 'player2_id': player2_id})
         if serializer.is_valid():
-            serializer.save()
-            return Response({'message': 'game created',
-                            'player1_id': player1_id,
-                            'player2_id': player2_id},
-                            status=201
-                    )
+            instance = serializer.save()
+            channel_layer = get_channel_layer()
+            player2_data = get_user(user_id=player2_id, auth_header=AUTH_HEADER).json()
+            async_to_sync(channel_layer.group_send)(
+                f"player_{player1_id}",
+                {
+                    "type": "remote_game_created",
+                    "game": {
+                        "id": instance.id,
+                        "player1_id": player1_id,
+                        "player2_id": player2_id,
+                        "player1_name": user_availablity['username'],
+                        "player2_name": player2_data['user_data']['username']
+                    }
+                }
+            )
+            async_to_sync(channel_layer.group_send)(
+                f"player_{player2_id}",
+                {
+                    "type": "remote_game_created",
+                    "game": {
+                        "id": instance.id,
+                        "player1_id": player1_id,
+                        "player2_id": player2_id,
+                        "player1_name": user_availablity['username'],
+                        "player2_name": player2_data['user_data']['username']
+                    }
+                }
+            )
+            return Response({'message': 'game created'}, status=201)
         else:
-            return Response({'message': 'invalid data'}, status=400)
+            return Response({'message': serializer.errors}, status=400)
     else:
         return Response({'message': 'waiting for second player to join'}, status=200)
     
@@ -102,21 +134,36 @@ def add_game_score(request):
     if auth_check_response.status_code != 200:
         return Response(data=auth_check_response.json(), status=auth_check_response.status_code)
     game_id = request.data.get('game_id')
-    player1_id = request.data.get('player1_id')
-    player2_id = request.data.get('player2_id')
-    player1_score = request.data.get('player1_score')
-    player2_score = request.data.get('player2_score')
-    if not game_id or not player1_id or not player2_id or not player1_score or not player2_score:
-        return Response({'message': 'invalid data'}, status=400)
+    if not game_id:
+        return Response({'message': 'game_id required'}, status=400)
     try:
         game = GameDb.objects.get(id=game_id, is_active=True)
     except GameDb.DoesNotExist:
         return Response({'message': 'no active game found between the two provided players'}, status=404)
-    players_ids = [game.player1_id, game.player2_id]
-    if player1_id not in players_ids or player2_id not in players_ids:
-        return Response({'message': 'invalid player id'}, status=400)
-    game.player1_score = player1_score if game.player1_id == player1_id else player2_score
-    game.player2_score = player2_score if game.player2_id == player2_id else player1_score
+    if not game.is_remote:
+        player1_name = request.data.get('player1_name')
+        player2_name = request.data.get('player2_name')
+        player1_score = request.data.get('player1_score')
+        player2_score = request.data.get('player2_score')
+        if not player1_name or not player2_name or not player1_score or not player2_score:
+            return Response({'message': 'player1_name , player2_name, player1_score and player2_score are required'}, status=400)
+        player_names = [game.player1_name, game.player2_name]
+        if player1_name not in player_names or player2_name not in player_names:
+            return Response({'message': 'invalid player names'}, status=400)
+        game.player1_score = player1_score if game.player1_name == player1_name else player2_score
+        game.player2_score = player2_score if game.player2_name == player2_name else player1_score
+    else:
+        player1_id = request.data.get('player1_id')
+        player2_id = request.data.get('player2_id')
+        player1_score = request.data.get('player1_score')
+        player2_score = request.data.get('player2_score')
+        if not player1_id or not player2_id or not player1_score or not player2_score:
+            return Response({'message': 'player1_id , player2_id, player1_score and player2_score are required'}, status=400)
+        player_ids = [game.player1_id, game.player2_id]
+        if player1_id not in player_ids or player2_id not in player_ids:
+            return Response({'message': 'invalid player ids'}, status=400)
+        game.player1_score = player1_score if game.player1_id == player1_id else player2_score
+        game.player2_score = player2_score if game.player2_id == player2_id else player1_score
     game.is_active = False
     game.save()
     return Response({'message': 'game score added'}, status=200)
@@ -153,4 +200,4 @@ def is_available(request):
             'is_available': False,
             'res': Response({'message': 'player already in queue'}, status=400)
             }
-    return Response({'message': 'user already in a game or in a queue'}, status=400)
+    return Response({'message': 'user is available'}, status=200)

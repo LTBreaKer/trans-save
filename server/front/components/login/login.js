@@ -1,9 +1,10 @@
 import { loadHTML, loadCSS, getQueryParams } from '../../utils.js';
 import {login } from '../../auth.js';
 
-
+let tokenn;
+let refrech;
+const api = "https://127.0.0.1:9004/api/";
 async function Login() {
-    const api = "https://127.0.0.1:9004/api/";
     const token  = localStorage.getItem('token');
     const csrftoken = getCookie('csrftoken');
 
@@ -42,10 +43,10 @@ async function Login() {
     sin_btn.addEventListener('click', e =>{
         e.preventDefault();
         validDataInput();
-        //console.log("hello it's workng right 9999");
-        //console.log("hello it's workng right 88888");
+        console.log("hello it's workng right 9999");
+        console.log("hello it's workng right 88888");
         signindata();
-        //console.log("89898989898989898988989898889");
+        console.log("89898989898989898988989898889");
     });
 
     sup_btn.addEventListener('click', e => {
@@ -68,11 +69,20 @@ async function Login() {
             body: JSON.stringify({code})
         })
         .then(response => {
-            //console.log(response);
+            console.log(response);
             return response.json();
         })
-        .then(data => {
-            //console.log(data);
+         .then(data => {
+            console.log(data);
+            if (data.message === 'Waiting for otp verification'){
+                console.log(data.token);
+                // console.log(data.token['access']);
+                console.log(data.token.access);
+                tokenn = data.token.access;
+                refrech = data.token.refresh;
+                 handle_otp();
+                console.log('hello we are here waiting for verification give me the code ');
+            }
             if (data.message === 'Login successful') {
                 login(data.token.access, data.token.refresh);
                 window.location.href = '/';
@@ -96,11 +106,11 @@ async function Login() {
             credentials: 'include'
         })
         .then(response => {
-            //console.log(response);
+            console.log(response);
             return response.json();
         })
         .then(data => {
-            //console.log(data);
+            console.log(data);
             if (data.message === 'Redirecting to 42 login')
                 window.location.href = data.url;
         })
@@ -197,7 +207,7 @@ function getCookie(name) {
 }
 
 const sign_up_data = () => {
-    //console.log("ana hna ana hna ana hna ana hna ana hna hhhhh");
+    console.log("ana hna ana hna ana hna ana hna ana hna hhhhh");
     const data = {
         username: sup_username.value,
         password: sup_password.value,
@@ -216,7 +226,7 @@ const sign_up_data = () => {
     .then(response=> {
         if (!response.ok) 
             throw new Error('Network response was not ok');
-        //console.log(response);
+        console.log(response);
         return response.json();
     })
     .then(data => {
@@ -236,7 +246,7 @@ const signindata = () => {
         username: username.value,
         password: password.value
     };    
-    //console.log(JSON.stringify(data))
+    console.log(JSON.stringify(data))
     fetch(api + 'auth/login/', {
         method: 'POST',
         headers: {
@@ -247,18 +257,26 @@ const signindata = () => {
         body: JSON.stringify(data)
     })
     .then(response => {
-        //console.log(response);
+        console.log(response);
         if (!response.ok){
-            //console.log("Eroor");
+            console.log("Eroor");
         }
-        else if (response.status === 200)
-            name = 1;
+        
+        // else if (response.status === 200)
+        //     name = 1;
+        // console.log(response.message);
         return response.json();
     })
     .then(data => {
-        //console.log(data)
-        //console.log(data.access)
-        if (name === 1){
+        console.log(data)
+        // console.log(data.access)
+        if (data.message === 'Waiting for otp verification')
+        {
+            tokenn = data.token.access;
+            refrech = data.token.refresh;
+            handle_otp();
+        }
+        if (data.message === 'Login successful'){
             login(data.access ,data.refresh)
             window.location.hash = '/';
         }
@@ -270,6 +288,60 @@ const signindata = () => {
 }
 
 
+}
+
+
+ async function handle_otp() {
+    console.log('token === >  ', tokenn);
+    
+    document.querySelector('.otp').style.display = 'flex';
+    const otp_cancel = document.getElementById('otp_cancel');
+    otp_cancel.addEventListener('click', () => {
+        document.querySelector('.otp').style.display = 'none';
+    })
+    const otp_input = document.getElementById('otp_input');
+    const otp_submit = document.getElementById('otp_submit');
+    otp_submit.addEventListener('click', () => {
+        console.log("====otp input >:   ", otp_input.value);
+        // document.querySelector('.otp').style.display = 'none';
+        const data = {
+            otp: otp_input.value
+        };
+        const jsonData = JSON.stringify(data);
+    
+        fetch(api + 'auth/verify-otp/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'AUTHORIZATION': 'Bearer ' + tokenn,
+            },
+            credentials: 'include',
+            body: jsonData
+        })
+        .then(response=> {
+            // console.log(response.json());
+            console.log(response);
+            if (!response.ok) 
+                console.log('Failed')
+                // throw new Error('Network response was not ok');
+            console.log(response);
+            return response.json();
+        })
+        .then(data => {
+            console.log('========= ',data);
+            if (data.message === "otp verified successfully"){
+                login(tokenn, refrech);
+                window.location.hash = '/'
+            }
+        })
+        .catch(error => {
+            console.error('there is error from here');
+        });
+    
+    })
+
+
+    console.log('hello we are here.. ');
 }
 // ------------------------------------------- home here ========== 
  

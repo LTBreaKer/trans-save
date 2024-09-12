@@ -19,6 +19,7 @@ def check_user_availablity(request):
             }
     user_data = auth_check_response.json()['user_data']
     player_id = user_data['id']
+    username = user_data['username']
 
     if TagGameDb.objects.filter(
         Q(player1_id=player_id) | Q(player2_id=player_id),
@@ -37,6 +38,7 @@ def check_user_availablity(request):
         'is_available' : True,
         'res': None,
         'player_id': player_id,
+        'username': username
         }
 
 @api_view(['POST'])
@@ -49,15 +51,18 @@ def create_local_game(request):
     player2_name = request.data.get('player2_name')
     if not player2_name:
         return Response({'message': 'player2_name required'}, status=400)
-    serializer = TagGameDbSerialiser(data={'player1_id': -1, 'player2_id': -1, 'is_remote': False, 'player2_name': player2_name})
+    serializer = TagGameDbSerialiser(data={'player1_name': user_availablity['username'], 'player2_name': player2_name, 'is_remote': False, 'player1_id': user_availablity['player_id'], 'player2_id': -1})
     if serializer.is_valid():
-        serializer.save()
+        instance = serializer.save()
         return Response({
                 'message': 'game created',
+                'game_id': instance.id,
+                'player1_name': instance.player1_name,
                 'player2_name': player2_name,
             },
             status=201
             )
+    return Response({'message': serializer.errors}, status=400)
 
 @api_view(['POST'])
 def create_remote_game(request):
@@ -102,21 +107,27 @@ def add_game_score(request):
     if auth_check_response.status_code != 200:
         return Response(data=auth_check_response.json(), status=auth_check_response.status_code)
     game_id = request.data.get('game_id')
-    player1_id = request.data.get('player1_id')
-    player2_id = request.data.get('player2_id')
-    player1_score = request.data.get('player1_score')
-    player2_score = request.data.get('player2_score')
-    if not game_id or not player1_id or not player2_id or not player1_score or not player2_score:
-        return Response({'message': 'invalid data'}, status=400)
+    if not game_id:
+        return Response({'message': 'game_id required'}, status=400)
     try:
         game = TagGameDb.objects.get(id=game_id, is_active=True)
     except TagGameDb.DoesNotExist:
-        return Response({'message': 'no active game found between the two provided players'}, status=404)
-    players_ids = [game.player1_id, game.player2_id]
-    if player1_id not in players_ids or player2_id not in players_ids:
-        return Response({'message': 'invalid player id'}, status=400)
-    game.player1_score = player1_score if game.player1_id == player1_id else player2_score
-    game.player2_score = player2_score if game.player2_id == player2_id else player1_score
+        return Response({'message': 'no active game found with the provided game_id'}, status=404)
+    if game.is_remote:
+        winner_id = request.data.get('winner_id')
+        if not winner_id:
+            return Response({'message': 'winner_id required'}, status=400)
+        if winner_id != game.player1_id and winner_id != game.player2_id:
+            return Response({'message': 'no player in this game with the provided id'}, status=400)
+        game.winner_id = winner_id
+    else:
+        winner_name = request.data.get('winner_name')
+        if not winner_name:
+            return Response({'message': 'winner_name required'}, status=400)
+        if winner_name != game.player1_name and winner_name != game.player2_name:
+            return Response({'message': 'no player in this game with the provided name'}, status=400)
+        game.winner_name = winner_name
+        
     game.is_active = False
     game.save()
     return Response({'message': 'game score added'}, status=200)
@@ -130,5 +141,5 @@ def get_game_history(request):
     user_id = auth_check_response.json()['user_data']['id']
     games = TagGameDb.objects.filter(Q(player1_id=user_id) | Q(player2_id=user_id), is_active=False)
     serializer = TagGameDbSerialiser(games, many=True)
-    return Response({serializer.data}, status=200)
+    return Response({'games' : serializer.data}, status=200)
     

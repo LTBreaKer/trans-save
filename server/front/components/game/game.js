@@ -1,6 +1,6 @@
 import { loadHTML, loadCSS } from '../../utils.js';
 import {start_game} from './tag.js';
-
+import {tag_game_info} from '../ta/script.js';
 let socket;
 
 async function Game() {
@@ -10,6 +10,7 @@ async function Game() {
 
   const app = document.getElementById('app');
   app.innerHTML = html;
+  console.log("object===> ", tag_game_info);
 
   function connectWebSocket(url)
   {
