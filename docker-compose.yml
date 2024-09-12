@@ -142,17 +142,17 @@ services:
     #   - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     # volumes:
     #   - /nfs/homes/aharrass/data/postgres:/var/lib/postgresql/data
-  redis:
-    image: redis_i
-    build:
-      context: ./redis
-    container_name: redis_c
-    ports:
-     - 6380:6380
-    restart: always
-    networks:
-      - my_network
-    command: redis-server /etc/redis/redis.conf
+  # redis:
+  #   image: redis_i
+  #   build:
+  #     context: ./redis
+  #   container_name: redis_c
+  #   ports:
+  #    - 6380:6380
+  #   restart: always
+  #   networks:
+  #     - my_network
+  #   command: redis-server /etc/redis/redis.conf
 
   # blockchain:
   #   image: blockchain
@@ -182,7 +182,7 @@ services:
       # - front-tier
     depends_on:
       - db
-      - redis
+      # - redis
     build: ./backend/pong_backend
     ports:
       - "8006:8006"

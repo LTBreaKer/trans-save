@@ -36,10 +36,11 @@ ASGI_APPLICATION = "pong_game.asgi.application"
 
 CHANNEL_LAYERS = {
         "default": {
-                "BACKEND": "channels_redis.core.RedisChannelLayer",
-                "CONFIG": {
-                        "hosts": [("redis_c", 6380)],
-                }
+            "BACKEND": "channels.layers.InMemoryChannelLayer"
+                # "BACKEND": "channels_redis.core.RedisChannelLayer",
+                # "CONFIG": {
+                #         "hosts": [("redis_c", 6380)],
+                # }
         }
 }
 

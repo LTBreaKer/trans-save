@@ -332,7 +332,7 @@ async function check_friends_status() {
   let friendsocket = new WebSocket("wss://127.0.0.1:9005/ws/online-status/", ["token", get_localstorage('token')]);
     
   friendsocket.onopen = function () {
-    console.log('Websocket connection established.');
+    console.log('online status Websocket connection established.');
   };
   
   friendsocket.onmessage = async function(event) {

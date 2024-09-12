@@ -17,9 +17,10 @@ class Ball():
 		self.velY = random.choice([2, -2])
 		self.raduis = ballRaduis
 		self.gameOver = False
+		self.EndGame = False
 		self.endTurn = False
 		self.ballOut = 10
-		self.vel = 8
+		self.vel = 3
 
 	def reset(self):
 		self.x = width / 2
@@ -29,7 +30,7 @@ class Ball():
 		self.velY = random.choice([2, -2])
 		self.endTurn = False
 		self.ballOut = 10
-		self.vel = 8
+		self.vel = 3
 
 	def update(self, rPaddle, lPaddle):
 		if (not self.endTurn):

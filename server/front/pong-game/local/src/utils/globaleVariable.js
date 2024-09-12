@@ -1,6 +1,4 @@
 import * as THREE from 'three';
-import  {gameApi } from '../../../../components/ping/script.js'
-console.log("game API: ", gameApi);
 export const width = 720;
 export const height = 360;
 export const paddleHeight = 60;

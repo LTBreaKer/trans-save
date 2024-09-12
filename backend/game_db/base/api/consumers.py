@@ -25,6 +25,8 @@ class remoteGame(AsyncWebsocketConsumer):
         await self.channel_layer.group_add(
             f"player_{self.user_id}", self.channel_name
         )
+        await self.accept(subprotocol='token')
+
     
     async def disconnect(self, code):
         if self.user_id == -1:
@@ -33,3 +35,8 @@ class remoteGame(AsyncWebsocketConsumer):
         await self.channel_layer.group_discard(
             f"player_{self.user_id}", self.channel_name
         )
+
+    async def remote_game_created(self, event):
+        await self.send(text_data=json.dumps({
+            "data" : event
+        }))

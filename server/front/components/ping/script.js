@@ -63,7 +63,7 @@ async function localgame() {
   console.error('There was a problem with the fetch operation:', error);
 }
 
-window.location.hash = "/pingpong";
+// window.location.hash = "/pingpong";
 
 
 
