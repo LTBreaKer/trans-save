@@ -1,8 +1,15 @@
 
 import { socket } from './game.js';
 import {imageR1, imageL1, imageIR1, imageIL1, imageR2, imageL2, imageIR2, imageIL2, arrow, go_arrow, numbers, background, platform} from './image_src.js';
+import {tag_game_info} from '../ta/script.js';
+import {get_localstorage} from '../../auth.js'
 
-
+// let tag_game_info = {
+//     game_id: 5,
+//     player1_name: "meharit",
+//     player2_name: "hamid",
+//   }
+var api = "https://127.0.0.1:9007/api/tag-gamedb/"
 function start_game()
 {
     const canvas = document.getElementById('canva');
@@ -29,7 +36,8 @@ function start_game()
     }
     
     class Player{
-        constructor({imgR, imgL, imgIR, imgIL}) {
+        constructor({imgR, imgL, imgIR, imgIL, ply_name}) {
+            this.name = ply_name
             this.imageR = imgR
             this.imageL = imgL
             this.imageIdlR = imgIR
@@ -84,6 +92,36 @@ function start_game()
         }
     }
     
+    async function game_score(winner)
+    {
+        const data = {
+            game_id: tag_game_info.game_id,
+            winner_name: winner
+        }
+        console.log(data)
+        try{
+            const response = await fetch(api + 'add-game-score/', {
+                method: 'POST',
+                headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + get_localstorage('token'),
+                },
+                credentials: 'include',
+                body: JSON.stringify(data)
+            });
+            const jsonData = await response.json();
+            console.log("Accepted invitation =>", jsonData);
+          
+            if (!response.ok) {
+              console.error(`HTTP error! Status: ${response.status}, Message: ${jsonData.message || 'Unknown error'}`);
+            }
+        }
+        catch(error){
+            console.error('Request failed', error);
+        }
+        
+    }
+
     function draw_timer(time, player)
     {
         let dec = Math.floor(time/10)
@@ -123,7 +161,7 @@ function start_game()
     }
     
     const platforms = Array.from({ length: 15 }, () => new Platform())
-    const players = [new Player({imgR:imageR1, imgL:imageL1, imgIR:imageIR1, imgIL:imageIL1}), new Player({imgR:imageR2, imgL:imageL2, imgIR:imageIR2, imgIL:imageIL2})]
+    const players = [new Player({imgR:imageR1, imgL:imageL1, imgIR:imageIR1, imgIL:imageIL1, ply_name:tag_game_info.player1_name}), new Player({imgR:imageR2, imgL:imageL2, imgIR:imageIR2, imgIL:imageIL2, ply_name:tag_game_info.player1_name})]
     let GO = false
     let time = 1
     let winner
@@ -158,7 +196,7 @@ function start_game()
 
     function animation()
     {
-
+        // console.log(winner)
 
         if (socket.readyState === WebSocket.OPEN)
         {
@@ -202,26 +240,32 @@ function start_game()
         rain();
 
         draw_timer(time, players[0])
-        if (time === 0 && socket.readyState === WebSocket.OPEN) //announce the winner I'm still in the game
+        if (time === 0 && socket.readyState === WebSocket.OPEN)
         {
             pause_game()
-            if (winner === '𝙍𝙚𝙙')
+            game_score(winner)
+            if (winner === players[0].name)
                 document.getElementById('overlay').style.textShadow = '2px 0px 8px rgba(207, 62, 90, 0.8)'
             else
                 document.getElementById('overlay').style.textShadow = '2px 0px 8px rgba(32, 174, 221, 0.8)'
 
             const overlay = document.querySelector('.overlay-text')
-            overlay.textContent = winner + ' 𝙬𝙞𝙣𝙨'
+            overlay.textContent = winner + ' wins'
             socket.close()
             time = 1
         }
-        if (window.location.hash !== "#/game")
-        {
-            socket.close()
-            window.removeEventListener("keydown", handleKeydown)
-            window.removeEventListener("keyup", handleKeyup)
-            window.removeEventListener("blur", handleblur)
-        }
+        // if (window.location.hash !== "#/game")
+        // {
+        //     // if (!winner)
+        //     //     game_score("unknown")
+        //     // winner = null
+
+
+        //     socket.close()
+        //     window.removeEventListener("keydown", handleKeydown)
+        //     window.removeEventListener("keyup", handleKeyup)
+        //     window.removeEventListener("blur", handleblur)
+        // }
     }
     
     function left_right()
@@ -294,6 +338,8 @@ function start_game()
                 'action': 'window resize',
                 'window_innerHeight': window.innerHeight,
                 'window_innerWidth': window.innerWidth,
+                'player0_name': tag_game_info.player1_name,
+                'player1_name': tag_game_info.player2_name
             }))
         }
     }
@@ -431,6 +477,10 @@ function start_game()
     
     function quitgame()
     {
+        if (!winner)
+            game_score("unknown")
+        winner = null
+
         socket.close()
         document.getElementById('overlay').style.visibility = 'hidden';
         esc = false
@@ -464,6 +514,27 @@ function start_game()
         })
     }
     window.addEventListener("blur", handleblur)
+    window.addEventListener('hashchange', hashchange)
+
+    function hashchange()
+    {
+        if (window.location.hash !== "#/game") {
+
+            if (!winner)
+                game_score("unknown")
+            winner = null
+
+            console.log("Hash changed, and it's not #/game!");
+            socket.close()
+
+            window.removeEventListener("keydown", handleKeydown)
+            window.removeEventListener("keyup", handleKeyup)
+            window.removeEventListener("blur", handleblur)
+            window.removeEventListener("hashchange", hashchange)
+
+        }
+    }
+
 }
 
 export {start_game}

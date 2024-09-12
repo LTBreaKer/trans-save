@@ -83,7 +83,7 @@ async function Friends() {
 // const gamepage = document.getElementById('gamepage');
 
 // gamepage.addEventListener('click', () => {
-//   console.log('hello iiiiiiiiii');
+//   //console.log('hello iiiiiiiiii');
 //   document.querySelector('.games').style.display = 'flex';
 //   document.querySelector('.conta').style.display = 'flex';
 // })
@@ -92,7 +92,7 @@ async function Friends() {
 // const mol_game = document.getElementById('mol_game');
 
 // mer_game.addEventListener('click', () => {
-//   console.log("---------");
+//   //console.log("---------");
 //   document.querySelector('.conta').style.display = 'none';
 //   document.querySelector('.mer_cont').style.display = 'flex';
 
@@ -113,7 +113,7 @@ async function Friends() {
 // });
 
 // mol_game.addEventListener('click', () => {
-//   console.log("hello we are here ");
+//   //console.log("hello we are here ");
 //   window.location.hash = '/pingpong';
 // })
 
@@ -137,7 +137,7 @@ export async function get_friends_home() {
   });
   const jsonData = await response.json();
   if (!response.ok) {
-    console.log((`HTTP error! Status: ${response.status}`), Error);
+    //console.log((`HTTP error! Status: ${response.status}`), Error);
   }
   displayFriendList_home(jsonData.friend_list)
 }
@@ -200,10 +200,10 @@ async function update_profile_fun() {
 
   if (boll === true) {
     // const fanti = update_Email.value.trim();
-    // console.log('fanti  *', fanti.trim(), "*");
-    // console.log('fanti  *', "hello", "*");
-    // console.log('email=>  *', update_Email.value.trim(), "*");
-    // console.log("hello hello hello hello hello hello hello");
+    // //console.log('fanti  *', fanti.trim(), "*");
+    // //console.log('fanti  *', "hello", "*");
+    // //console.log('email=>  *', update_Email.value.trim(), "*");
+    // //console.log("hello hello hello hello hello hello hello");
     let formData = new FormData();
 
     if (photo) formData.append('avatar', photo);
@@ -217,10 +217,10 @@ async function update_profile_fun() {
     await fetchUserData();
   }
 
-  console.log('username=>  ', update_UserName.value);
-  console.log('password=>  ', new_password.value);
-  console.log('old password=>  ', old_password.value);
-  console.log('check box=>  ', check_box.checked);
+  //console.log('username=>  ', update_UserName.value);
+  //console.log('password=>  ', new_password.value);
+  //console.log('old password=>  ', old_password.value);
+  //console.log('check box=>  ', check_box.checked);
 }
 
 
@@ -237,9 +237,9 @@ async function update_backend(data) {
     credentials: 'include',
     body: data
   });
-  console.log("hello -----------------------------");
+  //console.log("hello -----------------------------");
   const jsonData = await response.json();
-  console.log(jsonData);
+  //console.log(jsonData);
 
   if (!response.ok) {
     throw new Error(`HTTP error! Status: ${response.status}`);
@@ -266,11 +266,11 @@ async function send_freinds_request(userna) {
       credentials: 'include',
       body: JSON.stringify(data)
     });
-    console.log("hello -----------------------------");
+    //console.log("hello -----------------------------");
      jsonData = await response.json();
-    console.log(jsonData.message);
+    //console.log(jsonData.message);
     if ("Friend request sent" === jsonData.message){
-      console.log("==--=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
+      //console.log("==--=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
       document.querySelector('#send_friend_message_text').innerHTML = 'Friend Request Sent';
       document.querySelector('.send_friend_message').style.display = 'flex';
     }
@@ -316,7 +316,7 @@ async function changeAccess() {
     }
 
     const jsonData = await response.json();
-    console.log('New tokens:', jsonData);
+    //console.log('New tokens:', jsonData);
     
     await login(jsonData.access, jsonData.refresh);
 
@@ -328,16 +328,16 @@ async function changeAccess() {
 
 
 async function check_friends_status() {
-  console.log("*******************************");
+  //console.log("*******************************");
   let friendsocket = new WebSocket("wss://127.0.0.1:9005/ws/online-status/", ["token", get_localstorage('token')]);
     
   friendsocket.onopen = function () {
-    console.log('Websocket connection established.');
+    //console.log('Websocket connection established.');
   };
   
   friendsocket.onmessage = async function(event) {
     const newNotification = await JSON.parse(event.data);
-    console.log("here are socket of friends online => ", newNotification)
+    //console.log("here are socket of friends online => ", newNotification)
     // const isDuplicate = accumulatedNotifications.some(notification => notification.friend_request.id === newNotification.friend_request.id
     // );
     // if (!isDuplicate)
@@ -351,7 +351,7 @@ async function check_friends_status() {
   };
 
   friendsocket.onclose = function () {
-    console.log('Websocket connection closed.');
+    //console.log('Websocket connection closed.');
   };
 
 }
@@ -361,28 +361,28 @@ async function check_friends_status() {
 async function checkFirst() {
 
 
-  // console.log("*******************************");
+  // //console.log("*******************************");
   // const subprotocols = ['token', get_localstorage('token')];
 
   // const socket = new WebSocket('wss://127.0.0.1:9005/ws/friend-requests/ ', subprotocols);
   // socket.onmessage = function(event) {
-  //   console.log('Message from server:', event.data);
+  //   //console.log('Message from server:', event.data);
     
   //   try {
   //     const data = JSON.parse(event.data);
-  //     console.log('Parsed data:', data);
+  //     //console.log('Parsed data:', data);
   //   } catch (e) {
   //     console.error('Failed to parse message:', e);
   //   }
   // };
-  // console.log("*******************************");
+  // //console.log("*******************************");
 
 
 
   const token = get_localstorage('token');
   
-  console.log('Token being checked:', token); 
-  console.log("--------------------------------------", api);
+  //console.log('Token being checked:', token); 
+  //console.log("--------------------------------------", api);
   try {
     const response = await fetch(api + 'auth/verify-token/', {
       method: 'POST',
@@ -394,22 +394,22 @@ async function checkFirst() {
       body: JSON.stringify({ token }) 
     });
           const jsonData = await response.json();
-      console.log(jsonData);
+      //console.log(jsonData);
 
-    console.log(response);
+    //console.log(response);
     // if (response.status === 402) {
-    //   console.log("hhhhhh olah ta hbil");
+    //   //console.log("hhhhhh olah ta hbil");
     // }
 
     if (response.status !== 200) {
       // const jsonData = await response.json();
-      // console.log(jsonData);
-      console.log("=====0000----0000====0000------");
-      console.log(response.message);
-      // console.log(await response.json());
-      console.log('Token is invalid. Attempting to refresh...');
+      // //console.log(jsonData);
+      //console.log("=====0000----0000====0000------");
+      //console.log(response.message);
+      // //console.log(await response.json());
+      //console.log('Token is invalid. Attempting to refresh...');
       // const jsonData = await response.json();
-      // console.log(jsonData)
+      // //console.log(jsonData)
       await changeAccess();
       await fetchUserData();
     } 
@@ -417,10 +417,10 @@ async function checkFirst() {
         throw new Error(`HTTP error! Status: ${response.status}`);
       } 
       else {
-      console.log("==99999999999999999999999999999----");
+      //console.log("==99999999999999999999999999999----");
       // const jsonData = await response.json();
-      // console.log(jsonData);
-      // console.log('Token verification response:', jsonData);
+      // //console.log(jsonData);
+      // //console.log('Token verification response:', jsonData);
       await fetchUserData();
     }
     
@@ -444,7 +444,7 @@ async function fetchUserData() {
       throw new Error('Network response was not ok');
     }
     const userData = await userResponse.json();
-    console.log('User data:', userData);
+    //console.log('User data:', userData);
 
     const change_user = document.getElementById('UserName');
     const avata = document.getElementById('avatar');

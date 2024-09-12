@@ -124,7 +124,7 @@ def add_game_score(request):
         winner_name = request.data.get('winner_name')
         if not winner_name:
             return Response({'message': 'winner_name required'}, status=400)
-        if winner_name != game.player1_name and winner_name != game.player2_name:
+        if winner_name != game.player1_name and winner_name != game.player2_name and winner_name != "unknown":
             return Response({'message': 'no player in this game with the provided name'}, status=400)
         game.winner_name = winner_name
         

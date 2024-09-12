@@ -26,7 +26,7 @@ async function Ping() {
 async function localgame() {
   name = input.value; 
 
-  console.log("name of user: ", name);
+  //console.log("name of user: ", name);
   const data = {
     player2_name: name
   };
@@ -41,9 +41,9 @@ async function localgame() {
       credentials: 'include',
       body: JSON.stringify(data)
     });
-    console.log(response);
+    //console.log(response);
     const jsonData = await response.json();
-    console.log(jsonData);
+    //console.log(jsonData);
 
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
@@ -92,7 +92,7 @@ async function changeAccess() {
         credentials: 'include',
         body: JSON.stringify({ token }) 
       });
-      console.log(response);
+      //console.log(response);
       if (response.status !== 200) {
         await changeAccess();
         await fetchUserHomeData();

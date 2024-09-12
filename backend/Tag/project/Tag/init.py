@@ -60,12 +60,12 @@ class gameMonitor:
                     start_time += time.time() - esc_time
                     esc_time = 0
                 if self.game_time > 0:
-                    self.game_time = math.floor(99 - time.time() + start_time)
+                    self.game_time = math.floor(9 - time.time() + start_time)
                 if self.game_time == 0:
                     if not self.players[0].tagger:
-                        self.winner = "𝙍𝙚𝙙"
+                        self.winner = self.players[0].name
                     else:
-                        self.winner = "𝘽𝙡𝙪𝙚"
+                        self.winner = self.players[1].name
                 collision = None
                 for self.player in self.players:
                     self.player.fall(self)
@@ -147,6 +147,7 @@ class Platform:
 class Player:
     def __init__(self, id):
 
+        self.name = None
         self.id = id
         self.gravity = 0
         self.tagger = False
@@ -298,6 +299,12 @@ async def resizeWindow(text_data_json, self_cons, game_monitor):
 
     for player in game_monitor.players:
         player.updatePlayer(game_monitor.canvas_height, game_monitor.canvas_width, init, test)
+
+    if game_monitor.players[0].name == None:
+        game_monitor.players[0].name = text_data_json.get('player0_name')
+
+    if game_monitor.players[1].name == None:
+        game_monitor.players[1].name = text_data_json.get('player1_name')
 
     for platform in game_monitor.platforms:
         platform.width = platform.dimensionPercentageX * game_monitor.canvas_width / 100

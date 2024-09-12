@@ -31,10 +31,10 @@ async function Router() {
   if (get_localstorage('token'))
     await get_friends_list();
 
-  console.log("here i will print aray hhh==>>  ", friends_array)
+  //console.log("here i will print aray hhh==>>  ", friends_array)
   var usern;
   window.addEventListener('hashchange', async () => {
-    console.log("---------------0--0-0-0-00-0-0--0-0-0-0");
+    //console.log("---------------0--0-0-0-00-0-0--0-0-0-0");
     const path = window.location.hash.slice(1);
     component = routes[path] || NotFound;
     if (!isAuthenticated() && path !== '/login') {
@@ -56,7 +56,7 @@ async function Router() {
     // delete_component = component();
     await component();
   });
-  console.log("==================================== 0000000000");
+  //console.log("==================================== 0000000000");
   const path = window.location.hash.slice(1) || '/';
   let component = routes[path] || NotFound;
 
@@ -81,7 +81,7 @@ async function Router() {
 }
 
 async function get_friends_list() {
-  console.log("=======hello ======");
+  //console.log("=======hello ======");
   const response = await fetch(api_one + 'user/get-friend-list/', {
     method: 'GET',
     headers: {
@@ -92,7 +92,7 @@ async function get_friends_list() {
   });
   const jsonData = await response.json();
   if (!response.ok) {
-    console.log((`HTTP error! Status: ${response.status}`), Error);
+    //console.log((`HTTP error! Status: ${response.status}`), Error);
   }
   add_friendstoarray(jsonData.friend_list)
 }

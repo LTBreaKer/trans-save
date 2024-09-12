@@ -15,7 +15,7 @@ async function Home() {
   app.innerHTML = html;
   await loadCSS('./components/home/home.css');
   
-  console.log("====-=-=---=-=-=-=-=-:::::::  >>>  ", tag_game_info);
+  //console.log("====-=-=---=-=-=-=-=-:::::::  >>>  ", tag_game_info);
   var csrftoken = getCookie('csrftoken');
 
 
@@ -23,7 +23,7 @@ async function Home() {
 
   
 //   document.addEventListener("keydown", (event) => {
-//     console.log("it's =========", event.key);
+//     //console.log("it's =========", event.key);
 //   });
 
   // document.removeEventListener('keydown');
@@ -71,7 +71,7 @@ async function Home() {
 //   const gamepage = document.getElementById('gamepage');
 
 //   gamepage.addEventListener('click', () => {
-//     console.log('hello iiiiiiiiii');
+//     //console.log('hello iiiiiiiiii');
 //     document.querySelector('.games').style.display = 'flex';
 //     document.querySelector('.conta').style.display = 'flex';
 //   })
@@ -80,7 +80,7 @@ async function Home() {
 //   const mol_game = document.getElementById('mol_game');
 
 //   mer_game.addEventListener('click', () => {
-//     console.log("---------");
+//     //console.log("---------");
 //     document.querySelector('.conta').style.display = 'none';
 //     document.querySelector('.mer_cont').style.display = 'flex';
 
@@ -102,7 +102,7 @@ async function Home() {
 
 // // const mol_cont = document.querySelector('.moloaa');
 //   mol_game.addEventListener('click', () => {
-//     console.log("hello we are here ");
+//     //console.log("hello we are here ");
 //     key_here();
 //     // window.location.hash = '/pingpong';
 //   })
@@ -131,11 +131,11 @@ pingimage.addEventListener('click', ()=> {
 
 
 async function local_game_func() {
-  // console.log("---*-*-*-*-*-*-*-*-*-*-*");
+  // //console.log("---*-*-*-*-*-*-*-*-*-*-*");
   const player_name = document.getElementById('input');
   const name = player_name.value;
   // player_name.value = "";
-  console.log("---*-*-*-*-*-*-*-*-*-*-*", name);
+  //console.log("---*-*-*-*-*-*-*-*-*-*-*", name);
 
   const data = {
     player2_name: name
@@ -201,7 +201,7 @@ async function checkFirst() {
       credentials: 'include',
       body: JSON.stringify({ token }) 
     });
-    console.log("=====code status-->    ",response.status);
+    //console.log("=====code status-->    ",response.status);
     if (response.status !== 200) {
       await changeAccess();
       await fetchUserHomeData();

@@ -27,7 +27,7 @@ async function localgame_tag() {
   const input = document.getElementById('input_tag');
   const player_name = input.value; 
 
-  console.log("name of user: ", player_name);
+  //console.log("name of user: ", player_name);
   const data = {
     player2_name: player_name
   };
@@ -42,17 +42,17 @@ async function localgame_tag() {
       credentials: 'include',
       body: JSON.stringify(data)
     });
-    console.log(response);
+    //console.log(response);
     const jsonData = await response.json();
     if (jsonData.message === "player is already in a game") {
-      console.log('hdsklfjsldkjflsdjk    => :', jsonData.message);
+      //console.log('hdsklfjsldkjflsdjk    => :', jsonData.message);
       document.querySelector('.success_update').style.display = "flex";
       setTimeout(function() {
         document.querySelector('.success_update').style.display = 'none';
     }, 2000);
   
     }
-    console.log(jsonData.message)
+    //console.log(jsonData.message)
     const game_id =  jsonData.game_id;
     const player1_name =  jsonData.player1_name;
     const player2_name =  jsonData.player2_name;
@@ -63,10 +63,10 @@ async function localgame_tag() {
     }
     if (response.status === 201)
       window.location.hash = '/game'
-    // console.log(jsonData.message)
+    // //console.log(jsonData.message)
     
     if (!response.ok) {
-      // console.log(jsonData.message)
+      // //console.log(jsonData.message)
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
   } catch (error) {
@@ -110,7 +110,7 @@ async function changeAccess() {
         credentials: 'include',
         body: JSON.stringify({ token }) 
       });
-      console.log(response);
+      //console.log(response);
       if (response.status !== 200) {
         await changeAccess();
         await fetchUserHomeData();

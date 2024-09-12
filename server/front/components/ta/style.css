@@ -1,10 +1,29 @@
-@import url('https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
+/* @import url('https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap'); */
 /* here i fixed dives position and content displayed */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
+
+@font-face {
+  font-family: 'Volax';
+  src: url('../assets/Valorax-lg25V.otf') format('opentype');
+  font-weight: bold;
+  font-style: italic;
+  
+}
+
+@font-face {
+  font-family: 'Hexen';
+  src: url('../assets/Hexenkoetel-qZRv1.ttf') format('truetype');
+  font-weight: bold;
+  font-style: italic;
+  
+}
+
+
+
 
 body {
   height: 100vh;
@@ -371,6 +390,8 @@ display: none;
   }
   
   .re_local #remote_game {
+    font-family: 'Volax', sans-serif;
+
     width: 290px;
     height: 50%;
     padding: 10px 15px 15px 15px;
@@ -379,9 +400,12 @@ display: none;
     justify-content: space-between;
     align-items: center;
     background-color: rgba(25, 26, 29, 0.6);
+    border-radius: 10px;
   }
   
   .re_local #local_game {
+    font-family: 'Volax', sans-serif;
+
     width: 290px;
     height: 50%;
     display: flex;
@@ -390,7 +414,7 @@ display: none;
     padding: 10px 15px 15px 15px;
     align-items: center;
     background-color: rgba(25, 26, 29, 0.6);
-    
+    border-radius: 10px;
   }
   
   
@@ -416,7 +440,7 @@ display: none;
     cursor: pointer;
   }
 
-  .mer_cont #local_butt_game {
+  .mer_cont #local_butt_game_tag {
     padding: 11px;
     background-color: black;
     border-radius: 15px;
@@ -432,6 +456,9 @@ display: none;
     /* align-items: center; */
   }
   
+
+
+
   .mer_cont .discription_game .text {
     background-color: rgba(25, 26, 29, 0.9);
     padding: 15px;
@@ -440,7 +467,11 @@ display: none;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    font-family: "Times New Roman", Times, serif;
+    border-radius: 10px;
+
+    font-size: 20px;
+    font-family: "Hexen", sans-serif;
+    text-align: center;
     /* opacity: 0.6; */
     /* background-color: transparent; */
 
