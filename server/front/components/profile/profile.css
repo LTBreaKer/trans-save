@@ -989,3 +989,14 @@ display: none;
 
 
  /*  ======= ====== ====== ======= ======= ====== ======= ======= */
+
+
+  .main .friends_list .friends .onlinen {
+  width: 15px;
+  height: 15px;
+  background-color: gray;
+  border-radius: 50%;
+  margin-top: 25px;
+  margin-left: -15px;
+
+ }

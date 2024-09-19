@@ -235,6 +235,11 @@ async function checkFirst() {
       body: JSON.stringify({ token })
     });
     console.log(response);
+    if (response.status === 404){
+      logoutf();
+      window.location.hash = '/login';
+    }
+
     if (response.status !== 200) {
       console.log('Token is invalid. Attempting to refresh....');
       console.log(response);

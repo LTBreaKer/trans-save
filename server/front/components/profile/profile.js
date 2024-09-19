@@ -157,9 +157,9 @@ function displayFriendList_home(friendList) {
       <div class="friends"  data-id="${friend.id}">
       <div class="friend" id="user_id" data-id="${friend.id}">
       <div >  
-      <i class="bi bi-octagon-fill click_friend" data-name="${friend.username}"> </i>
       <img  id="player1" style="border-radius: 50%;" class="click_friend" data-name="${friend.username}" data-id="${friend.id}"  class="proimage" src="${friend.avatar}" alt="">
       </div>
+      <div class="onlinen"> </div>
       <h2 class="player1" class="click_friend" >${friend.username}</h2>
       </div>
 
@@ -393,23 +393,11 @@ async function checkFirst() {
       credentials: 'include',
       body: JSON.stringify({ token }) 
     });
-          const jsonData = await response.json();
-      console.log(jsonData);
-
-    console.log(response);
-    // if (response.status === 402) {
-    //   console.log("hhhhhh olah ta hbil");
-    // }
-
+    if (response.status === 404){
+      logoutf();
+      window.location.hash = '/login';
+    }
     if (response.status !== 200) {
-      // const jsonData = await response.json();
-      // console.log(jsonData);
-      console.log("=====0000----0000====0000------");
-      console.log(response.message);
-      // console.log(await response.json());
-      console.log('Token is invalid. Attempting to refresh...');
-      // const jsonData = await response.json();
-      // console.log(jsonData)
       await changeAccess();
       await fetchUserData();
     } 
@@ -417,10 +405,6 @@ async function checkFirst() {
         throw new Error(`HTTP error! Status: ${response.status}`);
       } 
       else {
-      console.log("==99999999999999999999999999999----");
-      // const jsonData = await response.json();
-      // console.log(jsonData);
-      // console.log('Token verification response:', jsonData);
       await fetchUserData();
     }
     

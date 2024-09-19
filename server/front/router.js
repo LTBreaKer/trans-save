@@ -94,7 +94,7 @@ async function get_friends_list() {
   if (!response.ok) {
     console.log((`HTTP error! Status: ${response.status}`), Error);
   }
-  add_friendstoarray(jsonData.friend_list)
+  await add_friendstoarray(jsonData.friend_list)
 }
 
 

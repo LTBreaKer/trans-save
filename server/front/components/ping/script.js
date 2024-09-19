@@ -13,6 +13,7 @@ async function Ping() {
 
 
   const local_butt_game = document.getElementById('local_butt_game');
+  
   const input = document.getElementById('input');
   name = input.value; 
   local_butt_game.addEventListener('click', localgame);
@@ -93,6 +94,10 @@ async function changeAccess() {
         body: JSON.stringify({ token }) 
       });
       console.log(response);
+      if (response.status === 404){
+        logoutf();
+        window.location.hash = '/login';
+      }  
       if (response.status !== 200) {
         await changeAccess();
         await fetchUserHomeData();
