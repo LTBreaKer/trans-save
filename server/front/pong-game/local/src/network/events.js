@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import {canvas, click, TABLE_WIDTH, paddleHeight, height, box_result, first_player_goal, second_player_goal} from '../utils/globaleVariable.js';
+import {canvas, click, TABLE_WIDTH, paddleHeight, height, box_result, first_player_goal, second_player_goal, counter, replay, popup_replay, pong_menu, loadDocument} from '../utils/globaleVariable.js';
 import { lpaddle, rpaddle } from '../game/paddle.js';
 // import { setPointerMouse} from '../game/staduim.js'
 import { zoomCamera } from '../game/staduim.js'
@@ -8,8 +8,10 @@ import { connectBallSocket } from '../network/socket.js';
 import { connectAI, connectPaddleSocket, launchGame } from '../game/game.js';
 import {sendSocket} from '../game/game.js'
 import { paddleSocket } from '../game/game.js';
-import { connectGame , connect_ai} from '../utils/globaleVariable.js';
+// import { connectGame , connect_ai} from '../utils/globaleVariable.js';
 import { moveCamera } from '../components/camera.js';
+import { localgame } from '../../../../components/ping/script.js';
+import { initPlayGame } from '../../../../components/pingpong/ping.js';
  
 function resizeCanvas(){
 	let minHW = Math.min(window.innerWidth*0.99, window.innerHeight*0.99);
@@ -35,13 +37,23 @@ function resizeCanvas(){
 	// margin-bottom: 1%;
 }
 
+export function setupElementEvenent() {
+	replay.addEventListener("click", async () => {
+		await localgame();
+		await initGame();
+	})
+	pong_menu.addEventListener("click", async () => {
+		window.location.hash = "/ping";
+	})
+}
+
 export function setupEventListeners() {
 	console.log("setup event listener");
 	window.addEventListener('resize', () => {
 		// console.log("")
 		resizeCanvas();
 		moveCamera();
-	})
+	});
 	// window.addEventListener('mousemove', rotateTable);
 	// window.addEventListener('wheel', zoomCamera);
 	// document.addEventListener("mouseup", () => setPointerMouse(-99999999))
@@ -52,23 +64,33 @@ export function setupEventListeners() {
 	document.querySelector("#runButton").addEventListener("click", () => {
 		sendSocket();
 		launchGame();
-	})
+	});
 
-	connectGame.addEventListener("click", () => {
-		connectPaddleSocket();
-		// console.log("hello");
+	replay.addEventListener("click", async () => {
+		// local_butt_game.addEventListener('click', localgame);
+		await localgame();
+		await initGame();
+		// connectPaddleSocket();
+		// popup_replay.style.zIndex = 1;
+		// descounter();
 	})
-
-	connect_ai.addEventListener("click", () => {
-		connectAI();
+	pong_menu.addEventListener("click", async () => {
+		window.location.hash = "/ping";
 	})
-	canvas.clientWidth
-canvas.clientWidth
-	const login_button = document.querySelector("#login");
-	login_button.addEventListener("click", login);
-
+	// connectGame.addEventListener("click", () => {
+		// 	connectPaddleSocket();
+		// 	// console.log("hello");
+		// })
+		
+	// connect_ai.addEventListener("click", () => {
+	// 	connectAI();
+	// });
+	// const login_button = document.querySelector("#login");
+	// login_button.addEventListener("click", login);
+	
 	document.addEventListener("keydown", keyDownHandler, false);
 	document.addEventListener("keyup", keyUpHandler, false);
+	// connectPaddleSocket();
 
 	function keyDownHandler(e) {
 		console.log(e.key);
@@ -92,5 +114,34 @@ canvas.clientWidth
 		else if (e.key === "s" || e.key === "S")
 			rpaddle.rightPressed = false;
 	}
-	  
+	
 }
+
+function sleep(s) {
+	return new Promise((resolve) => setTimeout(resolve, s * 1000));
+}
+
+export async function descounter() {
+	back_counter.style.zIndex = 100;
+	let c = 3;
+	while (c > 0) {
+		counter.textContent = c;
+		await sleep(1);
+		c--;
+	}
+	back_counter.style.zIndex = 1;
+	sendSocket();
+	launchGame();
+}
+// descounter();
+let initGame = async () => {
+	console.log("  initGame  initGame  initGame  initGame");
+	await connectPaddleSocket();
+	popup_replay.style.zIndex = 1;
+	await descounter();
+	await loadDocument();
+	setupElementEvenent();
+}
+
+initPlayGame(initGame);
+initGame();

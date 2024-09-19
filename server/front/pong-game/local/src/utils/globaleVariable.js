@@ -16,12 +16,30 @@ export const PADDLE_HEIGHT = 0.1;
 export let paddle_way = 1;
 export let click = false;
 
-export const first_player_goal = document.querySelector("#first_player");
-export const second_player_goal = document.querySelector("#second_player");
-export const box_result = document.querySelector(".p_box_result");
-export const canvas = document.querySelector('#c');
-export const connectGame = document.querySelector('#connect');
-export const connect_ai = document.querySelector('#connect_ai');
+export let first_player_goal = document.querySelector("#first_player");
+export let second_player_goal = document.querySelector("#second_player");
+export let replay = document.querySelector('#replay');
+export let pong_menu = document.querySelector('#pong_menu');
+export let box_result = document.querySelector(".p_box_result");
+export let canvas = document.querySelector('#c');
+export let back_counter = document.querySelector('#back_counter');
+export let counter = document.querySelector('#counter');
+export let popup_replay = document.querySelector('.p_popup_replay');
+
+export async function loadDocument() {
+	first_player_goal = document.querySelector("#first_player");
+	second_player_goal = document.querySelector("#second_player");
+	replay = document.querySelector('#replay');
+	pong_menu = document.querySelector('#pong_menu');
+	box_result = document.querySelector(".p_box_result");
+	canvas = document.querySelector('#c');
+	back_counter = document.querySelector('#back_counter');
+	counter = document.querySelector('#counter');
+	popup_replay = document.querySelector('.p_popup_replay');
+}
+
+// export const connectGame = document.querySelector('#connect');
+// export const connect_ai = document.querySelector('#connect_ai');
 export const loader = new THREE.TextureLoader();
 
 // export const reversePaddleDirection = () => {

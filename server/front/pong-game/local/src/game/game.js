@@ -8,27 +8,33 @@ import { scene } from '../components/scene.js'
 import { renderer } from '../components/renderer.js'
 import { connectBallSocket } from '../network/socket.js';
 
-export let startGame = false;
-export let gameOver = false;
+// export let startGame = false;
+// export let gameOver = false;
 
 export let paddleSocket;
 
 export function launchGame() {
-	startGame = true;
+	// startGame = true;
 }
 
-export function stopGame() {
-	gameOver = true;
-}
+// export function stopGame() {
+// 	gameOver = true;
+// }
 
 async function movePaddle() {
 	const ws = await paddleSocket;
-	await ws.send(JSON.stringify(({"type_msg": "update_paddle", "lpaddle": lpaddle.coordonate(), "rpaddle": rpaddle.coordonate() })));
+	if (ws.readyState == 1) {
+		console.log("move paddle ws: ", ws); 
+		await ws.send(JSON.stringify(({"type_msg": "update_paddle", "lpaddle": lpaddle.coordonate(), "rpaddle": rpaddle.coordonate() })));
+	}
 }
 
 export async function sendSocket(){
 	const ws = await paddleSocket;
-	await ws.send(JSON.stringify({'type_msg': 'play'}));
+	if (ws.readyState == 1) {
+		console.log("send socket ws: ", ws); 
+		await ws.send(JSON.stringify({'type_msg': 'play'}));
+	}
 }
 
 export async function connectPlayer(){

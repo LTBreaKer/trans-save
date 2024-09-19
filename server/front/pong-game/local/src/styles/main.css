@@ -27,7 +27,8 @@
 	/* width: 360px; */
 	text-align: left;
 	/* color: white; */
-	color: rgb(45, 204, 45);
+	/* color: rgb(45, 204, 45); */
+	color: #A4FF25;
 	text-shadow: 1px 1px rgb(255, 255, 255, 0.8);
 	padding-top: 60px;
 	padding-left: 50px;
@@ -38,7 +39,8 @@
 	/* width: 360px; */
 	text-align: right;
 	/* color: white; */
-	color: rgb(204, 45, 45);
+	/* color: rgb(204, 45, 45); */
+	color: #FF000C;
 	text-shadow: 1px 1px rgb(255, 255, 255, 0.8);
 	padding-top: 60px;
 	padding-right: 50px;
@@ -60,6 +62,60 @@
 	padding-left: -4rem;
 }
 
+.p_background_descounter {
+	display: flex;
+	position: absolute;
+	z-index: 100;
+	width: calc(100vw - 100px);
+	height: calc(100vh - 100px);
+	background-color: rgba(0,0,0,0.6);
+    align-items: center;
+    justify-content: center;
+}
+
+.p_descounter {
+	color:white;
+	/* width: calc(100vw - 100px); */
+	font-size: 120px;
+}
+
+.p_popup_replay {
+    display: flex;
+    position: absolute;
+    z-index: 1;
+    width: calc(100vw - 100px);
+    height: calc(100vh - 100px);
+    background-color: rgba(0, 0, 0, 0.6);
+    flex-direction: column;
+    align-items: center;
+    /* justify-items: center; */
+    justify-content: center;
+}
+
+.p_ptn_replay{
+	height: 58px;
+    width: 140px;
+    border-radius: 100px;
+    font-size: 17px;
+    margin-bottom: 32px;
+    margin-top: 13px;
+    color: rgb(164 255 37);
+    background-color: rgba(0, 0, 0, 0.2);
+	/* cursor: pointer; */
+}
+
+.p_ptn_menu {
+	color: rgb(255 0 12);
+	/* cursor: auto; */
+}
+
+.p_ptn_replay:hover {
+	color: rgb(161 227 68);
+}
+
+.p_ptn_menu:hover {
+	color: rgb(219 24 33);
+}
 
 /* .div-popup-delete {
 	position: fixed;

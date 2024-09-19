@@ -1,6 +1,6 @@
 import { camera } from '../components/camera.js';
 import { paddle_way } from '../utils/globaleVariable.js';
-import { startGame } from './game.js';
+// import { startGame } from './game.js';
 
 let pointerMouse = -99999999;
 

@@ -3,9 +3,14 @@ import { login ,log_out_func, logoutf, get_localstorage, getCookie } from '../..
 var api = "https://127.0.0.1:9004/api/";
 var api_game = "https://127.0.0.1:9006/api/gamedb/";
 let name = "";
+let html = "";
+
 async function Ping() {
-  const html = await loadHTML('./components/ping/index.html');
-  loadCSS('./components/ping/style.css');
+  if (!html){
+    console.log("dkhal hna hhhhh ----------- ");
+    html = await loadHTML('./components/ping/index.html');
+  }
+  // loadCSS('./components/ping/style.css');
 
   const app = document.getElementById('app');
   app.innerHTML = html;
@@ -16,19 +21,21 @@ async function Ping() {
   const input = document.getElementById('input');
   name = input.value; 
   local_butt_game.addEventListener('click', localgame);
-  
-  
-  
+
 }
 
 
 
-import { setCookie, deleteCookie } from './cookie.js';
+// import { setCookie, deleteCookie } from './cookie.js';
+// import PingPong from '../pingpong/ping.js';
+// import { playGame } from '../../pong-game/local/src/network/events.js';
 export let gameApi;
 
-async function localgame() {
-  name = input.value; 
-
+export async function localgame() {
+  if (typeof input !== 'undefined')
+    name = input.value;
+  else
+    name = JSON.parse(gameApi).player2_name;
   console.log("name of user: ", name);
   const data = {
     player2_name: name
@@ -40,21 +47,26 @@ async function localgame() {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + get_localstorage('token'),
-      },
+      },  
       credentials: 'include',
       body: JSON.stringify(data)
     });
     console.log("response: ", response);
     const jsonData = await response.json();
-    console.log("jsonData: ", jsonData);
-    console.log("jsonData.stringify(): ", JSON.stringify(jsonData));
+    // console.log("jsonData: ", jsonData);
+    // console.log("jsonData.stringify(): ", JSON.stringify(jsonData));
     gameApi = JSON.stringify(jsonData);
-    setCookie("match", JSON.stringify(jsonData));
+    // setCookie("match", JSON.stringify(jsonData));
 
 
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
+    else if (window.location.hash == "#/pingpong") {
+      console.log("###pingpong");
+      // await playGame();
+    }
+    // await PingPong();
     else
       window.location.hash = "/pingpong";
   // await login(jsonData.access, jsonData.refresh);
