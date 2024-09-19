@@ -24,7 +24,7 @@ export function launchGame() {
 async function movePaddle() {
 	const ws = await paddleSocket;
 	if (ws.readyState == 1) {
-		console.log("move paddle ws: ", ws); 
+		// console.log("move paddle ws: ", ws); 
 		await ws.send(JSON.stringify(({"type_msg": "update_paddle", "lpaddle": lpaddle.coordonate(), "rpaddle": rpaddle.coordonate() })));
 	}
 }
@@ -32,7 +32,7 @@ async function movePaddle() {
 export async function sendSocket(){
 	const ws = await paddleSocket;
 	if (ws.readyState == 1) {
-		console.log("send socket ws: ", ws); 
+		// console.log("send socket ws: ", ws); 
 		await ws.send(JSON.stringify({'type_msg': 'play'}));
 	}
 }

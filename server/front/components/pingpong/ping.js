@@ -1,5 +1,5 @@
 import { loadHTML, loadCSS } from '../../utils.js';
-// import { gameApi } from '../ping/script.js';
+
 let playGame = async () => {
 	console.log("  playGame  playGame  playGame  playGame");
 
@@ -14,38 +14,27 @@ function sleep(s) {
 }
 
 let html = ""
+export let script;
+
 async function PingPong() {
-  // history.pushState({}, '', "/pingpong");
-  // console.log("history: ", history.state);
   await loadHtmlWidthModuleScript();
-  sleep(4);
   await playGame();
 }
 
 async function loadHtmlWidthModuleScript() {
-  if (!html)
+  if (!html) {
     html = await loadHTML('./pong-game/local/public/3dgame.html')
-  const container = document.getElementById('app');
-  container.innerHTML = html;
-  const script = document.createElement('script');
-  script.type = 'module';
-  script.src = './pong-game/local/src/main3d.js';
-  document.body.appendChild(script);
-  // const url = './pong-game/local/public/3dgame.html';
-  // fetch(url)
-  // .then(res => res.text())
-  // .then(html => {
-  //   const container = document.getElementById('app');
-  //   container.innerHTML = html;
-  // })
-  // .then(() => {
-  //   // loadCSS('./components/pingpong/ping.css');
-  //   const script = document.createElement('script');
-  //   script.type = 'module';
-  //   script.src = './pong-game/local/src/main3d.js';
-  //   document.body.appendChild(script);
-  // })
-  // .catch(error => console.error('Error loading html: ', error));
+    const container = document.getElementById('app');
+    container.innerHTML = html;
+    script = document.createElement('script');
+    script.type = 'module';
+    script.src = './pong-game/local/src/main3d.js';
+    document.body.appendChild(script);
+  }
+  else {
+    const container = document.getElementById('app');
+    container.innerHTML = html;
+  }
 }
 
 export default PingPong;
