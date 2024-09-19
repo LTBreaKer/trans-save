@@ -1,7 +1,8 @@
 from solcx import compile_standard
 import json
 import solcx
-from web3 import Web3
+from web3 import Web3, EthereumTesterProvider
+from eth_tester import EthereumTester, PyEVMBackend
 
 with open ('./TournamentHistory.sol', 'r') as file:
     contract_source_code = file.read()
@@ -29,6 +30,9 @@ with open("compiled_code.json", "w") as file:
 
 byte_code = compiled_sol["contracts"]["TournamentHistory.sol"]["TournamentContract"]["evm"]["bytecode"]["object"]
 abi = compiled_sol["contracts"]["TournamentHistory.sol"]["TournamentContract"]["abi"]
+
+tester = EthereumTester(backend=PyEVMBackend())
+
 
 try:
     w = Web3(Web3.HTTPProvider('http://127.0.0.1:9545'))

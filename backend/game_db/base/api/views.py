@@ -64,7 +64,7 @@ def create_local_game(request):
             },
             status=201
             )
-    return Response({'message': 'Error: game not created'}, status=400)
+    return Response({'message': serializer.errors}, status=400)
 
 @api_view(['POST'])
 def create_remote_game(request):
