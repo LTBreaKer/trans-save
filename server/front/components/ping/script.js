@@ -6,11 +6,8 @@ let name = "";
 let html = "";
 
 async function Ping() {
-  if (!html){
-    console.log("dkhal hna hhhhh ----------- ");
+  if (!html)
     html = await loadHTML('./components/ping/index.html');
-  }
-  // loadCSS('./components/ping/style.css');
 
   const app = document.getElementById('app');
   app.innerHTML = html;
@@ -18,17 +15,46 @@ async function Ping() {
 
 
   const local_butt_game = document.getElementById('local_butt_game');
+  const remote_butt_game = document.getElementById('butt_game');
+
+
+
   const input = document.getElementById('input');
   name = input.value; 
   local_butt_game.addEventListener('click', localgame);
-
+  remote_butt_game.addEventListener('click', remore_game_fun);
+  
+  
 }
 
 
+async function remore_game_fun() {
+  
+  try {
+    const response = await fetch(api_game + 'create-remote-game/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + get_localstorage('token'),
+      },
+      credentials: 'include',
+    });
+    console.log(response);
+    const jsonData = await response.json();
+    console.log(jsonData);
 
-// import { setCookie, deleteCookie } from './cookie.js';
-// import PingPong from '../pingpong/ping.js';
-// import { playGame } from '../../pong-game/local/src/network/events.js';
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    // await login(jsonData.access, jsonData.refresh);
+    
+  } catch (error) {
+    console.error('There was a problem with the fetch operation:', error);
+  }
+
+
+}
+
 export let gameApi;
 
 export async function localgame() {
@@ -56,29 +82,17 @@ export async function localgame() {
     // console.log("jsonData: ", jsonData);
     // console.log("jsonData.stringify(): ", JSON.stringify(jsonData));
     gameApi = JSON.stringify(jsonData);
-    // setCookie("match", JSON.stringify(jsonData));
-
-
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
     else if (window.location.hash == "#/pingpong") {
       console.log("###pingpong");
-      // await playGame();
     }
-    // await PingPong();
     else
       window.location.hash = "/pingpong";
-  // await login(jsonData.access, jsonData.refresh);
-  
-} catch (error) {
-  console.error('There was a problem with the fetch operation:', error);
-}
-
-// window.location.hash = "/pingpong";
-
-
-
+  } catch (error) {
+    console.error('There was a problem with the fetch operation:', error);
+  }
 }
 
 async function changeAccess() {
@@ -118,6 +132,10 @@ async function changeAccess() {
         body: JSON.stringify({ token }) 
       });
       console.log(response);
+      if (response.status === 404){
+        logoutf();
+        window.location.hash = '/login';
+      }  
       if (response.status !== 200) {
         await changeAccess();
         await fetchUserHomeData();

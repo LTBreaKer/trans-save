@@ -443,9 +443,6 @@ display: none;
     font-family: "Times New Roman", Times, serif;
     /* opacity: 0.6; */
     /* background-color: transparent; */
-
-    
-
     /* justify-content:; */
 
     /* font-family: "Ubuntu", sans-serif;
@@ -456,3 +453,21 @@ display: none;
   
 
    /*  ======= ====== ====== ======= ======= ====== ======= ======= */
+
+   .container .success_update {
+    /* display: flex; */
+    position: absolute;
+    width: 330px;
+    height: 55px;
+    background-color: white;
+    color: red;
+    align-items: center;
+    padding: 15px;
+    right: 0;
+    margin: 15px;
+    bottom: 0;
+    z-index: 1;
+    justify-content: center;
+    display: none;
+  }
+  
