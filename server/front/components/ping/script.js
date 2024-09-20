@@ -81,15 +81,18 @@ export async function localgame() {
     const jsonData = await response.json();
     // console.log("jsonData: ", jsonData);
     // console.log("jsonData.stringify(): ", JSON.stringify(jsonData));
+    console.log("###  pingpong: ", window.location.hash);
     gameApi = JSON.stringify(jsonData);
     if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
+      throw new Error(`HTTP error! Status: ${response}`);
     }
     else if (window.location.hash == "#/pingpong") {
-      console.log("###pingpong");
+      console.log("### pingpong");
     }
-    else
+    else {
+      console.log("$$$ pingpong");
       window.location.hash = "/pingpong";
+    }
   } catch (error) {
     console.error('There was a problem with the fetch operation:', error);
   }

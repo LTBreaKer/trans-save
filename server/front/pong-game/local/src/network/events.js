@@ -38,9 +38,11 @@ function resizeCanvas(){
 }
 
 export function setupElementEvenent() {
+	console.log("setupElementEvenent 11111111111111");
 	replay.addEventListener("click", async () => {
+		console.log("11111111111");
 		await localgame();
-		await initGame();
+		await replayGame();
 	})
 	pong_menu.addEventListener("click", async () => {
 		window.location.hash = "/ping";
@@ -67,12 +69,9 @@ export function setupEventListeners() {
 	});
 
 	replay.addEventListener("click", async () => {
-		// local_butt_game.addEventListener('click', localgame);
+		console.log("000000000");
 		await localgame();
-		await initGame();
-		// connectPaddleSocket();
-		// popup_replay.style.zIndex = 1;
-		// descounter();
+		await replayGame();
 	})
 	pong_menu.addEventListener("click", async () => {
 		window.location.hash = "/ping";
@@ -134,14 +133,18 @@ export async function descounter() {
 	launchGame();
 }
 // descounter();
-let initGame = async () => {
+let replayGame = async () => {
 	console.log("  initGame  initGame  initGame  initGame");
 	await connectPaddleSocket();
 	popup_replay.style.zIndex = 1;
 	await descounter();
+}
+
+let initGame = async () => {
+	await replayGame();
 	await loadDocument();
 	setupElementEvenent();
 }
 
 initPlayGame(initGame);
-initGame();
+replayGame();
