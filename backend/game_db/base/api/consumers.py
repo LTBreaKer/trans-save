@@ -3,7 +3,7 @@ import json
 from .helpers import check_auth, get_user
 from asgiref.sync import sync_to_async
 
-class remoteGame(AsyncWebsocketConsumer):
+class RemoteGame(AsyncWebsocketConsumer):
     async def connect(self):
         self.user_id = -1
 
@@ -26,6 +26,41 @@ class remoteGame(AsyncWebsocketConsumer):
             f"player_{self.user_id}", self.channel_name
         )
         await self.accept(subprotocol='token')
+
+    async def receive(self, text_data):
+
+        from base.models import GameDb
+
+        text_data_json = json.loads(text_data)
+        message = text_data_json['message']
+
+        if message == 'player connected':
+            game_id = text_data_json['game_id']
+            try:
+                game = await sync_to_async(GameDb.objects.get)(id=game_id)
+            except GameDb.DoesNotExist:
+                await self.send(text_data=json.dumps({
+                    'error': 'Game not found'
+                }))
+                return
+            if game.number_of_connected_players == 0:
+                game.number_of_connected_players = 1
+                await sync_to_async(game.save)()
+                await self.send(text_data=json.dumps({
+                    'message': 'Waiting for second player'
+                }))
+            elif game.number_of_connected_players == 1:
+                game.number_of_connected_players = 2
+                await sync_to_async(game.save)()
+
+                self.send(text_data=json.dumps({
+                    "message": "both players are connected"
+                }))
+            else:
+                await self.send(text_data=json.dumps({
+                    'error': 'Game is full'
+                }))
+
 
     
     async def disconnect(self, code):

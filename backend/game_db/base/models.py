@@ -8,7 +8,7 @@ class GameDb(models.Model):
 
     username_validator = CustomUsernameValidator()
 
-
+    number_of_connected_players = models.IntegerField(default=0)
     player1_id = models.IntegerField(blank=False, null=False)
     player2_id = models.IntegerField(blank=False, null=False)
     player1_score = models.IntegerField(default=0)
@@ -21,4 +21,4 @@ class GameDb(models.Model):
 
     def __str__(self):
         return f'game with player id {self.player1_id} vs player id {self.player2_id}'
-    
+
