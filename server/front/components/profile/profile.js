@@ -1,9 +1,10 @@
 import { loadHTML, loadCSS, player_webSocket } from '../../utils.js';
 import {log_out_func,  logoutf, get_localstorage, getCookie, login } from '../../auth.js';
-
+let friendsocket;
 const api = "https://127.0.0.1:9004/api/";
 const api_one = "https://127.0.0.1:9005/api/";
 var photo = null;
+let newNotification;
 async function Friends() {
   const html = await loadHTML('./components/profile/profile.html');
   loadCSS('./components/profile/profile.css');
@@ -75,57 +76,58 @@ async function Friends() {
     notifi_display.classList.toggle('active');
   })
 
+  window.addEventListener('resize', () => {
+    if (window.innerWidth > 666) 
+      perso_list.style.display = 'flex';
+    if (window.innerWidth < 666) 
+      perso_list.style.display = 'none';
+
+  })
 
 
 
-// // ===== ====== ======= ======== here iwill work with games
+  const perso = document.querySelector('.bi-person-add');
+  const perso_list = document.querySelector('.friends_list');
 
-// const gamepage = document.getElementById('gamepage');
+  perso.addEventListener('click', () => {
+    console.log("=====hello ");
+    // perso_list.classList.toggle('active');
 
-// gamepage.addEventListener('click', () => {
-//   console.log('hello iiiiiiiiii');
-//   document.querySelector('.games').style.display = 'flex';
-//   document.querySelector('.conta').style.display = 'flex';
-// })
+    perso_list.style.display = 'flex';
+    window.addEventListener('click', function(event) {
+      if (event.target !== perso && event.target !== perso_list && perso_list.style.display === "flex") {
+  
+        console.log("hellokdjfkdj kdjf ")
+        perso_list.style.display = 'none';
+      }
+      })
+  });
 
-// const mer_game = document.getElementById('mer_game');
-// const mol_game = document.getElementById('mol_game');
-
-// mer_game.addEventListener('click', () => {
-//   console.log("---------");
-//   document.querySelector('.conta').style.display = 'none';
-//   document.querySelector('.mer_cont').style.display = 'flex';
-
-// })
-
-
+  if (newNotification)
+    check_and_set_online(newNotification);
 
 
-// const exitPups = document.querySelectorAll('.exit_pup');
 
-// exitPups.forEach(exitPup => {
-//   exitPup.addEventListener('click', () => {
-//               document.querySelector('.mer_cont').style.display = 'none';
-//   document.querySelector('.games').style.display = 'none';
-//   document.querySelector('.conta').style.display = 'none';
+  const butt = document.querySelector('#butt');
+  const side = document.querySelector('.sidebar');
 
-//   });
-// });
+  butt.addEventListener('click', function() {
+    
+    side.classList.toggle('active');
+  });
 
-// mol_game.addEventListener('click', () => {
-//   console.log("hello we are here ");
-//   window.location.hash = '/pingpong';
-// })
-
-
-// // ===== ===== ===== ====== ===== ====== ======
-
+  document.addEventListener('click', (event) => {
+    if (!side.contains(event.target) && !butt.contains(event.target)) {
+      side.classList.remove('active');
+    }
+  });
 
 
 
 
 }
 
+export {friendsocket};
 export async function get_friends_home() {
   const response = await fetch(api_one + 'user/get-friend-list/', {
     method: 'GET',
@@ -142,8 +144,6 @@ export async function get_friends_home() {
   displayFriendList_home(jsonData.friend_list)
 }
 
-
-
 function displayFriendList_home(friendList) {
   friendList =  Object.values(friendList);
 
@@ -152,21 +152,23 @@ function displayFriendList_home(friendList) {
     return;
   }
     const send_friend = document.querySelector('.send_friend_list');
-    
+  if (send_friend) {
+
     send_friend.innerHTML = friendList.map( friend => ` 
       <div class="friends"  data-id="${friend.id}">
       <div class="friend" id="user_id" data-id="${friend.id}">
       <div >  
       <img  id="player1" style="border-radius: 50%;" class="click_friend" data-name="${friend.username}" data-id="${friend.id}"  class="proimage" src="${friend.avatar}" alt="">
       </div>
-      <div class="onlinen"> </div>
+      <div class="onlinen" data-id="${friend.id}"> </div>
       <h2 class="player1" class="click_friend" >${friend.username}</h2>
       </div>
-
-    `).join('');
-    send_friend.querySelectorAll('.click_friend').forEach(link => {
-      link.addEventListener('click', readit);
-    });
+      
+      `).join('');
+      send_friend.querySelectorAll('.click_friend').forEach(link => {
+        link.addEventListener('click', readit);
+      });
+    }
 }
 
 function readit(event) {
@@ -199,11 +201,6 @@ async function update_profile_fun() {
       }
 
   if (boll === true) {
-    // const fanti = update_Email.value.trim();
-    // console.log('fanti  *', fanti.trim(), "*");
-    // console.log('fanti  *', "hello", "*");
-    // console.log('email=>  *', update_Email.value.trim(), "*");
-    // console.log("hello hello hello hello hello hello hello");
     let formData = new FormData();
 
     if (photo) formData.append('avatar', photo);
@@ -217,10 +214,6 @@ async function update_profile_fun() {
     await fetchUserData();
   }
 
-  console.log('username=>  ', update_UserName.value);
-  console.log('password=>  ', new_password.value);
-  console.log('old password=>  ', old_password.value);
-  console.log('check box=>  ', check_box.checked);
 }
 
 
@@ -230,24 +223,18 @@ async function update_backend(data) {
   const response = await fetch(api + 'auth/update-user/', {
     method: 'PUT',
     headers: {
-      // 'Content-Type': 'multipart/form-data',
       'AUTHORIZATION': "Bearer " + get_localstorage('token')
     },
     credentials: 'include',
     body: data
   });
-  console.log("hello -----------------------------");
   const jsonData = await response.json();
   console.log(jsonData);
 
   if (!response.ok) {
     throw new Error(`HTTP error! Status: ${response.status}`);
   }
-  
-
 }
-
-
 
 async function send_freinds_request(userna) {
     const data = {
@@ -265,11 +252,9 @@ async function send_freinds_request(userna) {
       credentials: 'include',
       body: JSON.stringify(data)
     });
-    console.log("hello -----------------------------");
      jsonData = await response.json();
     console.log(jsonData.message);
     if ("Friend request sent" === jsonData.message){
-      console.log("==--=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
       document.querySelector('#send_friend_message_text').innerHTML = 'Friend Request Sent';
       document.querySelector('.send_friend_message').style.display = 'flex';
     }
@@ -326,23 +311,35 @@ async function changeAccess() {
 }
 
 
+function check_and_set_online(newNotification) {
+  console.log(newNotification);
+  console.log(newNotification.is_online);
+  console.log(newNotification.user_id);
+  
+
+  const send_friend = document.querySelector('.friends');
+  console.log("========================================");
+    const friendId = '2'; // Replace with the actual ID
+    const onlineDiv = send_friend.querySelector(`.onlinen[data-id="${friendId}"]`);
+    if (onlineDiv) {
+        onlineDiv.style.backgroundColor = 'green'; // Change color for online
+    }
+  
+}
+
+
 async function check_friends_status() {
   console.log("*******************************");
-  let friendsocket = new WebSocket("wss://127.0.0.1:9005/ws/online-status/", ["token", get_localstorage('token')]);
+  friendsocket = new WebSocket("wss://127.0.0.1:9005/ws/online-status/", ["token", get_localstorage('token')]);
     
   friendsocket.onopen = function () {
     console.log('online status Websocket connection established.');
   };
   
   friendsocket.onmessage = async function(event) {
-    const newNotification = await JSON.parse(event.data);
+    newNotification = await JSON.parse(event.data);
+    check_and_set_online(newNotification);
     console.log("here are socket of friends online => ", newNotification)
-    // const isDuplicate = accumulatedNotifications.some(notification => notification.friend_request.id === newNotification.friend_request.id
-    // );
-    // if (!isDuplicate)
-    //   accumulatedNotifications.push(newNotification);
-
-    // await displayNotifications(accumulatedNotifications);
   };
 
   friendsocket.onerror = function (error) {
@@ -358,25 +355,6 @@ async function check_friends_status() {
 
 // Define the `checkFirst` function
 async function checkFirst() {
-
-
-  // console.log("*******************************");
-  // const subprotocols = ['token', get_localstorage('token')];
-
-  // const socket = new WebSocket('wss://127.0.0.1:9005/ws/friend-requests/ ', subprotocols);
-  // socket.onmessage = function(event) {
-  //   console.log('Message from server:', event.data);
-    
-  //   try {
-  //     const data = JSON.parse(event.data);
-  //     console.log('Parsed data:', data);
-  //   } catch (e) {
-  //     console.error('Failed to parse message:', e);
-  //   }
-  // };
-  // console.log("*******************************");
-
-
 
   const token = get_localstorage('token');
   
@@ -433,6 +411,8 @@ async function fetchUserData() {
     const change_image = document.getElementById('image_user');
     const profile_username = document.getElementById('profile_username');
     const update_avatar = document.getElementById('update_avatar');
+    const check_bo = document.getElementById('check_box');
+
     
 
     update_avatar.src = userData.user_data.avatar;
@@ -440,6 +420,7 @@ async function fetchUserData() {
     change_image.src = userData.user_data.avatar;
     change_user.innerHTML = userData.user_data.username;
     profile_username.innerHTML = userData.user_data.username;
+    check_bo.checked = userData.user_data.twofa_active;
   } catch (error) {
     console.error('There was a problem with the fetch operation:', error);
   }

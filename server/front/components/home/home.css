@@ -243,7 +243,6 @@ display: none;
 
 /* // =========================== here i will work with media =========================== */
 
-
 @media (max-width: 350px) {
 
   #butt {
@@ -252,8 +251,6 @@ display: none;
       cursor: pointer;
       color: #e8ebfb;
   }
-
-  
 }
 
 @media (max-width: 407px) {
@@ -268,18 +265,13 @@ display: none;
     border-radius: 25px;
     overflow-y: auto;
   }
-
 }
+
 @media (max-width: 400px) {
   .header .profile .image img {
       display: none;
   }
 }
-
-
-
-
-
 
   /* game here -------- */
 

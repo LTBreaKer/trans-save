@@ -2,6 +2,7 @@ import { loadHTML, loadCSS } from '../../utils.js';
 import { login ,log_out_func, logoutf, get_localstorage, getCookie } from '../../auth.js';
 var api = "https://127.0.0.1:9004/api/";
 var api_game = "https://127.0.0.1:9006/api/gamedb/";
+let game_socket = "wss://127.0.0.1:9006/ws/game-db/"
 let name = "";
 async function Ping() {
   const html = await loadHTML('./components/ping/index.html');
@@ -21,8 +22,27 @@ async function Ping() {
   name = input.value; 
   local_butt_game.addEventListener('click', localgame);
   remote_butt_game.addEventListener('click', remore_game_fun);
+  gmaee();
   
-  
+}
+
+
+
+function gmaee() {
+  const subprotocols = ['token', get_localstorage('token')];
+
+  const socket = new WebSocket(game_socket, subprotocols);
+  socket.onmessage = function(event) {
+    console.log('Message from server socket woek:', event.data);
+    
+    try {
+      const data = JSON.parse(event.data);
+      console.log('Parsed data====== :', data);
+    } catch (e) {
+      console.error('Failed to parse message:', e);
+    }
+  };
+
 }
 
 

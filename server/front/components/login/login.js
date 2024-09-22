@@ -303,58 +303,11 @@ const signindata = () => {
             const ama = document.querySelector('#backerror');
             ama.innerText = data.detail;
         }
-
-
-
     })
     .catch(error => {
         console.error('there is error', error);
     });
-
-
-
-    // fetch(api + 'auth/login/', {
-    //     method: 'POST',
-    //     headers: {
-    //         'Content-Type': 'application/json',
-    //     },
-    //     'X-CSRFToken': csrftoken,
-    //     credentials: 'include',
-    //     body: JSON.stringify(data)
-    // })
-    // .then(response => {
-    //     console.log(response);
-    //     if (!response.ok){
-    //         console.log("Eroor");
-    //     }
-        
-    //     else if (response.status === 200)
-    //         name = 1;
-    //     // console.log(response.message);
-    //     return response.json();
-    // })
-    // .then(data => {
-    //     console.log(data)
-    //     // console.log(data.access)
-    //     if (data.message === 'Waiting for otp verification')
-    //     {
-    //         tokenn = data.token.access;
-    //         refrech = data.token.refresh;
-    //         handle_otp();
-    //     }
-    //     if (data.message === 'Login successful'){
-    //         login(data.access ,data.refresh)
-    //         window.location.hash = '/';
-    //     }
-    // })
-    // .catch(error => {
-    //     console.error('there is error', error);
-    // });
-
-
 }
-
-
 }
 
 
