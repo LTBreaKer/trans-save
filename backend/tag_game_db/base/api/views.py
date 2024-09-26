@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from base.models import TagGameDb
 from base.serializers import TagGameDbSerialiser
-from .helpers import check_auth, get_user_info, is_user_authenticated
+from .helpers import check_auth, get_user_info, is_user_authenticated, get_user
 import base.global_vars as global_vars
 
 game_queue = global_vars.game_queue
@@ -20,6 +20,7 @@ def check_user_availablity(request):
     user_data = auth_check_response.json()['user_data']
     player_id = user_data['id']
     username = user_data['username']
+    avatar = user_data['avatar']
 
     if TagGameDb.objects.filter(
         Q(player1_id=player_id) | Q(player2_id=player_id),
@@ -38,7 +39,8 @@ def check_user_availablity(request):
         'is_available' : True,
         'res': None,
         'player_id': player_id,
-        'username': username
+        'username': username,
+        'avatar': avatar,
         }
 
 @api_view(['POST'])
@@ -51,7 +53,14 @@ def create_local_game(request):
     player2_name = request.data.get('player2_name')
     if not player2_name:
         return Response({'message': 'player2_name required'}, status=400)
-    serializer = TagGameDbSerialiser(data={'player1_name': user_availablity['username'], 'player2_name': player2_name, 'is_remote': False, 'player1_id': user_availablity['player_id'], 'player2_id': -1})
+    serializer = TagGameDbSerialiser(data={
+            'player1_name': user_availablity['username'],
+            'player2_name': player2_name,
+            'is_remote': False,
+            'player1_id': user_availablity['player_id'],
+            'player2_id': -1,
+            'player1_avatar': user_availablity['avatar'],    
+        })
     if serializer.is_valid():
         instance = serializer.save()
         return Response({
@@ -66,6 +75,7 @@ def create_local_game(request):
 
 @api_view(['POST'])
 def create_remote_game(request):
+    AUTH_HEADER = request.META.get('HTTP_AUTHORIZATION')
     user_availablity = check_user_availablity(request)
     if not user_availablity['is_available']:
         return user_availablity['res']
@@ -74,7 +84,21 @@ def create_remote_game(request):
     if len(game_queue) >= 2:
         player1_id = game_queue.pop()
         player2_id = game_queue.pop()
-        serializer = TagGameDbSerialiser(data={'player1_id': player1_id, 'player2_id': player2_id})
+        player2_data = get_user(user_id=player2_id, auth_header=AUTH_HEADER).json()
+
+        player1_avatar = user_availablity['avatar']
+        player2_avatar = player2_data['user_data']['avatar']
+        player1_name = user_availablity['username']
+        player2_name = player2_data['user_data']['username']
+
+        serializer = TagGameDbSerialiser(data={
+                'player1_id': player1_id,
+                'player2_id': player2_id,
+                'player1_avatar': player1_avatar,
+                'player2_avatar': player2_avatar,
+                'player1_name': player1_name,
+                'player2_name': player2_name,
+            })
         if serializer.is_valid():
             serializer.save()
             return Response({'message': 'game created',

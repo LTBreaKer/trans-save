@@ -36,6 +36,14 @@ class RemoteGame(AsyncWebsocketConsumer):
 
         if message == 'player connected':
             game_id = text_data_json['game_id']
+            player_id = text_data_json['player_id']
+            if not player_id or not game_id:
+                await self.send(text_data=json.dumps({
+                    'error': 'game_id and player_id required'
+                }))
+                return
+            game_id = int(game_id)
+            player_id = int(player_id)
             try:
                 game = await sync_to_async(GameDb.objects.get)(id=game_id)
             except GameDb.DoesNotExist:
@@ -43,22 +51,36 @@ class RemoteGame(AsyncWebsocketConsumer):
                     'error': 'Game not found'
                 }))
                 return
-            if game.number_of_connected_players == 0:
-                game.number_of_connected_players = 1
-                await sync_to_async(game.save)()
-                await self.send(text_data=json.dumps({
-                    'message': 'Waiting for second player'
-                }))
-            elif game.number_of_connected_players == 1:
-                game.number_of_connected_players = 2
-                await sync_to_async(game.save)()
 
-                self.send(text_data=json.dumps({
-                    "message": "both players are connected"
+            if player_id == game.player1_id:
+                if game.player1_connected:
+                    await self.send(text_data=json.dumps({
+                        'error': 'Player already connected'
+                    }))
+                    return
+                game.player1_connected = True
+                await sync_to_async(game.save)()
+            elif player_id == game.player2_id:
+                if game.player2_connected:
+                    await self.send(text_data=json.dumps({
+                        'error': 'Player already connected'
+                    }))
+                    return
+                game.player2_connected = True
+                await sync_to_async(game.save)()
+            else:
+                await self.send(text_data=json.dumps({
+                    'error': 'No player found with the provided player_id'
+                }))
+                return
+            
+            if game.player1_connected and game.player2_connected:
+                await self.send(text_data=json.dumps({
+                    'message': 'Both players are connected'
                 }))
             else:
                 await self.send(text_data=json.dumps({
-                    'error': 'Game is full'
+                    'message': 'Waiting for second player to connect'
                 }))
 
 
