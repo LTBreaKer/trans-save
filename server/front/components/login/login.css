@@ -31,7 +31,7 @@ img {
   display: flex;
   /* left: -150px;
   top: -150px; */
-  width: 500px;
+  /* width: 500px; */
 }
 
 .container .image {
@@ -48,9 +48,9 @@ img {
 .image img {
   position: absolute;
   align-items: center;
-  right: 1px;
-  width: 90%;
-  max-width: 90vh;
+  right: 10%;
+  width: 30%;
+  max-width: 80vh;
   height: auto;
   overflow: hidden;
   z-index: -1;
@@ -148,7 +148,7 @@ img {
 }
 
 .form h3 {
-  margin: 29px;
+  margin-top: 29px;
   color: white;
   font-size: 1.4em;
 }
@@ -267,4 +267,98 @@ img {
   cursor: pointer;
   color: black;
   border-radius: 15px;
+}
+
+/* 810  working with responsive here  */
+
+@media (max-width: 810px) {
+
+  .container .form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 100%;
+    height: 96vh;
+  }
+  
+  .container .image {
+    /* background-color: red; */
+    display: none;
+    width: 49%;
+    align-items: center;
+    justify-content: center;
+    /* right: 0px; */
+    overflow: hidden;
+    height: 96vh;
+  }
+  
+}
+
+
+@media (max-width: 625px) {
+  .form  .btn{
+    width: 130px;
+    height: 45px;
+    background: #e8ebfb;
+    color: black;
+    border: none;
+    outline: none;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 1.3em;
+    font-weight: bold;
+  }
+  
+}
+
+@media (max-width: 472px) {
+  .form .input-box {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 80%;
+    align-items: center;
+    height: 50px;
+    border-bottom: 2px solid rgb(255, 255, 255);
+    margin: 15px;
+  }
+  .form h3 {
+    margin-top: 29px;
+    color: white;
+    font-size: 1.1em;
+  }
+  
+}
+
+@media (max-height: 740px) {
+  .form.active .signin {
+    justify-content: center;
+    height: 100%;
+  
+    transition: transform .18s ease;
+    transform: translateY(-700px);
+  }
+  
+}
+
+@media (max-height: 690px) {
+  .form.active .signin {
+    justify-content: center;
+    height: 100%;
+  
+    transition: transform .18s ease;
+    transform: translateY(-650px);
+  }
+  
+}
+
+@media (max-height: 640px) {
+  .form.active .signin {
+    justify-content: center;
+    height: 100%;
+  
+    transition: transform .18s ease;
+    transform: translateY(-550px);
+  }
+  
 }
