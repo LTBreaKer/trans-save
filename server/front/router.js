@@ -28,8 +28,11 @@ const routes = {
 async function Router() {
 
   // delete_component().clear();
-  if (!friends_array)
-    await get_friends_list();
+  console.log("here i will print aray hhh==>>  ", friends_array)
+  // if (friends_array){
+  //   console.log("list of friends on here check that ")
+  //   await get_friends_list();
+  // }
 
   console.log("here i will print aray hhh==>>  ", friends_array)
   var usern;
@@ -47,7 +50,8 @@ async function Router() {
       return;
     }
     usern = path.split('/')[2];
-
+    if (path.startsWith('/user'))
+      await get_friends_list();
     if (path.startsWith('/user') || (path == '/user' && !friends_array.includes(usern))){
       if (typeof usern === 'undefined' || usern === null || !friends_array.includes(usern) ) 
         component = NotFound;
@@ -71,6 +75,9 @@ async function Router() {
   }
   
   usern = path.split('/')[2];
+  if (path.startsWith('/user'))
+    await get_friends_list();
+
   if (path.startsWith('/user') || (path == '/user' && !friends_array.includes(usern))){
     if (typeof usern === 'undefined' || usern === null ||  !friends_array.includes(usern) ) 
       component = NotFound;
@@ -99,7 +106,7 @@ async function get_friends_list() {
 }
 
 
-function add_friendstoarray(friendList) {
+async function add_friendstoarray(friendList) {
   if (!friendList) {
     console.error('Notification display container not found');
     return;
@@ -107,6 +114,7 @@ function add_friendstoarray(friendList) {
   
   friendList =  Object.values(friendList);
   friends_array = [];
+  console.log("*********************************************")
  friendList.map( friend => {
    friends_array.push(friend.username);
  });

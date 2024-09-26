@@ -4,6 +4,7 @@ var api = "https://127.0.0.1:9004/api/";
 var api_game = "https://127.0.0.1:9006/api/gamedb/";
 let game_socket = "wss://127.0.0.1:9006/ws/game-db/"
 let name = "";
+
 var remote_object;
 async function Ping() {
   const html = await loadHTML('./components/ping/index.html');
