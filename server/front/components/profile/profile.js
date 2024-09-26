@@ -123,7 +123,40 @@ async function Friends() {
   });
 
 
+  console.log("hello we are here");
+  const tag_history = document.querySelector('.tag_game_click');
+  const pong_history = document.querySelector('.pong_game_click');
+  const tourn_history = document.querySelector('.tourn_game_click');
+  const tag_game_history = document.querySelector('.tag_game_history');
+  const ping_game_history = document.querySelector('.ping_game_history');
+  const tur_game_history = document.querySelector('.tur_game_history');
+  console.log(tag_history, tag_game_history);
+  tag_history.addEventListener('click', () => {
+      console.log("hello we are here");
+    if (tag_game_history.style.display !== 'flex'){
+      ping_game_history.style.display = 'none';
+      tur_game_history.style.display = 'none';
+      tag_game_history.style.display = 'flex';
+    }
+  })
+  pong_history.addEventListener('click', () => {
+    if (ping_game_history.style.display !== 'flex'){
+      console.log("hello we are here");
+      ping_game_history.style.display = 'flex';
+      tur_game_history.style.display = 'none';
+      tag_game_history.style.display = 'none';
+    }
+    
+  })
+  tourn_history.addEventListener('click', () => {
+    if (tur_game_history.style.display !== 'flex'){
+      console.log("hello we are here");
+      ping_game_history.style.display = 'none';
+      tur_game_history.style.display = 'flex';
+      tag_game_history.style.display = 'none';
+    }
 
+  })
 
 }
 
@@ -144,9 +177,9 @@ export async function get_friends_home() {
   displayFriendList_home(jsonData.friend_list)
 }
 
-function displayFriendList_home(friendList) {
-  friendList =  Object.values(friendList);
-
+async function displayFriendList_home(friendList) {
+  friendList =  await Object.values(friendList);
+  console.log("print friends list here =>", friendList)
   if (!friendList) {
     console.error('Notification display container not found');
     return;
@@ -169,6 +202,7 @@ function displayFriendList_home(friendList) {
         link.addEventListener('click', readit);
       });
     }
+    set_onlines(friendList);
 }
 
 function readit(event) {
@@ -311,19 +345,32 @@ async function changeAccess() {
 }
 
 
+function set_onlines(users_list) {
+  users_list.map(users => {
+    console.log("=============>   ", users.is_online);
+    console.log("=============>   ", users.id);
+    const send_friend = document.querySelector('.friends');
+    const onlineDiv = send_friend.querySelector(`.onlinen[data-id="${users.id}"]`);
+    if (users.is_online)
+      onlineDiv.style.backgroundColor = 'green'; 
+  
+
+  })
+}
+
 function check_and_set_online(newNotification) {
   console.log(newNotification);
   console.log(newNotification.is_online);
   console.log(newNotification.user_id);
   
 
-  const send_friend = document.querySelector('.friends');
-  console.log("========================================");
-    const friendId = '2'; // Replace with the actual ID
-    const onlineDiv = send_friend.querySelector(`.onlinen[data-id="${friendId}"]`);
+    const send_friend = document.querySelector('.friends');
+    const onlineDiv = send_friend.querySelector(`.onlinen[data-id="${newNotification.user_id}"]`);
     if (onlineDiv) {
-        onlineDiv.style.backgroundColor = 'green'; // Change color for online
+      onlineDiv.style.backgroundColor = 'green'; 
     }
+    if (!newNotification.is_online)
+      onlineDiv.style.backgroundColor = 'gray'; 
   
 }
 

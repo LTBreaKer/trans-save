@@ -183,7 +183,7 @@ img {
   height: 100%;
 
   transition: transform .18s ease;
-  transform: translateY(-900px);
+  transform: translateY(-800px);
 }
 
 .form.active .signup {

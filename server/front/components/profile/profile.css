@@ -410,9 +410,14 @@ justify-content: space-between;
 
 }
 
+.cc {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 
 .content .matches .match_history {
-width: 55%;
+width: 450px;
 display: flex;
 flex-direction: column;
 height: 45vh;
@@ -422,6 +427,49 @@ overflow-y: auto;
 border-radius: 25px;
 /* justify-content: center; */
 
+}
+
+.match_history .tag_game_history {
+  width: 100%;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+}
+
+.match_history .ping_game_history {
+  width: 100%;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+}
+
+.match_history .tur_game_history {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.tur_game_history  .first_pl, .second_pl {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.navv {
+  display: flex;
+  width: 100%;
+  justify-content: space-around;
+  align-items: center;  
+  margin-top: 5px;
+}
+
+.navv h2 {
+  padding: 8px 12px;
+  background-color: black;
+  cursor: pointer;
+  color: #e8ebfb;
+  border-radius: 15px;
 }
 
 .content .matches .match_history::-webkit-scrollbar {
@@ -958,6 +1006,13 @@ display: none;
   margin-left: -15px;
 
  }
+
+
+
+
+/*  here i will work with match history tag and ping and turn */
+
+
 
 
 

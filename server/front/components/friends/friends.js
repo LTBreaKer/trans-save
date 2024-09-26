@@ -39,6 +39,24 @@ cancel_friend.addEventListener('click', () => {
   remove_friend();
   window.location.hash = '/';
 })
+
+
+const butt = document.querySelector('#butt');
+const side = document.querySelector('.sidebar');
+
+butt.addEventListener('click', function() {
+  
+  side.classList.toggle('active');
+});
+
+document.addEventListener('click', (event) => {
+  if (!side.contains(event.target) && !butt.contains(event.target)) {
+    side.classList.remove('active');
+  }
+});
+
+
+
 }
 
 async function remove_friend() {

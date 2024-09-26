@@ -4,6 +4,7 @@ var api = "https://127.0.0.1:9004/api/";
 var api_game = "https://127.0.0.1:9006/api/gamedb/";
 let game_socket = "wss://127.0.0.1:9006/ws/game-db/"
 let name = "";
+var remote_object;
 async function Ping() {
   const html = await loadHTML('./components/ping/index.html');
   loadCSS('./components/ping/style.css');
@@ -31,13 +32,26 @@ async function Ping() {
 function gmaee() {
   const subprotocols = ['token', get_localstorage('token')];
 
+
   const socket = new WebSocket(game_socket, subprotocols);
   socket.onmessage = function(event) {
     console.log('Message from server socket woek:', event.data);
     
     try {
       const data = JSON.parse(event.data);
-      console.log('Parsed data====== :', data);
+      if (data.data.type === "remote_game_created")
+      {
+          remote_object = {
+            game_id: data.data.game.id,
+            player1name: data.data.game.player1_name,
+            player2name: data.data.game.player2_name,
+            player1id: data.data.game.player1_id,
+            player2id: data.data.game.player2_id
+          }
+          console.log("data are here => ", remote_object)
+          // window.location.hash = 'hat hna lpath dyalk';
+      }
+
     } catch (e) {
       console.error('Failed to parse message:', e);
     }
@@ -45,6 +59,7 @@ function gmaee() {
 
 }
 
+export {remote_object};
 
 async function remore_game_fun() {
   
