@@ -7,56 +7,8 @@ from channels.db import database_sync_to_async
 from django.db.models import Count, F, Subquery, OuterRef
 from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
-# from core.serializers import UserSerializer
-# from player.serializers import ConsumerPlayerSerializer
-# from core.models import User
-# from .models import CustomRoomsConfig
-# from player.models import Player, Gamer
 from .paddle_class import Paddle
 from .ball_class import width, height, ballRaduis, paddleHeight, paddleWidth
-
-# @database_sync_to_async
-# def get_user(user_id):
-# 	try:
-# 		return (User.objects.get(id=user_id))
-# 	except User.DoesNotExist:
-# 		return (AnonymousUser())
-	
-# @database_sync_to_async
-# def get_player(user):
-# 	try:
-# 		return (Player.objects.get(user=user))
-# 	except Player.DoesNotExist:
-# 		return (AnonymousUser())
-
-# @database_sync_to_async
-# def get_gamers():
-# 	try:
-# 		player_with_unique_group = Player.objects.exclude(channel_name='_').values('room_group_name')\
-# 		.annotate(group_count=Count('room_group_name'))\
-# 		.filter(group_count=1).values('room_group_name')
-# 		return list(Player.objects.exclude(channel_name='_').filter(room_group_name__in=Subquery(player_with_unique_group)))
-# 	except Player.DoesNotExist:
-# 		return (AnonymouseUser)
-
-	
-
-# def get_user_id(token):
-# 	secret_key = settings.SECRET_KEY
-# 	decoded_token = jwt.decode(token, secret_key, algorithms=['HS256'])
-# 	return decoded_token['user_id']
-
-# @database_sync_to_async
-# def get_or_create_custom_rooms_config(room_group_name):
-#     return CustomRoomsConfig.objects.get_or_create(name=room_group_name)
-
-# @database_sync_to_async
-# def get_custom_rooms_config(room_group_name):
-#     return CustomRoomsConfig.objects.get(name=room_group_name)
-
-# @database_sync_to_async
-# def delete_custom_rooms_config(room_config):
-# 	room_config.delete()
 
 ########################## PlayerConsumer #########################
 class PlayerConsumer(AsyncWebsocketConsumer):
@@ -64,31 +16,10 @@ class PlayerConsumer(AsyncWebsocketConsumer):
 		super().__init__(*args, **kwargs)
 		self.ball_channel_name = ''
 		self.paddle = Paddle()
-		self.aiPaddle = Paddle(width - 10, height/2)
-		self.ai = False
 
 	async def connect(self):
-		self.room_name = "g1"
-		self.room_group_name = 'game_%s' % self.room_name
-		await self.channel_layer.group_add(
-			self.room_group_name,
-			self.channel_name
-		)
 		await self.accept()
-		await self.channel_layer.group_send(
-			self.room_group_name, 
-			{
-				'type': "connect_to_game",
-				'player_channel_name': self.channel_name
-			})
-	
-	async def connect_ai(self):
-		print("connect_ai: ", file=sys.stderr)
-		self.ai = True
-		await self.send(text_data=json.dumps({
-			'message': 'create_ball_socket',
-			'group_name': self.room_group_name
-		}))
+		await self.sendCunsumerPaddleCreated()
 
 	async def connect_to_game(self, e):
 		if (self.channel_name != e['player_channel_name']):
@@ -97,30 +28,47 @@ class PlayerConsumer(AsyncWebsocketConsumer):
 				'group_name': self.room_group_name
 			}))
 
+
+	async def add_group(self, e):
+		self.room_name = e["group_name"]
+		self.room_group_name = 'game_%s' % self.room_name
+		await self.channel_layer.group_add(
+			self.room_group_name,
+			self.channel_name
+		)
+
+	async def assigning_paddle(self, e):
+		if (e['paddle'] == "left_paddle"):
+			self.paddle = Paddle(0, height/2)
+		else:
+			self.paddle = Paddle(width - 10, height/2)
+		print(self.channel_name, file=sys.stderr)
+		print("paddle: ", self.paddle.fn_str(), file=sys.stderr)
+
+	async def sendCunsumerPaddleCreated(self):
+		await self.send(text_data=json.dumps({
+			'type_msg': 'consumer_paddle_created',
+		}))
+		
+
 	async def disconnect(self, close_code):
-		await self.channel_layer.send(
-			self.ball_channel_name, 
-			{ 'type': 'deconnect_ball' })
+		# await self.channel_layer.send(
+		# 	self.ball_channel_name, 
+		# 	{ 'type': 'deconnect_ball' })
 		await self.channel_layer.group_discard(
 			self.room_group_name,
 			self.channel_name
 		)
-		# player = await get_player(self.scope["user"])
-		# player.channel_name = '_'
-		# await database_sync_to_async(player.save)()
 
 	async def receive(self, text_data):
 		text_data_json = json.loads(text_data)
 		type = text_data_json['type_msg']
 
 		print("----- type: ", type, file=sys.stderr)
-		if (type == 'login'):
-			await self.login_user(text_data)
-		elif (type == "paddle"):
+		if (type == "paddle"):
 			self.paddle.update(text_data_json['ps'])
 			await self.channel_layer.send(
-			self.ball_channel_name,
-			{
+			self.ball_channel_name, {
 				'type': 'update_paddle_info',
 				'name': self.channel_name, 
 				'paddle': self.paddle.fn_data()
@@ -130,8 +78,11 @@ class PlayerConsumer(AsyncWebsocketConsumer):
 				await self.channel_layer.send(
 				self.ball_channel_name,
 				{ 'type': 'move'})
-		elif (type == "connect_ai"):
-			await self.connect_ai()
+		elif (type == "add_group"):
+			await self.add_group(text_data_json)
+		elif (type == "assigning_paddle"):
+			await self.assigning_paddle(text_data_json)
+			
  
 	async def paddle_info_to_game(self, event):
 		self.ball_channel_name = event['ball_channel_name']
@@ -142,15 +93,6 @@ class PlayerConsumer(AsyncWebsocketConsumer):
 				'name': self.channel_name,
 			}
 		)
-		if (self.ai):
-			await self.channel_layer.send(
-				self.ball_channel_name,
-				{
-					'type': 'paddle_info',
-					'name': 'ai',
-				}
-			)
-
 
 	async def get_paddle(self, event):
 		self.paddle.update(event['paddle'])

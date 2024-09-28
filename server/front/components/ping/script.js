@@ -2,8 +2,18 @@ import { loadHTML, loadCSS } from '../../utils.js';
 import { login ,log_out_func, logoutf, get_localstorage, getCookie } from '../../auth.js';
 var api = "https://127.0.0.1:9004/api/";
 var api_game = "https://127.0.0.1:9006/api/gamedb/";
+let game_socket = "wss://127.0.0.1:9006/ws/game-db/";
 let name = "";
 let html = "";
+var data_remote_player;
+export let statePongGame;
+export let player_webSocket;
+
+export async function sendPlayerPaddleCreated(){
+	const ws = await player_webSocket;
+	if (ws && ws.readyState == 1)
+		await ws.send(JSON.stringify({'type_msg': 'play'}));
+}
 
 async function Ping() {
   if (!html)
@@ -23,9 +33,62 @@ async function Ping() {
   name = input.value; 
   local_butt_game.addEventListener('click', localgame);
   remote_butt_game.addEventListener('click', remore_game_fun);
-  
+  player_webSocket = await connectPlayerSocket();
   
 }
+
+async function fetchUserName() {
+  try {
+    const userResponse = await fetch(api + 'auth/get-user/', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + get_localstorage('token')
+      },
+      credentials: 'include',
+    });
+    
+    if (!userResponse.ok) {
+      throw new Error('Network response was not ok');
+    }
+    let data_user = await userResponse.json()
+    return (data_user.user_data.username);
+  } catch(error)  {
+    console.error('There was a problem with the fetch operation:', error);
+  }
+}
+
+async function connectPlayerSocket() {
+  try {
+    const subprotocols = ['token', get_localstorage('token')];
+    const ws = new WebSocket(game_socket, subprotocols);
+    ws.onmessage = async function(event) {
+      console.log('Message from server socket woek:', event.data);
+      const data = JSON.parse(event.data);
+      if (data.data.type === "remote_game_created")
+      {
+        let name_current_user = await fetchUserName();
+        data_remote_player = {
+          name_current_user: name_current_user,
+          game_id: data.data.game.id,
+          player1name: data.data.game.player1_name,
+          player2name: data.data.game.player2_name,
+          player1id: data.data.game.player1_id,
+          player2id: data.data.game.player2_id
+        }
+        // console.log("data are here => ", data_remote_player)
+        statePongGame = "remote";
+        // window.location.hash = '/remote_pong';
+        window.location.hash = "/pingpong";
+      }
+    };
+    return (ws);
+  } catch (e) {
+    console.error('Failed to parse message:', e);
+  }
+}
+
+export {data_remote_player};
 
 
 async function remore_game_fun() {
@@ -83,6 +146,7 @@ export async function localgame() {
     // console.log("jsonData.stringify(): ", JSON.stringify(jsonData));
     console.log("###  pingpong: ", window.location.hash);
     gameApi = JSON.stringify(jsonData);
+    statePongGame = "local";
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response}`);
     }
