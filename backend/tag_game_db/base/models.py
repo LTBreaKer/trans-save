@@ -12,6 +12,8 @@ class TagGameDb(models.Model):
     player1_id = models.IntegerField(blank=False, null=False)
     player2_id = models.IntegerField(blank=False, null=False)
     is_remote = models.BooleanField(default=True)
+    player1_avatar = models.CharField(default='/media/avatars/avatar-default.webp')
+    player2_avatar = models.CharField(default='/media/avatars/avatar-default.webp')
     player1_name = models.CharField(max_length=150, validators=[username_validator])
     player2_name = models.CharField(max_length=150, validators=[username_validator])
     winner_id = models.IntegerField(blank=True, null=True)

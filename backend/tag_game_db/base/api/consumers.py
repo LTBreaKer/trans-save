@@ -29,7 +29,7 @@ class RemoteGame(AsyncWebsocketConsumer):
 
     async def receive(self, text_data):
 
-        from base.models import GameDb
+        from base.models import TagGameDb
 
         text_data_json = json.loads(text_data)
         message = text_data_json['message']
@@ -45,8 +45,8 @@ class RemoteGame(AsyncWebsocketConsumer):
             game_id = int(game_id)
             player_id = int(player_id)
             try:
-                game = await sync_to_async(GameDb.objects.get)(id=game_id)
-            except GameDb.DoesNotExist:
+                game = await sync_to_async(TagGameDb.objects.get)(id=game_id)
+            except TagGameDb.DoesNotExist:
                 await self.send(text_data=json.dumps({
                     'error': 'Game not found'
                 }))

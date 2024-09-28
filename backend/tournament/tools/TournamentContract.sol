@@ -105,6 +105,40 @@ contract TournamentContract {
         require(matchFound == true, "no match found with the provided match_number and tournament_id");
     }
 
+    // function addMatchScore(uint256 _matchNumber, uint256 _tournamentId, uint256 _playerOneScore, uint256 _playerTwoScore) public {
+    //     bool matchFound = false;
+
+    //     for (uint256 i = 0; i < matches.length; i++) {
+    //         if (matches[i].tournamentId == _tournamentId && matches[i].matchNumber == _matchNumber) {
+    //             matchFound = true;
+    //             matches[i].playerOneScore = _playerOneScore;
+    //             matches[i].playerTwoScore = _playerTwoScore;
+    //             if (matches[i].playerOneScore > matches[i].playerTwoScore)
+    //                 matches[i].winnerId = matches[i].playerOneId;
+    //             else
+    //                 matches[i].winnerId = matches[i].playerTwoId;
+    //             matches[i].status = "complete";
+    //             break;
+    //         }
+    //     }
+    //     require(matchFound == true, "no match found with the provided match_number and tournament_id");
+    // }
+
+    // function createStage(uint256 _tournamentId, uint256 _stageMatchCount) public {
+    //     bool tournamentFound = false;
+    //     uint256[] memory winnersIds = new uint256[](_stageMatchCount * 2);
+        
+
+    //     for (uint256 i = 0; i < tournaments.length; i++) {
+    //         if (tournaments[i].id == _tournamentId) {
+    //             tournamentFound = true;
+    //             for (uint256 j = matches.length - _stageMatchCount * 2; j < matches.length; j += 2) {
+                    
+    //             }
+    //         }
+    //     }
+    // }
+    
     // struct Match {
     //     string username_one;
     //     string username_two;
