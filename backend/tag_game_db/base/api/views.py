@@ -6,6 +6,8 @@ from base.models import TagGameDb
 from base.serializers import TagGameDbSerialiser
 from .helpers import check_auth, get_user_info, is_user_authenticated, get_user
 import base.global_vars as global_vars
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
 
 game_queue = global_vars.game_queue
 
@@ -100,11 +102,45 @@ def create_remote_game(request):
                 'player2_name': player2_name,
             })
         if serializer.is_valid():
-            serializer.save()
-            return Response({'message': 'game created',
-                            'player1_id': player1_id,
-                            'player2_id': player2_id},
-                            status=201
+            instance = serializer.save()
+            channel_layer = get_channel_layer()
+            player2_data = get_user(user_id=player2_id, auth_header=AUTH_HEADER).json()
+            async_to_sync(channel_layer.group_send)(
+                f"player_{player1_id}",
+                {
+                    "type": "remote_game_created",
+                    "game": {
+                        "id": instance.id,
+                        "player1_id": instance.player1_id,
+                        "player2_id": instance.player2_id,
+                        "player1_name": instance.player1_name,
+                        "player2_name": instance.player2_name,
+                    }
+                }
+            )
+            async_to_sync(channel_layer.group_send)(
+                f"player_{player2_id}",
+                {
+                    "type": "remote_game_created",
+                    "game": {
+                        "id": instance.id,
+                        "player1_id": instance.player1_id,
+                        "player2_id": instance.player2_id,
+                        "player1_name": instance.player1_name,
+                        "player2_name": instance.player2_name,
+                    }
+                }
+            )
+            return Response({
+                        'message': 'game created',
+                        'game_data': {
+                        'id': instance.id,
+                        'player1_id': instance.player1_id,
+                        'player2_id': instance.player2_id,
+                        'player1_name': instance.player1_name,
+                        'player2_name': instance.player2_name
+                        }},
+                        status=201
                     )
         else:
             return Response({'message': 'invalid data'}, status=400)
@@ -141,6 +177,7 @@ def add_game_score(request):
         winner_id = request.data.get('winner_id')
         if not winner_id:
             return Response({'message': 'winner_id required'}, status=400)
+        winner_id = int(winner_id)
         if winner_id != game.player1_id and winner_id != game.player2_id:
             return Response({'message': 'no player in this game with the provided id'}, status=400)
         game.winner_id = winner_id
@@ -166,4 +203,21 @@ def get_game_history(request):
     games = TagGameDb.objects.filter(Q(player1_id=user_id) | Q(player2_id=user_id), is_active=False)
     serializer = TagGameDbSerialiser(games, many=True)
     return Response({'games' : serializer.data}, status=200)
-    
+
+@api_view(['POST'])
+def get_game_history_by_username(request):
+    AUTH_HEADER = request.META.get('HTTP_AUTHORIZATION')
+    auth_check_response = check_auth(AUTH_HEADER)
+    if auth_check_response.status_code != 200:
+        return Response(data=auth_check_response.json(), status = auth_check_response.status_code)
+    username = request.data.get('username')
+    if not username:
+        return Response(data={'message': 'username is required'}, status=400)
+    games = TagGameDb.objects.filter(
+        Q(is_active=False) & (
+            (Q(is_remote=True) & (Q(player1_name=username) | Q(player2_name=username))) |
+            (Q(is_remote=False) & Q(player1_name=username))
+        )
+    )
+    serializer = TagGameDbSerialiser(games, many=True)
+    return Response({'games': serializer.data}, status=200)
