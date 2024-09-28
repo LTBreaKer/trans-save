@@ -42,35 +42,28 @@ function isAuthenticated() {
   }
 
 
-  function check_access_token() {
-    const data = {
-      token: token
-  };
-
-    fetch(api + '/auth/verify-token/', {
-      method: 'POST',
-      headers: {
+  export async function check_access_token() {
+    try {
+      const response = await fetch(api + 'auth/verify-token/', {
+        method: 'POST',
+        headers: {
           'Content-Type': 'application/json',
-          'X-CSRFToken': csrftoken,
-      },
-      credentials: 'include',
-      body: JSON.stringify(data)
-  })
-  .then(response => {
-      console.log(response);
-      return response.json();
-  })
-  .then(data => {
-      console.log(data);
-      if (data.message === 'Redirecting to 42 login')
-          window.location.href = data.url;
-     
-  })
-  .catch(error => {
+        },
+        credentials: 'include',
+        body: JSON.stringify({ token }) 
+      });
+      if (response.status === 404){
+        logoutf();
+        window.location.hash = '/login';
+      }
+      if (response.status !== 200) {
+        await changeAccess();
+      } 
+      if (!response.ok)
+          throw new Error(`HTTP error! Status: ${response.status}`);
+    } catch (error) {
       console.error('There was a problem with the fetch operation:', error);
-  });
-
-
+    }
 
   }
 

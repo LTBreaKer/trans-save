@@ -3,6 +3,10 @@ import {log_out_func,  logoutf, get_localstorage, getCookie, login } from '../..
 let friendsocket;
 const api = "https://127.0.0.1:9004/api/";
 const api_one = "https://127.0.0.1:9005/api/";
+// https://{{ip}}:9006/api/gamedb/get-game-history/
+// https://{{ip}}:9007/api/tag-gamedb/get-game-history/
+const pong_game = "https://127.0.0.1:9006/api/gamedb/";
+const tag_game = "https://127.0.0.1:9007/api/tag-gamedb/";
 var photo = null;
 let newNotification;
 async function Friends() {
@@ -134,9 +138,225 @@ async function Friends() {
       tag_game_history.style.display = 'none';
     }
   })
+
+  get_pong_history();
+  get_pong_history_by_name('afanti');
+  get_tag_history();
+  // set_pong_score()
+  // set_tag_score()
 }
 
 export {friendsocket};
+
+
+async function get_pong_history() {
+  const response = await fetch(pong_game + 'get-game-history/', {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + get_localstorage('token'),
+    },
+    credentials: 'include',
+  });
+  const jsonData = await response.json();
+
+  console.log("history of game of pong ==> : ", jsonData);
+
+  if (!response.ok) {
+    console.log((`HTTP error! Status: ${response.status}`), Error);
+  }
+  set_pong_history(jsonData)
+}
+
+
+export async function set_pong_history(friendList) {
+  
+  if (!friendList) {
+    console.error('Notification display container not found');
+    return;
+  }
+
+    const gamesContainer = document.querySelector('.ping_game_history');
+    friendList.games.forEach((game, index) => {
+      const gameDiv = document.createElement('div');
+      gameDiv.classList.add('play');
+      gameDiv.innerHTML = `
+        <img id="player1" src="${game.player1_avatar}" alt="Player 1 Avatar">
+        <h2 class="player1">${game.player1_name}</h2>
+        <h2>${game.player1_score}</h2>
+        <h2>${game.player2_score}</h2>
+        <h2 class="player2">${game.player2_name}</h2>
+        <img id="player2" src="${game.player2_avatar}" alt="Player 2 Avatar">
+      `;
+      gamesContainer.appendChild(gameDiv);
+    });
+
+}
+
+
+async function get_tag_history() {
+  const response = await fetch(tag_game + 'get-game-history/', {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + get_localstorage('token'),
+    },
+    credentials: 'include',
+  });
+  const jsonData = await response.json();
+
+  console.log("history of game of tag here  ==> : ", jsonData);
+
+  if (!response.ok) {
+    console.log((`HTTP error! Status: ${response.status}`), Error);
+  }
+  set_tag_history(jsonData);
+}
+
+
+async function set_tag_history(friendList) {
+  let user1;
+  let user2;
+  if (!friendList) {
+    console.error('Notification display container not found');
+    return;
+  }
+
+    const gamesContainer = document.querySelector('.tag_game_history');
+    friendList.games.forEach((game, index) => {
+      const gameDiv = document.createElement('div');
+      gameDiv.classList.add('play');
+      if (game.winner_name === game.player1_name){
+        user1 = 'W';
+        user2 = 'L';
+        gameDiv.innerHTML = `
+        <img id="player1" src="${game.player1_avatar}" alt="">
+        <h2 class="player1">${game.player1_name}</h2>
+        <h2 style="color: green;">${user1}</h2>
+        <h2 style="color: red;">${user2}</h2>
+        <h2 class="player2">${game.player2_name}</h2>
+        <img id="player2" src="${game.player2_avatar}" alt="">
+      `;
+
+      } else {
+        user1 = 'L';
+        user2 = 'W';
+        gameDiv.innerHTML = `
+        <img id="player1" src="${game.player1_avatar}" alt="">
+        <h2 class="player1">${game.player1_name}</h2>
+        <h2 style="color: red;" >${user1}</h2>
+        <h2 style="color: green;" >${user2}</h2>
+        <h2 class="player2">${game.player2_name}</h2>
+        <img id="player2" src="${game.player2_avatar}" alt="">
+      `;
+      }
+      gamesContainer.appendChild(gameDiv);
+    });
+
+}
+
+
+
+
+// async function get_pong_history_by_name(name) {
+//   const data = {
+//     username: name
+//   }
+//   const response = await fetch(pong_game + 'get-game-history-by-username/', {
+//     method: 'POST',
+//     headers: {
+//       'Content-Type': 'application/json',
+//       'Authorization': 'Bearer ' + get_localstorage('token'),
+//     },
+//     credentials: 'include',
+//     body: JSON.stringify(data)
+//   });
+//   const jsonData = await response.json();
+
+//   console.log("history of game of pong using user ==== name  ==> : ", jsonData);
+
+//   if (!response.ok) {
+//     console.log((`HTTP error! Status: ${response.status}`), Error);
+//   }
+
+// }
+
+
+async function set_pong_score() {
+  const data = {
+    game_id:2,
+    player1_score: 1,
+    player2_score: 7,
+    player1_name: "afanti", 
+    player2_name: "fanti"
+
+  }
+  const response = await fetch(pong_game + 'add-game-score/', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + get_localstorage('token'),
+    },
+    credentials: 'include',
+    body: JSON.stringify(data)
+  });
+  const jsonData = await response.json();
+
+  console.log("create game here -----==> : ", jsonData);
+
+  if (!response.ok) {
+    console.log((`HTTP error! Status: ${response.status}`), Error);
+  }
+
+}
+
+
+
+async function set_tag_score() {
+  const data = {
+    game_id: 2,
+    winner_name: "gggg"
+
+  }
+  const response = await fetch(tag_game + 'add-game-score/', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + get_localstorage('token'),
+    },
+    credentials: 'include',
+    body: JSON.stringify(data)
+  });
+  const jsonData = await response.json();
+
+  console.log("score of tag game set it  -----==> : ", jsonData);
+
+  if (!response.ok) {
+    console.log((`HTTP error! Status: ${response.status}`), Error);
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 export async function get_friends_home() {
   const response = await fetch(api_one + 'user/get-friend-list/', {
     method: 'GET',

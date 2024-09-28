@@ -1,10 +1,12 @@
 import { loadHTML, loadCSS, player_webSocket } from '../../utils.js';
 import {log_out_func, logoutf, get_localstorage, getCookie, login } from '../../auth.js';
-import {get_friends_home, send_freinds_request, changeAccess} from '../profile/profile.js';
+import {get_friends_home, set_pong_history , send_freinds_request, changeAccess} from '../profile/profile.js';
 
 
 const api = "https://127.0.0.1:9004/api/";
 const api_one = "https://127.0.0.1:9005/api/";
+const pong_game = "https://127.0.0.1:9006/api/gamedb/";
+
 var friend_user_id = 0;
 // var friends_array = [];
 var friend_username = "";
@@ -102,8 +104,36 @@ tourn_history.addEventListener('click', () => {
 })
 
 // ====== ======== ========= ========= =========
-
+get_pong_history_by_name(friend_username);
 }
+
+
+
+
+async function get_pong_history_by_name(name) {
+  const data = {
+    username: name
+  }
+  const response = await fetch(pong_game + 'get-game-history-by-username/', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + get_localstorage('token'),
+    },
+    credentials: 'include',
+    body: JSON.stringify(data)
+  });
+  const jsonData = await response.json();
+
+  console.log("history of game of pong using user ==== name  ==> : ", jsonData);
+
+  if (!response.ok) {
+    console.log((`HTTP error! Status: ${response.status}`), Error);
+  }
+  set_pong_history(jsonData);
+}
+
+
 
 
 async function remove_friend() {

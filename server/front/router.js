@@ -5,7 +5,7 @@ import NotFound from './components/notfound/notfound.js';
 import Friends from './components/friends/friends.js';
 import Game from './components/game/game.js';
 import PingPong from './components/pingpong/ping.js';
-import { isAuthenticated, get_localstorage } from './auth.js';
+import { isAuthenticated, get_localstorage, check_access_token } from './auth.js';
 import Ta from './components/ta/script.js';
 import Ping from './components/ping/script.js';
 
@@ -90,6 +90,7 @@ async function Router() {
 
 async function get_friends_list() {
   console.log("=======hello ======");
+  await check_access_token();
   const response = await fetch(api_one + 'user/get-friend-list/', {
     method: 'GET',
     headers: {
