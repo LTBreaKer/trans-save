@@ -1,5 +1,5 @@
 import { loadHTML, loadCSS, player_webSocket } from '../../utils.js';
-import {log_out_func,  logoutf, get_localstorage, getCookie, login } from '../../auth.js';
+import {log_out_func,  logoutf, get_localstorage, check_access_token, getCookie, login } from '../../auth.js';
 let friendsocket;
 const api = "https://127.0.0.1:9004/api/";
 const api_one = "https://127.0.0.1:9005/api/";
@@ -411,7 +411,7 @@ const isValidEmail = signupemail => {
 }
 
 async function update_profile_fun() {
-
+  check_access_token()
   const update_Email = document.getElementById('update_Email');
   const update_UserName = document.getElementById('update_UserName');
   const new_password = document.getElementById('new_password');
