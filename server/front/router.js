@@ -38,8 +38,10 @@ async function Router() {
   var usern;
   window.addEventListener('hashchange', async () => {
     console.log("---------------0--0-0-0-00-0-0--0-0-0-0");
-    const path = window.location.hash.slice(1);
+    let path = window.location.hash.slice(1);
     console.log("path===>: ", path);
+    if (path === '')
+        path = '/';
     component = routes[path] || NotFound;
     if (!isAuthenticated() && path !== '/login') {
       window.location.hash = '/login';
@@ -62,8 +64,10 @@ async function Router() {
     await component();
   });
   console.log("==================================== 0000000000");
-  const path = window.location.hash.slice(1) || '/';
+  let path = window.location.hash.slice(1) || '/';
   let component = routes[path] || NotFound;
+  if (path === '')
+    path = '/';
 
   if (!isAuthenticated() && path !== '/login') {
     window.location.hash = '/login';
