@@ -43,6 +43,7 @@ async function Friends() {
   });
   
   const logout = document.getElementById('logout')
+
   logout.addEventListener('click', log_out_func);
   
   const input_search = document.getElementById('input_search');
@@ -537,7 +538,7 @@ function check_and_set_online(newNotification) {
       onlineDiv.style.backgroundColor = 'gray'; 
 }
 
-async function check_friends_status() {
+export async function check_friends_status() {
   friendsocket = new WebSocket("wss://127.0.0.1:9005/ws/online-status/", ["token", get_localstorage('token')]);
     
   friendsocket.onopen = function () {

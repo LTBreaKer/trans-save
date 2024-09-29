@@ -18,7 +18,7 @@ function isAuthenticated() {
     localStorage.removeItem('token'); 
     localStorage.removeItem('refresh'); 
   }
-  
+
   function get_localstorage(string) {
     if (string === 'token')
         return (localStorage.getItem('token'));
@@ -108,7 +108,9 @@ function isAuthenticated() {
 
 
   async function log_out_func() {
+    console.log("---------------------------------- hello ")
     check_access_token();
+    console.log("---------------------------------- hello ")
     const bod = {
       refresh: get_localstorage('refresh')
     }
