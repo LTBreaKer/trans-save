@@ -41,6 +41,8 @@ body {
   padding-left: 7.2em;
   height: 100px;
   width: 100%;
+
+  z-index: 1;
 }
 
 .container .navbar {
@@ -241,36 +243,6 @@ display: none;
 
 /* // =========================== here i will work with media =========================== */
 
-@media (max-width: 444px) {
-
-  .sidebar {
-      margin-top: 80px;
-      position: relative;
-      top: 0;
-      left: 0;
-      border-radius: 25px;
-      height: 1px;
-      width: 88px;
-      padding: 3px 14px;
-      background-color: var(--body-color);
-      transition: var(--tran-05);
-      overflow: hidden;
-  }
-
-  .sidebar.active {
-      height: 100vh;
-      padding: 10px 14px;
-      background-color: var(--sidebar-color);
-  }
-
-  #butt {
-      display: flex;
-      font-size: 30px;
-      cursor: pointer;
-      color: #e8ebfb;
-  }
-}
-
 @media (max-width: 350px) {
 
   #butt {
@@ -281,16 +253,25 @@ display: none;
   }
 }
 
+@media (max-width: 407px) {
+  .notifi_btn {
+    display: none;
+    width: 200px;
+    height: 250px;
+    background-color: #474554;
+    position: absolute;
+    right: 60px;
+    top: 65px;
+    border-radius: 25px;
+    overflow-y: auto;
+  }
+}
+
 @media (max-width: 400px) {
   .header .profile .image img {
       display: none;
   }
 }
-
-
-
-
-
 
   /* game here -------- */
 
@@ -459,7 +440,7 @@ display: none;
   .container .main-content {
     /* background-color: green; */
     width: 100%;
-    padding-top: 12.5vh;
+    padding-top: 1.5vh;
     padding-left: 7.6em;
     height: 100vh;
     color: white;
@@ -467,23 +448,23 @@ display: none;
 
   .container .image_content {
     /* background-color: blue; */
-    background-image: url(../../images/home/backgroundgame.jpg);
+    background-image: url(../../images/background-images/Color\ Theory\ Presentation.png);
     background-size: 100% 100%;
     background-repeat: no-repeat;
     width: 90%;
-    height: 40vh;
+    height: 70vh;
     margin: 15px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding-left: 90px;
+    transform: translateY(-130px);
     /* color: white; */
     /* left: 20%; */
   }
   
   .container .image_content img {
     width: 90px;
-    transform: translateY(-89px);
     /* left: 20%; */
   }
   
@@ -506,9 +487,7 @@ display: none;
     transform: translateX(66px); */
   }
   .container .image_content .three img {
-    /* position: absolute;; */
-    width: 390px;
-    padding-right: 40px;
+    display: none;
   }
 
 /* here i will work with games  */
@@ -516,11 +495,13 @@ display: none;
   .container .games_btn {
     /* background-color: greenyellow; */
     width: 90%;
-    height: 40vh;
+    /* height: 40vh; */
     margin: 15px;
     display: flex;
     justify-content: space-around;
     align-items: center;
+    transform: translateY(-89px);
+
   }
 
   .games_btn .pingpong {
@@ -559,3 +540,195 @@ display: none;
 }
 
 /* ===== ======= ======= ====== ======= ====== ======== ======= ======= ======= */
+
+
+
+/* responsive from here i will work with it  for home image */
+
+
+@media (max-width: 1250px) {
+  
+
+  
+  .container .image_content {
+    /* background-color: blue; */
+    background-image: url(../../images/background-images/output-onlinepngtools\ \(1\).png);
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    width: 90%;
+    height: 70vh;
+    margin: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-left: 90px;
+    transform: translateY(-99px);
+    /* color: white; */
+    /* left: 20%; */
+  }
+  
+}
+
+
+
+@media (max-width: 950px) {
+  
+
+  .games_btn .tel img {
+    /* width: 10em; */
+    display: none;
+  } 
+
+
+  
+}
+
+
+@media (max-width: 850px) {
+  
+
+  .container .image_content .three img {
+    /* position: absolute;; */
+    width: 30em;
+    display: flex;
+    padding-right: 40px;
+  }
+  .games_btn .pingpong #pingimage {
+    width: 13em;
+    cursor: pointer;
+  }
+
+
+  .games_btn .tag #backimage {
+    width: 13em;
+    padding-bottom: 45px;
+    cursor: pointer;
+  }
+  
+  .container .image_content {
+    /* background-color: blue; */
+    background-image: none;
+    width: 98%;
+    display: flex;
+    justify-content: center;
+    transform: translateY(-90px);
+    padding-left: 1px;
+    align-items: center;
+    margin: 0;
+  }
+  
+  .container .main-content {
+    /* background-color: green; */
+    width: 100%;
+    padding-top: 1.5vh;
+    padding-left: 3.6em;
+    height: 100vh;
+    color: white;
+  }
+  .container .games_btn {
+    /* background-color: greenyellow; */
+    width: 90%;
+    /* height: 40vh; */
+    margin: 15px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    transform: translateY(-89px);
+    padding-left: 15px;
+  }
+
+
+}
+
+
+@media (max-width: 620px) {
+
+  .sidebar {
+      margin-top: 80px;
+      position: relative;
+      top: 0;
+      left: 0;
+      border-radius: 25px;
+      height: 1px;
+      width: 88px;
+      padding: 3px 14px;
+      background-color: var(--body-color);
+      transition: var(--tran-05);
+      overflow: hidden;
+  }
+
+  .container .navbar {
+    position: fixed;
+    min-height: 100vh;
+    width: 5em;
+    z-index: 1;
+  }
+
+  /* .sidebar .menu-bar {
+    height: calc(100% - 80px);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+   */
+
+  .sidebar.active {
+      height: 91.5vh;
+      padding: 10px 14px;
+      background-color: var(--sidebar-color);
+  }
+
+  #butt {
+      display: flex;
+      font-size: 30px;
+      cursor: pointer;
+      color: #e8ebfb;
+  }
+
+  .container .main-content {
+    /* background-color: green; */
+    width: 100%;
+    padding-top: 1.5vh;
+    padding-left: 0.1em;
+    height: 100vh;
+    color: white;
+  }
+
+
+
+}
+
+
+@media (max-width: 526px) {
+  .container .image_content .three img {
+    /* position: absolute;; */
+    width: 90%;
+    display: flex;
+    padding: 15px;
+    padding-left: 25px;
+  }
+
+
+
+}
+
+
+
+@media (max-width: 516px) {
+  .container .games_btn {
+    /* background-color: greenyellow; */
+    width: 90%;
+    /* height: 40vh; */
+    margin: 1px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    transform: translateY(-180px);
+
+  }
+
+
+}
+
+

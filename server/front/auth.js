@@ -2,7 +2,7 @@ const api = "https://127.0.0.1:9004/api/";
 const csrftoken = getCookie('csrftoken');
 const token  = localStorage.getItem('token');
 const refresh  = localStorage.getItem('refresh');
-
+import { friendsocket } from "./components/profile/profile.js"
 
 function isAuthenticated() {
     return !!localStorage.getItem('token');
@@ -14,6 +14,7 @@ function isAuthenticated() {
 }
   
   function logoutf() {
+    friendsocket.close();
     localStorage.removeItem('token'); 
     localStorage.removeItem('refresh'); 
   }

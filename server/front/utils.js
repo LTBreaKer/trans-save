@@ -127,9 +127,7 @@ console.log(notificationId);
   if (!response.ok) {
     console.log((`HTTP error! Status: ${response.status}`), Error);
   }
-  await get_friends_home();
-
-  
+    await get_friends_home();
 }
 
 async function handleDecline(event) {

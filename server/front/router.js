@@ -28,7 +28,7 @@ const routes = {
 async function Router() {
 
   // delete_component().clear();
-  if (get_localstorage('token'))
+  if (!friends_array)
     await get_friends_list();
 
   console.log("here i will print aray hhh==>>  ", friends_array)
@@ -36,6 +36,7 @@ async function Router() {
   window.addEventListener('hashchange', async () => {
     console.log("---------------0--0-0-0-00-0-0--0-0-0-0");
     const path = window.location.hash.slice(1);
+    console.log("path===>: ", path);
     component = routes[path] || NotFound;
     if (!isAuthenticated() && path !== '/login') {
       window.location.hash = '/login';

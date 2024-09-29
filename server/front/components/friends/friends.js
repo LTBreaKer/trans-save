@@ -1,5 +1,5 @@
 import { loadHTML, loadCSS, player_webSocket } from '../../utils.js';
-import {log_out_func,  logoutf, get_localstorage, getCookie, login } from '../../auth.js';
+import {log_out_func, logoutf, get_localstorage, getCookie, login } from '../../auth.js';
 
 
 
@@ -16,9 +16,8 @@ async function Friends() {
   loadCSS('./components/friends/friends.css');
   const app = document.getElementById('app');
   app.innerHTML = html;
-
   await checkFirst();
-  await player_webSocket();
+  player_webSocket();
 
   const logout = document.getElementById('logout')
   logout.addEventListener('click', log_out_func);
@@ -34,18 +33,30 @@ async function Friends() {
       console.log('Search query:', query);
     }
   })
-
-const cancel_friend = document.getElementById('cancel_friend');
+  const cancel_friend = document.getElementById('cancel_friend');
 
 cancel_friend.addEventListener('click', () => {
-
-  // if (friends_array.includes(friend_username))
-    remove_friend();
-  // else
-  //   send_freinds_request(friend_username);
-  // console.log("hello we are here hhhh");
+  remove_friend();
   window.location.hash = '/';
 })
+
+
+const butt = document.querySelector('#butt');
+const side = document.querySelector('.sidebar');
+
+butt.addEventListener('click', function() {
+  
+  side.classList.toggle('active');
+});
+
+document.addEventListener('click', (event) => {
+  if (!side.contains(event.target) && !butt.contains(event.target)) {
+    side.classList.remove('active');
+  }
+});
+
+
+
 }
 
 async function remove_friend() {
@@ -206,19 +217,19 @@ async function checkFirst() {
 
 
   console.log("*******************************");
-  const subprotocols = ['token', get_localstorage('token')];
+  // const subprotocols = ['token', get_localstorage('token')];
 
-  const socket = new WebSocket('wss://127.0.0.1:9005/ws/friend-requests/ ', subprotocols);
-  socket.onmessage = function(event) {
-    console.log('Message from server:', event.data);
+  // const socket = new WebSocket('wss://127.0.0.1:9005/ws/friend-requests/ ', subprotocols);
+  // socket.onmessage = function(event) {
+  //   console.log('Message from server:', event.data);
     
-    try {
-      const data = JSON.parse(event.data);
-      console.log('Parsed data:', data);
-    } catch (e) {
-      console.error('Failed to parse message:', e);
-    }
-  };
+  //   try {
+  //     const data = JSON.parse(event.data);
+  //     console.log('Parsed data:', data);
+  //   } catch (e) {
+  //     console.error('Failed to parse message:', e);
+  //   }
+  // };
 
 
   const token = get_localstorage('token');

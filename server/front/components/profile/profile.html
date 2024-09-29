@@ -12,7 +12,7 @@
 <body>
     
     <div class="container">
-
+        <i class="bi bi-person-add"></i>
         <div class="success_update">
             <h2><i class="bi bi-check2-circle"></i> Data Update Successfully</h2>
         </div>
@@ -37,6 +37,7 @@
 
                     
             </div>
+            <i id="butt" class="bi bi-justify"></i>
 
         </div>
         <div class="navbar">
@@ -87,6 +88,23 @@
                             <h3 id="profile_username"></h3>
                             <h2 id="edit_profile" class="edit_profi"> <i class="bi bi-gear"></i> Edit Profile</h2>
                         </div>
+                        <div class="matt">
+                            <div class="cent">
+
+                                <div class="maa">
+                                    <h3>matches</h3>
+                                    <h3 id="nom">0</h3>
+                                </div>
+                                <div class="wo">
+                                    <h3>Won</h3>
+                                    <h3 id="mw">8</h3>
+                                </div>
+                                <div class="lo">
+                                    <h3>Loss</h3>
+                                    <h3 id="ml">7</h3>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="matches">
                         <div class="match_wl">
@@ -107,55 +125,146 @@
                             </div>
                         </div>
                         <div class="match_history">
-                            <h2 id="hist">matches history</h2>
-                            <div class="match">
-                                <div class="play">
-                                    <img id="player1" src="/images/hello.png" alt="">
-                                    <h2 class="player1">smiya</h2>
-                                    <h2>0</h2>
-                                    <h2>5</h2>
-                                    <h2 class="player2">smiya</h2>
-                                    <img id="player2" src="/images/hello.png" alt="">
+                            <div class="cc">
+                                <h2 id="hist">matches history</h2>
+                                <div class="navv">
+                                    <h2 class="tag_game_click">tag</h2>
+                                    <h2 class="pong_game_click">pong</h2>
+                                    <h2 class="tourn_game_click">tourn</h2>
                                 </div>
-                                <div class="play">
-                                    <img id="player1" src="/images/hello.png" alt="">
-                                    <h2 class="player1">smiya</h2>
-                                    <h2>0</h2>
-                                    <h2>5</h2>
-                                    <h2 class="player2">smiya</h2>
-                                    <img id="player2" src="/images/hello.png" alt="">
+                                <div class="match tag_game_history" >
+                                    <div class="play ">
+                                        <img id="player1" src="/images/hello.png" alt="">
+                                        <h2 class="player1">smiya</h2>
+                                        <h2 style="color: green;">W</h2>
+                                        <h2 style="color: red;">L</h2>
+                                        <h2 class="player2">smiya</h2>
+                                        <img id="player2" src="/images/hello.png" alt="">
+                                    </div>
+                                    <div class="play">
+                                        <img id="player1" src="/images/hello.png" alt="">
+                                        <h2 class="player1">smiya</h2>
+                                        <h2>W</h2>
+                                        <h2>L</h2>
+                                        <h2 class="player2">smiya</h2>
+                                        <img id="player2" src="/images/hello.png" alt="">
+                                    </div>
+                                    <div class="play">
+                                        <img id="player1" src="/images/hello.png" alt="">
+                                        <h2 class="player1">smiya</h2>
+                                        <h2>L</h2>
+                                        <h2>W</h2>
+                                        <h2 class="player2">smiya</h2>
+                                        <img id="player2" src="/images/hello.png" alt="">
+                                    </div>
+                                    <div class="play">
+                                        <img id="player1" src="/images/hello.png" alt="">
+                                        <h2 class="player1">smiya</h2>
+                                        <h2>W</h2>
+                                        <h2>L</h2>
+                                        <h2 class="player2">smiya</h2>
+                                        <img id="player2" src="/images/hello.png" alt="">
+                                    </div>
+    
+     
                                 </div>
-                                <div class="play">
-                                    <img id="player1" src="/images/hello.png" alt="">
-                                    <h2 class="player1">smiya</h2>
-                                    <h2>0</h2>
-                                    <h2>5</h2>
-                                    <h2 class="player2">smiya</h2>
-                                    <img id="player2" src="/images/hello.png" alt="">
-                                </div>
-                                <div class="play">
-                                    <img id="player1" src="/images/hello.png" alt="">
-                                    <h2 class="player1">smiya</h2>
-                                    <h2>0</h2>
-                                    <h2>5</h2>
-                                    <h2 class="player2">smiya</h2>
-                                    <img id="player2" src="/images/hello.png" alt="">
+    
+
+                                <div class="match ping_game_history">
+                                    <div class="play">
+                                        <img id="player1" src="/images/hello.png" alt="">
+                                        <h2 class="player1">smiya</h2>
+                                        <h2>0</h2>
+                                        <h2>5</h2>
+                                        <h2 class="player2">smiya</h2>
+                                        <img id="player2" src="/images/hello.png" alt="">
+                                    </div>
+                                    <div class="play">
+                                        <img id="player1" src="/images/hello.png" alt="">
+                                        <h2 class="player1">smiya</h2>
+                                        <h2>0</h2>
+                                        <h2>5</h2>
+                                        <h2 class="player2">smiya</h2>
+                                        <img id="player2" src="/images/hello.png" alt="">
+                                    </div>
+                                    <div class="play">
+                                        <img id="player1" src="/images/hello.png" alt="">
+                                        <h2 class="player1">smiya</h2>
+                                        <h2>0</h2>
+                                        <h2>5</h2>
+                                        <h2 class="player2">smiya</h2>
+                                        <img id="player2" src="/images/hello.png" alt="">
+                                    </div>
+                                    <div class="play">
+                                        <img id="player1" src="/images/hello.png" alt="">
+                                        <h2 class="player1">smiya</h2>
+                                        <h2>0</h2>
+                                        <h2>5</h2>
+                                        <h2 class="player2">smiya</h2>
+                                        <img id="player2" src="/images/hello.png" alt="">
+                                    </div>
+    
+     
                                 </div>
 
- 
+                                <div class="match tur_game_history">
+                                    <div class="play">
+                                        <div class="first_pl">
+                                              <img id="player1" src="/images/hello.png" alt="">
+                                        <h2 class="player1">smiya</h2>
+                                        </div>
+                                        <h2>First</h2>
+                                        <h2>Second</h2>
+                                        <div class="second_pl">
+                                            <img id="player2" src="/images/hello.png" alt="">
+                                            <h2 class="player2">smiya</h2>
+                                        </div>
+                                    </div>
+
+                                    <div class="play">
+                                        <div class="first_pl">
+                                              <img id="player1" src="/images/hello.png" alt="">
+                                        <h2 class="player1">smiya</h2>
+                                        </div>
+                                        <h2>First</h2>
+                                        <h2>Second</h2>
+                                        <div class="second_pl">
+                                            <img id="player2" src="/images/hello.png" alt="">
+                                            <h2 class="player2">smiya</h2>
+                                        </div>
+                                    </div>
+
+                                    <div class="play">
+                                        <div class="first_pl">
+                                              <img id="player1" src="/images/hello.png" alt="">
+                                        <h2 class="player1">smiya</h2>
+                                        </div>
+                                        <h2>First</h2>
+                                        <h2>Second</h2>
+                                        <div class="second_pl">
+                                            <img id="player2" src="/images/hello.png" alt="">
+                                            <h2 class="player2">smiya</h2>
+                                        </div>
+                                    </div>
+     
+                                </div>
                             </div>
+                     
                         </div>
                     </div>
                 </div>
-                <div class="friends_list">
-                    <div class="send_friend">
-                        <input placeholder="Send Friend request.." id="input_search" class="input" name="text" type="text">
-                    </div>
-                    <h2 id="text">Friends</h2>
-                        <div class="send_friend_list">
+                <div class="respo_friend">
 
-
+                    <div class="friends_list">
+                        <div class="send_friend">
+                            <input placeholder="Send Friend request.." id="input_search" class="input" name="text" type="text">
                         </div>
+                        <h2 id="text">Friends</h2>
+                        <div class="send_friend_list">
+                            
+                            
+                        </div>
+                    </div>
                 </div>
             </div>
 
