@@ -5,7 +5,7 @@ import { TABLE_DEPTH, TABLE_WIDTH, PADDLE_LONG, height, width, first_player_goal
 // import {gameSocket} from '../main3d.js';
 import  {gameApi, statePongGame } from '../../../../components/ping/script.js'
 import { descounter } from './events.js';
-import { data_remote_player } from '../../../components/ping/script.js';
+import { data_remote_player, sendPlayerPaddleCreated } from '../../../components/ping/script.js';
 // console.log("game API: ", gameApi);
 let gameSocket;
 window.env = {
@@ -100,6 +100,7 @@ export async function paddleSocket(group_name) {
 			console.log('game WebSocket conection established.');
 			await ws.send(JSON.stringify({'type_msg': 'add_group', 'group_name': data_remote_player.game_id}));
 			await ws.send(JSON.stringify({'type_msg': 'assigning_paddle', 'paddle': choicePaddle(data_remote_player)}));
+			await sendPlayerPaddleCreated();
 		}
 		ws.onmessage = (event) => {
 			const message = JSON.parse(event.data);

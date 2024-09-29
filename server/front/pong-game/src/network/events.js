@@ -15,7 +15,7 @@ import { initPlayGame } from '../../../components/pingpong/ping.js';
 import { paddle } from '../game/paddle.js';
 
 
-console.log("0 statePongGame: ", statePongGame);
+// console.log("0 statePongGame: ", statePongGame);
 
 function resizeCanvas(){
 	let minHW = Math.min(window.innerWidth*0.99, window.innerHeight*0.99);
@@ -24,12 +24,12 @@ function resizeCanvas(){
 	canvas.style.marginTop = ((0.99 * window.innerHeight - minHW) * 0.5) + "px";
 	canvas.style.marginLeft = ((0.99 * window.innerWidth - minHW) / 2) + "px";
 	canvas.style.marginBottom = (0.01 * window.innerHeight) + "px";
-	console.log("11 canvas.style.marginLeft: ", canvas.style.marginLeft);
-	console.log("11 box_result.style.width: ", box_result.style.width);
+	// console.log("11 canvas.style.marginLeft: ", canvas.style.marginLeft);
+	// console.log("11 box_result.style.width: ", box_result.style.width);
 	
 	box_result.style.width = canvas.clientWidth + "px";
 	box_result.style.marginLeft = canvas.style.marginLeft;
-	console.log("12 box_result.style.width: ", box_result.style.width);
+	// console.log("12 box_result.style.width: ", box_result.style.width);
 	first_player_goal.style.width = (canvas.clientWidth * 0.9) / 2 + "px";
 	second_player_goal.style.width = (canvas.clientWidth * 0.9) / 2 + "px";
 	let padding_top =  canvas.clientWidth * 0.06;
@@ -42,14 +42,14 @@ function resizeCanvas(){
 }
 
 async function replayLocalGame() {
-	console.log("11111111111");
+	// console.log("11111111111");
 	await localgame();
 	await replayGame();
 }
 
 ////////       ------ LOCAL -----        //////////
 export function setupElementEvenent() {
-	console.log("setupElementEvenent 11111111111111");
+	// console.log("setupElementEvenent 11111111111111");
 	if (statePongGame == "local") {
 		replay.addEventListener("click", () => replayLocalGame());
 		pong_menu.addEventListener("click", () =>
@@ -62,7 +62,7 @@ export function setupElementEvenent() {
 
 
 export function setupEventListeners() {
-	console.log("setup event listener");
+	// console.log("setup event listener");
 	window.addEventListener('resize', () => {
 		resizeCanvas();
 		moveCamera(statePongGame);

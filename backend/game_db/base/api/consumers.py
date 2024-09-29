@@ -1,6 +1,7 @@
 from channels.generic.websocket import AsyncWebsocketConsumer
 import json
-from .helpers import check_auth, get_user
+import sys
+from .helpers import check_auth, get_user 
 from asgiref.sync import sync_to_async
 
 class RemoteGame(AsyncWebsocketConsumer):
@@ -32,13 +33,16 @@ class RemoteGame(AsyncWebsocketConsumer):
         from base.models import GameDb
 
         text_data_json = json.loads(text_data)
+        # print("text_data_json: ", text_data_json, file=sys.stderr)
         message = text_data_json['message']
+        print("text_data_json: ", message, file=sys.stderr)
 
-        if message == 'player connected':
+        if message == 'player_connected':
             game_id = text_data_json['game_id']
             player_id = text_data_json['player_id']
             if not player_id or not game_id:
                 await self.send(text_data=json.dumps({
+                    'type': 'error',
                     'error': 'game_id and player_id required'
                 }))
                 return
@@ -48,6 +52,7 @@ class RemoteGame(AsyncWebsocketConsumer):
                 game = await sync_to_async(GameDb.objects.get)(id=game_id)
             except GameDb.DoesNotExist:
                 await self.send(text_data=json.dumps({
+                    'type': 'error',
                     'error': 'Game not found'
                 }))
                 return
@@ -55,6 +60,7 @@ class RemoteGame(AsyncWebsocketConsumer):
             if player_id == game.player1_id:
                 if game.player1_connected:
                     await self.send(text_data=json.dumps({
+                        'type': 'error',
                         'error': 'Player already connected'
                     }))
                     return
@@ -63,6 +69,7 @@ class RemoteGame(AsyncWebsocketConsumer):
             elif player_id == game.player2_id:
                 if game.player2_connected:
                     await self.send(text_data=json.dumps({
+                        'type': 'error',
                         'error': 'Player already connected'
                     }))
                     return
@@ -70,16 +77,19 @@ class RemoteGame(AsyncWebsocketConsumer):
                 await sync_to_async(game.save)()
             else:
                 await self.send(text_data=json.dumps({
+                    'type': 'error',
                     'error': 'No player found with the provided player_id'
                 }))
                 return
             
             if game.player1_connected and game.player2_connected:
                 await self.send(text_data=json.dumps({
+                    'type': 'message',
                     'message': 'Both players are connected'
                 }))
             else:
                 await self.send(text_data=json.dumps({
+                    'type': 'message',
                     'message': 'Waiting for second player to connect'
                 }))
 
@@ -94,6 +104,6 @@ class RemoteGame(AsyncWebsocketConsumer):
         )
 
     async def remote_game_created(self, event):
-        await self.send(text_data=json.dumps({
-            "data" : event
-        }))
+        await self.send(text_data=json.dumps(
+            event
+        ))
