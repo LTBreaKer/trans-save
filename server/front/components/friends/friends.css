@@ -352,7 +352,7 @@ body {
   color: #e8ebfb;
 }
 
-.content .profile #edit_profile  {
+.content .profile #cancel_friend  {
   /* border: 5px #e8ebfb; */
   padding: 8px 14px;
   background-color: #e8ebfb;
@@ -421,6 +421,7 @@ justify-content: space-between;
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 100%;
 }
 
 .content .matches .match_history {
@@ -491,6 +492,9 @@ margin-top: 10px;
 .content .matches .match_history img {
 
 width: 50px;  
+height: 50px;
+border-radius: 50%;
+object-fit: cover;
 }
 
 
@@ -775,6 +779,7 @@ transition: all 0.2s ease-in-out;
   right: 0;
   margin: 15px;
   bottom: 0;
+  z-index: 1;
   display: none;
 }
 
@@ -1190,7 +1195,7 @@ display: none;
 
     .container .navbar {
       position: fixed;
-      min-height: 100vh;
+      min-height: 10vh;
       width: 5em;
       z-index: 1;
       }
@@ -1370,18 +1375,15 @@ display: none;
           background-color: #474554;
           align-items: center;
           overflow-y: auto;
-          border-radius: 25px;
-          /* justify-content: center; */
-          
+          border-radius: 25px;          
           }
     
-          .content .profile #edit_profile  {
-            /* border: 5px #e8ebfb; */
+          .content .profile #cancel_friend  {
             padding: 4px 12px;
             background-color: #e8ebfb;
             border-radius: 25px;
             cursor: pointer;
-            font-size: 12px;
+            font-size: 11px;
           }
           .container .main-content {
             padding-top: 10vh;
@@ -1435,17 +1437,10 @@ display: none;
       overflow-y: auto;
       border-radius: 25px;
       position: absolute;
-      /* justify-content: center; */
       top: 15%;
       left: 10%;
       }
   
-
-    /* .sidebar .image-text img {
-        width: 70px;
-        border-radius: 6px;
-        padding-top: 3px;
-    } */
   }
   
   @media (max-width: 400px) {
