@@ -7,7 +7,7 @@ let name = "";
 let html = "";
 var data_remote_player;
 export let statePongGame;
-export let player_webSocket;
+export let _player_webSocket;
 
 export async function sendPlayerPaddleCreated(){
   console.log("----------------  sendPlayerPaddleCreated  --------------------------");
@@ -17,7 +17,7 @@ export async function sendPlayerPaddleCreated(){
   let player_id = (data.name_current_user === data.player1name)
     ? data.player1id : data.player2id;
     console.log("player_id: ", player_id);
-	const ws = await player_webSocket;
+	const ws = await _player_webSocket;
 	if (ws && ws.readyState == 1) {
 		await ws.send(JSON.stringify ({
       'message': 'player_connected',
@@ -45,7 +45,7 @@ async function Ping() {
   name = input.value; 
   local_butt_game.addEventListener('click', localgame);
   remote_butt_game.addEventListener('click', remore_game_fun);
-  player_webSocket = await connectPlayerSocket();
+  _player_webSocket = await connectPlayerSocket();
   
 }
 
@@ -69,6 +69,11 @@ async function fetchUserName() {
     console.error('There was a problem with the fetch operation:', error);
   }
 }
+
+let playRemoteGame = async () => {};
+export const initPlayRemoteGame = async (initRemotegame) => {
+  playRemoteGame = await initRemotegame;
+} 
 
 async function connectPlayerSocket() {
   try {
@@ -95,6 +100,7 @@ async function connectPlayerSocket() {
         }
       else if (data.type === "message") {
         if (data.message === "Both players are connected") {
+          await playRemoteGame();
           console.log("data: ", data.message);
         }
       }

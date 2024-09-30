@@ -79,11 +79,8 @@ class GameConsumer(AsyncWebsocketConsumer):
                 'right_paddle': self.rpaddle.fn_str()
             }))
             if (self.ball.gameOver and (self.lpaddle.nb_goal == 3 or self.rpaddle.nb_goal == 3)):
-                print("score", file=sys.stderr)
                 await self.send_scores()
-                print("close 0", file=sys.stderr)
                 await self.close(code=1000)
-                print("close 1", file=sys.stderr)
             #     self.gameOver = True
             #     self.ball.gameOver = False
 
