@@ -7,6 +7,7 @@ import  {gameApi, statePongGame } from '../../../../components/ping/script.js'
 import { descounter } from './events.js';
 import { data_remote_player, initPlayRemoteGame, sendPlayerPaddleCreated } from '../../../components/ping/script.js';
 import { launchGame, playRemotePongGame } from '../game/game.js';
+import { moveCamera } from '../components/camera.js';
 // import { data_remote_player,  sendPlayerPaddleCreated } from '../../../components/ping/script.js';
 // console.log("game API: ", gameApi);
 let gameSocket;
@@ -17,7 +18,11 @@ window.env = {
 function sendScore(left_paddle_score, right_paddle_score) {
 	const url = "https://127.0.0.1:9006/api/gamedb/add-game-score/";
 	// const url = "http://"+ window.env.DJANGO_HOSTNAME +":8080/server/auth/users/me/";
-	const data = JSON.parse(gameApi);
+	let data;
+	if (statePongGame == "local")
+		data = JSON.parse(gameApi);
+	else
+		data = data_remote_player;
 	data.player1_score = left_paddle_score;
 	data.player2_score = right_paddle_score;
 	const urlEncodedData = new URLSearchParams(data);
@@ -91,6 +96,8 @@ export async function localGameSocket(group_name) {
 function choicePaddle({name_current_user, player1name}) {
 	console.log("name_current_user: ", name_current_user);
 	console.log("player1name: ", player1name);
+	(name_current_user === player1name) ? leftPaddle() : rightPaddle();
+	moveCamera(statePongGame);
 	return (name_current_user === player1name) ? ("left_paddle") : ("right_paddle");
 }
 
@@ -112,8 +119,9 @@ export async function paddleSocket(group_name) {
 				draw_info(message);
 			else if (message.type_msg === "game_over") {
 				console.log("message: ", message);
-				sendScore(message.left_paddle_score, message.right_paddle_score);
 				popup_replay.style.zIndex = 100;
+				window.location.hash = "/ping"
+				// sendScore(message.left_paddle_score, message.right_paddle_score);
 			}
 			else
 				console.log("else message: ", message);
@@ -139,6 +147,11 @@ async function connectBallSocket() {
 			if (message.type_msg === "create_ball_socket") {
 				// gameSocket = connectToWebSocket();
 				ws.send(JSON.stringify({'type_msg': 'move'}));
+			}
+			else if (message.type === "game_over") {
+				console.log("message: ", message);
+				sendScore(message.left_paddle_score, message.right_paddle_score);
+				popup_replay.style.zIndex = 100;
 			}
 			else if (message.type_msg === "play") {
 				descounterRemoteGame();

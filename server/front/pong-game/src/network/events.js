@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import {canvas, click, TABLE_WIDTH, paddleHeight, height, box_result, first_player_goal, second_player_goal, counter, replay, popup_replay, pong_menu, loadDocument, sleep} from '../utils/globaleVariable.js';
+import {canvas, click, TABLE_WIDTH, paddleHeight, height, box_result, first_player_goal, second_player_goal, counter, replay, popup_replay, pong_menu, loadDocument, sleep, back_counter} from '../utils/globaleVariable.js';
 // import { setPointerMouse, rotateTable, zoomCamera } from '../game/staduim.js'
 import { connectAI, connectLocalGameSocket, connectPaddleSocket, launchGame } from '../game/game.js';
 import {sendSocket} from '../game/game.js'

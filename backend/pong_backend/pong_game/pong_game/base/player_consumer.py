@@ -55,11 +55,12 @@ class PlayerConsumer(AsyncWebsocketConsumer):
 		text_data_json = json.loads(text_data)
 		type = text_data_json['type_msg']
 
-		print("----- text_data_json: ", text_data_json, file=sys.stderr)
+		print("-------- Paddle ----- data_json: ", text_data_json, file=sys.stderr)
 		if (type == "update_paddle"):
 			if (self.ball_channel_name != ''):
 				await self.update_paddle(text_data_json['paddle']['ps'])
 		elif (type == "move"):
+			print("self.ball_channel_name: ", self.ball_channel_name)
 			if (self.ball_channel_name != ''):
 				await self.channel_layer.send(
 				self.ball_channel_name,
@@ -91,3 +92,9 @@ class PlayerConsumer(AsyncWebsocketConsumer):
 	async def set_ball_channel_name(self, event):
 		self.ball_channel_name = event['ball_channel_name']
 		print("ball_channel_name: ", self.ball_channel_name, file=sys.stderr)
+	
+	async def desconnect_consumer(self, e):
+		await self.send(text_data=json.dumps({
+			'type_msg': 'game_over',
+		}))
+		await self.close(code=1000)

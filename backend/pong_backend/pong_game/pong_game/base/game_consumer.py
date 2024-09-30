@@ -60,13 +60,16 @@ class GameConsumer(AsyncWebsocketConsumer):
 	async def receive(self, text_data):
 		text_data_json = json.loads(text_data)
 		type = text_data_json['type_msg']
-		if (type == "move"):
-			asyncio.create_task(self.update_ball(type))
-		elif (type == "add_group"):
+		print("--------Game ----- data_json: ", text_data_json, file=sys.stderr)
+		if (type == "add_group"):
 			await self.add_group(text_data_json)
+		# if (type == "move"):
+		# 	self.ball.gameOver = False
+		# 	asyncio.create_task(self.update_ball(type))
 
 	async def move(self, event):
 		self.gameOver = False
+		self.ball.gameOver = False
 		asyncio.create_task(self.update_ball(type))
 
 	async def update_ball(self, event):
@@ -86,9 +89,12 @@ class GameConsumer(AsyncWebsocketConsumer):
 					'right_paddle': self.rpaddle.fn_str()
 				}
 			)
-			if (self.ball.gameOver and (self.lpaddle.nb_goal == 3 or self.rpaddle.nb_goal == 3)):
-				await self.send_scores()
-				await self.close(code=1000)
+		if (self.ball.gameOver and (self.lpaddle.nb_goal == 3 or self.rpaddle.nb_goal == 3)):
+			await self.end_game()
+		else:
+			await self.send(text_data=json.dumps({
+				'type_msg': 'play',
+			}))
 
 	async def draw_info(self, event):
 		pass
@@ -99,3 +105,21 @@ class GameConsumer(AsyncWebsocketConsumer):
 
 	async def update_right_paddle(self, event):
 		self.rpaddle.update(event['paddle'])
+
+	async def send_scores(self):
+		await self.send(text_data=json.dumps({
+			'type': 'game_over',
+			'left_paddle_score': self.lpaddle.nb_goal,
+			'right_paddle_score': self.rpaddle.nb_goal,
+		}))
+
+	async def end_game(self):
+		await self.send_scores()
+		await self.channel_layer.group_send(
+			self.room_group_name,
+			{
+				'type': 'desconnect_consumer',
+			})
+		
+	async def desconnect_consumer(self, e):
+		await self.close(code=1000)

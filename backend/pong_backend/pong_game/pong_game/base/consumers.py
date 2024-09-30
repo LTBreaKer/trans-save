@@ -53,23 +53,10 @@ class GameConsumer(AsyncWebsocketConsumer):
     async def update_ball(self, event):
         print("game_over: ", self.ball.gameOver, file=sys.stderr)
         time = 0.0
-        # model_path = os.path.join(settings.BASE_DIR, 'base/agent_model/model4700_300.h5')
-        # model = load_model(model_path)
-        # numbers = [20, 20, 20, 50, 50, 50]
-
         while (not self.ball.gameOver):
-            # print("self.ball.vel: ", self.ball.vel, file=sys.stderr)
             if (time.is_integer()):
                 self.ball.vel += 0.2
-                # input_values = [self.ball.x / 10, self.ball.y / 10, self.ball.velX, self.ball.velY]
-                # input_array = np.array(input_values).reshape(1, -1)
-                # predictions = model.predict(input_array)
-                # random_number = random.choice(numbers)
-                # if ("ai" in self.paddles):
-            # self.rpaddle.ai_update(predictions * 10 - random_number)
             self.ball.update(self.rpaddle, self.lpaddle)
-            # if (time.is_integer()):
-            #     self.ball.vel += 0.2
             await asyncio.sleep(0.015625)
             time += 0.015625
             await self.send(text_data=json.dumps({

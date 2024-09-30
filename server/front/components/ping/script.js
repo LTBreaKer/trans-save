@@ -15,7 +15,7 @@ export async function sendPlayerPaddleCreated(){
   console.log("data.name_current_user : ", data.name_current_user)
   console.log("data.player1_name : ", data.player1name)
   let player_id = (data.name_current_user === data.player1name)
-    ? data.player1id : data.player2id;
+    ? data.player1_id : data.player2_id;
     console.log("player_id: ", player_id);
 	const ws = await _player_webSocket;
 	if (ws && ws.readyState == 1) {
@@ -90,8 +90,8 @@ async function connectPlayerSocket() {
             game_id: data.game.id,
             player1name: data.game.player1_name,
             player2name: data.game.player2_name,
-            player1id: data.game.player1_id,
-            player2id: data.game.player2_id
+            player1_id: data.game.player1_id,
+            player2_id: data.game.player2_id
           }
           // console.log("data are here => ", data_remote_player)
           statePongGame = "remote";

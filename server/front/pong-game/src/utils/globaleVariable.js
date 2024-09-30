@@ -46,10 +46,10 @@ export const loader = new THREE.TextureLoader();
 // 	paddle_way *= -1;
 // }
 export const leftPaddle = () => {
-	paddle_way = -1;
+	paddle_way = 1;
 }
 export const rightPaddle = () => {
-	paddle_way = 1;
+	paddle_way = -1;
 }
 
 document.addEventListener("mouseup", (e) => {
