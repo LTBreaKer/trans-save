@@ -35,7 +35,7 @@ class PlayerConsumer(AsyncWebsocketConsumer):
 		else:
 			self.paddle = Paddle(width - 10, height/2)
 		print(self.channel_name, file=sys.stderr)
-		print("paddle: ", self.paddle.fn_str(), file=sys.stderr)
+		# print("paddle: ", self.paddle.fn_str(), file=sys.stderr)
 
 	async def sendCunsumerPaddleCreated(self):
 		await self.send(text_data=json.dumps({
@@ -55,7 +55,7 @@ class PlayerConsumer(AsyncWebsocketConsumer):
 		text_data_json = json.loads(text_data)
 		type = text_data_json['type_msg']
 
-		print("-------- Paddle ----- data_json: ", text_data_json, file=sys.stderr)
+		# print("-------- Paddle ----- data_json: ", text_data_json, file=sys.stderr)
 		if (type == "update_paddle"):
 			if (self.ball_channel_name != ''):
 				await self.update_paddle(text_data_json['paddle']['ps'])

@@ -81,7 +81,13 @@ class RemoteGame(AsyncWebsocketConsumer):
                     'error': 'No player found with the provided player_id'
                 }))
                 return
-            
+            try:
+                game = await sync_to_async(GameDb.objects.get)(id=game_id)
+            except GameDb.DoesNotExist:
+                await self.send(text_data=json.dumps({
+                    'error': 'Game not found'
+                }))
+                return
             if game.player1_connected and game.player2_connected:
                 await self.send(text_data=json.dumps({
                     'type': 'message',
