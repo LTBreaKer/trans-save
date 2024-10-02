@@ -2,6 +2,7 @@
 import { loadHTML, loadCSS, player_webSocket } from '../../utils.js';
 import { login ,log_out_func, logoutf, get_localstorage, getCookie } from '../../auth.js';
 import {tag_game_info} from '../ta/script.js'
+import {check_friends_status} from '../profile/profile.js'
 
 
 
@@ -15,9 +16,8 @@ async function Home() {
   app.innerHTML = html;
   await loadCSS('./components/home/home.css');
   
-  var csrftoken = getCookie('csrftoken');
 
-
+  check_friends_status();
   await checkFirst();
   player_webSocket();
   // await get_friends();

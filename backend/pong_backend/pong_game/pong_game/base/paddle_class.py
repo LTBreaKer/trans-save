@@ -8,7 +8,7 @@ class Paddle():
 		self.nb_goal = 0
  
 	def update(self, ps):
-		# print("paddle class: ", ps, file=sys.stderr)
+		print("paddle class: ", ps, file=sys.stderr)
 		self.x = int(ps['x'])
 		self.y = int(ps['y'])
 	

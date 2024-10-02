@@ -1,4 +1,4 @@
-import { get_localstorage } from './auth.js';
+import { get_localstorage, check_access_token } from './auth.js';
 import { get_friends_home } from './components/profile/profile.js';
 
 
@@ -105,6 +105,7 @@ async function displayNotifications(notifications) {
 
 
 async function handleAccept(event) {
+  await check_access_token();
   const notificationDiv = event.target.closest('.send_request');
   const notificationId = event.target.getAttribute('data-id');
   console.log(`Declined notification with ID: ${notificationId}`);
@@ -131,6 +132,7 @@ console.log(notificationId);
 }
 
 async function handleDecline(event) {
+  await check_access_token();
   const notificationDiv = event.target.closest('.send_request');
   const notificationId = event.target.getAttribute('data-id');
   console.log(`Declined notification with ID: ${notificationId}`);

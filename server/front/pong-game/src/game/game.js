@@ -1,12 +1,13 @@
 import * as THREE from 'three';
 import WebGL from 'three/addons/capabilities/WebGL.js';
-import { lpaddle, rpaddle } from './paddle.js'
+import { lpaddle, paddle, rpaddle } from './paddle.js'
 import { camera } from '../components/camera.js'
 import { first_player_goal, second_player_goal, box_result, canvas } from '../utils/globaleVariable.js'
-import { setupEventListeners } from '../network/events.js';
+import { mousePosition, mousePositionHelper, setupEventListeners } from '../network/events.js';
 import { scene } from '../components/scene.js'
 import { renderer } from '../components/renderer.js'
 import { localGameSocket, paddleSocket } from '../network/socket.js';
+import { data_remote_player, statePongGame } from '../../../components/ping/script.js';
 
 export let startGame = false;
 // export let gameOver = false;
@@ -24,14 +25,25 @@ export function stopGame() {
 
 async function movePaddle() {
 	const ws = await local_game_socket;
-	if (ws.readyState == 1)
+	if (ws && ws.readyState == 1)
 		await ws.send(JSON.stringify(({"type_msg": "update_paddle", "lpaddle": lpaddle.coordonate(), "rpaddle": rpaddle.coordonate() })));
+}
+
+async function moveRemotePaddle() {
+	const ws = await paddle_socket;
+	if (ws && ws.readyState == 1)
+		await ws.send(JSON.stringify({"type_msg": "update_paddle", "paddle": paddle.coordonate()}));
 }
 
 export async function sendSocket(){
 	const ws = await local_game_socket;
-	if (ws.readyState == 1)
+	if (ws && ws.readyState == 1)
 		await ws.send(JSON.stringify({'type_msg': 'play'}));
+}
+
+export async function playRemotePongGame(){
+	const ws = await paddle_socket;
+	await ws.send(JSON.stringify({'type_msg': 'move'}));
 }
 
 export async function connectPlayer(){
@@ -44,12 +56,12 @@ export async function connectAI() {
 	await ws.send(JSON.stringify({'type_msg': 'connect_ai'}));
 }
 
-export function connectLocalGameSocket() {
-	local_game_socket = localGameSocket();
+export async function connectLocalGameSocket() {
+	local_game_socket = await localGameSocket();
 }
 
-export function connectPaddleSocket() {
-	paddle_socket = paddleSocket();
+export async function connectPaddleSocket() {
+	paddle_socket = await paddleSocket();
 }
 
 
@@ -107,6 +119,14 @@ export function animate() {
 		camera.updateProjectionMatrix();
 	}
 	// if (startGame) {
+	updatePaddles();
+		// }
+	renderer.render( scene, camera );
+	requestAnimationFrame( animate );
+}
+
+async function updatePaddles(){
+	if (statePongGame == "local") {
 		lpaddle.update()
 		rpaddle.update()
 		if (lpaddle.y != lpaddle.lastY || rpaddle.y != lpaddle.lastY) {
@@ -114,11 +134,24 @@ export function animate() {
 			rpaddle.lastY = rpaddle.y;
 			movePaddle();
 		}
-		// }
-		renderer.render( scene, camera );
-	requestAnimationFrame( animate );
+	}
+	else if (statePongGame == "remote") {
+		mousePositionHelper.position(mousePosition, scene, camera);
+		paddle.update()
+		if (paddle.y != paddle.lastY) {
+			paddle.lastY = paddle.y;
+			moveRemotePaddle();
+		}
+	}
 }
 
+function playerChoicePaddle({name_current_user, player1name}) {
+	(name_current_user === player1name) ? paddle.left() : paddle.right();
+	console.log("name_current_user: ", name_current_user);
+	console.log("player1name: ", player1name);
+	console.log("paddle.x: ", paddle.x);
+}
+playerChoicePaddle(data_remote_player);
 // if ( WebGL.isWebGLAvailable() )
 // 	animate();
 // else {

@@ -1,16 +1,18 @@
 import {height, paddleHeight, paddle_way, width} from '../utils/globaleVariable.js'
 
 class Paddle {
-	constructor(x, y, color) {
+	constructor(x = 0) {
 		this.rightPressed = false;
 		this.leftPressed = false;
 		this.x = x;
-		this.y = y;
-		this.lastY = y;
-		this.color = color;
+		this.y = height/2;
+		this.lastY = this.y;
 		this.nb_goal = 0;
 	}
-	
+
+	right = () => { this.x = width - 10};
+	left = () => { this.x = 0};
+
 	update() {
 		if (this.rightPressed)
 			this.y = Math.max(Math.min(this.y - paddle_way * 5, height - paddleHeight), 0);
@@ -41,8 +43,10 @@ class Paddle {
 	}
 }
 
+
+
 //remote
 export const paddle = new Paddle();
 //local
-export const lpaddle = new Paddle(0, height/2);
-export const rpaddle = new Paddle(width - 10, height/2);
+export const lpaddle = new Paddle(0);
+export const rpaddle = new Paddle(width - 10);
