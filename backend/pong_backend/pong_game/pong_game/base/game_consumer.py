@@ -100,6 +100,7 @@ class GameConsumer(AsyncWebsocketConsumer):
 		pass
 	async def set_ball_channel_name(self, event):
 		pass
+	
 	async def update_left_paddle(self, event):
 		self.lpaddle.update(event['paddle'])
 

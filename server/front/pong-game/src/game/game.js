@@ -3,17 +3,18 @@ import WebGL from 'three/addons/capabilities/WebGL.js';
 import { lpaddle, paddle, rpaddle } from './paddle.js'
 import { camera } from '../components/camera.js'
 import { first_player_goal, second_player_goal, box_result, canvas } from '../utils/globaleVariable.js'
-import { mousePosition, mousePositionHelper, setupEventListeners } from '../network/events.js';
 import { scene } from '../components/scene.js'
 import { renderer } from '../components/renderer.js'
 import { localGameSocket, paddleSocket } from '../network/socket.js';
 import { data_remote_player, statePongGame } from '../../../components/ping/script.js';
+import { mousePosition, mousePositionHelper } from '../events/mouseEvent.js';
 
 export let startGame = false;
 // export let gameOver = false;
 
 let local_game_socket;
 let paddle_socket;
+export let animationFrameId;
 
 export function launchGame() {
 	startGame = true;
@@ -31,8 +32,10 @@ async function movePaddle() {
 
 async function moveRemotePaddle() {
 	const ws = await paddle_socket;
-	if (ws && ws.readyState == 1)
+	if (ws && ws.readyState == 1){
+		console.log("update_paddle", paddle.coordonate());
 		await ws.send(JSON.stringify({"type_msg": "update_paddle", "paddle": paddle.coordonate()}));
+	}
 }
 
 export async function sendSocket(){
@@ -122,7 +125,7 @@ export function animate() {
 	updatePaddles();
 		// }
 	renderer.render( scene, camera );
-	requestAnimationFrame( animate );
+	animationFrameId = requestAnimationFrame( animate );
 }
 
 async function updatePaddles(){

@@ -52,12 +52,12 @@ export const rightPaddle = () => {
 	paddle_way = -1;
 }
 
-document.addEventListener("mouseup", (e) => {
-	click = false;
-})
+// document.addEventListener("mouseup", (e) => {
+// 	click = false;
+// })
 
-document.addEventListener("mousedown", (e) => {
-	click = true
-})
+// document.addEventListener("mousedown", (e) => {
+// 	click = true
+// })
 
 export let sleep = (s) => new Promise(r => setTimeout(r, s*1000));

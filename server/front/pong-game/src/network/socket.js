@@ -6,7 +6,7 @@ import { TABLE_DEPTH, TABLE_WIDTH, PADDLE_LONG, height, width, first_player_goal
 import  {gameApi, statePongGame } from '../../../../components/ping/script.js'
 import { descounter } from './events.js';
 import { data_remote_player, initPlayRemoteGame, sendPlayerPaddleCreated } from '../../../components/ping/script.js';
-import { launchGame, playRemotePongGame } from '../game/game.js';
+import { animationFrameId, launchGame, playRemotePongGame } from '../game/game.js';
 import { moveCamera } from '../components/camera.js';
 // import { data_remote_player,  sendPlayerPaddleCreated } from '../../../components/ping/script.js';
 // console.log("game API: ", gameApi);
@@ -94,8 +94,6 @@ export async function localGameSocket(group_name) {
 }
 
 function choicePaddle({name_current_user, player1name}) {
-	console.log("name_current_user: ", name_current_user);
-	console.log("player1name: ", player1name);
 	(name_current_user === player1name) ? leftPaddle() : rightPaddle();
 	moveCamera(statePongGame);
 	return (name_current_user === player1name) ? ("left_paddle") : ("right_paddle");
@@ -120,6 +118,7 @@ export async function paddleSocket(group_name) {
 			else if (message.type_msg === "game_over") {
 				console.log("message: ", message);
 				popup_replay.style.zIndex = 100;
+				cancelAnimationFrame(animationFrameId);
 				window.location.hash = "/ping"
 				// sendScore(message.left_paddle_score, message.right_paddle_score);
 			}
