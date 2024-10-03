@@ -212,7 +212,7 @@ display: none;
   justify-content: center;
 }
 
-.send_request .img_text {
+/* .send_request .img_text {
   align-items: center;
   display: flex;
 }
@@ -237,7 +237,7 @@ display: none;
   border: none;
   height: 20px;
   cursor: pointer;
-}
+} */
 
 /* // =========================== here i will work with media =========================== */
 
@@ -292,50 +292,6 @@ display: none;
 
 
 
-  /* game here -------- */
-
-  .container .games {
-    display: none;
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    top: 0;
-  left: 0;
-  align-items: center;
-  justify-content: center;
-}
-
-
-.games .conta {
-  width: 73%;
-  height: 60%;
-  background-color: red;
-  position: relative;
-  display: none;
-  align-items: center;
-  justify-content: center;
-  margin-left: 91px;
-}
-
-.conta .meryem {
-  width: 40%;
-  height: 50%;
-  background-color: blue;
-  margin: 15px;
-  cursor: pointer;
-}
-
-.conta .moloaa {
-  width: 40%;
-  height: 50%;
-  background-color: rgb(129, 129, 148);
-  margin: 15px;
-  cursor: pointer;
-
-}
-
-
-  /* mer_cont */
     
   .container .main-content {
     /* background-color: green; */
@@ -346,173 +302,123 @@ display: none;
     color: white;
   }
 
-.main-content .mer_cont {
-    width: 99%;
-    height: 99%;
-    background-image: url(./pong_background.png);
-    background-size: 100% 100%;
-    /* margin: 15px; */
-    background-repeat: no-repeat;
-    position: relative;
+
+
+
+  /* here i will work with match players : */
+
+
+  .main-content .matches_hist {
+    
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    /* margin-right: 11%; */
-    color: white;
-  }
-  
-  .mer_cont .re_local {
-    width: 100%;
-    height: 50%;
-    display: flex;
-    align-items: center;
     justify-content: space-around;
-  }
-  
-  .re_local #remote_game {
-    width: 290px;
-    height: 50%;
-    padding: 10px 15px 15px 15px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+    margin: 15px;
+    margin-right: 25px;
+    margin-top: 55px;
     align-items: center;
-    background-color: rgba(25, 26, 29, 0.6);
-  }
-  
-  .re_local #local_game {
-    width: 290px;
-    height: 50%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    padding: 10px 15px 15px 15px;
-    align-items: center;
-    background-color: rgba(25, 26, 29, 0.6);
     
   }
 
-
-  .re_local #tournament_game {
-    width: 290px;
-    height: 50%;
-    padding: 10px 15px 15px 15px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
-    background-color: rgba(25, 26, 29, 0.6);
-  }
-  
-  .re_local #boot_game {
-    width: 290px;
-    height: 50%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    padding: 10px 15px 15px 15px;
-    align-items: center;
-    background-color: rgba(25, 26, 29, 0.6);
+  .main-content .player_name {
+    padding: 11px;
+    width: 150px;
+    background-color: red;
+    font-size: 21px;
+    margin: 12px;
     
   }
 
-
-  .mer_cont #boot_game_btt {
-    padding: 11px;
-    background-color: black;
-    border-radius: 15px;
-    cursor: pointer;
-  }
-  .mer_cont #tournament_game_btt {
-    padding: 11px;
-    background-color: black;
-    border-radius: 15px;
-    cursor: pointer;
+  .main-content .string {
+    margin: 55px 25px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 
-  
-  
-  #local_game  .input {
+  .main-content .center_matches {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .center_matches .match_2 {
+    margin: 0px 25px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+  }
+
+  .center_matches .topp {
+    margin-bottom: 45px;
+  }
+
+  .center_matches .downn {
+    margin-top: 50px;
+  }
+
+  .center_matches .match_final {
+    margin: 15px 70px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 15px;
+    /* position: absolute; */
+    /* margin-left: 25%; */
+    /* margin-right: 25%; */
+  }
+
+
+  /* here i will work with winners or next matches  */
+
+
+  .main-content .winner_nextgame {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* justify-content: center; */
+  }
+
+  .winner_nextgame #next_match {
+    padding: 15px;
     width: 200px;
-    height: 40px;
-    border: none;
-    outline: none;
-    /* caret-color: rgb(255, 81, 0); */
-    background-color: rgb(255, 255, 255);
-    border-radius: 30px;
-    padding-left: 15px;
-    letter-spacing: 0.8px;
-    color: rgb(19, 19, 19);
-    font-size: 13.4px;
-  }
-  
-  
-  .mer_cont #butt_game {
-    padding: 11px;
-    background-color: black;
-    border-radius: 15px;
+    /* display: inline; */
+    display: none;
+    /* align-items: center; */
+    border-radius: 25px;
     cursor: pointer;
+    background-color: #7c7d85;
   }
 
-  .mer_cont #local_butt_game {
-    padding: 11px;
-    background-color: black;
-    border-radius: 15px;
-    cursor: pointer;
-  }
-
-  
-  .mer_cont .discription_game {
-    /* width: 100%;
-    display: flex;
-    padding: 15px;
-    justify-content: center; */
-  }
-  
-  .mer_cont .discription_game .text {
-    /* background-color: rgba(25, 26, 29, 0.9);
-    padding: 15px;
-    width: 55%;
+  .winner_nextgame .winneer {
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
-    font-family: "Times New Roman", Times, serif; */
-    /* opacity: 0.6; */
-    /* background-color: transparent; */
-
-    
-
-    /* justify-content:; */
-
-    /* font-family: "Ubuntu", sans-serif;
-    font-weight: 400;
-    font-style: italic; */
-      /* text-rendering: auto; */
+    padding: 15px;
   }
-  
 
-   /*  ======= ====== ====== ======= ======= ====== ======= ======= */
+  .winneer #winn {
+    padding: 11px 25px;
+    background-color: red;
+    border-radius: 15px;
+    margin: 25px;
+  }
 
+  .winneer h3 {
+    font-size: 25px;
+    margin: 15px;
+  }
 
+  .winneer #line1 {
+    width: 100px;
+    margin-bottom: 15px;
+  }
 
-   .container .tournament_players {
-      position: fixed;
-      display: flex;
-      width: 100%;
-      height: 100%;
-      top: 0px;
-      left: 0px;
-      /* w; */
-      /* background-color: red; */
-   }
+  .winneer #line2 {
+    width: 75px;
+    margin-bottom: 15px;
+  }
 
-  .tournament_players .players {
-    display: flex;
-    width: 100%;
-    justify-content: center;
-    align-items: center;
-    padding: 25px;
-    background-color: rgba(25, 26, 29, 0.6);
+  .winneer #line3 {
+    width: 50px;
+    margin-bottom: 15px;
   }
