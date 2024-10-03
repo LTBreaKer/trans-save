@@ -24,3 +24,10 @@ rpaddle.position.y = (TABLE_DEPTH - PADDLE_WIDTH) / 2;
 lpaddle.position.y = -(TABLE_DEPTH - PADDLE_WIDTH) / 2;
 
 export {lpaddle, rpaddle}
+
+export function paddleDispose() {
+    console.log("THREE JS Material: ", center_paddle_geometry);
+    console.log("lpaddle: ", lpaddle);
+}
+
+paddleDispose();

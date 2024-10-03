@@ -10,16 +10,19 @@ import { animate } from './game/game.js';
 // export async function fnPongGame() {
 	// if ( WebGL.isWebGLAvailable() )
 		// requestAnimationFrame( animate );
-		animate();
+		// animate();
 	// else {
 	// 	const warning = WebGL.getWebGLErrorMessage();
 	// 	document.getElementById( 'container' ).appendChild( warning );
 	// }
 	
-	setupEventListeners();
+	// setupEventListeners();
 // }
 
 export function lancePongGame(){
+	console.log("-------------- lancePongGame")
 	animate();
 	setupEventListeners();
 }
+
+// lancePongGame();

@@ -15,7 +15,7 @@ import { initPlayGame } from '../../../components/pingpong/ping.js';
 ////////       ------ REMOTE ----------        //////////
 import { paddle } from '../game/paddle.js';
 import { lancePongGame } from '../main3d.js';
-import { setMousePosition } from '../events/mouseEvent.js';
+import { setMousePosition, setMousePositionHelper } from '../events/mouseEvent.js';
 
 
 // console.log("0 statePongGame: ", statePongGame);
@@ -56,8 +56,10 @@ export function setupEventListeners() {
 			window.location.hash = "/ping")
 	}
 	else if (statePongGame == "remote") {
+		setMousePositionHelper();
 		window.addEventListener('mousemove', setMousePosition);
 	}
+	console.log("-- setupEventListeners ==>", statePongGame);
 }
 
 export function removeEventsListener() {
@@ -82,6 +84,7 @@ export async function descounter() {
 
 function initGame() {
 	back_counter.style.zIndex = 1;
+	popup_replay.style.zIndex = 1;
 	moveCamera(statePongGame);
 }
 
@@ -89,7 +92,6 @@ let replayGame = async () => {
 	if (statePongGame == "local") {
 		lancePongGame();	
 		await connectLocalGameSocket();
-		popup_replay.style.zIndex = 1;
 		await descounter();
 	}
 	else if (statePongGame == "remote"){
@@ -99,6 +101,7 @@ let replayGame = async () => {
 }
 
 let lanceGame = async () => {
+	console.log("------ lanceGame ==>>>", statePongGame);
 	await loadDocument();
 	initGame();
 	await replayGame();

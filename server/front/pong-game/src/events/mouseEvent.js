@@ -27,8 +27,14 @@ function getCanvasRelativePosition(event) {
 
 export function setMousePosition(event) {
 	const pos = getCanvasRelativePosition(event);
+	// console.log("::::::::::: setMousePosition ::::::> ", pos);
 	mousePosition.x = (pos.x / canvas.width ) *  2 - 1;
 	mousePosition.y = (pos.y / canvas.height) * -2 + 1;
+	// console.log("::::::::::: setMousePosition ::::::> ", mousePosition.y);
 }
 
-export const mousePositionHelper = new MousePositionHelper();
+export let mousePositionHelper = new MousePositionHelper();
+
+export function setMousePositionHelper() {
+	mousePositionHelper = new MousePositionHelper();
+}
