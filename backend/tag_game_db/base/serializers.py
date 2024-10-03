@@ -8,6 +8,8 @@ class TagGameDbSerialiser(serializers.ModelSerializer):
             'id',
             'player1_id',
             'player2_id',
+            'player1_avatar',
+            'player2_avatar',
             'is_active',
             'is_remote',
             'player1_name',

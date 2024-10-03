@@ -2,7 +2,7 @@ const api = "https://127.0.0.1:9004/api/";
 const csrftoken = getCookie('csrftoken');
 const token  = localStorage.getItem('token');
 const refresh  = localStorage.getItem('refresh');
-
+import { friendsocket, changeAccess } from "./components/profile/profile.js"
 
 function isAuthenticated() {
     return !!localStorage.getItem('token');
@@ -14,10 +14,11 @@ function isAuthenticated() {
 }
   
   function logoutf() {
+    friendsocket.close();
     localStorage.removeItem('token'); 
     localStorage.removeItem('refresh'); 
   }
-  
+
   function get_localstorage(string) {
     if (string === 'token')
         return (localStorage.getItem('token'));
@@ -41,35 +42,28 @@ function isAuthenticated() {
   }
 
 
-  function check_access_token() {
-    const data = {
-      token: token
-  };
-
-    fetch(api + '/auth/verify-token/', {
-      method: 'POST',
-      headers: {
+  export async function check_access_token() {
+    try {
+      const response = await fetch(api + 'auth/verify-token/', {
+        method: 'POST',
+        headers: {
           'Content-Type': 'application/json',
-          'X-CSRFToken': csrftoken,
-      },
-      credentials: 'include',
-      body: JSON.stringify(data)
-  })
-  .then(response => {
-      //console.log(response);
-      return response.json();
-  })
-  .then(data => {
-      //console.log(data);
-      if (data.message === 'Redirecting to 42 login')
-          window.location.href = data.url;
-     
-  })
-  .catch(error => {
+        },
+        credentials: 'include',
+        body: JSON.stringify({ token }) 
+      });
+      if (response.status === 404){
+        logoutf();
+        window.location.hash = '/login';
+      }
+      if (response.status !== 200) {
+        await changeAccess();
+      } 
+      if (!response.ok)
+          throw new Error(`HTTP error! Status: ${response.status}`);
+    } catch (error) {
       console.error('There was a problem with the fetch operation:', error);
-  });
-
-
+    }
 
   }
 
@@ -88,16 +82,16 @@ function isAuthenticated() {
       body: JSON.stringify(data)
       })
       .then(response => {
-          //console.log(response);
+          console.log(response);
           return response.json();
       })
       .then(data => {
-          //console.log(data);
-          //console.log(data.message, "    <=  message");
-          // //console.log("it is okay=>  ", response.ok);
+          console.log(data);
+          console.log(data.message, "    <=  message");
+          // console.log("it is okay=>  ", response.ok);
           if (data.message === 'Invalid token'){
             const hd = get_localstorage("token");
-            //console.log(hd);
+            console.log(hd);
           }
         
       })
@@ -114,6 +108,9 @@ function isAuthenticated() {
 
 
   async function log_out_func() {
+    console.log("---------------------------------- hello ")
+    check_access_token();
+    console.log("---------------------------------- hello ")
     const bod = {
       refresh: get_localstorage('refresh')
     }
@@ -127,19 +124,19 @@ function isAuthenticated() {
         body: JSON.stringify(bod)
     })
     .then(response => {
-        //console.log(response);
-        //console.log(response.data);
-        // //console.log(response.);
+        console.log(response);
+        console.log(response.data);
+        // console.log(response.);
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }
         return response.json();
     })
     .then(data => {
-        //console.log(data);
+        console.log(data);
         
         if (data.message === 'User logged out') {
-          //console.log("==== ===== ===== ===== ===== ===== ===== ");
+          console.log("==== ===== ===== ===== ===== ===== ===== ");
           logoutf();
             window.location.hash = '/login';
         }

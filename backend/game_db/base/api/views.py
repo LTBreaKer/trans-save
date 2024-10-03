@@ -22,7 +22,7 @@ def check_user_availablity(request):
     user_data = auth_check_response.json()['user_data']
     player_id = user_data['id']
     username = user_data['username']
-
+    avatar = user_data['avatar']
     if GameDb.objects.filter(
         Q(player1_id=player_id) | Q(player2_id=player_id),
         is_active=True
@@ -40,7 +40,8 @@ def check_user_availablity(request):
         'is_available' : True,
         'res': None,
         'player_id': player_id,
-        'username': username
+        'username': username,
+        'avatar': avatar
         }
 
 @api_view(['POST'])
@@ -53,7 +54,15 @@ def create_local_game(request):
     player2_name = request.data.get('player2_name')
     if not player2_name:
         return Response({'message': 'player2_name required'}, status=400)
-    serializer = GameDbSerialiser(data={'player1_id': user_availablity['player_id'], 'player2_id': -1, 'is_remote': False, 'player2_name': player2_name, 'player1_name': user_availablity['username']})
+    print(user_availablity['avatar'])
+    serializer = GameDbSerialiser(data={
+            'player1_id': user_availablity['player_id'],
+            'player2_id': -1,
+            'is_remote': False,
+            'player2_name': player2_name,
+            'player1_name': user_availablity['username'],
+            'player1_avatar': user_availablity['avatar'],
+        })
     if serializer.is_valid():
         instance = serializer.save()
         return Response({
@@ -64,7 +73,7 @@ def create_local_game(request):
             },
             status=201
             )
-    return Response({'message': 'Error: game not created'}, status=400)
+    return Response({'message': serializer.errors}, status=400)
 
 @api_view(['POST'])
 def create_remote_game(request):
@@ -77,7 +86,21 @@ def create_remote_game(request):
     if len(game_queue) >= 2:
         player1_id = game_queue.pop()
         player2_id = game_queue.pop()
-        serializer = GameDbSerialiser(data={'player1_id': player1_id, 'player2_id': player2_id})
+        player2_data = get_user(user_id=player2_id, auth_header=AUTH_HEADER).json()
+
+        player1_avatar = user_availablity['avatar']
+        player2_avatar = player2_data['user_data']['avatar']
+        player1_name = user_availablity['username']
+        player2_name = player2_data['user_data']['username']
+
+        serializer = GameDbSerialiser(data={
+            'player1_id': player1_id,
+            'player2_id': player2_id,
+            'player1_avatar': player1_avatar,
+            'player2_avatar': player2_avatar,
+            'player1_name': player1_name,
+            'player2_name': player2_name,
+            })
         if serializer.is_valid():
             instance = serializer.save()
             channel_layer = get_channel_layer()
@@ -108,7 +131,17 @@ def create_remote_game(request):
                     }
                 }
             )
-            return Response({'message': 'game created'}, status=201)
+            return Response({
+                    'message': 'game created',
+                    'game_data': {
+                        'id': instance.id,
+                        'player1_id': instance.player1_id,
+                        'player2_id': instance.player2_id,
+                        'player1_name': instance.player1_name,
+                        'player2_name': instance.player2_name
+                    }},
+                    status=201
+                )
         else:
             return Response({'message': serializer.errors}, status=400)
     else:
@@ -159,6 +192,8 @@ def add_game_score(request):
         player2_score = request.data.get('player2_score')
         if not player1_id or not player2_id or not player1_score or not player2_score:
             return Response({'message': 'player1_id , player2_id, player1_score and player2_score are required'}, status=400)
+        player1_id = int(player1_id)
+        player2_id = int(player2_id)
         player_ids = [game.player1_id, game.player2_id]
         if player1_id not in player_ids or player2_id not in player_ids:
             return Response({'message': 'invalid player ids'}, status=400)
@@ -177,8 +212,27 @@ def get_game_history(request):
     user_id = auth_check_response.json()['user_data']['id']
     games = GameDb.objects.filter(Q(player1_id=user_id) | Q(player2_id=user_id), is_active=False)
     serializer = GameDbSerialiser(games, many=True)
-    return Response({serializer.data}, status=200)
+    return Response({'games': serializer.data}, status=200)
+
+@api_view(['POST'])
+def get_game_history_by_username(request):
+    AUTH_HEADER = request.META.get('HTTP_AUTHORIZATION')
+    auth_check_response = check_auth(AUTH_HEADER)
+    if auth_check_response.status_code != 200:
+        return Response(data=auth_check_response.json(), status = auth_check_response.status_code)
+    username = request.data.get('username')
+    if not username:
+        return Response(data={'message': 'username is required'}, status=400)
+    games = GameDb.objects.filter(
+        Q(is_active=False) & (
+            (Q(is_remote=True) & (Q(player1_name=username) | Q(player2_name=username))) |
+            (Q(is_remote=False) & Q(player1_name=username))
+        )
+    )
+    serializer = GameDbSerialiser(games, many=True)
+    return Response({'games': serializer.data}, status=200)
     
+
 @api_view(['GET'])
 def is_available(request):
     AUTH_HEADER = request.META.get('HTTP_AUTHORIZATION')

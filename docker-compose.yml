@@ -72,7 +72,8 @@ services:
     restart: always
     networks:
       - my_network
-    command: python manage.py runsslserver --certificate /etc/ssl/certs/cert.pem --key /etc/ssl/private/cert-key.pem 0.0.0.0:8003
+    command: python -m gunicorn tag_game_db.asgi:application -k uvicorn.workers.UvicornWorker --certfile=/etc/ssl/certs/cert.pem --keyfile=/etc/ssl/private/cert-key.pem --bind 0.0.0.0:8003
+    # command: python manage.py runsslserver --certificate /etc/ssl/certs/cert.pem --key /etc/ssl/private/cert-key.pem 0.0.0.0:8003
   tournament-db:
     image: tournament-db
     container_name: tournament-api
@@ -163,7 +164,6 @@ services:
   #   entrypoint: truffle develop > /hmmm
   #   networks:
   #     - my_network
-  
   tag-back:
     image: tag-back
     container_name: tag-back
@@ -175,7 +175,6 @@ services:
     
     volumes:
       - ./backend/Tag/project:/usr/src/app/vv
-
 volumes:
   auth:
     driver: local
@@ -213,12 +212,14 @@ volumes:
       type: none
       device: ./server/front
       o: bind
+      
   Tag-back:
     driver: local
     driver_opts:
         o: bind
         type: none
         device: ./backend/Tag/project/
+
 
 networks:
   my_network:

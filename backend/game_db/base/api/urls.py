@@ -9,5 +9,6 @@ urlpatterns = [
     path('cancel-remote-game-creation/', views.cancel_remote_game_creation, name='cancel-remote-game-creation'),
     path('add-game-score/', views.add_game_score, name='add-game-score'),
     path('get-game-history/', views.get_game_history, name='get-game-history'),
+    path('get-game-history-by-username/', views.get_game_history_by_username, name='get-game-history-by-username'),
     path('is-available/', views.is_available, name='is-available'),
 ]

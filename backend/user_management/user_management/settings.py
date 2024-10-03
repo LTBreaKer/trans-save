@@ -84,7 +84,7 @@ CORS_ALLOWED_ORIGINS = [
     'https://127.0.0.1:9002',
 ]
 CSRF_TRUSTED_ORIGINS = [
-        'https://127.0.0.1:9005',
+        'https://127.0.0.1:9002',
 ]
 # CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True

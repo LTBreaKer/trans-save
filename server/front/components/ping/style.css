@@ -349,7 +349,7 @@ display: none;
 .main-content .mer_cont {
     width: 99%;
     height: 99%;
-    background-image: url(../../images/home/back.jpg);
+    background-image: url(./pong_background.png);
     background-size: 100% 100%;
     /* margin: 15px; */
     background-repeat: no-repeat;
@@ -392,6 +392,45 @@ display: none;
     background-color: rgba(25, 26, 29, 0.6);
     
   }
+
+
+  .re_local #tournament_game {
+    width: 290px;
+    height: 50%;
+    padding: 10px 15px 15px 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    background-color: rgba(25, 26, 29, 0.6);
+  }
+  
+  .re_local #boot_game {
+    width: 290px;
+    height: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 10px 15px 15px 15px;
+    align-items: center;
+    background-color: rgba(25, 26, 29, 0.6);
+    
+  }
+
+
+  .mer_cont #boot_game_btt {
+    padding: 11px;
+    background-color: black;
+    border-radius: 15px;
+    cursor: pointer;
+  }
+  .mer_cont #tournament_game_btt {
+    padding: 11px;
+    background-color: black;
+    border-radius: 15px;
+    cursor: pointer;
+  }
+
   
   
   #local_game  .input {
@@ -425,22 +464,21 @@ display: none;
 
   
   .mer_cont .discription_game {
-    width: 100%;
+    /* width: 100%;
     display: flex;
     padding: 15px;
-    justify-content: center;
-    /* align-items: center; */
+    justify-content: center; */
   }
   
   .mer_cont .discription_game .text {
-    background-color: rgba(25, 26, 29, 0.9);
+    /* background-color: rgba(25, 26, 29, 0.9);
     padding: 15px;
     width: 55%;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    font-family: "Times New Roman", Times, serif;
+    font-family: "Times New Roman", Times, serif; */
     /* opacity: 0.6; */
     /* background-color: transparent; */
 
@@ -456,3 +494,66 @@ display: none;
   
 
    /*  ======= ====== ====== ======= ======= ====== ======= ======= */
+
+
+
+   .container .tournament_players {
+      position: fixed;
+      display: none;
+      width: 100%;
+      height: 100%;
+      top: 0px;
+      left: 0px;
+      justify-content: center;
+      align-items: center;
+      background-color: rgba(4, 5, 5, 0.6);
+
+      /* w; */
+      /* background-color: red; */
+   }
+  .players {
+    display: flex;
+    position: relative;
+    flex-direction: column;
+    width: 450px;
+    justify-content: center;
+    align-items: center;
+    padding: 25px;
+    background-color: rgba(0, 0, 0, 0.9);
+    
+  }
+
+  .players h2 {
+    padding: 15px;
+    margin: 25px;
+    width: 18px 32px;
+    background-color: #0E5A84;
+    border-radius: 25px;
+  }
+
+  .players input {
+    padding: 11px;
+    margin: 10px;
+    border-radius: 15px;
+  }
+
+  .bi-x {
+    display: flex;
+    position: absolute;
+    right: 5px;
+    top: 5px;
+    cursor: pointer;
+    color: white;
+    font-size: 35px;
+  }
+
+  .players h3 {
+    padding: 10px;
+    margin: 10px;
+    width: 185px;
+    background-color: #0E5A84;
+    border-radius: 25px;
+    display: flex;
+    justify-content: center;
+    cursor: pointer;
+  }
