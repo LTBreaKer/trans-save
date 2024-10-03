@@ -23,14 +23,16 @@ class gameMonitor:
             Platform(1245, 400, 135),
             Platform(0, 472, 359),
             Platform(636, 480, 180),
+            Platform(1520, 560, 100),
 
-            Platform(1526, 540, 77),
-
-            Platform(1070, 700, 245),
+            Platform(1070, 675, 245),
             Platform(545, 700, 351),
             Platform(0, 800, 300),
-            Platform(1114, 855, 277),
-            Platform(1480, 855, 222),
+            Platform(1200, 840, 275),
+
+            Platform(0, 935, 375),
+            Platform(375, 935, 375),
+            Platform(750, 935, 377),
         ]
         
         self.canvas_width = 0
@@ -40,67 +42,74 @@ class gameMonitor:
         self.platform_ys = None
 
     async def gameLoop(self):
+
         start_time = time.time()
         esc_time = 0
         await asyncio.sleep(0.005)
 
         while self.game_time:
-
-            if self.esc:
-                if esc_time == 0:
-                    esc_time = time.time()
-                await asyncio.sleep(0.005)
-                continue
-            if esc_time:
-                start_time += time.time() - esc_time
-                esc_time = 0
-            if self.game_time > 0:
-                self.game_time = math.floor(99 - time.time() + start_time)
-            if self.game_time == 0:
-                if not self.players[0].tagger:
-                    self.winner = "𝙍𝙚𝙙"
-                else:
-                    self.winner = "𝘽𝙡𝙪𝙚"
-
-            collision = False
-            for self.player in self.players:
-                self.player.fall(self)
-                
-                for self.platform in self.platforms:
-                    if self.player.topCollision(self.platform):
-                        self.platform.collision[self.player.id] = True
-                        self.player.position['y'] = self.platform.position['y'] - self.player.height
-                        self.player.velocity['y'] = 0
-
-                    elif self.player.bottomCollision(self.platform):
-                        self.player.position['y'] = self.platform.position['y'] + self.platform.height
-                        self.player.velocity['y'] = 0
-
-                    elif self.player.leftCollision(self.platform):
-                        self.player.velocity['x'] = 0
-                        self.player.position['x'] = self.platform.position['x'] - self.player.width
-                        collision = True
-
-                    elif self.player.rightCollision(self.platform):
-                        self.player.velocity['x'] = 0
-                        self.player.position['x'] = self.platform.position['x'] + self.platform.width
-                        collision = True
+            if not self.gameconsumer.is_open:
+                break
+            try:
+                if self.esc:
+                    if esc_time == 0:
+                        esc_time = time.time()
+                    await asyncio.sleep(0.005)
+                    continue
+                if esc_time:
+                    start_time += time.time() - esc_time
+                    esc_time = 0
+                if self.game_time > 0:
+                    self.game_time = math.floor(9 - time.time() + start_time)
+                if self.game_time == 0:
+                    if not self.players[0].tagger:
+                        self.winner = self.players[0].name
+                    else:
+                        self.winner = self.players[1].name
+                collision = None
+                for self.player in self.players:
+                    self.player.fall(self)
                     
-                if self.player.tagger:
-                    self.player.tagVel = self.player.vitesse['right'] / 3
-                else:
-                    self.player.tagVel = 0
-                if not collision:
-                    self.player.left_right(self)
-            
-            if time.time() - self.time_tag > 3:
-                self.GO = True
-                self.Tag(self.players[0], self.players[1])
-            else:
-                self.GO = False
+                    for self.platform in self.platforms:
+                        if self.player.topCollision(self.platform):
+                            self.platform.collision[self.player.id] = True
+                            self.player.position['y'] = self.platform.position['y'] - self.player.height
+                            self.player.velocity['y'] = 0
 
-            await self.gameconsumer.send_playerUpdate()
-            await asyncio.sleep(0.005)
+                        elif self.player.bottomCollision(self.platform):
+                            self.player.position['y'] = self.platform.position['y'] + self.platform.height
+                            self.player.velocity['y'] = 0
+
+                        elif self.player.leftCollision(self.platform):
+                            self.player.velocity['x'] = 0
+                            self.player.position['x'] = self.platform.position['x'] - self.player.width
+                            collision = "left"
+
+                        elif self.player.rightCollision(self.platform):
+                            self.player.velocity['x'] = 0
+                            self.player.position['x'] = self.platform.position['x'] + self.platform.width
+                            collision = "right"
+
+                    if self.player.tagger:
+                        self.player.tagVel = self.player.vitesse['right'] / 3
+                    else:
+                        self.player.tagVel = 0
+                    # if not collision:
+                    self.player.left_right(self, collision)
+                
+                if time.time() - self.time_tag > 3:
+                    self.GO = True
+                    self.Tag(self.players[0], self.players[1])
+                else:
+                    self.GO = False
+
+                await self.gameconsumer.send_playerUpdate()
+                await asyncio.sleep(0.005)
+
+            except Exception as e:
+                print(f"Error game loop: {e}")
+                self.gameconsumer.is_open = False
+
     def checkCollision(self, id):
         for self.platform in self.platforms:
             if self.platform.collision[id]:
@@ -138,6 +147,7 @@ class Platform:
 class Player:
     def __init__(self, id):
 
+        self.name = None
         self.id = id
         self.gravity = 0
         self.tagger = False
@@ -218,15 +228,15 @@ class Player:
                 self.velocity['y'] = 0
             self.key['upPressed'] = False
 
-    def left_right(self, game_monitor):
+    def left_right(self, game_monitor, collision):
 
         if (self.key['right'] and self.key['left']):
             self.velocity['x'] = 0
         
-        elif self.key['right']:
+        elif self.key['right'] and collision != "left":
             self.velocity['x'] = self.vitesse['right'] + self.tagVel
 
-        elif self.key['left']:
+        elif self.key['left'] and collision != "right":
             self.velocity['x'] = self.vitesse['left'] - self.tagVel
         
         else:
@@ -289,6 +299,12 @@ async def resizeWindow(text_data_json, self_cons, game_monitor):
 
     for player in game_monitor.players:
         player.updatePlayer(game_monitor.canvas_height, game_monitor.canvas_width, init, test)
+
+    if game_monitor.players[0].name == None:
+        game_monitor.players[0].name = text_data_json.get('player0_name')
+
+    if game_monitor.players[1].name == None:
+        game_monitor.players[1].name = text_data_json.get('player1_name')
 
     for platform in game_monitor.platforms:
         platform.width = platform.dimensionPercentageX * game_monitor.canvas_width / 100

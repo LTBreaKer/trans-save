@@ -11,10 +11,11 @@ async function Ta() {
   app.innerHTML = html;
   
   await checkFirst();
-
+  const remote_butt_game = document.getElementById('butt_game');
   const local_butt_game = document.getElementById('local_butt_game_tag');
   // input = document.getElementById('input_tag');
   // player_name = input.value; 
+  remote_butt_game.addEventListener('click', remote_game_function);
   local_butt_game.addEventListener('click', localgame_tag);
 
   
@@ -22,6 +23,50 @@ async function Ta() {
 // data dyal game tag kayan fhad object just import it 
 export  {tag_game_info};
 
+async function remote_game_function() {
+  console.log("************remote game -----------------------------")
+  try {
+    const response = await fetch(game_api + 'create-remote-game/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'AUTHORIZATION': 'Bearer ' + get_localstorage('token'),
+      },
+      credentials: 'include',
+    });
+    console.log(response);
+    const jsonData = await response.json();
+    if (jsonData.message === "player is already in a game") {
+      console.log('hdsklfjsldkjflsdjk    => :', jsonData.message);
+      document.querySelector('.success_update').style.display = "flex";
+      setTimeout(function() {
+        document.querySelector('.success_update').style.display = 'none';
+    }, 2000);
+  
+    }
+    console.log(jsonData)
+    console.log(jsonData.message)
+    // const game_id =  jsonData.game_id;
+    // const player1_name =  jsonData.player1_name;
+    // const player2_name =  jsonData.player2_name;
+    // tag_game_info = {
+    //   game_id: game_id,
+    //   player1_name: player1_name,
+    //   player2_name: player2_name,
+    // }
+    // if (response.status === 201)
+    //   window.location.hash = '/game'
+    // console.log(jsonData.message)
+    
+    if (!response.ok) {
+      // console.log(jsonData.message)
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+  } catch (error) {
+    console.error('There was a problem with the fetch operation:', error);
+  }
+
+}
 
 async function localgame_tag() {
   const input = document.getElementById('input_tag');

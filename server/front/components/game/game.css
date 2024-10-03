@@ -1,4 +1,12 @@
 
+@font-face {
+    font-family: 'Volax';
+    src: url('../assets/Valorax-lg25V.otf') format('opentype');
+    font-weight: bold;
+    font-style: italic;
+}
+
+
 canvas{
     background-color: black;
 }
@@ -24,18 +32,20 @@ html, body {
     flex-direction: column; /* Stack children vertically */
     justify-content: center;
     align-items: center;
-    font-size: 48px;
+    font-size: 5vw;
     visibility: hidden; /* Hidden by default */
-    text-shadow: 2px 0px 8px rgba(0, 0, 0, 0.8);    
+    text-shadow: 2vw 0vw 8vw rgba(0, 0, 0, 0.8);    
 }
 
 .overlay-text {
-    margin-bottom: 20px; /* Space between text and button */
+    font-family: 'Volax', sans-serif;
+    margin-bottom: 5vw; /* Space between text and button */
 }
 
 .overlay-button {
     padding: 10px 20px;
-    font-size: 24px;
+    font-family: 'Volax', sans-serif;
+    font-size: 25px;
     color: #DCDCDC;
     background-color: #555; /* Dark background for the button */
     border: none;
