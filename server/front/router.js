@@ -8,6 +8,7 @@ import PingPong from './components/pingpong/ping.js';
 import { isAuthenticated, get_localstorage, check_access_token } from './auth.js';
 import Ta from './components/ta/script.js';
 import Ping from './components/ping/script.js';
+import Tournament from './components/tournament/script.js';
 
 const api_one = "https://127.0.0.1:9005/api/";
 let friends_array = [];
@@ -22,6 +23,7 @@ const routes = {
   '/game': Game,
   '/pingpong': PingPong,
   '/ping': Ping,
+  '/tournament': Tournament,
 };
 // let delete_component = routes[path];
 

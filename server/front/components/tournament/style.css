@@ -28,14 +28,14 @@ body {
 }
 
 
-.pong_container {
+.container {
   margin: 0;
   padding: 0;
   width: 100%;
   min-height: 100vh;
 }
 
-.pong_container .pong_header {  
+.container .header {  
   position: fixed;
   margin: 0;
   padding-left: 7.2em;
@@ -43,13 +43,13 @@ body {
   width: 100%;
 }
 
-.pong_container .pong_navbar {
+.container .navbar {
   position: fixed;
   min-height: 100vh;
   width: 5em;
 }
 
-/* .pong_container .pong_main-content {
+/* .container .main-content {
   padding-top: 11vh;
   padding-left: 7.2em;
   height: 100vh;
@@ -61,7 +61,7 @@ body {
   display: none;
 }
 
-.pong_header {
+.header {
   position: relative; 
   display: flex;
   flex-direction: row-reverse;
@@ -70,7 +70,7 @@ body {
   transition: var(--tran-05);
 }
 
-.pong_header .pong_profile {
+.header .profile {
   right: 8px;
   position: relative;
   display: flex;
@@ -78,7 +78,7 @@ body {
   align-items: center;
 }
 
-.pong_header .pong_profile .image img {
+.header .profile .image img {
   width: 50px;
   object-fit: cover;
   height: 50px;
@@ -86,11 +86,11 @@ body {
   margin-left: 5px;
 }
 
-.pong_header .pong_profile .text {
+.header .profile .text {
   color: #e8ebfb;
 }
 
-.pong_header .notification {
+.header .notification {
   font-size: 18px;
   color: #e8ebfb;
   padding-right: 17px;
@@ -99,7 +99,7 @@ body {
 
 /* ==============  here i will work with navbar content  ============== */
 
-.pong_sidebar {
+.sidebar {
   position: relative;
   top: 0;
   margin-top: 80px;
@@ -112,13 +112,13 @@ body {
   transition: var(--tran-05);
 }
 
-.pong_sidebar .image {
+.sidebar .image {
   min-width: 60px;
   display: flex;
   align-items: center;
 }
 
-.pong_sidebar li {
+.sidebar li {
   height: 50px;
   margin-top: 10px;
   list-style: none;
@@ -126,7 +126,7 @@ body {
   align-items: center;
 }
 
-.pong_sidebar li .icon {
+.sidebar li .icon {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -134,16 +134,16 @@ body {
   font-size: 20px;
 }
 
-.pong_sidebar li .icon {
+.sidebar li .icon {
   color: var(--text-color);   
   transition: var(--tran-02); 
 }
 
-.pong_sidebar header {
+.sidebar header {
   position: relative;
 }
 
-.pong_navbar .image-text img {
+.navbar .image-text img {
   /* width: 70px; */
   position: absolute;
   border-radius: 6px;
@@ -153,7 +153,7 @@ body {
   padding: 15px;
 }
 
-.pong_sidebar li a {
+.sidebar li a {
   height: 100%;
   width: 100%;
   display: flex;
@@ -163,15 +163,15 @@ body {
   transition: var(--tran-04);
 }
 
-.pong_sidebar li a:hover {
+.sidebar li a:hover {
   background: var(--primary-color);
 }
 
-.pong_sidebar li a:hover .icon {
+.sidebar li a:hover .icon {
   color: var(--sidebar-color);
 }
 
-.pong_sidebar .menu-bar {
+.sidebar .menu-bar {
   height: calc(100% - 20px);
   display: flex;
   flex-direction: column;
@@ -180,7 +180,7 @@ body {
 
 /* ?notification 0 */
 
-.pong_notifi_btn {
+.notifi_btn {
   display: none;
   width: 200px;
   height: 250px;
@@ -192,16 +192,16 @@ body {
   overflow-y: auto;
 }
 
-.pong_notifi_btn::-webkit-scrollbar {
+.notifi_btn::-webkit-scrollbar {
 display: none;
 }
 
-.pong_notifi_btn.active {
+.notifi_btn.active {
   display: flex;
   flex-direction: column;
 }
 
-.pong_notifi_btn .send_request {
+.notifi_btn .send_request {
   width: 100%;
   height: 55px;
   border-radius: 15px;
@@ -212,7 +212,7 @@ display: none;
   justify-content: center;
 }
 
-.send_request .img_text {
+/* .send_request .img_text {
   align-items: center;
   display: flex;
 }
@@ -237,13 +237,13 @@ display: none;
   border: none;
   height: 20px;
   cursor: pointer;
-}
+} */
 
 /* // =========================== here i will work with media =========================== */
 
 @media (max-width: 444px) {
 
-  .pong_sidebar {
+  .sidebar {
       margin-top: 80px;
       position: relative;
       top: 0;
@@ -257,7 +257,7 @@ display: none;
       overflow: hidden;
   }
 
-  .pong_sidebar.active {
+  .sidebar.active {
       height: 100vh;
       padding: 10px 14px;
       background-color: var(--sidebar-color);
@@ -282,7 +282,7 @@ display: none;
 }
 
 @media (max-width: 400px) {
-  .pong_header .pong_profile .image img {
+  .header .profile .image img {
       display: none;
   }
 }
@@ -292,52 +292,8 @@ display: none;
 
 
 
-  /* game here -------- */
-
-  .pong_container .games {
-    display: none;
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    top: 0;
-  left: 0;
-  align-items: center;
-  justify-content: center;
-}
-
-
-.games .conta {
-  width: 73%;
-  height: 60%;
-  background-color: red;
-  position: relative;
-  display: none;
-  align-items: center;
-  justify-content: center;
-  margin-left: 91px;
-}
-
-.conta .meryem {
-  width: 40%;
-  height: 50%;
-  background-color: blue;
-  margin: 15px;
-  cursor: pointer;
-}
-
-.conta .moloaa {
-  width: 40%;
-  height: 50%;
-  background-color: rgb(129, 129, 148);
-  margin: 15px;
-  cursor: pointer;
-
-}
-
-
-  /* mer_cont */
     
-  .pong_container .pong_main-content {
+  .container .main-content {
     /* background-color: green; */
     width: 100%;
     padding-top: 11vh;
@@ -346,175 +302,123 @@ display: none;
     color: white;
   }
 
-.pong_main-content .pong_mer_cont {
-    width: 99%;
-    height: 99%;
-    background-image: url(./pong_background.png);
-    background-size: 100% 100%;
-    /* margin: 15px; */
-    background-repeat: no-repeat;
-    position: relative;
+
+
+
+  /* here i will work with match players : */
+
+
+  .main-content .matches_hist {
+    
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    /* margin-right: 11%; */
-    color: white;
-  }
-  
-  .pong_mer_cont .pong_re_local {
-    width: 100%;
-    height: 50%;
-    display: flex;
-    align-items: center;
     justify-content: space-around;
-  }
-  
-  .pong_re_local #remote_game {
-    width: 290px;
-    height: 50%;
-    padding: 10px 15px 15px 15px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+    margin: 15px;
+    margin-right: 25px;
+    margin-top: 55px;
     align-items: center;
-    background-color: rgba(25, 26, 29, 0.6);
-  }
-  
-  .pong_re_local #local_game {
-    width: 290px;
-    height: 50%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    padding: 10px 15px 15px 15px;
-    align-items: center;
-    background-color: rgba(25, 26, 29, 0.6);
     
   }
-  
-  
-  #local_game  .input {
+
+  .main-content .player_name {
+    padding: 11px;
+    width: 150px;
+    background-color: red;
+    font-size: 21px;
+    margin: 12px;
+    
+  }
+
+  .main-content .string {
+    margin: 55px 25px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .main-content .center_matches {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .center_matches .match_2 {
+    margin: 0px 25px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+  }
+
+  .center_matches .topp {
+    margin-bottom: 45px;
+  }
+
+  .center_matches .downn {
+    margin-top: 50px;
+  }
+
+  .center_matches .match_final {
+    margin: 15px 70px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 15px;
+    /* position: absolute; */
+    /* margin-left: 25%; */
+    /* margin-right: 25%; */
+  }
+
+
+  /* here i will work with winners or next matches  */
+
+
+  .main-content .winner_nextgame {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* justify-content: center; */
+  }
+
+  .winner_nextgame #next_match {
+    padding: 15px;
     width: 200px;
-    height: 40px;
-    border: none;
-    outline: none;
-    /* caret-color: rgb(255, 81, 0); */
-    background-color: rgb(255, 255, 255);
-    border-radius: 30px;
-    padding-left: 15px;
-    letter-spacing: 0.8px;
-    color: rgb(19, 19, 19);
-    font-size: 13.4px;
-  }
-  
-  
-  .pong_mer_cont #butt_game {
-    padding: 11px;
-    background-color: black;
-    border-radius: 15px;
+    /* display: inline; */
+    display: none;
+    /* align-items: center; */
+    border-radius: 25px;
     cursor: pointer;
+    background-color: #7c7d85;
   }
 
-  .pong_mer_cont #local_butt_game {
-    padding: 11px;
-    background-color: black;
-    border-radius: 15px;
-    cursor: pointer;
-  }
-
-  
-  .pong_mer_cont .discription_game {
-    width: 100%;
-    display: flex;
-    padding: 15px;
-    justify-content: center; */
-  }
-  
-  .pong_mer_cont .discription_game .text {
-    background-color: rgba(25, 26, 29, 0.9);
-    padding: 15px;
-    width: 55%;
+  .winner_nextgame .winneer {
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
-    font-family: "Times New Roman", Times, serif; */
-    /* opacity: 0.6; */
-    /* background-color: transparent; */
-
-    
-
-    /* justify-content:; */
-
-    /* font-family: "Ubuntu", sans-serif;
-    font-weight: 400;
-    font-style: italic; */
-      /* text-rendering: auto; */
-  }
-  
-
-   /*  ======= ====== ====== ======= ======= ====== ======= ======= */
-
-
-
-   .container .tournament_players {
-      position: fixed;
-      display: none;
-      width: 100%;
-      height: 100%;
-      top: 0px;
-      left: 0px;
-      justify-content: center;
-      align-items: center;
-      background-color: rgba(4, 5, 5, 0.6);
-
-      /* w; */
-      /* background-color: red; */
-   }
-  .players {
-    display: flex;
-    position: relative;
-    flex-direction: column;
-    width: 450px;
-    justify-content: center;
-    align-items: center;
-    padding: 25px;
-    background-color: rgba(0, 0, 0, 0.9);
-    
-  }
-
-  .players h2 {
     padding: 15px;
+  }
+
+  .winneer #winn {
+    padding: 11px 25px;
+    background-color: red;
+    border-radius: 15px;
     margin: 25px;
-    width: 18px 32px;
-    background-color: rgb(235, 222, 222);
-    border-radius: 25px;
   }
 
-  .players input {
-    padding: 11px;
-    margin: 10px;
-    border-radius: 15px;
+  .winneer h3 {
+    font-size: 25px;
+    margin: 15px;
   }
 
-  .bi-x {
-    display: flex;
-    position: absolute;
-    right: 5px;
-    top: 5px;
-    cursor: pointer;
-    color: white;
-    font-size: 35px;
+  .winneer #line1 {
+    width: 100px;
+    margin-bottom: 15px;
   }
 
-  .players h3 {
-    padding: 10px;
-    margin: 10px;
-    width: 155px;
-    background-color: rgb(78, 69, 69);
-    border-radius: 25px;
-    display: flex;
-    justify-content: center;
-    cursor: pointer;
+  .winneer #line2 {
+    width: 75px;
+    margin-bottom: 15px;
+  }
+
+  .winneer #line3 {
+    width: 50px;
+    margin-bottom: 15px;
   }
