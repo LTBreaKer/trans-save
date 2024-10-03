@@ -322,9 +322,11 @@ display: none;
   .main-content .player_name {
     padding: 11px;
     width: 150px;
-    background-color: red;
+    background-color: black;
     font-size: 21px;
     margin: 12px;
+    border-radius: 15px;
+    position: relative;
     
   }
 
@@ -398,7 +400,7 @@ display: none;
 
   .winneer #winn {
     padding: 11px 25px;
-    background-color: red;
+    background-color: black;
     border-radius: 15px;
     margin: 25px;
   }
@@ -421,4 +423,20 @@ display: none;
   .winneer #line3 {
     width: 50px;
     margin-bottom: 15px;
+  }
+
+
+  .matches_hist .right_p {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .right_score {
+    position: absolute;
+    left: 10px;
+  }
+
+  .left_score {
+    position: absolute;
+    right: 15px;
   }
