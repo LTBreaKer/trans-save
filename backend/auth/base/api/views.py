@@ -271,7 +271,7 @@ def callback_42(request):
         user = User.objects.get(first_name=first_name)
         user.is_logged_out = False
     except User.DoesNotExist:
-        response = requests.get(avatar)
+        response = requests.get(avatar, verify=False)
         if response.status_code == 200:
             avatar_content = ContentFile(response.content)
             avatar_filename = f"avatars/{username}_avatar.jpg"
