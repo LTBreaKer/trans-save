@@ -499,20 +499,61 @@ display: none;
 
    .container .tournament_players {
       position: fixed;
-      display: flex;
+      display: none;
       width: 100%;
       height: 100%;
       top: 0px;
       left: 0px;
+      justify-content: center;
+      align-items: center;
+      background-color: rgba(4, 5, 5, 0.6);
+
       /* w; */
       /* background-color: red; */
    }
-
-  .tournament_players .players {
+  .players {
     display: flex;
-    width: 100%;
+    position: relative;
+    flex-direction: column;
+    width: 450px;
     justify-content: center;
     align-items: center;
     padding: 25px;
-    background-color: rgba(25, 26, 29, 0.6);
+    background-color: rgba(0, 0, 0, 0.9);
+    
+  }
+
+  .players h2 {
+    padding: 15px;
+    margin: 25px;
+    width: 18px 32px;
+    background-color: rgb(235, 222, 222);
+    border-radius: 25px;
+  }
+
+  .players input {
+    padding: 11px;
+    margin: 10px;
+    border-radius: 15px;
+  }
+
+  .bi-x {
+    display: flex;
+    position: absolute;
+    right: 5px;
+    top: 5px;
+    cursor: pointer;
+    color: white;
+    font-size: 35px;
+  }
+
+  .players h3 {
+    padding: 10px;
+    margin: 10px;
+    width: 155px;
+    background-color: rgb(78, 69, 69);
+    border-radius: 25px;
+    display: flex;
+    justify-content: center;
+    cursor: pointer;
   }
