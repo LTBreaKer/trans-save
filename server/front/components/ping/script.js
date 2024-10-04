@@ -1,5 +1,5 @@
 import { loadHTML, loadCSS } from '../../utils.js';
-import { login ,log_out_func, logoutf, get_localstorage, getCookie } from '../../auth.js';
+import { login ,log_out_func, logoutf, get_localstorage, getCookie, check_access_token } from '../../auth.js';
 var api = "https://127.0.0.1:9004/api/";
 var api_game = "https://127.0.0.1:9006/api/gamedb/";
 let game_socket = "wss://127.0.0.1:9006/ws/game-db/";
@@ -50,17 +50,17 @@ async function Ping() {
 
   // here i'm working with tournament and players
 
-  const start_tournament = document.getElementById('tournament_game_btt');
-  const tournament_players = document.querySelector('.tournament_players');
-  const tournament_close = document.querySelector('.bi-x');
+//   const start_tournament = document.getElementById('tournament_game_btt');
+//   const tournament_players = document.querySelector('.tournament_players');
+//   const tournament_close = document.querySelector('.bi-x');
 
-  start_tournament.addEventListener('click', () => {
-    tournament_players.style.display = 'flex';
-  })
+//   start_tournament.addEventListener('click', () => {
+//     tournament_players.style.display = 'flex';
+//   })
 
-tournament_close.addEventListener('click', () => {
-  tournament_players.style.display = 'none';
-})
+// tournament_close.addEventListener('click', () => {
+//   tournament_players.style.display = 'none';
+// })
 
 
 
@@ -94,6 +94,7 @@ export const initPlayRemoteGame = async (initRemotegame) => {
 } 
 
 async function connectPlayerSocket() {
+  await check_access_token();
   try {
     const subprotocols = ['token', get_localstorage('token')];
     const ws = new WebSocket(game_socket, subprotocols);
@@ -133,7 +134,7 @@ export {data_remote_player};
 
 
 async function remore_game_fun() {
-  
+  await check_access_token();
   try {
     const response = await fetch(api_game + 'create-remote-game/', {
       method: 'POST',
@@ -162,6 +163,7 @@ async function remore_game_fun() {
 export let gameApi;
 
 export async function localgame() {
+  await check_access_token();
   if (typeof input !== 'undefined')
     name = input.value;
   else

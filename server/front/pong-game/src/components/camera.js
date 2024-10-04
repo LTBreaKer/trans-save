@@ -2,8 +2,13 @@ import * as THREE from 'three';
 import { TABLE_DEPTH, TABLE_WIDTH, canvas, paddle_way } from '../utils/globaleVariable.js';
 
 // const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
-const camera = new THREE.PerspectiveCamera( 75, 1, 0.1, 1000 );
+let camera = new THREE.PerspectiveCamera( 75, 1, 0.1, 1000 );
+export function initCamera(){
+    camera = new THREE.PerspectiveCamera( 75, 1, 0.1, 1000 );
+}
+
 export function moveCamera(stateGame = "local") {
+    console.log("--------------moveCamera---------------: ", paddle_way);
     if (stateGame == "local") {
         camera.position.z = 5.8;
         camera.lookAt(0, 0, 0 );

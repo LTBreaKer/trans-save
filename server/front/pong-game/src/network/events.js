@@ -16,11 +16,12 @@ import { initPlayGame } from '../../../components/pingpong/ping.js';
 import { paddle } from '../game/paddle.js';
 import { lancePongGame } from '../main3d.js';
 import { setMousePosition, setMousePositionHelper } from '../events/mouseEvent.js';
+import { initGameComponents } from '../components/renderer.js';
 
 
 // console.log("0 statePongGame: ", statePongGame);
 
-function resizeCanvas(){
+export function resizeCanvas(){
 	let minHW = Math.min(window.innerWidth*0.99, window.innerHeight*0.99);
 	canvas.style.width = (minHW - 100) + "px";
 	canvas.style.height = (minHW - 100) + "px";
@@ -38,6 +39,7 @@ function resizeCanvas(){
 	first_player_goal.style.paddingLeft = padding_left + "px";
 	second_player_goal.style.paddingTop = padding_top + "px";
 	second_player_goal.style.paddingRight = padding_left + "px";
+	console.log("--------- resize Canvas: ", canvas.style.height, " ", canvas.style.width);
 	moveCamera(statePongGame);
 }
 
@@ -72,23 +74,26 @@ export function removeEventsListener() {
 
 
 export async function descounter() {
-	back_counter.style.zIndex = 100;
+	back_counter.style.display = 'flex';
 	for(let c=3; c > 0; c--) {
 		counter.textContent = c;
 		await sleep(1);
 	}
-	back_counter.style.zIndex = 1;
+	back_counter.style.display = 'none';
 	sendSocket();
 	launchGame();
 }
 
 function initGame() {
-	back_counter.style.zIndex = 1;
-	popup_replay.style.zIndex = 1;
-	moveCamera(statePongGame);
+	back_counter.style.display = 'none';
+	popup_replay.style.display = 'none';
+	initGameComponents();
 }
 
 let replayGame = async () => {
+	await loadDocument();
+	resizeCanvas();
+	initGame();
 	if (statePongGame == "local") {
 		lancePongGame();	
 		await connectLocalGameSocket();
@@ -102,8 +107,6 @@ let replayGame = async () => {
 
 let lanceGame = async () => {
 	console.log("------ lanceGame ==>>>", statePongGame);
-	await loadDocument();
-	initGame();
 	await replayGame();
 	setupEventListeners();
 }

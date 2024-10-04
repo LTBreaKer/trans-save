@@ -8,6 +8,7 @@ import { renderer } from '../components/renderer.js'
 import { localGameSocket, paddleSocket } from '../network/socket.js';
 import { data_remote_player, statePongGame } from '../../../components/ping/script.js';
 import { mousePosition, mousePositionHelper } from '../events/mouseEvent.js';
+import { resizeCanvas } from '../network/events.js';
 
 export let startGame = false;
 // export let gameOver = false;
@@ -77,42 +78,11 @@ function resizeRendererToDisplaySize(renderer) {
 	const height = Math.floor( canvas.clientHeight * pixelRatio) - 100;
 	const needResize = canvas.width !== width || canvas.height !== height;
 	if (needResize) {
-		// console.log("width: ", width);
-		// console.log("height: ", height);
-		// console.log("canvas.width: ", canvas.width);
-		// console.log("canvas.height: ", canvas.height);
-		// console.log("canvas.clientWidth: ", canvas.clientWidth);
-		// console.log("canvas.clientHeight: ", canvas.clientheight);
-		// console.log("canvas.clientWidth / 2 + px: ", canvas.clientWidth / 2 + "px");
-		// renderer.setSize(width, height, true);
 		renderer.setSize(width, height, false);
-		let minHW = Math.min(window.innerWidth*0.99, window.innerHeight*0.99);
-		canvas.style.width = (minHW - 100) + "px";
-		canvas.style.height = (minHW - 100) + "px";
-		canvas.style.marginTop = ((0.99 * window.innerHeight - minHW) * 0.5) + "px";
-		canvas.style.marginLeft = ((0.99 * window.innerWidth - minHW) / 2) + "px";
-		canvas.style.marginBottom = (0.01 * window.innerHeight) + "px";
-		box_result.style.width = canvas.clientWidth + "px";
-		box_result.style.marginLeft = canvas.style.marginLeft;
-		// console.log("0box_result.style.width: ", box_result.style.width);
-		first_player_goal.style.width = canvas.clientWidth / 2 + "px";
-		second_player_goal.style.width = canvas.clientWidth / 2 + "px";
-		let padding_top =  canvas.clientWidth * 0.06;
-		let padding_left = canvas.clientWidth * 0.05;
-		first_player_goal.style.paddingTop = padding_top + "px";
-		first_player_goal.style.paddingLeft = padding_left + "px";
-		second_player_goal.style.paddingTop = padding_top + "px";
-		second_player_goal.style.paddingRight = padding_left + "px";
+		resizeCanvas();
 	}
 	return (needResize);
 }
-
-box_result.style.width = canvas.clientWidth + "px";
-// console.log("2box_result.style.width: ", box_result.style.width);
-first_player_goal.style.width = canvas.clientWidth / 2 + "px";
-second_player_goal.style.width = canvas.clientWidth / 2 + "px";
-// first_player_goal.style.color = 'rgb(204, 45, 45)';
-// second_player_goal.style.color = 'rgb(45, 204, 45)';
 
 export function animate() {
 	if (resizeRendererToDisplaySize(renderer)) {
@@ -150,10 +120,8 @@ async function updatePaddles(){
 
 function playerChoicePaddle({name_current_user, player1name}) {
 	(name_current_user === player1name) ? paddle.left() : paddle.right();
-	console.log("name_current_user: ", name_current_user);
-	console.log("player1name: ", player1name);
-	console.log("paddle.x: ", paddle.x);
 }
+
 playerChoicePaddle(data_remote_player);
 // if ( WebGL.isWebGLAvailable() )
 // 	animate();

@@ -8,6 +8,9 @@ import { descounter, removeEventsListener } from './events.js';
 import { data_remote_player, initPlayRemoteGame, sendPlayerPaddleCreated } from '../../../components/ping/script.js';
 import { animationFrameId, launchGame, playRemotePongGame } from '../game/game.js';
 import { moveCamera } from '../components/camera.js';
+import { renderer } from '../components/renderer.js';
+import { scene } from '../components/scene.js';
+import { disposeScene } from '../components/disposeComponent.js';
 // import { data_remote_player,  sendPlayerPaddleCreated } from '../../../components/ping/script.js';
 // console.log("game API: ", gameApi);
 let gameSocket;
@@ -80,12 +83,9 @@ export async function localGameSocket(group_name) {
 			if (message.type === "draw_info")
 				draw_info(message);
 			else if (message.type === "game_over") {
-				console.log("message: ", message);
 				sendScore(message.left_paddle_score, message.right_paddle_score);
-				popup_replay.style.zIndex = 100;
+				popup_replay.style.display = 'flex';
 			}
-			else
-				console.log("else message: ", message);
 		}
 		return (ws);
 	} catch (error) {
@@ -95,6 +95,10 @@ export async function localGameSocket(group_name) {
 
 function choicePaddle({name_current_user, player1name}) {
 	(name_current_user === player1name) ? leftPaddle() : rightPaddle();
+	console.log("=============> choicePaddle <================");
+	console.log("name_current_user: ", name_current_user);
+	console.log("player1name: ", player1name);
+	console.log("paddle_way: ", paddle_way);
 	moveCamera(statePongGame);
 	return (name_current_user === player1name) ? ("left_paddle") : ("right_paddle");
 }
@@ -117,9 +121,11 @@ export async function paddleSocket(group_name) {
 				draw_info(message);
 			else if (message.type_msg === "game_over") {
 				console.log("message: ", message);
-				popup_replay.style.zIndex = 100;
+				popup_replay.style.display = 'flex';
 				cancelAnimationFrame(animationFrameId);
-				removeEventsListener(	);
+				if (renderer) renderer.dispose();
+				if (scene) disposeScene();
+				removeEventsListener();
 				window.location.hash = "/ping"
 				// sendScore(message.left_paddle_score, message.right_paddle_score);
 			}
@@ -144,18 +150,12 @@ async function connectBallSocket() {
 		ws.onmessage = (event) => {
 			const message = JSON.parse(event.data);
 			console.log("remote game message:", message);
-			if (message.type_msg === "create_ball_socket") {
-				// gameSocket = connectToWebSocket();
+			if (message.type_msg === "create_ball_socket")
 				ws.send(JSON.stringify({'type_msg': 'move'}));
-			}
-			else if (message.type === "game_over") {
-				console.log("message: ", message);
+			else if (message.type === "game_over")
 				sendScore(message.left_paddle_score, message.right_paddle_score);
-				popup_replay.style.zIndex = 100;
-			}
-			else if (message.type_msg === "play") {
+			else if (message.type_msg === "play")
 				descounterRemoteGame();
-			}
 		}
 		return (ws);
 	} catch (error) {
@@ -166,12 +166,12 @@ async function connectBallSocket() {
 initPlayRemoteGame(connectBallSocket);
 
 async function descounterRemoteGame() {
-	back_counter.style.zIndex = 100;
+	back_counter.style.display = 'flex';
 	for(let c=3; c > 0; c--) {
 		counter.textContent = c;
 		await sleep(1);
 	}
-	back_counter.style.zIndex = 1;
+	back_counter.style.display = 'none';
 	playRemotePongGame();
 	launchGame();
 }

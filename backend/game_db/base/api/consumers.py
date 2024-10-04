@@ -3,6 +3,7 @@ import json
 import sys
 from .helpers import check_auth, get_user 
 from asgiref.sync import sync_to_async
+from channels.db import database_sync_to_async
 
 class RemoteGame(AsyncWebsocketConsumer):
     async def connect(self):
@@ -30,9 +31,29 @@ class RemoteGame(AsyncWebsocketConsumer):
 
     async def receive(self, text_data):
 
+        # from base.models import GameDb
         from base.models import GameDb
 
+        @database_sync_to_async
+        def get_game(game_id):
+            try:
+                return GameDb.objects.get(id=game_id)
+            except GameDb.DoesNotExist:
+                return (None)
+            
+        @database_sync_to_async
+        def update_player(player):
+            try:
+                if (player == "player1_connected"):
+                    GameDb.objects.filter(id=game_id).update(player1_connected=True)
+                elif (player == "player2_connected"):
+                    GameDb.objects.filter(id=game_id).update(player2_connected=True)
+            except:
+                print("")
+
+
         text_data_json = json.loads(text_data)
+        print('----------------------------------- test_data -----------------------------------', text_data_json, file=sys.stderr)
         # print("text_data_json: ", text_data_json, file=sys.stderr)
         message = text_data_json['message']
         print("text_data_json: ", message, file=sys.stderr)
@@ -48,16 +69,16 @@ class RemoteGame(AsyncWebsocketConsumer):
                 return
             game_id = int(game_id)
             player_id = int(player_id)
-            try:
-                game = await sync_to_async(GameDb.objects.get)(id=game_id)
-            except GameDb.DoesNotExist:
+            game = await get_game(game_id)
+            if (game is None):
                 await self.send(text_data=json.dumps({
                     'type': 'error',
                     'error': 'Game not found'
                 }))
                 return
-
             if player_id == game.player1_id:
+                print('------------------ player1 ---------------------', file=sys.stderr)
+
                 if game.player1_connected:
                     await self.send(text_data=json.dumps({
                         'type': 'error',
@@ -65,8 +86,11 @@ class RemoteGame(AsyncWebsocketConsumer):
                     }))
                     return
                 game.player1_connected = True
-                await sync_to_async(game.save)()
+                # await database_sync_to_async(game.save)()
+                await update_player("player1_connected")
             elif player_id == game.player2_id:
+                print('------------------ player2 ---------------------', file=sys.stderr)
+
                 if game.player2_connected:
                     await self.send(text_data=json.dumps({
                         'type': 'error',
@@ -74,20 +98,28 @@ class RemoteGame(AsyncWebsocketConsumer):
                     }))
                     return
                 game.player2_connected = True
-                await sync_to_async(game.save)()
+                # await database_sync_to_async(game.save)()
+                await update_player("player2_connected")
             else:
                 await self.send(text_data=json.dumps({
                     'type': 'error',
                     'error': 'No player found with the provided player_id'
                 }))
                 return
-            try:
-                game = await sync_to_async(GameDb.objects.get)(id=game_id)
-            except GameDb.DoesNotExist:
+            game = await get_game(game_id)
+            if (game is None):
                 await self.send(text_data=json.dumps({
+                    'type': 'error',
                     'error': 'Game not found'
                 }))
                 return
+            # try:
+            #     game = await sync_to_async(GameDb.objects.get)(id=game_id)
+            # except GameDb.DoesNotExist:
+            #     await self.send(text_data=json.dumps({
+            #         'error': 'Game not found'
+            #     }))
+            #     return
             if game.player1_connected and game.player2_connected:
                 await self.send(text_data=json.dumps({
                     'type': 'message',
