@@ -21,7 +21,12 @@ async function Ta() {
   
 }
 // data dyal game tag kayan fhad object just import it 
-export  {tag_game_info};
+function setTagGameInfo(value)
+{
+  tag_game_info = value
+}
+
+export  {tag_game_info, setTagGameInfo};
 
 async function remote_game_function() {
   console.log("************remote game -----------------------------")

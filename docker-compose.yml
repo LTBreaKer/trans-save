@@ -172,9 +172,9 @@ services:
       - 8005:8000 
     # command: python manage.py runserver 0.0.0.0:8000
     command: python -m uvicorn project.asgi:application --reload --port 8000 --host 0.0.0.0 
-    
     volumes:
       - ./backend/Tag/project:/usr/src/app/vv
+
 volumes:
   auth:
     driver: local

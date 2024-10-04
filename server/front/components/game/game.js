@@ -10,7 +10,6 @@ async function Game() {
 
   const app = document.getElementById('app');
   app.innerHTML = html;
-//   console.log("object===> ", tag_game_info);
 
   function connectWebSocket(url)
   {
