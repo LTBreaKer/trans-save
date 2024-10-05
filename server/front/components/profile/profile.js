@@ -1,6 +1,8 @@
 import { loadHTML, loadCSS, player_webSocket } from '../../utils.js';
 import {log_out_func,  logoutf, get_localstorage, check_access_token, getCookie, login } from '../../auth.js';
+import {setHeaderContent, setNaveBarContent} from '../tournament/script.js';
 let friendsocket;
+
 const api = "https://127.0.0.1:9004/api/";
 const api_one = "https://127.0.0.1:9005/api/";
 // https://{{ip}}:9006/api/gamedb/get-game-history/
@@ -15,7 +17,8 @@ async function Friends() {
 
   const app = document.getElementById('app');
   app.innerHTML = html;
-
+  setHeaderContent();
+  setNaveBarContent();
   await check_friends_status();
   await checkFirst();
   player_webSocket();
@@ -68,12 +71,12 @@ async function Friends() {
           photo = file;
   });
 
-  const notific = document.querySelector('.notification');
-  const notifi_display = document.querySelector('.notifi_btn');
+  // const notific = document.querySelector('.notification');
+  // const notifi_display = document.querySelector('.notifi_btn');
 
-  notific.addEventListener('click', function() {
-    notifi_display.classList.toggle('active');
-  })
+  // notific.addEventListener('click', function() {
+  //   notifi_display.classList.toggle('active');
+  // })
 
   window.addEventListener('resize', () => {
     if (window.innerWidth > 666) 
@@ -86,29 +89,12 @@ async function Friends() {
   const perso_list = document.querySelector('.friends_list');
 
   perso.addEventListener('click', () => {
-    perso_list.style.display = 'flex';
-    window.addEventListener('click', function(event) {
-      if (event.target !== perso && event.target !== perso_list && perso_list.style.display === "flex") {
-        perso_list.style.display = 'none';
-      }
-      })
+    perso_list.classList.toggle('active');
   });
 
   if (newNotification)
     check_and_set_online(newNotification);
 
-  const butt = document.querySelector('#butt');
-  const side = document.querySelector('.sidebar');
-
-  butt.addEventListener('click', function() {
-    side.classList.toggle('active');
-  });
-
-  document.addEventListener('click', (event) => {
-    if (!side.contains(event.target) && !butt.contains(event.target)) {
-      side.classList.remove('active');
-    }
-  });
 
   const tag_history = document.querySelector('.tag_game_click');
   const pong_history = document.querySelector('.pong_game_click');

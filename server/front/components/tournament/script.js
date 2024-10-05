@@ -1,4 +1,4 @@
-import { loadHTML, loadCSS } from '../../utils.js';
+import { loadHTML, loadCSS, player_webSocket} from '../../utils.js';
 import { log_out_func ,login , logoutf, get_localstorage, getCookie } from '../../auth.js';
 var api = "https://127.0.0.1:9004/api/";
 var api_game = "https://127.0.0.1:9006/api/gamedb/";
@@ -14,32 +14,34 @@ async function Tournament() {
   setHeaderContent();
   setNaveBarContent();
   await checkFirst();
+  player_webSocket();
+
   const logout = document.getElementById('logout')
   
   logout.addEventListener('click', log_out_func);
-  const notific = document.querySelector('.notification');
-  const notifi_display = document.querySelector('.notifi_btn');
+  // const notific = document.querySelector('.notification');
+  // const notifi_display = document.querySelector('.notifi_btn');
 
-  notific.addEventListener('click', function() {
-    notifi_display.classList.toggle('active');
-  })
-  const butt = document.querySelector('#butt');
-  const side = document.querySelector('.sidebar');
+  // notific.addEventListener('click', function() {
+  //   notifi_display.classList.toggle('active');
+  // })
+  // const butt = document.querySelector('#butt');
+  // const side = document.querySelector('.sidebar');
 
-  butt.addEventListener('click', function() {
-    side.classList.toggle('active');
-  });
+  // butt.addEventListener('click', function() {
+  //   side.classList.toggle('active');
+  // });
 
-  document.addEventListener('click', (event) => {
-    if (!side.contains(event.target) && !butt.contains(event.target)) {
-      side.classList.remove('active');
-    }
-  });
+  // document.addEventListener('click', (event) => {
+  //   if (!side.contains(event.target) && !butt.contains(event.target)) {
+  //     side.classList.remove('active');
+  //   }
+  // });
 
 
 }
 
-function setHeaderContent() {
+export function setHeaderContent() {
     const header = document.querySelector('.header');
     header.innerHTML = `
         <div class="profile">
@@ -56,9 +58,17 @@ function setHeaderContent() {
         <div class="notifi_btn"></div>
         <i id="butt" class="bi bi-justify"></i>
     `;
+
+    const notific = document.querySelector('.notification');
+    const notifi_display = document.querySelector('.notifi_btn');
+  
+    notific.addEventListener('click', function() {
+      notifi_display.classList.toggle('active');
+    })
+  
 }
 
-function setNaveBarContent() {
+export function setNaveBarContent() {
     const nav_ba = document.querySelector('.navbar');
     nav_ba.innerHTML = `
         <div class="image-text">
@@ -93,6 +103,21 @@ function setNaveBarContent() {
             </div>
         </nav>
 `;
+
+
+const butt = document.querySelector('#butt');
+const side = document.querySelector('.sidebar');
+
+butt.addEventListener('click', function() {
+  side.classList.toggle('active');
+});
+
+document.addEventListener('click', (event) => {
+  if (!side.contains(event.target) && !butt.contains(event.target)) {
+    side.classList.remove('active');
+  }
+});
+
 }
 
 async function changeAccess() {
