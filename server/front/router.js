@@ -9,7 +9,7 @@ import { isAuthenticated, get_localstorage, check_access_token } from './auth.js
 import Ta from './components/ta/script.js';
 import Ping from './components/ping/script.js';
 import Tournament from './components/tournament/script.js';
-import RemoteTag from './components/remote_tag/script.js';
+import RemoteTag from './components/remote_tag/game_remote.js';
 
 const api_one = "https://127.0.0.1:9005/api/";
 let friends_array = [];

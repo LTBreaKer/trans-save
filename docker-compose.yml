@@ -175,6 +175,16 @@ services:
     volumes:
       - ./backend/Tag/project:/usr/src/app/vv
 
+  remote_tag:
+      image: remote_tag
+      container_name: remote_tag
+      build: ./backend/tag-remote
+      ports:
+        - 8006:8005
+      volumes:
+      - ./backend/tag-remote:/game
+      command: python manage.py runserver 0.0.0.0:8005
+
 volumes:
   auth:
     driver: local
@@ -213,13 +223,19 @@ volumes:
       device: ./server/front
       o: bind
       
-  Tag-back:
+  tag-back:
     driver: local
     driver_opts:
         o: bind
         type: none
         device: ./backend/Tag/project/
 
+  remote_tag:
+    driver: local
+    driver_opts:
+        o: bind
+        type: none
+        device: ./backend/tag-remote/project/
 
 networks:
   my_network:
