@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+  <link rel="stylesheet" href="components/ping/style.css">
+
+</head>
+<body>
+    
+    <div class="pong_container">
+        <div class="pong_header">
+            <div class="pong_profile">
+                <div class="notification">
+                    <h3><i class="bi bi-bell"></i></h3>
+                </div>
+                <div class="text">
+                    <h3 id="UserName">afanti</h3>
+                </div>
+                <div class="image">
+                    <img id="image_user" src="" alt="profile photo">
+                </div>
+            </div>
+                <div class="pong_notifi_btn">
+
+                    
+                </div>
+                <i id="butt" class="bi bi-justify"></i>
+        </div>
+        <div class="pong_navbar">
+                <div class="image-text">
+                    <img src="../../images/login/logo.webp" alt="logo">
+                </div>
+            <nav class="pong_sidebar close">
+            
+                <div class="menu-bar toggle">
+                    
+                    <div class="menu">
+                        <ul class="menu-links">
+                            <li class="nav-link"  id="homepage">
+                                <a href="#/">
+                                    <i class='bx bx-home  icon' ></i>
+                                </a>
+                            </li>
+                            <li class="nav-link"  id="profilepage">
+                                <a href="#/profile">
+                                    <i class="bi bi-person icon"></i>
+                                </a>
+                            </li>
+    
+                        </ul>
+                    </div>
+                    <div class="bottom-content">
+                        <li id="logout">
+                            <a href="#">
+                                <i class='bx bx-log-out  icon' ></i>
+                            </a>
+                        </li>
+                    </div>
+                </div>
+            </nav>
+        </div>
+        <div class="pong_main-content">
+            <div class="pong_mer_cont">
+
+                <div class="pong_re_local">
+                    <div id="remote_game">
+                        <h2>Remote</h2>
+                        <h3 id="butt_game">Start Game</h3>
+                    </div>
+                    <div id="local_game">
+                        <h2>Local</h2>
+                        <input placeholder="Player Name" id="input" class="input" name="text" type="text">
+                        <h3 id="local_butt_game">Start Game</h3>
+                    </div>
+                </div>
+                <div class="re_local">
+                    <div id="boot_game">
+                        <h2>Boot</h2>
+                        <h3 id="boot_game_btt">Start Game</h3>
+                    </div>
+                    <div id="tournament_game">
+                        <h2>Tournament</h2>
+                        <h3 id="tournament_game_btt">Start Game</h3>
+                    </div>
+                </div>
+
+                <!-- <div class="discription_game">
+                    <div class="text">
+
+                    </div>
+                </div> -->
+            </div>
+
+
+        </div>
+
+
+
+<!-- ====== ======= ====== ======= ====== ======== ===== -->
+
+        <div class="tournament_players">
+            <div class="players">
+               <h2>Tournament Players</h2>
+               <input type="text" id="player1" placeholder="afanti">
+               <input type="text" id="player2" placeholder="player name">
+               <input type="text" id="player3" placeholder="player name">
+               <input type="text" id="player4" placeholder="player name">
+               <input type="text" id="player5" placeholder="player name">
+               <input type="text" id="player6" placeholder="player name">
+               <input type="text" id="player7" placeholder="player name">
+               <input type="text" id="player8" placeholder="player name">
+               <h3>Show Grops</h3>
+               <i class="bi bi-x"></i>
+            </div>
+        </div>
+
+
+    </div>
+    <script src="../js/navbar.js"> </script>
+</body>
+</html>

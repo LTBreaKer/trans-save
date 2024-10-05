@@ -122,7 +122,8 @@ function playerChoicePaddle({name_current_user, player1name}) {
 	(name_current_user === player1name) ? paddle.left() : paddle.right();
 }
 
-playerChoicePaddle(data_remote_player);
+if (statePongGame == "remote")
+	playerChoicePaddle(data_remote_player);
 // if ( WebGL.isWebGLAvailable() )
 // 	animate();
 // else {
