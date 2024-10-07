@@ -22,7 +22,7 @@ function sendScore(left_paddle_score, right_paddle_score) {
 	const url = "https://127.0.0.1:9006/api/gamedb/add-game-score/";
 	// const url = "http://"+ window.env.DJANGO_HOSTNAME +":8080/server/auth/users/me/";
 	let data;
-	if (statePongGame == "local")
+	if (statePongGame == "local" || statePongGame == "ai_bot")
 		data = JSON.parse(gameApi);
 	else
 		data = data_remote_player;

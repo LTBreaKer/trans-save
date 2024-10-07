@@ -9,7 +9,7 @@ import { moveCamera } from '../components/camera.js';
 ////////       ------ LOCAL -----        //////////
 import { lpaddle, rpaddle } from '../game/paddle.js';
 import { keyDownHandler, keyUpHandler } from '../events/keyboardEvent.js';
-import { localgame, statePongGame } from '../../../components/ping/script.js';
+import { aiGame, localgame, statePongGame } from '../../../components/ping/script.js';
 import { initPlayGame } from '../../../components/pingpong/ping.js';
 
 ////////       ------ REMOTE ----------        //////////
@@ -45,7 +45,7 @@ export function resizeCanvas(){
 }
 
 async function replayLocalGame() {
-	await localgame();
+	(statePongGame == "local") ? await localgame() : await aiGame();
 	await loadDocument();
 	resizeCanvas();
 	back_counter.style.display = 'none';
@@ -58,7 +58,7 @@ export function setupEventListeners() {
 	window.addEventListener('resize', resizeCanvas);
 	document.addEventListener("keydown", keyDownHandler, false);
 	document.addEventListener("keyup", keyUpHandler, false);
-	if (statePongGame == "local") {
+	if (statePongGame == "local" || statePongGame == "ai_bot") {
 		replay.addEventListener("click", replayLocalGame);
 		pong_menu.addEventListener("click", fnGameOver);
 	}
@@ -100,7 +100,7 @@ let replayGame = async () => {
 	await loadDocument();
 	resizeCanvas();
 	initGame();
-	if (statePongGame == "local") {
+	if (statePongGame == "local" || statePongGame == "ai_bot") {
 		lancePongGame();	
 		await connectLocalGameSocket();
 		await descounter();

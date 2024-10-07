@@ -31,6 +31,13 @@ async function movePaddle() {
 		await ws.send(JSON.stringify(({"type_msg": "update_paddle", "lpaddle": lpaddle.coordonate(), "rpaddle": rpaddle.coordonate() })));
 }
 
+async function moveAiPaddle() {
+	const ws = await local_game_socket;
+	if (ws && ws.readyState == 1)
+		await ws.send(JSON.stringify(({"type_msg": "update_lpaddle", "lpaddle": lpaddle.coordonate()})));
+}
+
+
 async function moveRemotePaddle() {
 	const ws = await paddle_socket;
 	if (ws && ws.readyState == 1){
@@ -106,6 +113,13 @@ async function updatePaddles(){
 			lpaddle.lastY = lpaddle.y;
 			rpaddle.lastY = rpaddle.y;
 			movePaddle();
+		}
+	}
+	else if (statePongGame == "ai_bot") {
+		lpaddle.update()
+		if (lpaddle.y != lpaddle.lastY) {
+			lpaddle.lastY = lpaddle.y;
+			moveAiPaddle();
 		}
 	}
 	else if (statePongGame == "remote") {

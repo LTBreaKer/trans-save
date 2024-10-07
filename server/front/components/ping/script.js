@@ -37,6 +37,7 @@ async function Ping() {
 
 
   const local_butt_game = document.getElementById('local_butt_game');
+  const btn_ai = document.getElementById('btn_ai');
   const remote_butt_game = document.getElementById('butt_game');
 
 
@@ -44,6 +45,7 @@ async function Ping() {
   const input = document.getElementById('input');
   name = input.value; 
   local_butt_game.addEventListener('click', localgame);
+  btn_ai.addEventListener('click', aiGame);
   remote_butt_game.addEventListener('click', remore_game_fun);
   _player_webSocket = await connectPlayerSocket();
 
@@ -162,17 +164,27 @@ async function remore_game_fun() {
 
 export let gameApi;
 
+export async function aiGame() {
+  name = "ai_bot";
+  statePongGame = "ai_bot";
+  await lanceLocalGame();
+}
+
 export async function localgame() {
-  await check_access_token();
   if (typeof input !== 'undefined')
     name = input.value;
   else
     name = JSON.parse(gameApi).player2_name;
   console.log("name of user: ", name);
+  statePongGame = "local";
+  await lanceLocalGame();
+}
+
+async function lanceLocalGame() {
   const data = {
     player2_name: name
   };
-
+  await check_access_token();
   try {
     const response = await fetch(api_game + 'create-local-game/', {
       method: 'POST',
@@ -189,7 +201,6 @@ export async function localgame() {
     // console.log("jsonData.stringify(): ", JSON.stringify(jsonData));
     console.log("###  pingpong: ", window.location.hash);
     gameApi = JSON.stringify(jsonData);
-    statePongGame = "local";
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response}`);
     }

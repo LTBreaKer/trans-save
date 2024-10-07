@@ -9,7 +9,7 @@ export function initCamera(){
 
 export function moveCamera(stateGame = "local") {
     console.log("--------------moveCamera---------------: ", paddle_way);
-    if (stateGame == "local") {
+    if (stateGame == "local" || stateGame == "ai_bot") {
         camera.position.z = 5.8;
         camera.lookAt(0, 0, 0 );
         camera.rotation.z += 3 * Math.PI / 2;

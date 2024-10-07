@@ -8,7 +8,7 @@ from .paddle_class import Paddle
 import os
 import random
 from django.conf import settings
-# from tensorflow.keras.models import load_model
+from tensorflow.keras.models import load_model
 import numpy as np
 
 class LocalGameConsumer(AsyncWebsocketConsumer):
@@ -18,6 +18,7 @@ class LocalGameConsumer(AsyncWebsocketConsumer):
         self.lpaddle = Paddle(0, height/2)
         self.rpaddle = Paddle(width - 10, height/2)
         self.gameOver = False
+        self.bot = False
 
     async def connect(self):
         print("aaaaaaaaaaaaaaaaaaaaaaa", file=sys.stderr)
@@ -44,6 +45,9 @@ class LocalGameConsumer(AsyncWebsocketConsumer):
         if (type == "update_paddle"):
             self.lpaddle.update(text_data_json['lpaddle']['ps'])
             self.rpaddle.update(text_data_json['rpaddle']['ps'])
+        elif (type == "update_lpaddle"):
+            self.bot = True
+            self.lpaddle.update(text_data_json['lpaddle']['ps'])
         elif (type == 'play'):
             self.ball.gameOver = False
             asyncio.create_task(self.update_ball(type))
@@ -53,9 +57,19 @@ class LocalGameConsumer(AsyncWebsocketConsumer):
     async def update_ball(self, event):
         print("game_over: ", self.ball.gameOver, file=sys.stderr)
         time = 0.0
+        model_path = os.path.join(settings.BASE_DIR, 'base/agent_model/model4700_300.h5')
+        model = load_model(model_path)
+        numbers = [20, 20, 20, 50, 50, 50]
         while (not self.ball.gameOver):
             if (time.is_integer()):
                 self.ball.vel += 0.2
+                # if (self.bot):
+                input_values = [self.ball.x / 10, self.ball.y / 10, self.ball.velX, self.ball.velY]
+                input_array = np.array(input_values).reshape(1, -1)
+                predictions = model.predict(input_array)
+                random_number = random.choice(numbers)
+            if (self.bot):
+                self.rpaddle.ai_update(predictions * 10 - random_number)
             self.ball.update(self.rpaddle, self.lpaddle)
             await asyncio.sleep(0.015625)
             time += 0.015625
