@@ -50,6 +50,14 @@ INSTALLED_APPS = [
     'sslserver',
 ]
 
+ASGI_APPLICATION = 'tag_game_db.asgi.application'
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer"
+    }
+}
+
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
 
