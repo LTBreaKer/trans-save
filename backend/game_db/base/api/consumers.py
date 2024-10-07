@@ -4,6 +4,7 @@ import sys
 from .helpers import check_auth, get_user 
 from asgiref.sync import sync_to_async
 from channels.db import database_sync_to_async
+from django.db import transaction
 
 class RemoteGame(AsyncWebsocketConsumer):
     async def connect(self):
@@ -42,14 +43,28 @@ class RemoteGame(AsyncWebsocketConsumer):
                 return (None)
             
         @database_sync_to_async
-        def update_player(player):
+        def update_player(player, game_id):
             try:
-                if (player == "player1_connected"):
-                    GameDb.objects.filter(id=game_id).update(player1_connected=True)
-                elif (player == "player2_connected"):
-                    GameDb.objects.filter(id=game_id).update(player2_connected=True)
+                with transaction.atomic():
+                    data = GameDb.objects.select_for_update().filter(id=game_id)
+                    if (player == "player1_connected"):
+                        data.update(player1_connected=True)
+                    elif (player == "player2_connected"):
+                        data.update(player2_connected=True)
+                    game = data.first()
+                    print("data: ", game.player1_connected, " ", game.player2_connected, file=sys.stderr)
+                    return game
             except:
-                print("")
+                return None
+        # @database_sync_to_async
+        # def update_player(player):
+        #     try:
+        #         if (player == "player1_connected"):
+        #             GameDb.objects.filter(id=game_id).update(player1_connected=True)
+        #         elif (player == "player2_connected"):
+        #             GameDb.objects.filter(id=game_id).update(player2_connected=True)
+        #     except:
+        #         print("")
 
 
         text_data_json = json.loads(text_data)
@@ -87,7 +102,7 @@ class RemoteGame(AsyncWebsocketConsumer):
                     return
                 game.player1_connected = True
                 # await database_sync_to_async(game.save)()
-                await update_player("player1_connected")
+                game = await update_player("player1_connected", game_id)
             elif player_id == game.player2_id:
                 print('------------------ player2 ---------------------', file=sys.stderr)
 
@@ -99,14 +114,14 @@ class RemoteGame(AsyncWebsocketConsumer):
                     return
                 game.player2_connected = True
                 # await database_sync_to_async(game.save)()
-                await update_player("player2_connected")
+                game = await update_player("player2_connected", game_id)
             else:
                 await self.send(text_data=json.dumps({
                     'type': 'error',
                     'error': 'No player found with the provided player_id'
                 }))
                 return
-            game = await get_game(game_id)
+            # game = await get_game(game_id)
             if (game is None):
                 await self.send(text_data=json.dumps({
                     'type': 'error',

@@ -17,6 +17,7 @@ import { paddle } from '../game/paddle.js';
 import { lancePongGame } from '../main3d.js';
 import { setMousePosition, setMousePositionHelper } from '../events/mouseEvent.js';
 import { initGameComponents } from '../components/renderer.js';
+import { fnGameOver } from './socket.js';
 
 
 // console.log("0 statePongGame: ", statePongGame);
@@ -45,7 +46,12 @@ export function resizeCanvas(){
 
 async function replayLocalGame() {
 	await localgame();
-	await replayGame();
+	await loadDocument();
+	resizeCanvas();
+	back_counter.style.display = 'none';
+	popup_replay.style.display = 'none';
+	await connectLocalGameSocket();
+	await descounter();
 }
 
 export function setupEventListeners() {
@@ -54,8 +60,7 @@ export function setupEventListeners() {
 	document.addEventListener("keyup", keyUpHandler, false);
 	if (statePongGame == "local") {
 		replay.addEventListener("click", replayLocalGame);
-		pong_menu.addEventListener("click", () =>
-			window.location.hash = "/ping")
+		pong_menu.addEventListener("click", fnGameOver);
 	}
 	else if (statePongGame == "remote") {
 		setMousePositionHelper();
@@ -66,6 +71,7 @@ export function setupEventListeners() {
 
 export function removeEventsListener() {
 	replay.removeEventListener("click", replayLocalGame);
+	pong_menu.removeEventListener("click", fnGameOver);
 	window.removeEventListener('resize', resizeCanvas);
 	document.removeEventListener("keydown", keyDownHandler);
 	document.removeEventListener("keyup", keyUpHandler);

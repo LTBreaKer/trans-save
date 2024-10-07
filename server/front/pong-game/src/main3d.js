@@ -21,7 +21,8 @@ import { animate } from './game/game.js';
 
 export function lancePongGame(){
 	console.log("-------------- lancePongGame")
-	animate();
+	// animate();
+	requestAnimationFrame( animate );
 	setupEventListeners();
 }
 

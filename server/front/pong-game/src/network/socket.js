@@ -70,6 +70,20 @@ function draw_info(data) {
 	second_player_goal.innerHTML = data_left_paddle.nb_goal;
 }
 
+export function fnGameOver(state = "rtn_menu") {
+	popup_replay.style.display = 'flex';
+	cancelAnimationFrame(animationFrameId);
+	if (renderer) renderer.dispose();
+	if (scene) disposeScene();
+	removeEventsListener();
+	window.location.hash = "/ping"
+	// if (state == "rtn_menu")
+}
+
+// export function fnLocalGameOver() {
+
+// }
+
 
 export async function localGameSocket(group_name) {
 	console.log("group name: ", group_name);
@@ -121,13 +135,7 @@ export async function paddleSocket(group_name) {
 				draw_info(message);
 			else if (message.type_msg === "game_over") {
 				console.log("message: ", message);
-				popup_replay.style.display = 'flex';
-				cancelAnimationFrame(animationFrameId);
-				if (renderer) renderer.dispose();
-				if (scene) disposeScene();
-				removeEventsListener();
-				window.location.hash = "/ping"
-				// sendScore(message.left_paddle_score, message.right_paddle_score);
+				fnGameOver("rtn_menu");
 			}
 			else
 				console.log("else message: ", message);

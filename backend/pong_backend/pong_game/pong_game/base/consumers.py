@@ -11,7 +11,7 @@ from django.conf import settings
 # from tensorflow.keras.models import load_model
 import numpy as np
 
-class GameConsumer(AsyncWebsocketConsumer):
+class LocalGameConsumer(AsyncWebsocketConsumer):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.ball = Ball()

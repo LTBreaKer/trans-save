@@ -31,7 +31,7 @@ export function moveCameraRemoteGame() {
         camera.position.y = - paddle_way * ((TABLE_DEPTH / 2) + 2.0);
         camera.position.z = 3.6;
     }
-    camera.lookAt(0, 0, 0 );
+    camera.lookAt(0, 0, 0);
     if (paddle_way < 0)
         camera.rotation.z += Math.PI;
 }
