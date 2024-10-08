@@ -1,5 +1,5 @@
 
-import {canvas, click, TABLE_WIDTH, paddleHeight, height, box_result, first_player_goal, second_player_goal, counter, replay, popup_replay, pong_menu, loadDocument, sleep, back_counter} from '../utils/globaleVariable.js';
+import {canvas, click, TABLE_WIDTH, paddleHeight, height, box_result, first_player_goal, second_player_goal, counter, replay, popup_replay, pong_menu, loadDocument, sleep, back_counter, leftPaddle} from '../utils/globaleVariable.js';
 // import { setPointerMouse, rotateTable, zoomCamera } from '../game/staduim.js'
 import { connectAI, connectLocalGameSocket, connectPaddleSocket, launchGame } from '../game/game.js';
 import {sendSocket} from '../game/game.js'
@@ -50,6 +50,7 @@ async function replayLocalGame() {
 	resizeCanvas();
 	back_counter.style.display = 'none';
 	popup_replay.style.display = 'none';
+	leftPaddle();
 	await connectLocalGameSocket();
 	await descounter();
 }
@@ -101,7 +102,8 @@ let replayGame = async () => {
 	resizeCanvas();
 	initGame();
 	if (statePongGame == "local" || statePongGame == "ai_bot") {
-		lancePongGame();	
+		lancePongGame();
+		leftPaddle();
 		await connectLocalGameSocket();
 		await descounter();
 	}

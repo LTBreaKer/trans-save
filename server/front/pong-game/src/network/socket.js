@@ -1,6 +1,6 @@
 import { lpaddle, rpaddle } from '../components/paddle.js'
 import { sphere } from '../components/sphere.js'
-import { leftPaddle, rightPaddle, paddle_way, TABLE_HEIGHT, BALL_RADUIS, popup_replay, sleep } from '../utils/globaleVariable.js';
+import { leftPaddle, rightPaddle, paddle_way, TABLE_HEIGHT, BALL_RADUIS, popup_replay, sleep, back_counter } from '../utils/globaleVariable.js';
 import { TABLE_DEPTH, TABLE_WIDTH, PADDLE_LONG, height, width, first_player_goal, second_player_goal} from '../utils/globaleVariable.js';
 // import {gameSocket} from '../main3d.js';
 import  {gameApi, statePongGame } from '../../../../components/ping/script.js'
