@@ -31,7 +31,7 @@ DEBUG = True
 
 host = os.getenv('HOST')
 
-ALLOWED_HOSTS = [host, '127.0.0.1', 'localhost', '10.14.8.9', '10.14.6.10', 'user-management-api', 'auth-api', 'server', 'game-db', 'tag-game-db']
+ALLOWED_HOSTS = [host, '127.0.0.1', 'localhost', '10.14.8.9', '10.14.6.10', 'user-management-api', 'auth-api', 'server', 'game-db', 'tag-game-db', 'tag-game-api', 'game-db-api']
 
 
 # Application definition

@@ -1,4 +1,5 @@
 import { loadHTML, loadCSS } from '../../utils.js';
+import {tag_game_info} from '../ta/script.js';
 
 async function RemoteTag() {
   const html = await loadHTML('./components/remote_tag/index.html');
@@ -6,6 +7,10 @@ async function RemoteTag() {
 
   const app = document.getElementById('app');
   app.innerHTML = html;
+
+
+
+  console.log("here object=: ", tag_game_info);
 
 }
 
