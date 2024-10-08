@@ -1,0 +1,138 @@
+.p_box_result {
+	position:absolute;
+	z-index: 100;
+	display: flex;
+	margin-top: calc((((99vh - min(99vw, 99vh)) * 0.1)));
+	margin-left: calc((((99vw - min(99vw, 99vh)) / 2)));
+	width: calc(( min(99vw, 99vh) - 100px));
+	/* min-width: 350px; */
+}
+
+.p_container {
+	position: relative;
+	width: calc(100vw - 100px);
+	height: calc(100vh - 100px);
+}
+
+.p_canvas_background {
+	position: absolute;
+	color: rgba(0, 0, 0, 1);
+	z-index: 0;
+	width: calc(100vw - 100px);
+	height: calc(100vh - 100px);
+	display: flex;
+}
+
+.p_first {
+	/* width: 360px; */
+	text-align: left;
+	/* color: white; */
+	/* color: rgb(45, 204, 45); */
+	color: #A4FF25;
+	text-shadow: 1px 1px rgb(255, 255, 255, 0.8);
+	padding-top: 60px;
+	padding-left: 50px;
+	font-size: 60px;
+}
+
+.p_second {
+	/* width: 360px; */
+	text-align: right;
+	/* color: white; */
+	/* color: rgb(204, 45, 45); */
+	color: #FF000C;
+	text-shadow: 1px 1px rgb(255, 255, 255, 0.8);
+	padding-top: 60px;
+	padding-right: 50px;
+	font-size: 60px;
+}
+
+#c {
+	position: absolute;
+	width: min(99vw, 99vh);
+	height: min(99vw, 99vh);
+	/* height: 100vh; */
+	display: block;
+	z-index: 1;
+	padding: 0px;
+	margin: 0px;
+	margin-top: calc(((99vh - min(99vw, 99vh)) * 0.1) - 100px / 2);
+	margin-left: calc(((99vw - min(99vw, 99vh)) / 2) - 100px / 2);
+	margin-bottom: 1%;
+	padding-left: -4rem;
+}
+
+.p_background_descounter {
+	display: 'none';
+	position: absolute;
+	z-index: 100;
+	width: calc(100vw - 100px);
+	height: calc(100vh - 100px);
+	background-color: rgba(0,0,0,0.6);
+    align-items: center;
+    justify-content: center;
+}
+
+.p_descounter {
+	color:white;
+	/* width: calc(100vw - 100px); */
+	font-size: 120px;
+}
+
+.p_popup_replay {
+    display: none;
+    position: absolute;
+    z-index: 2;
+    width: calc(100vw - 100px);
+    height: calc(100vh - 100px);
+    background-color: rgba(0, 0, 0, 0.6);
+    flex-direction: column;
+    align-items: center;
+    /* justify-items: center; */
+    justify-content: center;
+}
+
+.p_ptn_replay{
+	height: 58px;
+    width: 140px;
+    border-radius: 100px;
+    font-size: 17px;
+    margin-bottom: 32px;
+    margin-top: 13px;
+    color: rgb(164 255 37);
+    background-color: rgba(0, 0, 0, 0.2);
+	/* cursor: pointer; */
+}
+
+.p_ptn_menu {
+	color: rgb(255 0 12);
+	/* cursor: auto; */
+}
+
+.p_ptn_replay:hover {
+	color: rgb(161 227 68);
+}
+
+.p_ptn_menu:hover {
+	color: rgb(219 24 33);
+}
+
+/* .div-popup-delete {
+	position: fixed;
+	height: 100%;
+	width: 100%;
+	background-color: rgba(0, 0, 0, 0.5);
+	z-index: 1000;
+	top: 0;
+	right: 0;
+	left: 0;
+	bottom: 0;
+  }
+  
+.popup-delete {
+// overflow-x: hidden;
+// overflow-y: auto; 
+animation-name: pop;
+animation-duration: 0.5s;
+animation-timing-function: ease-in-out;
+} */

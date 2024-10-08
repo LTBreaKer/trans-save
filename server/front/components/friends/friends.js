@@ -71,7 +71,28 @@ notific.addEventListener('click', function() {
 
 // ====== ======== ========= ========= =========
 
+
+window.addEventListener('resize', () => {
+  if (window.innerWidth > 666) 
+    perso_list.style.display = 'flex';
+  if (window.innerWidth < 666) 
+    perso_list.style.display = 'none';
+})
+
+const perso = document.querySelector('.bi-person-add');
+const perso_list = document.querySelector('.friends_list');
+
+perso.addEventListener('click', () => {
+  perso_list.classList.toggle('active');
+});
+
+
+
+
+
+
 // here i'm working with match history
+
 
 const tag_history = document.querySelector('.tag_game_click');
 const pong_history = document.querySelector('.pong_game_click');

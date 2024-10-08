@@ -9,7 +9,8 @@ import { isAuthenticated, get_localstorage, check_access_token } from './auth.js
 import Ta from './components/ta/script.js';
 import Ping from './components/ping/script.js';
 import Tournament from './components/tournament/script.js';
-import RemoteTag from './components/remote_tag/game_remote.js';
+import RemoteTag from './components/remote_tag/script.js';
+
 
 const api_one = "https://127.0.0.1:9005/api/";
 let friends_array = [];
@@ -27,21 +28,13 @@ const routes = {
   '/tournament': Tournament,
   '/remoteTag': RemoteTag,
 };
-// let delete_component = routes[path];
 
 async function Router() {
-
-  // delete_component().clear();
-  console.log("here i will print aray hhh==>>  ", friends_array)
-  // if (friends_array){
-  //   console.log("list of friends on here check that ")
-  //   await get_friends_list();
-  // }
-
-  console.log("here i will print aray hhh==>>  ", friends_array)
   var usern;
+  if (isAuthenticated()){
+    await check_access_token();
+  }
   window.addEventListener('hashchange', async () => {
-    console.log("---------------0--0-0-0-00-0-0--0-0-0-0");
     let path = window.location.hash.slice(1);
     console.log("path===>: ", path);
     if (path === '')
@@ -64,15 +57,12 @@ async function Router() {
       else 
         component = routes['/user'];
     }
-    // delete_component = component();
     await component();
   });
-  console.log("==================================== 0000000000");
   let path = window.location.hash.slice(1) || '/';
   let component = routes[path] || NotFound;
   if (path === '')
     path = '/';
-
   if (!isAuthenticated() && path !== '/login') {
     window.location.hash = '/login';
     return;

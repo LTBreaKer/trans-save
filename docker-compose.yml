@@ -104,6 +104,7 @@ services:
       - 0.0.0.0:9006:9006
       - 0.0.0.0:9007:9007
       - 0.0.0.0:9008:9008
+      - 0.0.0.0:9009:9009
     restart: always
     volumes:
       - front:/var/www/pong.com
@@ -125,6 +126,7 @@ services:
         - GAME_DB=${GAME_DB}
         - TAG_GAME_DB=${TAG_GAME_DB}
         - TOURNAMENT_DB=${TOURNAMENT_DB}
+        - TRAINING_DATA=${TRAINING_DATA}
     container_name: db
     env_file:
       - .env
@@ -172,18 +174,39 @@ services:
       - 8005:8000 
     # command: python manage.py runserver 0.0.0.0:8000
     command: python -m uvicorn project.asgi:application --reload --port 8000 --host 0.0.0.0 
+    
     volumes:
       - ./backend/Tag/project:/usr/src/app/vv
-
-  remote_tag:
-      image: remote_tag
-      container_name: remote_tag
-      build: ./backend/tag-remote
-      ports:
-        - 8006:8005
-      volumes:
-      - ./backend/tag-remote:/game
-      command: python manage.py runserver 0.0.0.0:8005
+ 
+  pong_back:
+    container_name: pong_back
+    networks:
+      - my_network
+      # - back-tier
+      # - front-tier
+    depends_on:
+      - db
+      # - redis
+    build: ./backend/pong_backend
+    ports:
+      - "8006:8006"
+    restart: always
+    env_file: .env
+    volumes:
+      - ./backend/pong_backend/pong_game:/app/pong_game
+  jupyter:
+    container_name: jupyter
+    networks:
+      - my_network
+    depends_on:
+      - db
+    build:
+      context: jupyter container/
+    ports:
+      - 8889:8888
+    volumes:
+      - ./jupyter-data:/home/jovyan/work
+    command: start-notebook.py --NotebookApp.token='my-token'
 
 volumes:
   auth:
@@ -223,19 +246,13 @@ volumes:
       device: ./server/front
       o: bind
       
-  tag-back:
+  Tag-back:
     driver: local
     driver_opts:
         o: bind
         type: none
         device: ./backend/Tag/project/
 
-  remote_tag:
-    driver: local
-    driver_opts:
-        o: bind
-        type: none
-        device: ./backend/tag-remote/project/
 
 networks:
   my_network:

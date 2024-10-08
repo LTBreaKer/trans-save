@@ -8,6 +8,7 @@ export function loadHTML(url) {
   }
   
   export function loadCSS(url) {
+    console.log()
     removeAllCSSLinks();
     const link = document.createElement('link');
     link.rel = 'stylesheet';

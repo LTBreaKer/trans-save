@@ -1,7 +1,9 @@
 import { loadHTML, loadCSS } from '../../utils.js';
 import { login ,log_out_func, logoutf, get_localstorage, getCookie } from '../../auth.js';
+// https://{{ip}}:9007:ws/tag-game-db/
 var api = "https://127.0.0.1:9004/api/";
 let game_api = 'https://127.0.0.1:9007/api/tag-gamedb/';
+const ta_socket = 'wss://127.0.0.1:9007/ws/tag-game-db/';
 let tag_game_info;
 async function Ta() {
   const html = await loadHTML('./components/ta/index.html');
@@ -17,67 +19,103 @@ async function Ta() {
   // player_name = input.value; 
   remote_butt_game.addEventListener('click', remote_game_function);
   local_butt_game.addEventListener('click', localgame_tag);
-
+  tag_socket();
   
 }
-// data dyal game tag kayan fhad object just import it 
 function setTagGameInfo(value)
 {
   tag_game_info = value
 }
-
+// data dyal game tag kayan fhad object just import it 
 export  {tag_game_info, setTagGameInfo};
 
-function remote_game_function()
-{
-  console.log("remote game")
-  window.location.hash = '/remoteTag'
+
+
+function tag_socket() {
+
+
+try {
+  const subprotocols = ['token', get_localstorage('token')];
+  const ws = new WebSocket("wss://127.0.0.1:9007/ws/tag-game-db/",  ["token", get_localstorage('token')]);
+  ws.onmessage = async function(event) {
+    const data = await JSON.parse(event.data);
+    console.log(' ------------------- Message from server socket tag: ---------------- ', data);
+    console.log("type ===> ", data.data.type)
+    if (data.data.type === "remote_game_created")
+      {
+        tag_game_info = {
+          game_id: data.data.game.id,
+          player1name: data.data.game.player1_name,
+          player2name: data.data.game.player2_name,
+          player1_id: data.data.game.player1_id,
+          player2_id: data.data.game.player2_id
+        }
+        console.log("hello -----------");
+        window.location.hash = "/remoteTag";
+      }
+
+  };
+} catch (e) {
+  console.error('Failed to parse message:', e);
 }
 
-// async function remote_game_function() {
-//   console.log("************remote game -----------------------------")
-//   try {
-//     const response = await fetch(game_api + 'create-remote-game/', {
-//       method: 'POST',
-//       headers: {
-//         'Content-Type': 'application/json',
-//         'AUTHORIZATION': 'Bearer ' + get_localstorage('token'),
-//       },
-//       credentials: 'include',
-//     });
-//     // console.log("fetch response=>", response);
-//     const jsonData = await response.json();
-//     if (jsonData.message === "player is already in a game") {
-//       console.log('hdsklfjsldkjflsdjk    => :', jsonData.message);
-//       document.querySelector('.success_update').style.display = "flex";
-//       setTimeout(function() {
-//         document.querySelector('.success_update').style.display = 'none';
-//     }, 2000);
-  
-//     }
-//     console.log("jsonData", jsonData)
-//     // console.log("jsonData.message", jsonData.message)
-//     // const game_id =  jsonData.game_id;
-//     // const player1_name =  jsonData.player1_name;
-//     // const player2_name =  jsonData.player2_name;
-//     // tag_game_info = {
-//     //   game_id: game_id,
-//     //   player1_name: player1_name,
-//     //   player2_name: player2_name,
-//     // }
-//     // if (response.status === 201)
-//     //   window.location.hash = '/game'
-//     // console.log(jsonData.message)
-    
-//     if (!response.ok) {
-//       // console.log(jsonData.message)
-//       throw new Error(`HTTP error! Status: ${response.status}`);
-//     }
-//   } catch (error) {
-//     console.error('There was a problem with the fetch operation:', error);
-//   }
+}
 
-// }
+
+
+
+
+
+
+
+
+async function remote_game_function() {
+  console.log("************remote game -----------------------------")
+  try {
+    const response = await fetch(game_api + 'create-remote-game/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'AUTHORIZATION': 'Bearer ' + get_localstorage('token'),
+      },
+      credentials: 'include',
+    });
+    console.log(response);
+    const jsonData = await response.json();
+    if (jsonData.message === "player is already in a game") {
+      console.log('hdsklfjsldkjflsdjk    => :', jsonData.message);
+      document.querySelector('.success_update').style.display = "flex";
+      setTimeout(function() {
+        document.querySelector('.success_update').style.display = 'none';
+    }, 2000);
+  
+    }
+    if (jsonData.message === "game created") {
+        window.location.hash = "/remoteTag";
+    }
+    console.log(jsonData)
+    console.log(jsonData.message)
+    // const game_id =  jsonData.game_id;
+    // const player1_name =  jsonData.player1_name;
+    // const player2_name =  jsonData.player2_name;
+    // tag_game_info = {
+    //   game_id: game_id,
+    //   player1_name: player1_name,
+    //   player2_name: player2_name,
+    // }
+    // if (response.status === 201)
+    //   window.location.hash = '/game'
+    // console.log(jsonData.message)
+    
+    if (!response.ok) {
+      // console.log(jsonData.message)
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+  } catch (error) {
+    console.error('There was a problem with the fetch operation:', error);
+  }
+
+}
 
 async function localgame_tag() {
   const input = document.getElementById('input_tag');
