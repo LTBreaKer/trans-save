@@ -2,22 +2,32 @@ import asyncio
 import sys
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
+from channels.db import database_sync_to_async
 from .ball_class import Ball
 from .ball_class import width, height
 from .paddle_class import Paddle
 import os
 import random
 from django.conf import settings
-# from tensorflow.keras.models import load_model
+from tensorflow.keras.models import load_model
 import numpy as np
+from .models import TrainingData, Turn
 
-class GameConsumer(AsyncWebsocketConsumer):
+@database_sync_to_async
+def output_pos_hit(pos_hit):
+	try:
+		TrainingData.objects.filter(pos_hit=-1).update(pos_hit=pos_hit)
+	except:
+		None
+
+class LocalGameConsumer(AsyncWebsocketConsumer):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.ball = Ball()
         self.lpaddle = Paddle(0, height/2)
         self.rpaddle = Paddle(width - 10, height/2)
         self.gameOver = False
+        self.bot = False
 
     async def connect(self):
         print("aaaaaaaaaaaaaaaaaaaaaaa", file=sys.stderr)
@@ -44,6 +54,9 @@ class GameConsumer(AsyncWebsocketConsumer):
         if (type == "update_paddle"):
             self.lpaddle.update(text_data_json['lpaddle']['ps'])
             self.rpaddle.update(text_data_json['rpaddle']['ps'])
+        elif (type == "update_lpaddle"):
+            self.bot = True
+            self.lpaddle.update(text_data_json['lpaddle']['ps'])
         elif (type == 'play'):
             self.ball.gameOver = False
             asyncio.create_task(self.update_ball(type))
@@ -52,11 +65,40 @@ class GameConsumer(AsyncWebsocketConsumer):
 
     async def update_ball(self, event):
         print("game_over: ", self.ball.gameOver, file=sys.stderr)
+        turn = await Turn.objects.acreate()
         time = 0.0
+        model_path = os.path.join(settings.BASE_DIR, 'base/agent_model/model4700_300.h5')
+        model = load_model(model_path)
+        numbers = [20, 20, 20, 50, 50, 50]
         while (not self.ball.gameOver):
+            tmp = self.ball.velX
+            pos_hit = self.ball.y
             if (time.is_integer()):
                 self.ball.vel += 0.2
+                data = await TrainingData.objects.acreate(
+                    turn=turn,
+                    y_left_paddle=self.lpaddle.y,
+                    y_right_paddle=self.rpaddle.y,
+                    x_ball=self.ball.x,
+                    y_ball=self.ball.y,
+                    vel_x_ball=self.ball.velX,
+                    vel_y_ball=self.ball.velY,
+                    time = time,
+                    pos_hit = -1,
+                    collision = False)
+                # if (self.bot):
+                input_values = [self.ball.x / 10, self.ball.y / 10, self.ball.velX, self.ball.velY]
+                input_array = np.array(input_values).reshape(1, -1)
+                predictions = model.predict(input_array)
+                random_number = random.choice(numbers)
+            if (self.bot):
+                self.rpaddle.ai_update(predictions * 10 - random_number)
             self.ball.update(self.rpaddle, self.lpaddle)
+            if ((self.ball.velX * tmp < 0)):
+                tmp = self.ball.velX
+                await output_pos_hit(pos_hit)
+            if ((self.ball.endTurn and self.ball.ballOut <= 11)):
+                await output_pos_hit(pos_hit)
             await asyncio.sleep(0.015625)
             time += 0.015625
             await self.send(text_data=json.dumps({

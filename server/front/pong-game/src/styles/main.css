@@ -63,7 +63,7 @@
 }
 
 .p_background_descounter {
-	display: flex;
+	display: 'none';
 	position: absolute;
 	z-index: 100;
 	width: calc(100vw - 100px);
@@ -80,9 +80,9 @@
 }
 
 .p_popup_replay {
-    display: flex;
+    display: none;
     position: absolute;
-    z-index: 1;
+    z-index: 2;
     width: calc(100vw - 100px);
     height: calc(100vh - 100px);
     background-color: rgba(0, 0, 0, 0.6);
