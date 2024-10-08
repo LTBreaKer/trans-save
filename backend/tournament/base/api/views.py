@@ -8,6 +8,7 @@ import requests
 from web3 import Web3
 from base.validators import CustomUsernameValidator
 from django.core.exceptions import ValidationError
+import sys
 
 tournament_count : int = 0
 
@@ -146,12 +147,15 @@ def start_match(request):
 
 @api_view(['POST'])
 def add_match_score(request):
+    w3 = request.w3
+    contract = request.contract
+
     AUTH_HEADER = request.META.get('HTTP_AUTHORIZATION')
     auth_check_response = check_auth(AUTH_HEADER)
     if auth_check_response.status_code != 200:
         return Response(data=auth_check_response.json(), status=auth_check_response.status_code)
     
-    match_number = request.data.get('match_number')
+    match_number = request.data.get('match_id')
     tournament_id = request.data.get('tournament_id')
     player_one_score = request.data.get('player_one_score')
     player_two_score = request.data.get('player_two_score')
@@ -159,37 +163,122 @@ def add_match_score(request):
     if not match_number or not tournament_id or not player_one_score or not player_two_score:
         return Response({'message': 'match_id, tournament_id required, player_one_score and player_two_score'}, status=400)
     
-    try:
-        tournament = Tournament.objects.get(id=tournament_id)
-    except Tournament.DoesNotExist:
-        return Response({'message': 'tournament not found'}, status=404)
+    match_number = int(match_number)
+    tournament_id = int(tournament_id)
+    player_one_score = int(player_one_score)
+    player_two_score = int(player_two_score)
+
+    print(match_number, tournament_id, file=sys.stderr)
 
     try:
-        match = tournament.matches.get(match_number=match_number)
-    except Exception:
-        return Response({'message': 'match not found'}, status=404)
+        start_match_tx = contract.functions.addMatchScore(match_number, tournament_id, player_one_score, player_two_score).transact()
+        w3.eth.wait_for_transaction_receipt(start_match_tx)
+    except Exception as e:
+        return Response({'message': str(e)}, status=400)
     
-    match.player_one_score = player_one_score
-    match.player_two_score = player_two_score
+    try:
+        matchess = contract.functions.getTournamentMatches(tournament_id).call()
+    except Exception as e:
+        return Response({'message': str(e)}, status=400)
+ 
+    print(matchess)
+    formatted_matches = [
+        {
+            'tournamentId': match[0],
+            'matchNumber': match[1],
+            'playerOneId': match[2],
+            'playerTwoId': match[3],
+            'playerOneScore': match[4],
+            'playerTwoScore': match[5],
+            'status': match[7],
+            'stage': match[8],
+        }
+        for match in matchess
+    ]
 
-    match.winner = match.player_one if player_one_score > player_two_score else match.player_two
-    match.status = 'complete'
-    match.save()
+    return Response({'message': 'match score added', 'matches': formatted_matches}, status=200)
 
-    if match.stage == '1/4':
-        matches = list(tournament.matches.filter(status='complete'))
-    elif match.stage == '1/2':
-                matches = list(tournament.matches.filter(status='complete'), stage='1/2')
+    # try:
+    #     tournament = Tournament.objects.get(id=tournament_id)
+    # except Tournament.DoesNotExist:
+    #     return Response({'message': 'tournament not found'}, status=404)
+
+    # try:
+    #     match = tournament.matches.get(match_number=match_number)
+    # except Exception:
+    #     return Response({'message': 'match not found'}, status=404)
     
-    if len(matches) == 4 and match.stage == '1/4' or len(matches) == 2 and match.stage == '1/2':
-        for i in range(0, len(matches), 2):
-            if i + 1 != len(matches):
-                first_winner = matches[i].winner
-                second_winner = matches[i+1].winner
-                Match.objects.create(
-                    tournament=tournament,
-                    match_number=4 + i // 2 + 1,
-                    player_one=first_winner,
-                    player_two=second_winner,
-                    stage='1/2' if match.stage == '1/4' else '1/1'
-                )
+    # match.player_one_score = player_one_score
+    # match.player_two_score = player_two_score
+
+    # match.winner = match.player_one if player_one_score > player_two_score else match.player_two
+    # match.status = 'complete'
+    # match.save()
+
+    # if match.stage == '1/4':
+    #     matches = list(tournament.matches.filter(status='complete'))
+    # elif match.stage == '1/2':
+    #             matches = list(tournament.matches.filter(status='complete'), stage='1/2')
+    
+    # if len(matches) == 4 and match.stage == '1/4' or len(matches) == 2 and match.stage == '1/2':
+    #     for i in range(0, len(matches), 2):
+    #         if i + 1 != len(matches):
+    #             first_winner = matches[i].winner
+    #             second_winner = matches[i+1].winner
+    #             Match.objects.create(
+    #                 tournament=tournament,
+    #                 match_number=4 + i // 2 + 1,
+    #                 player_one=first_winner,
+    #                 player_two=second_winner,
+    #                 stage='1/2' if match.stage == '1/4' else '1/1'
+    #             )
+
+@api_view(['POST'])
+def get_next_stage(request):
+    w3 = request.w3
+    contract = request.contract
+
+    AUTH_HEADER = request.META.get('HTTP_AUTHORIZATION')
+    auth_check_response = check_auth(AUTH_HEADER)
+    if auth_check_response.status_code != 200:
+        return Response(data=auth_check_response.json(), status=auth_check_response.status_code)
+    
+    tournament_id = request.data.get('tournament_id')
+
+    if not tournament_id:
+        return Response({'message': 'tournament_id required'}, status=400)
+    
+    tournament_id = int(tournament_id)
+
+    try:
+        set_stage_tx = contract.functions.setNextStage(tournament_id).transact()
+        w3.eth.wait_for_transaction_receipt(set_stage_tx)
+    except Exception as e:
+        return Response({'message': str(e)}, status=400)
+    
+    try:
+        matchess = contract.functions.getNextStage(tournament_id).call()
+    except Exception as e:
+        return Response({'message': str(e)}, status=401)
+    
+    # try:
+    #     start_match_tx = contract.functions.addMatchScore(match_number, tournament_id, player_one_score, player_two_score).transact()
+    #     w3.eth.wait_for_transaction_receipt(start_match_tx)
+    # except Exception as e:
+    #     return Response({'message': str(e)}, status=400)
+    
+    formatted_matches = [
+        {
+            'tournamentId': match[0],
+            'matchNumber': match[1],
+            'playerOneId': match[2],
+            'playerTwoId': match[3],
+            'playerOneScore': match[4],
+            'playerTwoScore': match[5],
+            'winnerId': match[6],
+            'status': match[7],
+            'stage': match[8],
+        }
+        for match in matchess
+    ]
+    return Response({'message': formatted_matches}, status=200)

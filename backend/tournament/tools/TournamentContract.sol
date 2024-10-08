@@ -124,8 +124,9 @@ contract TournamentContract {
         require(matchFound == true, "no match found with the provided match_number and tournament_id");
     }
 
-    function getNextStage(uint256 _tournamentId) public view {
+    function setNextStage(uint256 _tournamentId) public  {
         uint256 completedMatchesNumber = 0;
+        bool correct = false;
 
         for (uint256 i = 0; i < matches.length; i++) {
             if (matches[i].tournamentId == _tournamentId) {
@@ -149,11 +150,136 @@ contract TournamentContract {
                 });
             }
         }
-        
-        
-
+        uint256 matchNumber = completedMatchesNumber + 1;
+        if (completedMatchesNumber == 4) {
+            correct = true;
+            Match[] memory nextStage = new Match[](completedMatchesNumber / 2);
+            for (uint256 i = 0; i < completedMatchesNumber; i += 2) {
+                nextStage[i / 2] = Match({
+                    tournamentId: completedMatches[i].tournamentId,
+                    matchNumber: matchNumber++,
+                    playerOneId: completedMatches[i].winnerId,
+                    playerTwoId: completedMatches[i + 1].winnerId,
+                    playerOneScore: 0,
+                    playerTwoScore: 0,
+                    winnerId: 0,
+                    status: 'upcoming',
+                    stage: '1/2'
+                });
+                matches.push(nextStage[i / 2]);
+            }
+        }
+        else if (completedMatchesNumber == 6) {
+            correct = true;
+            Match[] memory nextStage = new Match[](1);
+            Match[] memory tmp = new Match[](2);
+            uint256 index1 = 0;
+            for (uint256 i = 0; i < completedMatchesNumber; i++) {
+                if (keccak256(abi.encodePacked(completedMatches[i].stage)) == keccak256(abi.encodePacked('1/2'))) {
+                    tmp[index1++] = Match({
+                        tournamentId: completedMatches[i].tournamentId,
+                        matchNumber: completedMatches[i].matchNumber,
+                        playerOneId: completedMatches[i].playerOneId,
+                        playerTwoId: completedMatches[i].playerTwoId,
+                        playerOneScore: completedMatches[i].playerOneScore,
+                        playerTwoScore: completedMatches[i].playerTwoScore,
+                        winnerId: completedMatches[i].winnerId,
+                        status: completedMatches[i].status,
+                        stage: completedMatches[i].stage
+                    });
+                }
+            }
+            nextStage[0] = Match({
+                tournamentId: tmp[0].tournamentId,
+                matchNumber: matchNumber++,
+                playerOneId: tmp[0].winnerId,
+                playerTwoId: tmp[1].winnerId,
+                playerOneScore: 0,
+                playerTwoScore: 0,
+                winnerId: 0,
+                status: 'upcoming',
+                stage: '1/1'
+            });
+            matches.push(nextStage[0]);
+        }
+        require(correct == true, "cannot set the next stage");
     }
 
+    function getNextStage(uint256 _tournamentId) public view returns(Match[] memory _nextStage) {
+        uint256 completedMatchesNumber = 0;
+        uint256 matchesNumber = 0;
+        bool correct = false;
+
+        for (uint256 i = 0; i < matches.length; i++) {
+            if (matches[i].tournamentId == _tournamentId) {
+                matchesNumber++;
+            }
+        }
+        for (uint256 i = 0; i < matches.length; i++) {
+            if (matches[i].tournamentId == _tournamentId && (matches[i].playerOneScore != 0 || matches[i].playerTwoScore != 0) ) {
+                completedMatchesNumber++;
+            }
+        }
+        Match[] memory tournamentMatches = new Match[](matchesNumber);
+        uint index = 0;
+        for (uint256 i = 0; i < matches.length; i++) {
+            if (matches[i].tournamentId == _tournamentId) {
+                tournamentMatches[index++] = Match({ 
+                    tournamentId: matches[i].tournamentId,
+                    matchNumber: matches[i].matchNumber,
+                    playerOneId: matches[i].playerOneId,
+                    playerTwoId: matches[i].playerTwoId,
+                    playerOneScore: matches[i].playerOneScore,
+                    playerTwoScore: matches[i].playerTwoScore,
+                    winnerId: matches[i].winnerId,
+                    status: matches[i].status,
+                    stage: matches[i].stage
+                });
+            }
+        }
+        index = 0;
+        if (completedMatchesNumber == 4) {
+            correct = true;
+            Match[] memory nextStage = new Match[](completedMatchesNumber / 2);
+            for (uint256 i = 0; i < matchesNumber; i++) {
+                if (keccak256(abi.encodePacked(tournamentMatches[i].stage)) == keccak256(abi.encodePacked("1/2"))) {
+                    nextStage[index++] = Match({
+                        tournamentId: tournamentMatches[i].tournamentId,
+                        matchNumber: tournamentMatches[i].matchNumber,
+                        playerOneId: tournamentMatches[i].playerOneId,
+                        playerTwoId: tournamentMatches[i].playerTwoId,
+                        playerOneScore: tournamentMatches[i].playerOneScore,
+                        playerTwoScore: tournamentMatches[i].playerTwoScore,
+                        winnerId: tournamentMatches[i].winnerId,
+                        status: tournamentMatches[i].status,
+                        stage: tournamentMatches[i].stage
+                    });
+                }
+            }
+            return nextStage;
+        }
+        else if (completedMatchesNumber == 6) {
+            correct = true;
+            Match[] memory nextStage = new Match[](1);
+            for (uint256 i = 0; i < matchesNumber; i++) {
+                if (keccak256(abi.encodePacked(tournamentMatches[i].stage)) == keccak256(abi.encodePacked("1/1"))) {
+                    nextStage[index++] = Match({
+                        tournamentId: tournamentMatches[i].tournamentId,
+                        matchNumber: tournamentMatches[i].matchNumber,
+                        playerOneId: tournamentMatches[i].playerOneId,
+                        playerTwoId: tournamentMatches[i].playerTwoId,
+                        playerOneScore: tournamentMatches[i].playerOneScore,
+                        playerTwoScore: tournamentMatches[i].playerTwoScore,
+                        winnerId: tournamentMatches[i].winnerId,
+                        status: tournamentMatches[i].status,
+                        stage: tournamentMatches[i].stage
+                    });
+                }
+            }
+            return nextStage;
+        }
+        require(correct == true, "cannot get the next stage");
+    }
     // function createStage(uint256 _tournamentId, uint256 _stageMatchCount) public {
     //     bool tournamentFound = false;
     //     uint256[] memory winnersIds = new uint256[](_stageMatchCount * 2);
