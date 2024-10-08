@@ -82,7 +82,7 @@ def start_match(request):
     if auth_check_response.status_code != 200:
         return Response(data=auth_check_response.json(), status=auth_check_response.status_code)
     
-    match_number = request.data.get('match_number')
+    match_number = request.data.get('match_id')
     tournament_id = request.data.get('tournament_id')
 
     print('match_number ', match_number)
