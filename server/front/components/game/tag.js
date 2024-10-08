@@ -178,6 +178,8 @@ function start_game()
     const blinK = setInterval(blink, 2000)
     function animation()
     {
+        // console.log(winner)
+
         if (socket.readyState === WebSocket.OPEN)
         {
             socket.send(JSON.stringify({
@@ -232,6 +234,18 @@ function start_game()
             socket.close()
             time = 1
         }
+        // if (window.location.hash !== "#/game")
+        // {
+        //     // if (!winner)
+        //     //     game_score("unknown")
+        //     // winner = null
+
+
+        //     socket.close()
+        //     window.removeEventListener("keydown", handleKeydown)
+        //     window.removeEventListener("keyup", handleKeyup)
+        //     window.removeEventListener("blur", handleblur)
+        // }
     }
     
     function load_draw(image, x, y, width, height)
@@ -329,6 +343,7 @@ function start_game()
     
     function pause_game()
     {
+        // console.log(window.location.hash)
         if (!esc)
         {
             document.getElementById('overlay').style.visibility = 'visible'
