@@ -227,7 +227,17 @@ async function set_tag_history(friendList) {
     friendList.games.forEach((game, index) => {
       const gameDiv = document.createElement('div');
       gameDiv.classList.add('play');
-      if (game.winner_name === game.player1_name){
+      if (game.winner_name === "unknown"){
+        gameDiv.innerHTML = `
+        <img id="player1" src="${game.player1_avatar}" alt="">
+        <h2 class="player1">${game.player1_name}</h2>
+        <h2>unknown</h2>
+        <h2 class="player2">${game.player2_name}</h2>
+        <img id="player2" src="${game.player2_avatar}" alt="">
+      `;
+
+      }
+      else if (game.winner_name === game.player1_name){
         user1 = 'W';
         user2 = 'L';
         gameDiv.innerHTML = `
