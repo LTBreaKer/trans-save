@@ -1,0 +1,49 @@
+FROM quay.io/jupyter/base-notebook
+RUN pip install --no-cache-dir matplotlib scikit-learn psycopg2-binary pandas tensorflow
+USER root
+# RUN chown jovyan:jovyan /home/jovyan/work
+# USER jovyan
+# SQLAlchemy
+
+# import psycopg2
+# import pandas as pd
+
+# from sqlalchemy import create_engine
+
+# engine = create_engine('postgresql+psycopg2://ml3:1234@db:5432/db_transcendence')
+
+# query = "SELECT id, x_ball, y_ball, vel_x_ball, vel_y_ball, pos_hit FROM player_trainingdata"
+# df = pd.read_sql_query(query, engine)
+
+# df.count()
+
+# df.x_ball = df.x_ball / 10
+# df.y_ball =  df.y_ball / 10
+# df.pos_hit = df.pos_hit / 10
+
+# df.loc[:100,["x_ball", "y_ball", "vel_x_ball", "vel_y_ball", "pos_hit"]]
+
+# pd.set_option('display.max_rows', None)
+
+# import tensorflow as ft
+# from tensorflow.keras import Sequential
+# from tensorflow.keras.layers import Dense
+
+# from tensorflow.keras.losses import MeanSquaredError
+
+# model = Sequential([
+#     Dense(units=200, activation='relu'),
+#     Dense(units=200, activation='relu'),
+#     Dense(units=1, activation='linear'),
+# ])
+
+# model.compile(loss=MeanSquaredError(), optimizer=ft.keras.optimizers.Adam(0.001),)
+
+# X = df.loc[:2000,["x_ball", "y_ball", "vel_x_ball", "vel_y_ball"]]
+# Y = df.loc[:2000,["pos_hit"]]
+
+# model.fit(X, Y, epochs=100)
+
+# (model.predict(df.loc[1400:1413,["x_ball", "y_ball", "vel_x_ball", "vel_y_ball"]])) * 10
+
+# model.save("model.keras")
