@@ -573,6 +573,7 @@ async function checkFirst() {
     console.error('There was a problem with the fetch operation:', error);
   }
 }
+
 async function fetchUserData() {
   try {
     const userResponse = await fetch(api + 'auth/get-user/', {
