@@ -17,7 +17,7 @@ contract TournamentContract {
         uint256 playerTwoId;
         uint256 playerOneScore;
         uint256 playerTwoScore;
-        int256 winnerId;
+        uint256 winnerId;
         string status;
         string stage;
     }
@@ -51,7 +51,7 @@ contract TournamentContract {
                 participants[oldNumberOfParticipants++].id,
                 0,
                 0,
-                -1,
+                0,
                 "upcoming",
                 "1/4"
                 );
@@ -105,24 +105,54 @@ contract TournamentContract {
         require(matchFound == true, "no match found with the provided match_number and tournament_id");
     }
 
-    // function addMatchScore(uint256 _matchNumber, uint256 _tournamentId, uint256 _playerOneScore, uint256 _playerTwoScore) public {
-    //     bool matchFound = false;
+    function addMatchScore(uint256 _matchNumber, uint256 _tournamentId, uint256 _playerOneScore, uint256 _playerTwoScore) public {
+        bool matchFound = false;
 
-    //     for (uint256 i = 0; i < matches.length; i++) {
-    //         if (matches[i].tournamentId == _tournamentId && matches[i].matchNumber == _matchNumber) {
-    //             matchFound = true;
-    //             matches[i].playerOneScore = _playerOneScore;
-    //             matches[i].playerTwoScore = _playerTwoScore;
-    //             if (matches[i].playerOneScore > matches[i].playerTwoScore)
-    //                 matches[i].winnerId = matches[i].playerOneId;
-    //             else
-    //                 matches[i].winnerId = matches[i].playerTwoId;
-    //             matches[i].status = "complete";
-    //             break;
-    //         }
-    //     }
-    //     require(matchFound == true, "no match found with the provided match_number and tournament_id");
-    // }
+        for (uint256 i = 0; i < matches.length; i++) {
+            if (matches[i].tournamentId == _tournamentId && matches[i].matchNumber == _matchNumber) {
+                matchFound = true;
+                matches[i].playerOneScore = _playerOneScore;
+                matches[i].playerTwoScore = _playerTwoScore;
+                if (matches[i].playerOneScore > matches[i].playerTwoScore)
+                    matches[i].winnerId = matches[i].playerOneId;
+                else
+                    matches[i].winnerId = matches[i].playerTwoId;
+                matches[i].status = "complete";
+                break;
+            }
+        }
+        require(matchFound == true, "no match found with the provided match_number and tournament_id");
+    }
+
+    function getNextStage(uint256 _tournamentId) public view {
+        uint256 completedMatchesNumber = 0;
+
+        for (uint256 i = 0; i < matches.length; i++) {
+            if (matches[i].tournamentId == _tournamentId) {
+                completedMatchesNumber++;
+            }
+        }
+        Match[] memory completedMatches = new Match[](completedMatchesNumber);
+        uint index = 0;
+        for (uint256 i = 0; i < matches.length; i++) {
+            if (matches[i].tournamentId == _tournamentId && (matches[i].playerOneScore != 0 || matches[i].playerTwoScore != 0) ) {
+                completedMatches[index++] = Match({
+                    tournamentId: matches[i].tournamentId,
+                    matchNumber: matches[i].matchNumber,
+                    playerOneId: matches[i].playerOneId,
+                    playerTwoId: matches[i].playerTwoId,
+                    playerOneScore: matches[i].playerOneScore,
+                    playerTwoScore: matches[i].playerTwoScore,
+                    winnerId: matches[i].winnerId,
+                    status: matches[i].status,
+                    stage: matches[i].stage
+                });
+            }
+        }
+        
+        
+
+    }
 
     // function createStage(uint256 _tournamentId, uint256 _stageMatchCount) public {
     //     bool tournamentFound = false;
