@@ -1,18 +1,36 @@
 import * as THREE from 'three';
-import { lpaddle, rpaddle } from "../components/paddle.js";
-import { table } from "../components/table.js";
-import { sphere } from "../components/sphere.js";
-import { light1, light2, light3, light4 } from "../components/light.js";
+import { initPaddles, lpaddle, rpaddle } from "../components/paddle.js";
+import { initTable, table } from "../components/table.js";
+import { initSphere, sphere } from "../components/sphere.js";
+import { initLight, light1, light2, light3, light4 } from "../components/light.js";
 
-const scene = new THREE.Scene();
+let scene;
+export function initScene() {
+    scene = new THREE.Scene();
+    
+    initTable();
+    initPaddles();
+    initSphere();
+    initLight();
+    scene.add( table );
+    scene.add( lpaddle );
+    scene.add( rpaddle );
+    scene.add( sphere );
+    scene.add( light1 );
+    scene.add( light2 );
+    scene.add( light3 );
+    scene.add( light4 );
+}
 
-scene.add( table );
-scene.add( lpaddle );
-scene.add( rpaddle );
-scene.add( sphere );
-scene.add( light1 );
-scene.add( light2 );
-scene.add( light3 );
-scene.add( light4 );
+export function removeLights() {
+    scene.remove(light1);
+    scene.remove(light2);
+    scene.remove(light3);
+    scene.remove(light4);
+}
+
+export function clearScene() {
+    scene = null;
+}
 
 export {scene};

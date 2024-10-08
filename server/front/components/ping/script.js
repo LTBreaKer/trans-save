@@ -1,5 +1,5 @@
 import { loadHTML, loadCSS } from '../../utils.js';
-import { login ,log_out_func, logoutf, get_localstorage, getCookie } from '../../auth.js';
+import { login ,log_out_func, logoutf, get_localstorage, getCookie, check_access_token } from '../../auth.js';
 var api = "https://127.0.0.1:9004/api/";
 var api_game = "https://127.0.0.1:9006/api/gamedb/";
 let game_socket = "wss://127.0.0.1:9006/ws/game-db/";
@@ -37,6 +37,7 @@ async function Ping() {
 
 
   const local_butt_game = document.getElementById('local_butt_game');
+  const btn_ai = document.getElementById('btn_ai');
   const remote_butt_game = document.getElementById('butt_game');
 
 
@@ -44,8 +45,27 @@ async function Ping() {
   const input = document.getElementById('input');
   name = input.value; 
   local_butt_game.addEventListener('click', localgame);
+  btn_ai.addEventListener('click', aiGame);
   remote_butt_game.addEventListener('click', remore_game_fun);
   _player_webSocket = await connectPlayerSocket();
+
+
+  // here i'm working with tournament and players
+
+//   const start_tournament = document.getElementById('tournament_game_btt');
+//   const tournament_players = document.querySelector('.tournament_players');
+//   const tournament_close = document.querySelector('.bi-x');
+
+//   start_tournament.addEventListener('click', () => {
+//     tournament_players.style.display = 'flex';
+//   })
+
+// tournament_close.addEventListener('click', () => {
+//   tournament_players.style.display = 'none';
+// })
+
+
+
   
 }
 
@@ -76,6 +96,7 @@ export const initPlayRemoteGame = async (initRemotegame) => {
 } 
 
 async function connectPlayerSocket() {
+  await check_access_token();
   try {
     const subprotocols = ['token', get_localstorage('token')];
     const ws = new WebSocket(game_socket, subprotocols);
@@ -115,7 +136,7 @@ export {data_remote_player};
 
 
 async function remore_game_fun() {
-  
+  await check_access_token();
   try {
     const response = await fetch(api_game + 'create-remote-game/', {
       method: 'POST',
@@ -143,16 +164,27 @@ async function remore_game_fun() {
 
 export let gameApi;
 
+export async function aiGame() {
+  name = "ai_bot";
+  statePongGame = "ai_bot";
+  await lanceLocalGame();
+}
+
 export async function localgame() {
   if (typeof input !== 'undefined')
     name = input.value;
   else
     name = JSON.parse(gameApi).player2_name;
   console.log("name of user: ", name);
+  statePongGame = "local";
+  await lanceLocalGame();
+}
+
+async function lanceLocalGame() {
   const data = {
     player2_name: name
   };
-
+  await check_access_token();
   try {
     const response = await fetch(api_game + 'create-local-game/', {
       method: 'POST',
@@ -169,7 +201,6 @@ export async function localgame() {
     // console.log("jsonData.stringify(): ", JSON.stringify(jsonData));
     console.log("###  pingpong: ", window.location.hash);
     gameApi = JSON.stringify(jsonData);
-    statePongGame = "local";
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response}`);
     }

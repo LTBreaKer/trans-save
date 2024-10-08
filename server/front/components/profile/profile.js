@@ -141,7 +141,7 @@ async function Friends() {
   })
 
   get_pong_history();
-  get_pong_history_by_name('afanti');
+  // get_pong_history_by_name('afanti');
   get_tag_history();
   // set_pong_score()
   // set_tag_score()

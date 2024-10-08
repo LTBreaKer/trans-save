@@ -9,7 +9,7 @@ class Paddle():
  
 	def update(self, ps):
 		# print("paddle class: ", ps, file=sys.stderr)
-		self.x = int(ps['x'])
+		# self.x = int(ps['x'])
 		self.y = int(ps['y'])
 	
 	def ai_update(self, y):
