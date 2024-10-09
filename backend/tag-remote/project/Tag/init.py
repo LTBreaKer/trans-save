@@ -1,3 +1,4 @@
+
 import asyncio
 import time
 import math
@@ -7,14 +8,12 @@ class gameMonitor:
         self.canvas_height = 0
 
         self.gameconsumer = consumer
-        self.players = [Player(0), Player(1)]
-        self.players[0].tagger = True
-        self.players[1].tagger = False
+        self.players = []
+
         self.time_tag = time.time()
         self.GO = False
         self.game_time = 1
         self.winner = None
-        self.esc = False
 
         self.platforms = [
             Platform(1000, 280, 138),
@@ -44,21 +43,13 @@ class gameMonitor:
     async def gameLoop(self):
 
         start_time = time.time()
-        esc_time = 0
         await asyncio.sleep(0.005)
 
         while self.game_time:
             if not self.gameconsumer.is_open:
                 break
             try:
-                if self.esc:
-                    if esc_time == 0:
-                        esc_time = time.time()
-                    await asyncio.sleep(0.005)
-                    continue
-                if esc_time:
-                    start_time += time.time() - esc_time
-                    esc_time = 0
+
                 if self.game_time > 0:
                     self.game_time = math.floor(99 - time.time() + start_time)
                 if self.game_time == 0:
@@ -94,7 +85,6 @@ class gameMonitor:
                         self.player.tagVel = self.player.vitesse['right'] / 3
                     else:
                         self.player.tagVel = 0
-                    # if not collision:
                     self.player.left_right(self, collision)
                 
                 if time.time() - self.time_tag > 3:
@@ -109,6 +99,7 @@ class gameMonitor:
             except Exception as e:
                 print(f"Error game loop: {e}")
                 self.gameconsumer.is_open = False
+                break
 
     def checkCollision(self, id):
         for self.platform in self.platforms:
@@ -127,7 +118,7 @@ class gameMonitor:
                 player.tagger = False if player.tagger == True else True
                 enemy.tagger = False if player.tagger == True else True
                 self.time_tag = time.time()
-        
+
 class Platform:
     def __init__(self, x, y, w):
         self.width = w
@@ -145,12 +136,17 @@ class Platform:
         self.pY = self.position['y'] * 100 / 955
 
 class Player:
-    def __init__(self, id):
+    def __init__(self, id, stt):
 
         self.name = None
         self.id = id
+        self.status = stt
+
         self.gravity = 0
-        self.tagger = False
+        if id % 2 == 0:
+            self.tagger = True
+        else:
+            self.tagger = False
 
         self.width = 0
         self.height = 0
@@ -300,11 +296,7 @@ async def resizeWindow(text_data_json, self_cons, game_monitor):
     for player in game_monitor.players:
         player.updatePlayer(game_monitor.canvas_height, game_monitor.canvas_width, init, test)
 
-    if game_monitor.players[0].name == None:
-        game_monitor.players[0].name = text_data_json.get('player0_name')
-
-    if game_monitor.players[1].name == None:
-        game_monitor.players[1].name = text_data_json.get('player1_name')
+    
 
     for platform in game_monitor.platforms:
         platform.width = platform.dimensionPercentageX * game_monitor.canvas_width / 100
@@ -317,6 +309,6 @@ async def resizeWindow(text_data_json, self_cons, game_monitor):
     game_monitor.platform_xs = [platform.position['x'] for platform in game_monitor.platforms]
     game_monitor.platform_ys = [platform.position['y'] for platform in game_monitor.platforms]
 
-    await self_cons.send_playerUpdate()
-    await self_cons.send_gameUpdate()
-    
+    if self_cons.is_open:
+        await self_cons.send_playerUpdate()
+        await self_cons.send_gameUpdate()

@@ -1,0 +1,46 @@
+
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+.vv{
+    height: 100%;
+}
+
+#overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black background */
+    color: #d6ddd5;
+    display: flex;
+    flex-direction: column; /* Stack children vertically */
+    justify-content: center;
+    align-items: center;
+    font-size: 48px;
+    visibility: hidden; /* Hidden by default */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);    
+}
+
+.overlay-text {
+    margin-bottom: 20px; /* Space between text and button */
+}
+
+.overlay-button {
+    padding: 10px 20px;
+    font-size: 24px;
+    color: #849B84;
+    background-color: #DCDCDC; /* Dark background for the button */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    transition: background-color 0.3s ease;
+}
+
+.overlay-button:hover {
+    background-color: #555; /* Lighter color on hover */
+}
