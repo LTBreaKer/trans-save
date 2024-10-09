@@ -1,13 +1,15 @@
 import { socket } from './script.js'
 import {imageR1, imageL1, imageIR1, imageIL1, imageR2, imageL2, imageIR2, imageIL2, arrow, go_arrow, numbers, background, platform} from './image_src.js';
 import {tag_game_info, setTagGameInfo} from '../ta/script.js'
-// import {get_localstorage} from '../../auth.js'
+import {get_localstorage} from '../../auth.js'
 
-// let tag_game_info = {
-//     game_id: 1,
-//     player1_name: 'meharit',
-//     player2_name: 'halima',
-// }
+// tag_game_info = {
+//     game_id: ,
+//     player1name: ,
+//     player2name: ,
+//     player1_id: ,
+//     player2_id: 
+//   }
 
 var api = "https://127.0.0.1:9007/api/tag-gamedb/"
 function start_game()
@@ -81,9 +83,16 @@ function start_game()
 
     async function game_score(winner)
     {
+        let winner_id
+        if (winner === tag_game_info.player1name)
+            winner_id =  tag_game_info.player1_id
+        else
+        winner_id =  tag_game_info.player2_id
+
         const data = {
             game_id: tag_game_info.game_id,
-            winner_name: winner
+            winner_name: winner,
+            winner_id: winner_id
         }
         console.log(data)
         try{
@@ -443,7 +452,7 @@ function start_game()
 
         if (winner === null)
             winner = "unknown"
-        // game_score(winner)
+        game_score(winner)
         winner = null
         // setTagGameInfo(null)
         if (window.location.hash !== "#/remoteTag")

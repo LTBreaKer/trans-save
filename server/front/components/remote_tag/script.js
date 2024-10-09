@@ -45,21 +45,24 @@ async function RemoteTag() {
   }
 
   socket = await(initializeApp());
-  let message 
 
+  if (socket.readyState === WebSocket.OPEN)
+  {
+    socket.send(JSON.stringify({
+      'action': 'new game',
+      'game_id': tag_game_info.game_id
+    }))  
+  }
+
+  let message 
   socket.addEventListener('message', function(event) {
       let socket_data = JSON.parse(event.data)
       message = socket_data.content
-      if (socket.readyState === WebSocket.OPEN && message === "start game")
-      {
-        socket.send(JSON.stringify({
-          'action': 'new game',
-          'game_id': tag_game_info.game_id
-        }))  
-        start_game();
-      }
-  })
 
+      if (socket.readyState === WebSocket.OPEN && message === "start game")
+        start_game();
+
+  })
 }
 
 export{socket}

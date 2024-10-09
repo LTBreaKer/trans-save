@@ -13,7 +13,8 @@ class MyConsumer(AsyncWebsocketConsumer):
 
     async def connect(self):
         self.is_open = True
-
+        
+        self.start_game = False
         self.monitor = gameMonitor(self)
         self.room_group_name = "game_room"
         self.id = len(self.players_c)
@@ -29,26 +30,23 @@ class MyConsumer(AsyncWebsocketConsumer):
             self.players_c.append(self)
 
         if len(self.players_c) == 2:
-            await self.send_all('start game')
+            # await self.send_all('start game')
             self.players_c[0].monitor.players = [Player(0, "player"), Player(1, "enemy")]
             self.players_c[1].monitor.players = [Player(0, "enemy"), Player(1, "player")]
-            # asyncio.create_task(self.players_c[0].monitor.gameLoop())
-            # asyncio.create_task(self.players_c[1].monitor.gameLoop())
 
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)
         action = text_data_json.get('action')
-
-
-        if self.is_open and action == "new game" :
-
-            self.game_id = text_data_json.get("game_id")
+        game_id = text_data_json.get('game_id')
+        if self.is_open and action == "new game":
             if len(self.players_c) == 2:
-                add_game_if_not_exists(self.games, self.game_id, self.players_c)
-            print(self.games)
+                if add_game_if_not_exists(self.games, game_id, self.players_c):
+                    await self.send_all('start game')
+
+            # print(self.games)
 
 
-        if self.is_open and action == "window resize":
+        if self.is_open and self.start_game and action == "window resize":
             await init.resizeWindow(text_data_json, self, self.monitor)
 
             if self.monitor.players[self.id].name == None and self.monitor.players[self.enemy_id].name == None:
@@ -59,7 +57,7 @@ class MyConsumer(AsyncWebsocketConsumer):
                     self.monitor.players[self.id].name = text_data_json.get("player1_name")
                     self.monitor.players[self.enemy_id].name = text_data_json.get("player0_name")
 
-        if self.is_open and action == "key update":
+        if self.is_open and self.start_game and action == "key update":
             index = get_game_index(self.games, self.game_id)
 
             self.games[index][1][self.id].monitor.players[self.id].key['right'] = text_data_json.get('P0_rightPressed')
@@ -156,12 +154,20 @@ def add_game_if_not_exists(games, game_id, players):
 
     for game in games:
         if game[0] == game_id:
-            return
+            return 0
+    players[0].game_id = game_id
+    players[1].game_id = game_id
+
+    players[0].start_game = True
+    players[1].start_game = True
+
     asyncio.create_task(players[0].monitor.gameLoop())
     asyncio.create_task(players[1].monitor.gameLoop())
 
     games.append([game_id, [players[0], players[1]]])
     players.clear()
+    return 1
+
 
 
 def get_game_index(games, game_id):
