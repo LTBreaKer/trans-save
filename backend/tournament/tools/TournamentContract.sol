@@ -14,7 +14,9 @@ contract TournamentContract {
         uint256 tournamentId;
         uint256 matchNumber;
         uint256 playerOneId;
+        string playerOneName;
         uint256 playerTwoId;
+        string playerTwoName;
         uint256 playerOneScore;
         uint256 playerTwoScore;
         uint256 winnerId;
@@ -47,8 +49,10 @@ contract TournamentContract {
             returnMatches[i / 2] = Match(
                 tournamentId,
                 i / 2 + 1,
-                participants[oldNumberOfParticipants++].id,
-                participants[oldNumberOfParticipants++].id,
+                participants[oldNumberOfParticipants].id,
+                participants[oldNumberOfParticipants++].username,
+                participants[oldNumberOfParticipants].id,
+                participants[oldNumberOfParticipants++].username,
                 0,
                 0,
                 0,
@@ -80,7 +84,9 @@ contract TournamentContract {
                     tournamentId: matches[i].tournamentId,
                     matchNumber: matches[i].matchNumber,
                     playerOneId: matches[i].playerOneId,
+                    playerOneName: matches[i].playerOneName,
                     playerTwoId: matches[i].playerTwoId,
+                    playerTwoName: matches[i].playerTwoName,
                     playerOneScore: matches[i].playerOneScore,
                     playerTwoScore: matches[i].playerTwoScore,
                     winnerId: matches[i].winnerId,
@@ -141,7 +147,9 @@ contract TournamentContract {
                     tournamentId: matches[i].tournamentId,
                     matchNumber: matches[i].matchNumber,
                     playerOneId: matches[i].playerOneId,
+                    playerOneName: matches[i].playerOneName,
                     playerTwoId: matches[i].playerTwoId,
+                    playerTwoName: matches[i].playerTwoName,
                     playerOneScore: matches[i].playerOneScore,
                     playerTwoScore: matches[i].playerTwoScore,
                     winnerId: matches[i].winnerId,
@@ -155,11 +163,25 @@ contract TournamentContract {
             correct = true;
             Match[] memory nextStage = new Match[](completedMatchesNumber / 2);
             for (uint256 i = 0; i < completedMatchesNumber; i += 2) {
+                string memory playerOneName = "";
+                string memory playerTwoName = "";
+
+                if (completedMatches[i].winnerId == completedMatches[i].playerOneId)
+                    playerOneName = completedMatches[i].playerOneName;
+                else
+                    playerOneName = completedMatches[i].playerTwoName;
+
+                if (completedMatches[i + 1].winnerId == completedMatches[i + 1].playerOneId)
+                    playerTwoName = completedMatches[i + 1].playerOneName;
+                else
+                    playerTwoName = completedMatches[i + 1].playerTwoName;
                 nextStage[i / 2] = Match({
                     tournamentId: completedMatches[i].tournamentId,
                     matchNumber: matchNumber++,
                     playerOneId: completedMatches[i].winnerId,
+                    playerOneName: playerOneName,
                     playerTwoId: completedMatches[i + 1].winnerId,
+                    playerTwoName: playerTwoName,
                     playerOneScore: 0,
                     playerTwoScore: 0,
                     winnerId: 0,
@@ -180,7 +202,9 @@ contract TournamentContract {
                         tournamentId: completedMatches[i].tournamentId,
                         matchNumber: completedMatches[i].matchNumber,
                         playerOneId: completedMatches[i].playerOneId,
+                        playerOneName: completedMatches[i].playerOneName,
                         playerTwoId: completedMatches[i].playerTwoId,
+                        playerTwoName: completedMatches[i].playerTwoName,
                         playerOneScore: completedMatches[i].playerOneScore,
                         playerTwoScore: completedMatches[i].playerTwoScore,
                         winnerId: completedMatches[i].winnerId,
@@ -189,11 +213,25 @@ contract TournamentContract {
                     });
                 }
             }
+            string memory playerOneName = "";
+            string memory playerTwoName = "";
+
+            if (tmp[0].winnerId == tmp[0].playerOneId)
+                playerOneName = tmp[0].playerOneName;
+            else
+                playerOneName = tmp[0].playerTwoName;
+
+            if (tmp[1].winnerId == tmp[1].playerOneId)
+                playerTwoName = tmp[1].playerOneName;
+            else
+                playerTwoName = tmp[1].playerTwoName;
             nextStage[0] = Match({
                 tournamentId: tmp[0].tournamentId,
                 matchNumber: matchNumber++,
                 playerOneId: tmp[0].winnerId,
+                playerOneName: playerOneName,
                 playerTwoId: tmp[1].winnerId,
+                playerTwoName: playerTwoName,
                 playerOneScore: 0,
                 playerTwoScore: 0,
                 winnerId: 0,
@@ -228,7 +266,9 @@ contract TournamentContract {
                     tournamentId: matches[i].tournamentId,
                     matchNumber: matches[i].matchNumber,
                     playerOneId: matches[i].playerOneId,
+                    playerOneName: matches[i].playerOneName,
                     playerTwoId: matches[i].playerTwoId,
+                    playerTwoName: matches[i].playerTwoName,
                     playerOneScore: matches[i].playerOneScore,
                     playerTwoScore: matches[i].playerTwoScore,
                     winnerId: matches[i].winnerId,
@@ -247,7 +287,9 @@ contract TournamentContract {
                         tournamentId: tournamentMatches[i].tournamentId,
                         matchNumber: tournamentMatches[i].matchNumber,
                         playerOneId: tournamentMatches[i].playerOneId,
+                        playerOneName: tournamentMatches[i].playerOneName,
                         playerTwoId: tournamentMatches[i].playerTwoId,
+                        playerTwoName: tournamentMatches[i].playerTwoName,
                         playerOneScore: tournamentMatches[i].playerOneScore,
                         playerTwoScore: tournamentMatches[i].playerTwoScore,
                         winnerId: tournamentMatches[i].winnerId,
@@ -267,7 +309,9 @@ contract TournamentContract {
                         tournamentId: tournamentMatches[i].tournamentId,
                         matchNumber: tournamentMatches[i].matchNumber,
                         playerOneId: tournamentMatches[i].playerOneId,
+                        playerOneName: tournamentMatches[i].playerOneName,
                         playerTwoId: tournamentMatches[i].playerTwoId,
+                        playerTwoName: tournamentMatches[i].playerTwoName,
                         playerOneScore: tournamentMatches[i].playerOneScore,
                         playerTwoScore: tournamentMatches[i].playerTwoScore,
                         winnerId: tournamentMatches[i].winnerId,

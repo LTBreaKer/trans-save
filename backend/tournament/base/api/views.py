@@ -64,8 +64,10 @@ def create_tournament(request):
             'tournamentId': match[0],
             'matchNumber': match[1],
             'playerOneId': match[2],
-            'playerTwoId': match[3],
-            'stage': match[8],
+            'playerOneName': match[3],
+            'playerTwoId': match[4],
+            'playerTwoName': match[5],
+            'stage': match[10],
         }
         for match in matches
     ]
@@ -103,8 +105,10 @@ def start_match(request):
     except Exception as e:
         return Response({'message': str(e)}, status=400)
     for match in matches:
-        if match[7] == 'ongoing':
+        if match[9] == 'ongoing':
             return Response({'message': 'can\'t start match while other match is ongoing'}, status=400)
+        if match[1] == match_number and match[9] != 'upcoming':
+            return Response({'message': 'can\'t start match'}, status=400)
 
     try:
         start_match_tx = contract.functions.startMatch(match_number, tournament_id).transact()
@@ -123,9 +127,11 @@ def start_match(request):
             'tournamentId': match[0],
             'matchNumber': match[1],
             'playerOneId': match[2],
-            'playerTwoId': match[3],
-            'status': match[7],
-            'stage': match[8],
+            'playerOneName': match[3],
+            'playerTwoId': match[4],
+            'playerTwoName': match[5],
+            'status': match[9],
+            'stage': match[10],
         }
         for match in matchess
     ]
@@ -171,6 +177,16 @@ def add_match_score(request):
     print(match_number, tournament_id, file=sys.stderr)
 
     try:
+        matches = contract.functions.getTournamentMatches(tournament_id).call()
+    except Exception as e:
+        return Response({'message': str(e)}, status=400)
+    
+    for match in matches:
+        if match[1] == match_number:
+            if match[9] != 'ongoing':
+                return Response({'message': 'can\'t set match score'}, status=400)
+
+    try:
         start_match_tx = contract.functions.addMatchScore(match_number, tournament_id, player_one_score, player_two_score).transact()
         w3.eth.wait_for_transaction_receipt(start_match_tx)
     except Exception as e:
@@ -187,51 +203,19 @@ def add_match_score(request):
             'tournamentId': match[0],
             'matchNumber': match[1],
             'playerOneId': match[2],
-            'playerTwoId': match[3],
-            'playerOneScore': match[4],
-            'playerTwoScore': match[5],
-            'status': match[7],
-            'stage': match[8],
+            'playerOneName': match[3],
+            'playerTwoId': match[4],
+            'playerTwoName': match[5],
+            'playerOneScore': match[6],
+            'playerTwoScore': match[7],
+            'status': match[9],
+            'stage': match[10],
         }
         for match in matchess
     ]
 
     return Response({'message': 'match score added', 'matches': formatted_matches}, status=200)
 
-    # try:
-    #     tournament = Tournament.objects.get(id=tournament_id)
-    # except Tournament.DoesNotExist:
-    #     return Response({'message': 'tournament not found'}, status=404)
-
-    # try:
-    #     match = tournament.matches.get(match_number=match_number)
-    # except Exception:
-    #     return Response({'message': 'match not found'}, status=404)
-    
-    # match.player_one_score = player_one_score
-    # match.player_two_score = player_two_score
-
-    # match.winner = match.player_one if player_one_score > player_two_score else match.player_two
-    # match.status = 'complete'
-    # match.save()
-
-    # if match.stage == '1/4':
-    #     matches = list(tournament.matches.filter(status='complete'))
-    # elif match.stage == '1/2':
-    #             matches = list(tournament.matches.filter(status='complete'), stage='1/2')
-    
-    # if len(matches) == 4 and match.stage == '1/4' or len(matches) == 2 and match.stage == '1/2':
-    #     for i in range(0, len(matches), 2):
-    #         if i + 1 != len(matches):
-    #             first_winner = matches[i].winner
-    #             second_winner = matches[i+1].winner
-    #             Match.objects.create(
-    #                 tournament=tournament,
-    #                 match_number=4 + i // 2 + 1,
-    #                 player_one=first_winner,
-    #                 player_two=second_winner,
-    #                 stage='1/2' if match.stage == '1/4' else '1/1'
-    #             )
 
 @api_view(['POST'])
 def get_next_stage(request):
@@ -261,24 +245,21 @@ def get_next_stage(request):
     except Exception as e:
         return Response({'message': str(e)}, status=401)
     
-    # try:
-    #     start_match_tx = contract.functions.addMatchScore(match_number, tournament_id, player_one_score, player_two_score).transact()
-    #     w3.eth.wait_for_transaction_receipt(start_match_tx)
-    # except Exception as e:
-    #     return Response({'message': str(e)}, status=400)
-    
     formatted_matches = [
         {
             'tournamentId': match[0],
             'matchNumber': match[1],
             'playerOneId': match[2],
-            'playerTwoId': match[3],
-            'playerOneScore': match[4],
-            'playerTwoScore': match[5],
-            'winnerId': match[6],
-            'status': match[7],
-            'stage': match[8],
+            'playerOneName': match[3],
+            'playerTwoId': match[4],
+            'playerTwoName': match[5],
+            'playerOneScore': match[6],
+            'playerTwoScore': match[7],
+            'winnerId': match[8],
+            'status': match[9],
+            'stage': match[10],
         }
         for match in matchess
     ]
     return Response({'message': formatted_matches}, status=200)
+
