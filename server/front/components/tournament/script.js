@@ -1,5 +1,6 @@
 import { loadHTML, loadCSS, player_webSocket} from '../../utils.js';
 import { log_out_func ,login , logoutf, get_localstorage, getCookie } from '../../auth.js';
+import {tournament_data} from '../ping/script.js';
 var api = "https://127.0.0.1:9004/api/";
 var api_game = "https://127.0.0.1:9006/api/gamedb/";
 let game_socket = "wss://127.0.0.1:9006/ws/game-db/"
@@ -9,6 +10,8 @@ async function Tournament() {
   const html = await loadHTML('./components/tournament/index.html');
   loadCSS('./components/tournament/style.css');
 
+
+  console.log("here is data of me =:> ", tournament_data);
   const app = document.getElementById('app');
   app.innerHTML = html;
   setHeaderContent();
