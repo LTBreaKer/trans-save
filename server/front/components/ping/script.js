@@ -5,7 +5,8 @@ var api_game = "https://127.0.0.1:9006/api/gamedb/";
 let game_socket = "wss://127.0.0.1:9006/ws/game-db/";
 let name = "";
 let html = "";
-var data_remote_player;
+export let data_remote_player;
+export let gameApi;
 export let statePongGame;
 export let _player_webSocket;
 
@@ -13,8 +14,8 @@ export async function sendPlayerPaddleCreated(){
   console.log("----------------  sendPlayerPaddleCreated  --------------------------");
   let data = data_remote_player;
   console.log("data.name_current_user : ", data.name_current_user)
-  console.log("data.player1_name : ", data.player1name)
-  let player_id = (data.name_current_user === data.player1name)
+  console.log("data.player1_name : ", data.player1_name)
+  let player_id = (data.name_current_user === data.player1_name)
     ? data.player1_id : data.player2_id;
     console.log("player_id: ", player_id);
 	const ws = await _player_webSocket;
@@ -109,8 +110,8 @@ async function connectPlayerSocket() {
           data_remote_player = {
             name_current_user: name_current_user,
             game_id: data.game.id,
-            player1name: data.game.player1_name,
-            player2name: data.game.player2_name,
+            player1_name: data.game.player1_name,
+            player2_name: data.game.player2_name,
             player1_id: data.game.player1_id,
             player2_id: data.game.player2_id
           }
@@ -131,8 +132,6 @@ async function connectPlayerSocket() {
     console.error('Failed to parse message:', e);
   }
 }
-
-export {data_remote_player};
 
 
 async function remore_game_fun() {
@@ -161,8 +160,6 @@ async function remore_game_fun() {
 
 
 }
-
-export let gameApi;
 
 export async function aiGame() {
   name = "ai_bot";

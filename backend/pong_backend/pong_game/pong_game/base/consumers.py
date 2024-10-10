@@ -120,10 +120,18 @@ class LocalGameConsumer(AsyncWebsocketConsumer):
             'right_paddle_score': self.rpaddle.nb_goal,
         }))
         # endpoint = "https://127.0.0.1:9006/api/gamedb/add-game-score/"
+        # auth_header = f"Bearer {token}"
         # headers = {
         #     'Authorization': auth_header,
+		# 	'Content-Type': 'application/x-www-form-urlencoded'
         # }
         # data = {
-        #     'player1_name': ...
+        #     'game_id': data.game_id,
+        #     'player1_name': data.player1_name,
+        #     'player2_name': data.player2_name,
+        #     'player1_id': data.player1_id,
+        #     'player2_id': data.player2_id,
+        #     'player1_score': data.player1_score,
+        #     'player2_score': data.player2_score,
         # }
         # response = requests.post(url=endpoint, headers=headers, data=data, verify=False)

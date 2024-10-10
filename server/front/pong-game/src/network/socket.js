@@ -107,14 +107,22 @@ export async function localGameSocket(group_name) {
 	}
 }
 
-function choicePaddle({name_current_user, player1name}) {
-	(name_current_user === player1name) ? leftPaddle() : rightPaddle();
+function sendDataToPlayerPaddle() {
+	let data = data_remote_player;
+	data.type_msg = 'add_group';
+	data.group_name = data_remote_player.game_id;
+	data.token = localStorage.getItem("token");
+	return (data);
+}
+
+function choicePaddle({name_current_user, player1_name}) {
+	(name_current_user === player1_name) ? leftPaddle() : rightPaddle();
 	console.log("=============> choicePaddle <================");
 	console.log("name_current_user: ", name_current_user);
-	console.log("player1name: ", player1name);
+	console.log("player1_name: ", player1_name);
 	console.log("paddle_way: ", paddle_way);
 	moveCamera(statePongGame);
-	return (name_current_user === player1name) ? ("left_paddle") : ("right_paddle");
+	return (name_current_user === player1_name) ? ("left_paddle") : ("right_paddle");
 }
 
 export async function paddleSocket(group_name) {
@@ -125,7 +133,7 @@ export async function paddleSocket(group_name) {
 		let ws = new WebSocket(wssUrl);
 		ws.onopen = async (event) => {
 			console.log('paddle game WebSocket conection established.');
-			await ws.send(JSON.stringify({'type_msg': 'add_group', 'group_name': data_remote_player.game_id}));
+			await ws.send(JSON.stringify(sendDataToPlayerPaddle()));
 			await ws.send(JSON.stringify({'type_msg': 'assigning_paddle', 'paddle': choicePaddle(data_remote_player)}));
 			await sendPlayerPaddleCreated();
 		}
@@ -153,15 +161,15 @@ async function connectBallSocket() {
 		let ws = new WebSocket(wssUrl);
 		ws.onopen = async (event) => {
 			console.log('remote game WebSocket conection established.');
-			await ws.send(JSON.stringify({'type_msg': 'add_group', 'group_name': data_remote_player.game_id}));
+			await ws.send(JSON.stringify(sendDataToPlayerPaddle()));
 		}
 		ws.onmessage = (event) => {
 			const message = JSON.parse(event.data);
 			console.log("remote game message:", message);
 			if (message.type_msg === "create_ball_socket")
 				ws.send(JSON.stringify({'type_msg': 'move'}));
-			else if (message.type === "game_over")
-				sendScore(message.left_paddle_score, message.right_paddle_score);
+			// else if (message.type === "game_over")
+			// 	sendScore(message.left_paddle_score, message.right_paddle_score);
 			else if (message.type_msg === "play")
 				descounterRemoteGame();
 		}

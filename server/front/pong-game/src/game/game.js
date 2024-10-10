@@ -132,8 +132,8 @@ async function updatePaddles(){
 	}
 }
 
-function playerChoicePaddle({name_current_user, player1name}) {
-	(name_current_user === player1name) ? paddle.left() : paddle.right();
+function playerChoicePaddle({name_current_user, player1_name}) {
+	(name_current_user === player1_name) ? paddle.left() : paddle.right();
 }
 
 if (statePongGame == "remote")
