@@ -28,14 +28,14 @@ body {
 }
 
 
-.pong_container {
+.container {
   margin: 0;
   padding: 0;
   width: 100%;
   min-height: 100vh;
 }
 
-.pong_container .pong_header {  
+.container .header {  
   position: fixed;
   margin: 0;
   padding-left: 7.2em;
@@ -43,12 +43,13 @@ body {
   width: 100%;
 }
 
-.pong_container .pong_navbar {
+.container .navbar {
   position: fixed;
   min-height: 100vh;
   width: 5em;
 }
-/* .pong_container .pong_main-content {
+
+/* .container .main-content {
   padding-top: 11vh;
   padding-left: 7.2em;
   height: 100vh;
@@ -60,7 +61,7 @@ body {
   display: none;
 }
 
-.pong_header {
+.header {
   position: relative; 
   display: flex;
   flex-direction: row-reverse;
@@ -69,7 +70,7 @@ body {
   transition: var(--tran-05);
 }
 
-.pong_header .pong_profile {
+.header .profile {
   right: 8px;
   position: relative;
   display: flex;
@@ -77,7 +78,7 @@ body {
   align-items: center;
 }
 
-.pong_header .pong_profile .image img {
+.header .profile .image img {
   width: 50px;
   object-fit: cover;
   height: 50px;
@@ -85,11 +86,11 @@ body {
   margin-left: 5px;
 }
 
-.pong_header .pong_profile .text {
+.header .profile .text {
   color: #e8ebfb;
 }
 
-.pong_header .notification {
+.header .notification {
   font-size: 18px;
   color: #e8ebfb;
   padding-right: 17px;
@@ -98,18 +99,8 @@ body {
 
 /* ==============  here i will work with navbar content  ============== */
 
-.pong_sidebar {
+.sidebar {
   position: relative;
-  top: 0;
-  left: 0;
-  height: calc(100vh - 80px);
-  border-radius: 25px;
-  padding: 14px 11px;
-  background-color: var(--sidebar-color);
-  transition: var(--tran-05);
-  width: fit-content;
-  margin: 1px 8px;
-  /* position: relative;
   top: 0;
   margin-top: 80px;
   left: 0;
@@ -118,41 +109,41 @@ body {
   width: 88px;
   padding: 10px 14px;
   background-color: var(--sidebar-color);
-  transition: var(--tran-05); */
+  transition: var(--tran-05);
 }
 
-.pong_sidebar .image {
+.sidebar .image {
   min-width: 60px;
   display: flex;
   align-items: center;
 }
 
-.pong_sidebar li {
-  /* height: 50px;
-  margin-top: 10px; */
+.sidebar li {
+  height: 50px;
+  margin-top: 10px;
   list-style: none;
   display: flex;
   align-items: center;
 }
 
-.pong_sidebar li .icon {
+.sidebar li .icon {
   display: flex;
   align-items: center;
   justify-content: center;
-  /* min-width: 60px; */
+  min-width: 60px;
   font-size: 20px;
 }
 
-.pong_sidebar li .icon {
+.sidebar li .icon {
   color: var(--text-color);   
   transition: var(--tran-02); 
 }
 
-.pong_sidebar header {
+.sidebar header {
   position: relative;
 }
 
-.pong_navbar .image-text img {
+.navbar .image-text img {
   /* width: 70px; */
   position: absolute;
   border-radius: 6px;
@@ -162,9 +153,9 @@ body {
   padding: 15px;
 }
 
-.pong_sidebar li a {
-  /* height: 100%;
-  width: 100%; */
+.sidebar li a {
+  height: 100%;
+  width: 100%;
   display: flex;
   align-items: center;
   text-decoration: none;
@@ -172,178 +163,15 @@ body {
   transition: var(--tran-04);
 }
 
-/* ////// head ////// */
-.ml_cover_logo {
-  display: flex;
-  height: 52px;
-  width: 52px;
-  margin: 1px 8px;
-}
-
-.ml_logo {
-  height: 52px;
-  width: 52px;
-}
-
-.ml_container {
-  display: flex;
-  flex-direction: column;
-}
-.ml_body {
-  display: flex;
-}
-
-.ml_profile {
-  display: flex;
-  height: fit-content;
-  width: 100%;
-  justify-content: end;
-  padding-right: 17px;
-  margin-top: 4px;
-}
-
-.ml_notif {
-  display: flex;
-  font-size: 18px;
-  color: #e8ebfb;
-  padding-right: 17px;
-  cursor: pointer;
-  align-items: center;
-}
-
-.ml_txt {
-  display: flex;
-  color: #e8ebfb;
-  align-items: center;
-  padding-right: 17px;
-}
-
-.ml_img {
-  display: flex;
-  height: 50px;
-  width: 50px;
-  border-radius: 100%;
-  object-fit: cover;
-}
-
-/* ////// navbar ////// */
-.ml_navbar {
-  display: flex;
-  flex-direction: column;
-  margin-top: -45px;
-}
-
-.ml_cover_icon{
-  height: 20px;
-  width: 20px;
-}
-
-.pong_sidebar li a:hover {
+.sidebar li a:hover {
   background: var(--primary-color);
 }
 
-.pong_sidebar li a:hover .icon {
+.sidebar li a:hover .icon {
   color: var(--sidebar-color);
 }
 
-.ml_menubar {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  height: 100%;
-}
-
-.ml_menu {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
-.ml_menu-links {
-  Display: flex;
-  flex-direction: column;
-}
-
-.ml_nav-link{
-  list-style: none;
-  display: flex;
-  display: flex;
-  margin: 10px 5px;
-}
-
-.ml_btn_content {
-  display: flex;
-}
-
-/* ////// main content ////// */
-.ml_main-content {
-  display: flex;
-  z-index: 1;
-  flex-direction: column;
-  width: 100%;
-  height: 100%;
-  height: auto;
-  justify-content: space-evenly;
-  margin: 3px 0px 0px 0px;
-}
-
-.ml_bgcontent {
-  position: absolute;
-  height: calc(100% - 55px - 25px - 6px);
-  width: calc(100% - 68px - 8px);
-  object-fit: cover;
-  /* margin: 3px 0px 0px 0px; */
-  z-index: 0;
-}
-
-.ml_rl_game {
-  display: flex;
-  width: 100%;
-  justify-content: space-evenly;
-  z-index: 1;
-}
-
-.ml_remote_game {
-  display: flex;
-  width: 290px;
-  /* height: 50%; */
-  height: fit-content;
-  min-height: 150px;
-  padding: 10px 15px 15px 15px;
-  margin: 2px 2px 2px 2px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
-  background-color: rgba(25, 26, 29, 0.6);
-  color: #e8ebfb;
-}
-
-.ml_local_game {
-  width: 290px;
-  height: fit-content;
-  min-height: 150px;
-  padding: 10px 15px 15px 15px;
-  margin: 2px 2px 2px 2px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
-  background-color: rgba(25, 26, 29, 0.6);
-  color: #e8ebfb;
-}
-
-.ml_description_game {
-  display: flex;
-}
-
-.ml_start_game {
-  background-color: black;
-  padding: 8px 20px;
-  border-radius: 88px;
-}
-
-.pong_sidebar .menu-bar {
+.sidebar .menu-bar {
   height: calc(100% - 20px);
   display: flex;
   flex-direction: column;
@@ -352,7 +180,7 @@ body {
 
 /* ?notification 0 */
 
-.pong_notifi_btn {
+.notifi_btn {
   display: none;
   width: 200px;
   height: 250px;
@@ -364,16 +192,16 @@ body {
   overflow-y: auto;
 }
 
-.pong_notifi_btn::-webkit-scrollbar {
+.notifi_btn::-webkit-scrollbar {
 display: none;
 }
 
-.pong_notifi_btn.active {
+.notifi_btn.active {
   display: flex;
   flex-direction: column;
 }
 
-.pong_notifi_btn .send_request {
+.notifi_btn .send_request {
   width: 100%;
   height: 55px;
   border-radius: 15px;
@@ -415,7 +243,7 @@ display: none;
 
 @media (max-width: 444px) {
 
-  .pong_sidebar {
+  .sidebar {
       margin-top: 80px;
       position: relative;
       top: 0;
@@ -429,7 +257,7 @@ display: none;
       overflow: hidden;
   }
 
-  .pong_sidebar.active {
+  .sidebar.active {
       height: 100vh;
       padding: 10px 14px;
       background-color: var(--sidebar-color);
@@ -454,7 +282,7 @@ display: none;
 }
 
 @media (max-width: 400px) {
-  .pong_header .pong_profile .image img {
+  .header .profile .image img {
       display: none;
   }
 }
@@ -466,7 +294,7 @@ display: none;
 
   /* game here -------- */
 
-  .pong_container .games {
+  .container .games {
     display: none;
     position: fixed;
     width: 100%;
@@ -509,7 +337,7 @@ display: none;
 
   /* mer_cont */
     
-  .pong_container .pong_main-content {
+  .container .main-content {
     /* background-color: green; */
     width: 100%;
     padding-top: 11vh;
@@ -518,7 +346,7 @@ display: none;
     color: white;
   }
 
-.pong_main-content .pong_mer_cont {
+.main-content .mer_cont {
     width: 99%;
     height: 99%;
     background-image: url(./pong_background.png);
@@ -534,7 +362,7 @@ display: none;
     color: white;
   }
   
-  .pong_mer_cont .pong_re_local {
+  .mer_cont .re_local {
     width: 100%;
     height: 50%;
     display: flex;
@@ -542,7 +370,7 @@ display: none;
     justify-content: space-around;
   }
   
-  .pong_re_local #remote_game {
+  .re_local #remote_game {
     width: 290px;
     height: 50%;
     padding: 10px 15px 15px 15px;
@@ -553,7 +381,7 @@ display: none;
     background-color: rgba(25, 26, 29, 0.6);
   }
   
-  .pong_re_local #local_game {
+  .re_local #local_game {
     width: 290px;
     height: 50%;
     display: flex;
@@ -564,6 +392,45 @@ display: none;
     background-color: rgba(25, 26, 29, 0.6);
     
   }
+
+
+  .re_local #tournament_game {
+    width: 290px;
+    height: 50%;
+    padding: 10px 15px 15px 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    background-color: rgba(25, 26, 29, 0.6);
+  }
+  
+  .re_local #boot_game {
+    width: 290px;
+    height: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 10px 15px 15px 15px;
+    align-items: center;
+    background-color: rgba(25, 26, 29, 0.6);
+    
+  }
+
+
+  .mer_cont #boot_game_btt {
+    padding: 11px;
+    background-color: black;
+    border-radius: 15px;
+    cursor: pointer;
+  }
+  .mer_cont #tournament_game_btt {
+    padding: 11px;
+    background-color: black;
+    border-radius: 15px;
+    cursor: pointer;
+  }
+
   
   
   #local_game  .input {
@@ -581,14 +448,14 @@ display: none;
   }
   
   
-  .pong_mer_cont #butt_game {
+  .mer_cont #butt_game {
     padding: 11px;
     background-color: black;
     border-radius: 15px;
     cursor: pointer;
   }
 
-  .pong_mer_cont #local_butt_game {
+  .mer_cont #local_butt_game {
     padding: 11px;
     background-color: black;
     border-radius: 15px;
@@ -596,22 +463,22 @@ display: none;
   }
 
   
-  .pong_mer_cont .discription_game {
-    width: 100%;
+  .mer_cont .discription_game {
+    /* width: 100%;
     display: flex;
     padding: 15px;
-    justify-content: center;
+    justify-content: center; */
   }
   
-  .pong_mer_cont .discription_game .text {
-    background-color: rgba(25, 26, 29, 0.9);
+  .mer_cont .discription_game .text {
+    /* background-color: rgba(25, 26, 29, 0.9);
     padding: 15px;
     width: 55%;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    font-family: "Times New Roman", Times, serif;
+    font-family: "Times New Roman", Times, serif; */
     /* opacity: 0.6; */
     /* background-color: transparent; */
 

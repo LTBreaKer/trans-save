@@ -10,94 +10,89 @@
 </head>
 <body>
     
-    <div class="pong_container">
-        <div class="pong_header">
-            <div class="pong_profile">
-                <div class="notification">
+    <div class="ml_container">
+            <div class="ml_profile">
+                <div class="ml_notif">
                     <h3><i class="bi bi-bell"></i></h3>
                 </div>
-                <div class="text">
+                <div class="ml_txt">
                     <h3 id="UserName">afanti</h3>
                 </div>
-                <div class="image">
-                    <img id="image_user" src="" alt="profile photo">
+                <div class="ml_img">
+                    <img class="ml_img" id="image_user" src="" alt="profile photo">
                 </div>
             </div>
-                <div class="pong_notifi_btn">
 
-                    
-                </div>
-                <i id="butt" class="bi bi-justify"></i>
-        </div>
-        <div class="pong_navbar">
-                <div class="image-text">
-                    <img src="../../images/login/logo.webp" alt="logo">
+        <div class="ml_body">
+            <div class="ml_navbar">
+                <div class="ml_cover_logo">
+                    <img class="ml_logo" src="../../images/login/logo.webp" alt="logo">
                 </div>
             <nav class="pong_sidebar close">
-            
-                <div class="menu-bar toggle">
-                    
-                    <div class="menu">
-                        <ul class="menu-links">
-                            <li class="nav-link"  id="homepage">
-                                <a href="#/">
+                <div class="ml_menubar">
+                    <div class="ml_menu">
+                        <ul class="ml_menu-links">
+                            <li class="ml_nav-link"  id="homepage">
+                                <a class="ml_cover_icon" href="#/">
                                     <i class='bx bx-home  icon' ></i>
                                 </a>
                             </li>
-                            <li class="nav-link"  id="profilepage">
-                                <a href="#/profile">
+                            <li class="ml_nav-link"  id="profilepage">
+                                <a class="ml_cover_icon" href="#/profile">
                                     <i class="bi bi-person icon"></i>
                                 </a>
                             </li>
     
                         </ul>
                     </div>
-                    <div class="bottom-content">
-                        <li id="logout">
-                            <a href="#">
+                    <div class="ml_btn_content">
+                        <li class="ml_nav-link" id="logout">
+                            <a class="ml_cover_icon" href="#">
                                 <i class='bx bx-log-out  icon' ></i>
                             </a>
                         </li>
                     </div>
                 </div>
             </nav>
-        </div>
-        <div class="pong_main-content">
-            <div class="pong_mer_cont">
+            </div>
 
-                <div class="pong_re_local">
-                    <div id="remote_game">
+
+
+
+
+        <!-- <div class="ml_main-content"> -->
+            <!-- <div class="pong_mer_cont"> -->
+            <div class="ml_main-content">
+                <img src="../../images/pong/pong_background.png" alt="" class="ml_bgcontent">
+                <div class="ml_rl_game">
+                    <div class="ml_local_game" id="remote_game">
                         <h2>Remote</h2>
-                        <h3 id="butt_game">Start Game</h3>
+                        <h3 class="ml_start_game" id="butt_game">Start Game</h3>
                     </div>
-                    <div id="local_game">
+                    <div class="ml_local_game" id="local_game">
                         <h2>Local</h2>
                         <input placeholder="Player Name" id="input" class="input" name="text" type="text">
-                        <h3 id="local_butt_game">Start Game</h3>
+                        <h3 class="ml_start_game" id="local_butt_game">Start Game</h3>
                     </div>
                 </div>
                 <div class="re_local">
                     <div id="boot_game">
-                        <h2>Boot</h2>
+                        <h2>Bot</h2>
                         <h3 id="boot_game_btt">Start Game</h3>
                     </div>
-                    <div id="tournament_game">
+                    <div class="ml_local_game">
                         <h2>Tournament</h2>
-                        <h3 id="tournament_game_btt">Start Game</h3>
+                        <h3 class="ml_start_game" id="btn_tournament">Start Game</h3>
                     </div>
                 </div>
-
-                <!-- <div class="discription_game">
+                <!-- <div class="ml_discription_game">
                     <div class="text">
-
+                        <h3>mli tsali n9ad lik chi page 3tini gha design hhhhhhhh .</h3>
                     </div>
                 </div> -->
             </div>
-
-
-        </div>
-
-
+        <!-- </div> -->
+    </div>
 
 <!-- ====== ======= ====== ======= ====== ======== ===== -->
 
@@ -112,7 +107,7 @@
                <input type="text" id="player6" placeholder="player name">
                <input type="text" id="player7" placeholder="player name">
                <input type="text" id="player8" placeholder="player name">
-               <h3>Show Grops</h3>
+               <h3>Start Tournament</h3>
                <i class="bi bi-x"></i>
             </div>
         </div>
