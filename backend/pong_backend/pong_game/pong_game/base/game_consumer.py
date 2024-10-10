@@ -9,7 +9,6 @@ from django.contrib.auth.models import AnonymousUser
 from .ball_class import Ball
 from .paddle_class import Paddle
 from .ball_class import width, height
-import requests
 
 class GameConsumer(AsyncWebsocketConsumer):
 	def __init__(self, *args, **kwargs):
@@ -18,17 +17,13 @@ class GameConsumer(AsyncWebsocketConsumer):
 		self.lpaddle = Paddle(0, height/2)
 		self.rpaddle = Paddle(width - 10, height/2)
 		self.gameOver = False
-		self.data = {}
 
 	async def connect(self):
 		await self.accept()
 		
 	async def add_group(self, e):
 		self.room_name = e["group_name"]
-		self.data = e
 		self.room_group_name = 'game_%s' % self.room_name
-		print("type event: ", type(e), file=sys.stderr)
-		print("type data: ", type(self.data), file=sys.stderr)
 		await self.channel_layer.group_add(
 			self.room_group_name,
 			self.channel_name
@@ -94,7 +89,7 @@ class GameConsumer(AsyncWebsocketConsumer):
 					'right_paddle': self.rpaddle.fn_str()
 				}
 			)
-		if (self.ball.gameOver and (self.lpaddle.nb_goal == 1 or self.rpaddle.nb_goal == 1)):
+		if (self.ball.gameOver and (self.lpaddle.nb_goal == 3 or self.rpaddle.nb_goal == 3)):
 			await self.end_game()
 		else:
 			await self.send(text_data=json.dumps({
@@ -113,7 +108,6 @@ class GameConsumer(AsyncWebsocketConsumer):
 		self.rpaddle.update(event['paddle'])
 
 	async def send_scores(self):
-		await self.finish_game()
 		await self.send(text_data=json.dumps({
 			'type': 'game_over',
 			'left_paddle_score': self.lpaddle.nb_goal,
@@ -130,15 +124,3 @@ class GameConsumer(AsyncWebsocketConsumer):
 		
 	async def desconnect_consumer(self, e):
 		await self.close(code=1000)
-
-	async def finish_game(self):
-		endpoint = "https://server:9006/api/gamedb/add-game-score/"
-		token = self.data["token"]
-		auth_header = f"Bearer {token}"
-		headers = {
-			'Authorization': auth_header,
-			'Content-Type': 'application/x-www-form-urlencoded'
-		}
-		self.data["player1_score"] = self.lpaddle.nb_goal
-		self.data["player2_score"] = self.rpaddle.nb_goal
-		response = requests.post(url=endpoint, headers=headers, data=self.data, verify=False)

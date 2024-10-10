@@ -1,7 +1,7 @@
 
-import {canvas, click, TABLE_WIDTH, paddleHeight, height, box_result, first_player_goal, second_player_goal, counter, replay, popup_replay, pong_menu, loadDocument, sleep, back_counter, leftPaddle} from '../utils/globaleVariable.js';
+import {canvas, click, TABLE_WIDTH, paddleHeight, height, box_result, first_player_goal, second_player_goal, counter, replay, popup_replay, pong_menu, loadDocument, sleep, back_counter, leftPaddle, paddle_way} from '../utils/globaleVariable.js';
 // import { setPointerMouse, rotateTable, zoomCamera } from '../game/staduim.js'
-import { connectAI, connectLocalGameSocket, connectPaddleSocket, launchGame } from '../game/game.js';
+import { closeGameSocket, connectAI, connectLocalGameSocket, connectPaddleSocket, launchGame } from '../game/game.js';
 import {sendSocket} from '../game/game.js'
 // import { connectGame , connect_ai} from '../utils/globaleVariable.js';
 import { moveCamera } from '../components/camera.js';
@@ -17,7 +17,7 @@ import { paddle } from '../game/paddle.js';
 import { lancePongGame } from '../main3d.js';
 import { setMousePosition, setMousePositionHelper } from '../events/mouseEvent.js';
 import { initGameComponents } from '../components/renderer.js';
-import { fnGameOver } from './socket.js';
+import { fnGameOver, sendScore } from './socket.js';
 
 
 // console.log("0 statePongGame: ", statePongGame);
@@ -55,10 +55,20 @@ async function replayLocalGame() {
 	await descounter();
 }
 
+async function handleRelodQuit() {
+	console.log("============================================>", statePongGame);
+	(statePongGame != "remote") ?
+	sendScore() :
+	(paddle_way == 1 ? sendScore(0, 3) : sendScore(3, 0));
+	closeGameSocket();
+}
+
 export function setupEventListeners() {
 	window.addEventListener('resize', resizeCanvas);
 	document.addEventListener("keydown", keyDownHandler, false);
 	document.addEventListener("keyup", keyUpHandler, false);
+	window.addEventListener("beforeunload", handleRelodQuit)
+	window.addEventListener("hashchange", handleRelodQuit)
 	if (statePongGame == "local" || statePongGame == "ai_bot") {
 		replay.addEventListener("click", replayLocalGame);
 		pong_menu.addEventListener("click", fnGameOver);
@@ -77,6 +87,9 @@ export function removeEventsListener() {
 	document.removeEventListener("keydown", keyDownHandler);
 	document.removeEventListener("keyup", keyUpHandler);
 	window.removeEventListener('mousemove', setMousePosition);
+	window.removeEventListener('beforeunload', handleRelodQuit);
+	window.removeEventListener("hashchange", handleRelodQuit)
+
 }
 
 
@@ -121,3 +134,9 @@ let lanceGame = async () => {
 
 initPlayGame(lanceGame);
 replayGame();
+
+
+// window.addEventListener("blur", handleblur)
+// window.addEventListener("hashchange", hashchange)
+// socket.addEventListener("close", disconnect)
+// window.addEventListener("beforeunload", handleRelodQuit)

@@ -18,7 +18,7 @@ window.env = {
 	DJANGO_HOSTNAME : "c3r4p5.1337.ma"
 };
 
-function sendScore(left_paddle_score, right_paddle_score) {
+export function sendScore(left_paddle_score = lpaddle.nb_goal, right_paddle_score = rpaddle.nb_goal) {
 	const url = "https://127.0.0.1:9006/api/gamedb/add-game-score/";
 	// const url = "http://"+ window.env.DJANGO_HOSTNAME +":8080/server/auth/users/me/";
 	let data;
@@ -50,6 +50,8 @@ function draw_info(data) {
 	const data_ball = JSON.parse(data.ball);
 	const data_right_paddle = JSON.parse(data.right_paddle);
 	const data_left_paddle = JSON.parse(data.left_paddle);
+	lpaddle.nb_goal = data_left_paddle.nb_goal;
+	rpaddle.nb_goal = data_right_paddle.nb_goal;
 	if (data_ball.ballOut > 10 && data_ball.ballOut != 59){
 		let r = (data_ball.ballOut - 10)/ 50
 		sphere.position.z -= r * (Math.abs((data_ball.y * TABLE_WIDTH) / height)
@@ -57,7 +59,7 @@ function draw_info(data) {
 		sphere.position.x += (1 - r) * ((data_ball.y * TABLE_WIDTH) / height);
 		sphere.position.y += (1 - r) * ((data_ball.x * TABLE_DEPTH) / width);
 	}
-	else if (data_ball.ballOut == 59 && data_right_paddle.nb_goal < 3 && data_left_paddle.nb_goal < 3)
+	else if (data_ball.ballOut == 59 && rpaddle.nb_goal < 3 && lpaddle.nb_goal < 3)
 		descounter();
 	else {
 		sphere.position.x = ((data_ball.y - (height / 2)) * (TABLE_WIDTH / 2)) / (height / 2);
@@ -66,8 +68,8 @@ function draw_info(data) {
 	}
 	lpaddle.position.x = ((data_left_paddle.y - (height / 2)) * (TABLE_WIDTH / 2)) / (height / 2) + PADDLE_LONG / 2;
 	rpaddle.position.x = ((data_right_paddle.y - (height / 2)) * (TABLE_WIDTH / 2)) / (height / 2) + PADDLE_LONG / 2;
-	first_player_goal.innerHTML = data_right_paddle.nb_goal;
-	second_player_goal.innerHTML = data_left_paddle.nb_goal;
+	first_player_goal.innerHTML = rpaddle.nb_goal;
+	second_player_goal.innerHTML = lpaddle.nb_goal;
 }
 
 export function fnGameOver(state = "rtn_menu") {
@@ -107,14 +109,6 @@ export async function localGameSocket(group_name) {
 	}
 }
 
-function sendDataToPlayerPaddle() {
-	let data = data_remote_player;
-	data.type_msg = 'add_group';
-	data.group_name = data_remote_player.game_id;
-	data.token = localStorage.getItem("token");
-	return (data);
-}
-
 function choicePaddle({name_current_user, player1_name}) {
 	(name_current_user === player1_name) ? leftPaddle() : rightPaddle();
 	console.log("=============> choicePaddle <================");
@@ -133,7 +127,7 @@ export async function paddleSocket(group_name) {
 		let ws = new WebSocket(wssUrl);
 		ws.onopen = async (event) => {
 			console.log('paddle game WebSocket conection established.');
-			await ws.send(JSON.stringify(sendDataToPlayerPaddle()));
+			await ws.send(JSON.stringify({'type_msg': 'add_group', 'group_name': data_remote_player.game_id}));
 			await ws.send(JSON.stringify({'type_msg': 'assigning_paddle', 'paddle': choicePaddle(data_remote_player)}));
 			await sendPlayerPaddleCreated();
 		}
@@ -161,15 +155,15 @@ async function connectBallSocket() {
 		let ws = new WebSocket(wssUrl);
 		ws.onopen = async (event) => {
 			console.log('remote game WebSocket conection established.');
-			await ws.send(JSON.stringify(sendDataToPlayerPaddle()));
+			await ws.send(JSON.stringify({'type_msg': 'add_group', 'group_name': data_remote_player.game_id}));
 		}
 		ws.onmessage = (event) => {
 			const message = JSON.parse(event.data);
 			console.log("remote game message:", message);
 			if (message.type_msg === "create_ball_socket")
 				ws.send(JSON.stringify({'type_msg': 'move'}));
-			// else if (message.type === "game_over")
-			// 	sendScore(message.left_paddle_score, message.right_paddle_score);
+			else if (message.type === "game_over")
+				sendScore(message.left_paddle_score, message.right_paddle_score);
 			else if (message.type_msg === "play")
 				descounterRemoteGame();
 		}
@@ -184,7 +178,7 @@ initPlayRemoteGame(connectBallSocket);
 async function descounterRemoteGame() {
 	back_counter.style.display = 'flex';
 	for(let c=3; c > 0; c--) {
-		counter.textContent = c;
+		back_counter.textContent = c;
 		await sleep(1);
 	}
 	back_counter.style.display = 'none';

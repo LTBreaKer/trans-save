@@ -62,6 +62,8 @@ class LocalGameConsumer(AsyncWebsocketConsumer):
             asyncio.create_task(self.update_ball(type))
         elif (type == 'stop'):
             self.ball.gameOver = True
+        elif (type == "close"):
+            await self.close(code=1000)
 
     async def update_ball(self, event):
         print("game_over: ", self.ball.gameOver, file=sys.stderr)
@@ -120,18 +122,10 @@ class LocalGameConsumer(AsyncWebsocketConsumer):
             'right_paddle_score': self.rpaddle.nb_goal,
         }))
         # endpoint = "https://127.0.0.1:9006/api/gamedb/add-game-score/"
-        # auth_header = f"Bearer {token}"
         # headers = {
         #     'Authorization': auth_header,
-		# 	'Content-Type': 'application/x-www-form-urlencoded'
         # }
         # data = {
-        #     'game_id': data.game_id,
-        #     'player1_name': data.player1_name,
-        #     'player2_name': data.player2_name,
-        #     'player1_id': data.player1_id,
-        #     'player2_id': data.player2_id,
-        #     'player1_score': data.player1_score,
-        #     'player2_score': data.player2_score,
+        #     'player1_name': ...
         # }
         # response = requests.post(url=endpoint, headers=headers, data=data, verify=False)

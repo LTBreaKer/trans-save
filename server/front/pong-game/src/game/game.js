@@ -46,6 +46,21 @@ async function moveRemotePaddle() {
 	}
 }
 
+export async function closeGameSocket() {
+	let ws = (statePongGame == "remote") ?
+		await paddle_socket :
+		await local_game_socket;
+	if (ws && ws.readyState == 1)
+		await ws.send(JSON.stringify({"type_msg": "close"}));
+}
+
+export async function checkSocketConnection() {
+	let ws = (statePongGame == "remote") ?
+	await paddle_socket :
+	await local_game_socket;
+	return (ws && ws.readyState == 1) ? 1: 0;
+}
+
 export async function sendSocket(){
 	const ws = await local_game_socket;
 	if (ws && ws.readyState == 1)
