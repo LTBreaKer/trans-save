@@ -8,6 +8,7 @@ class MyConsumer(AsyncWebsocketConsumer):
 
     async def connect(self):
         self.monitor = init.gameMonitor(self)
+        self.is_open = True
 
         await self.accept()
         await self.send(text_data=json.dumps({
@@ -77,4 +78,5 @@ class MyConsumer(AsyncWebsocketConsumer):
             self.monitor.esc = text_data_json.get('esc')
 
     async def disconnect(self, close_code):
+        self.is_open = False
         pass

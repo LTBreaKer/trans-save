@@ -166,15 +166,26 @@ services:
   #   entrypoint: truffle develop > /hmmm
   #   networks:
   #     - my_network
-  backend:
-    container_name: back
+  tag-back:
+    image: tag-back
+    container_name: tag-back
     build: ./backend/Tag
     ports:
       - 8005:8000 
-    command: python manage.py runserver 0.0.0.0:8000
-    
+    # command: python manage.py runserver 0.0.0.0:8000
+    command: python -m uvicorn project.asgi:application --reload --port 8000 --host 0.0.0.0 
     volumes:
       - ./backend/Tag/project:/usr/src/app/vv
+
+  remote_tag:
+      image: remote_tag
+      container_name: remote_tag
+      build: ./backend/tag-remote
+      ports:
+        - 8007:8005
+      volumes:
+      - ./backend/tag-remote:/game
+      command: python manage.py runserver 0.0.0.0:8005
  
   pong_back:
     container_name: pong_back
@@ -244,6 +255,21 @@ volumes:
       type: none
       device: ./server/front
       o: bind
+      
+  tag-back:
+    driver: local
+    driver_opts:
+        o: bind
+        type: none
+        device: ./backend/Tag/project/
+
+  remote_tag:
+    driver: local
+    driver_opts:
+        o: bind
+        type: none
+        device: ./backend/tag-remote/project/
+
 
 networks:
   my_network:

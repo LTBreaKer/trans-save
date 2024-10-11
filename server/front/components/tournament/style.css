@@ -322,10 +322,12 @@ display: none;
   .main-content .player_name {
     padding: 11px;
     width: 150px;
-    background-color: red;
+    background-color: black;
     font-size: 21px;
     margin: 12px;
-    
+    border-radius: 15px;
+    position: relative;
+    z-index: -1;
   }
 
   .main-content .string {
@@ -398,7 +400,7 @@ display: none;
 
   .winneer #winn {
     padding: 11px 25px;
-    background-color: red;
+    background-color: black;
     border-radius: 15px;
     margin: 25px;
   }
@@ -422,3 +424,60 @@ display: none;
     width: 50px;
     margin-bottom: 15px;
   }
+
+
+  .matches_hist .right_p {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .right_score {
+    position: absolute;
+    left: 10px;
+  }
+
+  .left_score {
+    position: absolute;
+    right: 15px;
+  }
+
+  .notifi_btn .send_request {
+    width: 100%;
+    height: 55px;
+    border-radius: 15px;
+    background-color: #7c7d85;
+    padding: 3px;
+    display: flex;
+    margin: 2px;
+    justify-content: center;
+  }
+  
+  
+  .send_request .img_text {
+    align-items: center;
+    display: flex;
+  }
+  
+  .send_request .img_text h6{
+    text-align:start;
+    margin: 5px;
+    width: 80px;
+  }
+  
+  .send_request .img_text img{
+    width: 45px;
+    height: 45px;
+    object-fit: cover;
+    border-radius: 50%;
+  }
+  
+  .send_request .acc_dec button  {
+    width: 50px;  
+    margin: 1px;
+    border-radius: 15px;
+    border: none;
+    height: 20px;
+    cursor: pointer;
+  }
+  
+  

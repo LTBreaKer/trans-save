@@ -1,35 +1,23 @@
 
-import { socket } from './game.js';
-import {imageR1, imageL1, imageIR1, imageIL1, imageR2, imageL2, imageIR2, imageIL2, arrow, go_arrow, numbers, background, platform} from './image_src.js';
+import { socket } from './game.js'
+import {imageR1, imageL1, imageIR1, imageIL1, imageR2, imageL2, imageIR2, imageIL2, arrow, go_arrow, numbers, background, platform} from './image_src.js'
+import {tag_game_info, setTagGameInfo} from '../ta/script.js'
+import {get_localstorage} from '../../auth.js'
 
-
+var api = "https://127.0.0.1:9007/api/tag-gamedb/"
 function start_game()
 {
-    const canvas = document.getElementById('canva');
-    
-    const c = canvas.getContext("2d");
-    canvas.width = 0;
-
-    function load_draw(image, x, y, width, height)
+    if (!tag_game_info)
     {
-        if (image.complete && image.naturalWidth !== 0)
-        {
-            c.drawImage(image, x, y, width, height)
-        }
-        else
-        {
-            image.onerror = ()=>{
-                console.error("Failed to load the image.", image.src);
-                return 0
-            }
-            image.onload = ()=>{
-                c.drawImage(image, x, y, width, height)
-            }
-        }
+        console.error("invalid players")
+        window.location.hash = '/'
+        socket.close()
+        return
     }
-    
+
     class Player{
-        constructor({imgR, imgL, imgIR, imgIL}) {
+        constructor({imgR, imgL, imgIR, imgIL, ply_name}) {
+            this.name = ply_name
             this.imageR = imgR
             this.imageL = imgL
             this.imageIdlR = imgIR
@@ -75,15 +63,45 @@ function start_game()
         draw() {
             c.save()
     
-            c.shadowColor = 'rgba(32, 174, 221, 0.8)'; 
-            c.shadowBlur = 30;                    // Blur radius for the shadow
-            c.shadowOffsetX = 2;                 // Horizontal shadow offset
-            c.shadowOffsetY = 2;                 // Vertical shadow offset
+            c.shadowColor = 'rgba(32, 174, 221, 0.8)' 
+            c.shadowBlur = 30                    // Blur radius for the shadow
+            c.shadowOffsetX = 2                 // Horizontal shadow offset
+            c.shadowOffsetY = 2                 // Vertical shadow offset
             load_draw(platform, this.position.x ,this.position.y, this.width, this.height)
             c.restore()
         }
     }
     
+    async function game_score(winner)
+    {
+        const data = {
+            game_id: tag_game_info.game_id,
+            winner_name: winner
+        }
+        console.log(data)
+        try{
+            const response = await fetch(api + 'add-game-score/', {
+                method: 'POST',
+                headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + get_localstorage('token'),
+                },
+                credentials: 'include',
+                body: JSON.stringify(data)
+            });
+            const jsonData = await response.json()
+            console.log("Add score =>", jsonData)
+          
+            if (!response.ok) {
+              console.error(`HTTP error! Status: ${response.status}, Message: ${jsonData.message || 'Unknown error'}`)
+            }
+        }
+        catch(error){
+            console.error('Request failed', error)
+        }
+        
+    }
+
     function draw_timer(time, player)
     {
         let dec = Math.floor(time/10)
@@ -94,8 +112,8 @@ function start_game()
     
     async function rain()
     {
-        let raindrops = [];
-        let count = canvas.width * 60 / 1697;//
+        let raindrops = []
+        let count = canvas.width * 60 / 1697//
     
         for (let i = 0; i < count; i++) {
             raindrops.push({
@@ -103,36 +121,40 @@ function start_game()
                 y: Math.random() * canvas.height,
                 speedX: canvas.width * -20 / 1697, // Horizontal wind effect          //
                 length: canvas.height * (Math.random() * 20 + 30) / 955 //
-            });
+            })
         }
     
         raindrops.forEach(raindrop => {
             // Create a gradient for the raindrop
-            let grd = c.createLinearGradient(raindrop.x, raindrop.y, raindrop.x + raindrop.speedX, raindrop.y + raindrop.length);
-            grd.addColorStop(0, "rgba(255, 255, 255, 0.2)");
-            grd.addColorStop(1, "rgba(255, 255, 255, 0)");
+            let grd = c.createLinearGradient(raindrop.x, raindrop.y, raindrop.x + raindrop.speedX, raindrop.y + raindrop.length)
+            grd.addColorStop(0, "rgba(255, 255, 255, 0.2)")
+            grd.addColorStop(1, "rgba(255, 255, 255, 0)")
     
-            c.strokeStyle = grd;
-            c.lineWidth = canvas.height * 3.5 / 955;//
+            c.strokeStyle = grd
+            c.lineWidth = canvas.height * 3.5 / 955//
     
-            c.beginPath();
-            c.moveTo(raindrop.x, raindrop.y);
-            c.lineTo(raindrop.x + raindrop.speedX, raindrop.y + raindrop.length);
-            c.stroke();
-        });
+            c.beginPath()
+            c.moveTo(raindrop.x, raindrop.y)
+            c.lineTo(raindrop.x + raindrop.speedX, raindrop.y + raindrop.length)
+            c.stroke()
+        })
     }
-    
+
+    const canvas = document.getElementById('canva')
+    const c = canvas.getContext("2d")
     const platforms = Array.from({ length: 15 }, () => new Platform())
-    const players = [new Player({imgR:imageR1, imgL:imageL1, imgIR:imageIR1, imgIL:imageIL1}), new Player({imgR:imageR2, imgL:imageL2, imgIR:imageIR2, imgIL:imageIL2})]
+    const players = [new Player({imgR:imageR1, imgL:imageL1, imgIR:imageIR1, imgIL:imageIL1, ply_name:tag_game_info.player1_name}), new Player({imgR:imageR2, imgL:imageL2, imgIR:imageIR2, imgIL:imageIL2, ply_name:tag_game_info.player2_name})]
     let GO = false
     let time = 1
     let winner
     let esc = false
+
+    canvas.width = 0
     resizeWindow()
     animation()
 
     function delay(ms) {
-        return new Promise(resolve => setTimeout(resolve, ms));
+        return new Promise(resolve => setTimeout(resolve, ms))
     }
 
     async function blink()
@@ -153,12 +175,10 @@ function start_game()
             await delay(100)
         }
     }
-
-    setInterval(blink, 2000)
-
+    const blinK = setInterval(blink, 2000)
     function animation()
     {
-
+        // console.log(winner)
 
         if (socket.readyState === WebSocket.OPEN)
         {
@@ -181,8 +201,7 @@ function start_game()
 
         window.requestAnimationFrame(animation)
         c.clearRect(0, 0, canvas.width, canvas.height)
-        load_draw(background, 0, 0, canvas.width, canvas.height)
-        
+        load_draw(background, 0, 0, canvas.width, canvas.height)    
 
         left_right()
     
@@ -199,31 +218,54 @@ function start_game()
                     load_draw(arrow, player.position.x + player.width/4, player.position.y - player.height, player.width/2, player.height/2)
             }
         })
-        rain();
+        rain()
 
         draw_timer(time, players[0])
-        if (time === 0 && socket.readyState === WebSocket.OPEN) //announce the winner I'm still in the game
+        if (time === 0 && socket.readyState === WebSocket.OPEN)
         {
             pause_game()
-            if (winner === '𝙍𝙚𝙙')
+            if (winner === players[0].name)
                 document.getElementById('overlay').style.textShadow = '2px 0px 8px rgba(207, 62, 90, 0.8)'
             else
                 document.getElementById('overlay').style.textShadow = '2px 0px 8px rgba(32, 174, 221, 0.8)'
 
             const overlay = document.querySelector('.overlay-text')
-            overlay.textContent = winner + ' 𝙬𝙞𝙣𝙨'
+            overlay.textContent = winner + ' wins'
             socket.close()
             time = 1
         }
-        if (window.location.hash !== "#/game")
-        {
-            socket.close()
-            window.removeEventListener("keydown", handleKeydown)
-            window.removeEventListener("keyup", handleKeyup)
-            window.removeEventListener("blur", handleblur)
-        }
+        // if (window.location.hash !== "#/game")
+        // {
+        //     // if (!winner)
+        //     //     game_score("unknown")
+        //     // winner = null
+
+
+        //     socket.close()
+        //     window.removeEventListener("keydown", handleKeydown)
+        //     window.removeEventListener("keyup", handleKeyup)
+        //     window.removeEventListener("blur", handleblur)
+        // }
     }
     
+    function load_draw(image, x, y, width, height)
+    {
+        if (image.complete && image.naturalWidth !== 0)
+        {
+            c.drawImage(image, x, y, width, height)
+        }
+        else
+        {
+            image.onerror = ()=>{
+                console.error("Failed to load the image.", image.src)
+                return 0
+            }
+            image.onload = ()=>{
+                c.drawImage(image, x, y, width, height)
+            }
+        }
+    }
+
     function left_right()
     {
         if (esc)
@@ -285,7 +327,6 @@ function start_game()
     
     })
 
-    window.addEventListener("resize", resizeWindow)
     function resizeWindow()
     {
         if (socket.readyState === WebSocket.OPEN)
@@ -294,6 +335,8 @@ function start_game()
                 'action': 'window resize',
                 'window_innerHeight': window.innerHeight,
                 'window_innerWidth': window.innerWidth,
+                'player0_name': players[0].name,
+                'player1_name': players[1].name
             }))
         }
     }
@@ -303,7 +346,7 @@ function start_game()
         // console.log(window.location.hash)
         if (!esc)
         {
-            document.getElementById('overlay').style.visibility = 'visible';
+            document.getElementById('overlay').style.visibility = 'visible'
             esc = true
             return
         }
@@ -311,7 +354,7 @@ function start_game()
         if (esc && socket.readyState === WebSocket.OPEN)
         {
             esc = false
-            document.getElementById('overlay').style.visibility = 'hidden';
+            document.getElementById('overlay').style.visibility = 'hidden'
         }
     }
 
@@ -426,44 +469,84 @@ function start_game()
         }
     }
 
-    window.addEventListener("keydown", handleKeydown) 
-    window.addEventListener("keyup", handleKeyup)
-    
     function quitgame()
     {
-        socket.close()
-        document.getElementById('overlay').style.visibility = 'hidden';
+        reload_data()
+        document.getElementById('overlay').style.visibility = 'hidden'
         esc = false
-        window.removeEventListener("keydown", handleKeydown)
-        window.removeEventListener("keyup", handleKeyup)
-        window.removeEventListener("blur", handleblur)
         window.location.hash = '/'
     }
-
-    let button = document.querySelector('.overlay-button')
-
-    button.addEventListener("click", quitgame)
 
     function handleblur()
     {
         players.forEach(player=>{
             if (player.keyStatus.leftPressed)
-                {
-                    player.keyStatus.leftPressed = false
-                    player.image = player.imageIdlL[2]
-                }
-            
-                if (player.keyStatus.rightPressed)
-                {
-                    player.keyStatus.rightPressed = false
-                    player.image = player.imageIdlR[2]
-                }
-            
-                if (!player.keyStatus.upreleased)
-                    player.keyStatus.upreleased = true
+            {
+                player.keyStatus.leftPressed = false
+                player.image = player.imageIdlL[2]
+            }
+        
+            if (player.keyStatus.rightPressed)
+            {
+                player.keyStatus.rightPressed = false
+                player.image = player.imageIdlR[2]
+            }
+        
+            if (!player.keyStatus.upreleased)
+                player.keyStatus.upreleased = true
         })
     }
+
+    let button = document.querySelector('.overlay-button')
+
+    button.addEventListener("click", quitgame)
+    window.addEventListener("resize", resizeWindow)
+
+    window.addEventListener("keydown", handleKeydown) 
+    window.addEventListener("keyup", handleKeyup)
+
     window.addEventListener("blur", handleblur)
+    window.addEventListener("hashchange", hashchange)
+    socket.addEventListener("close", disconnect)
+    window.addEventListener("beforeunload", handleRelodQuit)
+
+    function handleRelodQuit(event)
+    {
+        console.log("beforeunload")
+        disconnect()
+        event.preventDefault() // This is needed in some browsers to trigger the alert
+    }
+
+    function disconnect()
+    {
+        if (winner === null)
+            winner = "unknown"
+        game_score(winner)
+        winner = null
+        setTagGameInfo(null)
+    }
+
+    function hashchange()
+    {
+        if (window.location.hash !== "#/game")
+        {
+            reload_data()
+            console.log("Hash changed, and it's not #/game!")
+        }
+    }
+
+    function reload_data()
+    {
+        socket.close()
+
+        window.removeEventListener("keydown", handleKeydown)
+        window.removeEventListener("keyup", handleKeyup)
+        window.removeEventListener("blur", handleblur)
+        window.removeEventListener("hashchange", hashchange)
+        window.removeEventListener("close", disconnect)
+        window.removeEventListener("beforeunload", handleRelodQuit)
+        clearInterval(blinK)
+    }
 }
 
 export {start_game}

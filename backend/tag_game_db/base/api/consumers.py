@@ -2,6 +2,8 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 import json
 from .helpers import check_auth, get_user
 from asgiref.sync import sync_to_async
+from channels.db import database_sync_to_async
+import asyncio
 
 class RemoteGame(AsyncWebsocketConsumer):
     async def connect(self):
@@ -39,47 +41,60 @@ class RemoteGame(AsyncWebsocketConsumer):
             player_id = text_data_json['player_id']
             if not player_id or not game_id:
                 await self.send(text_data=json.dumps({
+                    'type': 'error',
                     'error': 'game_id and player_id required'
                 }))
                 return
             game_id = int(game_id)
             player_id = int(player_id)
             try:
-                game = await sync_to_async(TagGameDb.objects.get)(id=game_id)
+                game = await database_sync_to_async(TagGameDb.objects.get)(id=game_id)
             except TagGameDb.DoesNotExist:
                 await self.send(text_data=json.dumps({
+                    'type': 'error',
                     'error': 'Game not found'
                 }))
                 return
 
             if player_id == game.player1_id:
+                await asyncio.sleep(0.2)
                 if game.player1_connected:
                     await self.send(text_data=json.dumps({
+                        'type': 'error',
                         'error': 'Player already connected'
                     }))
                     return
-                game.player1_connected = True
-                await sync_to_async(game.save)()
+                
+                await database_sync_to_async(TagGameDb.objects.filter(id=game_id).update)(player1_connected=True)
+
+                game = await database_sync_to_async(TagGameDb.objects.get)(id=game_id)
+
             elif player_id == game.player2_id:
                 if game.player2_connected:
                     await self.send(text_data=json.dumps({
+                        'type': 'error',
                         'error': 'Player already connected'
                     }))
                     return
-                game.player2_connected = True
-                await sync_to_async(game.save)()
+                await database_sync_to_async(TagGameDb.objects.filter(id=game_id).update)(player2_connected=True)
+
+                game = await database_sync_to_async(TagGameDb.objects.get)(id=game_id)
+
             else:
                 await self.send(text_data=json.dumps({
+                    'type': 'error',
                     'error': 'No player found with the provided player_id'
                 }))
                 return
             
             if game.player1_connected and game.player2_connected:
                 await self.send(text_data=json.dumps({
+                    'type': 'message',
                     'message': 'Both players are connected'
                 }))
             else:
                 await self.send(text_data=json.dumps({
+                    'type': 'message',
                     'message': 'Waiting for second player to connect'
                 }))
 

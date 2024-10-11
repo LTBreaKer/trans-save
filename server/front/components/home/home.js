@@ -3,6 +3,7 @@ import { loadHTML, loadCSS, player_webSocket } from '../../utils.js';
 import { login ,log_out_func, logoutf, get_localstorage, getCookie } from '../../auth.js';
 import {tag_game_info} from '../ta/script.js'
 import {check_friends_status} from '../profile/profile.js'
+import {setHeaderContent, setNaveBarContent} from '../tournament/script.js';
 
 
 
@@ -16,7 +17,8 @@ async function Home() {
   app.innerHTML = html;
   await loadCSS('./components/home/home.css');
   
-
+  setHeaderContent();
+  setNaveBarContent();
   check_friends_status();
   await checkFirst();
   player_webSocket();
@@ -29,26 +31,26 @@ async function Home() {
 
 // i will work with #butt
 
-  const butt = document.querySelector('#butt');
-  const side = document.querySelector('.sidebar');
+  // const butt = document.querySelector('#butt');
+  // const side = document.querySelector('.sidebar');
 
-  butt.addEventListener('click', function() {
+  // butt.addEventListener('click', function() {
     
-    side.classList.toggle('active');
-  });
+  //   side.classList.toggle('active');
+  // });
 
-  document.addEventListener('click', (event) => {
-    if (!side.contains(event.target) && !butt.contains(event.target)) {
-      side.classList.remove('active');
-    }
-  });
+  // document.addEventListener('click', (event) => {
+  //   if (!side.contains(event.target) && !butt.contains(event.target)) {
+  //     side.classList.remove('active');
+  //   }
+  // });
 
-  const notific = document.querySelector('.notification');
-  const notifi_display = document.querySelector('.notifi_btn');
+  // const notific = document.querySelector('.notification');
+  // const notifi_display = document.querySelector('.notifi_btn');
 
-  notific.addEventListener('click', function() {
-    notifi_display.classList.toggle('active');
-  })
+  // notific.addEventListener('click', function() {
+  //   notifi_display.classList.toggle('active');
+  // })
 
 // ===== ===== ===== ====== ===== ====== ======
 

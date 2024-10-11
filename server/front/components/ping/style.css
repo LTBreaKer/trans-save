@@ -660,7 +660,7 @@ display: none;
     padding: 15px;
     margin: 25px;
     width: 18px 32px;
-    background-color: rgb(235, 222, 222);
+    background-color: #0E5A84;
     border-radius: 25px;
   }
 
@@ -683,8 +683,8 @@ display: none;
   .players h3 {
     padding: 10px;
     margin: 10px;
-    width: 155px;
-    background-color: rgb(78, 69, 69);
+    width: 185px;
+    background-color: #0E5A84;
     border-radius: 25px;
     display: flex;
     justify-content: center;

@@ -49,24 +49,6 @@ async function Ping() {
   btn_ai.addEventListener('click', aiGame);
   remote_butt_game.addEventListener('click', remore_game_fun);
   _player_webSocket = await connectPlayerSocket();
-
-
-  // here i'm working with tournament and players
-
-//   const start_tournament = document.getElementById('tournament_game_btt');
-//   const tournament_players = document.querySelector('.tournament_players');
-//   const tournament_close = document.querySelector('.bi-x');
-
-//   start_tournament.addEventListener('click', () => {
-//     tournament_players.style.display = 'flex';
-//   })
-
-// tournament_close.addEventListener('click', () => {
-//   tournament_players.style.display = 'none';
-// })
-
-
-
   
 }
 
