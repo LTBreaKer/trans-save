@@ -61,6 +61,7 @@ async function handleRelodQuit() {
 	sendScore() :
 	(paddle_way == 1 ? sendScore(0, 3) : sendScore(3, 0));
 	closeGameSocket();
+	fnGameOver();
 }
 
 export function setupEventListeners() {

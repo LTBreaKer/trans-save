@@ -192,6 +192,7 @@ services:
     env_file: .env
     volumes:
       - ./backend/pong_backend/pong_game:/app/pong_game
+    # entrypoint: /entrypoint.sh
   jupyter:
     container_name: jupyter
     networks:
