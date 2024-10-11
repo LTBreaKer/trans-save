@@ -1,5 +1,7 @@
 import { loadHTML, loadCSS, player_webSocket} from '../../utils.js';
 import { log_out_func ,login , logoutf, get_localstorage, getCookie } from '../../auth.js';
+import {tournament_data, tournament} from '../ping/script.js';
+let tournament_here = tournament_data;
 var api = "https://127.0.0.1:9004/api/";
 var api_game = "https://127.0.0.1:9006/api/gamedb/";
 let game_socket = "wss://127.0.0.1:9006/ws/game-db/"
@@ -15,10 +17,63 @@ async function Tournament() {
   setNaveBarContent();
   await checkFirst();
   player_webSocket();
+  set_players_sh();
+
 
   const logout = document.getElementById('logout')
   
   logout.addEventListener('click', log_out_func);
+
+  const next_match = document.getElementById('next_match');
+  
+  next_match.addEventListener('click', async () => {
+
+    console.log(tournament_data.tournament_matches);
+    tournament_data.tournament_matches.map(element => {
+      console.log("hello we ar")
+      console.log(tournament_data);
+        console.log("==> ", element);
+    });
+
+  //   const participants = {
+  //     match_id: name,
+  //     tournament_id: kdfj
+  //   }
+
+
+  //   console.log("hello we are from morocco ")
+  //   try {
+  //     const response = await fetch(tournament + 'start-match/', {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //         'Authorization': 'Bearer ' + get_localstorage('token'),
+  //       },
+  //       credentials: 'include',
+  //       body: JSON.stringify(participants)
+  //     });
+  //     console.log(response);
+  //     const jsonData = await response.json();
+  //     console.log(jsonData);
+  
+  //     if (!response.ok) {
+  //       throw new Error(`HTTP error! Status: ${response.status}`);
+  //     }
+  //     // await login(jsonData.access, jsonData.refresh);
+      
+  //   } catch (error) {
+  //     console.error('There was a problem with the fetch e here operation:', error);
+  //   }
+  
+  })
+
+  // console.log(tournament_data.tournament_matches)
+  // console.log(tournament_data.tournament_matches[0])
+  // const scoore = document.getElementById('scoore');
+  // scoore.innerText = "4";
+
+  // match3_player2.innerText = "hello";
+
   // const notific = document.querySelector('.notification');
   // const notifi_display = document.querySelector('.notifi_btn');
 
@@ -38,7 +93,108 @@ async function Tournament() {
   //   }
   // });
 
+  get_stage();
+}
 
+
+async function get_stage() {
+  const participants = {
+    tournament_id: 11
+  }
+    try {
+      const response = await fetch(tournament + 'get-next-stage/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + get_localstorage('token'),
+        },
+        credentials: 'include',
+        body: JSON.stringify(participants)
+      });
+      console.log(response);
+      const jsonData = await response.json();
+      console.log("here stage or next stage=> ", jsonData);
+  
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      // await login(jsonData.access, jsonData.refresh);
+      
+    } catch (error) {
+      console.error('There was a problem with the fetch e here operation:', error);
+    }
+
+
+
+}
+
+function set_players_sh() {
+  const main_content  = document.getElementById('players_sh_content');
+
+  main_content.innerHTML = `
+              <div class="matches_hist">
+
+                <div class="first_match">
+                    <div class="match_n1 string">
+                      <p id="player1_match1" class="player_name">${tournament_data?.tournament_matches[0].playerOneName} <span class="left_score">8</span></p>
+                        <h2>Vs</h2>
+                        <p id="player2_match1" class="player_name"> ${tournament_data?.tournament_matches[0].playerTwoName}<span class="left_score">5</span></p>
+                    </div>
+                    <div class="match_n2 string">
+                        <p id="player1_match2" class="player_name"> ${tournament_data?.tournament_matches[1].playerOneName}<span class="left_score">5</span></p>
+                        <h2>Vs</h2>
+                        <p id="player2_match2" class="player_name"> ${tournament_data?.tournament_matches[1].playerOneName}<span class="left_score">5</span></p>
+                    </div>
+                </div>
+
+
+                <div class="center_matches">
+                    <fiv class="match_2">
+                        <p id="player1_match5" class="player_name topp"> <span class="left_score">5</span></p>
+                        <h2>Vs</h2>
+                        <p id="player2_match5" class="player_name downn"> <span class="left_score">5</span></p>
+
+                    </fiv>
+                    <fiv class="match_final">
+                        <p id="player1_match7" class="player_name"><span class="left_score">5</span></p>
+                        <h2>Vs</h2>
+                        <p id="player2_match7" class="player_name "><span class="left_score">5</span></p>
+
+                    </fiv>
+                    <fiv class="match_2">
+                        <p id="player1_match6"  class="player_name topp right_p"> <span class="right_score">5</span>  </p>
+                        <h2>Vs</h2>
+                        <p id="player2_match6"  class="player_name downn right_p"><span class="right_score">5</span> </p>
+
+                    </fiv>
+                </div>
+
+
+                <div class="first_match">
+                    <div class="match_n1 string">
+                        <p id="player1_match3" class="player_name right_p"><span class="right_score" id="scoore"></span> ${tournament_data?.tournament_matches[2].playerOneName}</p>
+                        <h2>Vs</h2>
+                        <p id="player2_match3" class="player_name right_p"><span class="right_score">5</span>${tournament_data?.tournament_matches[2].playerOneName} </p>
+                    </div>
+                    <div class="match_n2 string">
+                        <p id="player1_match4" class="player_name right_p"><span class="right_score">5</span>${tournament_data?.tournament_matches[3].playerOneName} </p>
+                        <h2>Vs</h2>
+                        <p id="player1_match4" class="player_name right_p"><span class="right_score">5</span>${tournament_data?.tournament_matches[3].playerOneName} </p>
+                    </div>
+                </div>
+            </div>
+            <div class="winner_nextgame">
+                <h2 id="next_match">Start Match  <i class="bi bi-arrow-right-circle-fill"></i></h2>
+                <div class="winneer">
+                    <h2 id="winn">Winner <i class="bi bi-trophy-fill"></i></h2>
+                    <h3><i class="bi bi-trophy "></i> winner name</h3>
+                    <hr id="line1">
+                    <hr id="line2">
+                    <hr id="line3">
+                </div>
+            </div>
+
+  `
 }
 
 export function setHeaderContent() {

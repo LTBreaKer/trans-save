@@ -462,15 +462,15 @@ display: none;
     cursor: pointer;
   }
 
-  
+/*   
   .mer_cont .discription_game {
-    /* width: 100%;
+    width: 100%;
     display: flex;
     padding: 15px;
-    justify-content: center; */
+    justify-content: center;
   }
-  
-  .mer_cont .discription_game .text {
+   */
+  /* .mer_cont .discription_game .text { */
     /* background-color: rgba(25, 26, 29, 0.9);
     padding: 15px;
     width: 55%;
@@ -490,7 +490,7 @@ display: none;
     font-weight: 400;
     font-style: italic; */
       /* text-rendering: auto; */
-  }
+  /* } */
   
 
    /*  ======= ====== ====== ======= ======= ====== ======= ======= */

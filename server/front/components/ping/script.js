@@ -97,11 +97,6 @@ async function create_tournament_function(participants) {
     console.log(response);
     const jsonData = await response.json();
     console.log(jsonData);
-    console.log(jsonData.tournament_matches[0])
-    console.log(jsonData.tournament_matches[1])
-    console.log(jsonData.tournament_matches[2])
-    console.log(jsonData.tournament_matches[3])
-
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
@@ -117,7 +112,7 @@ async function create_tournament_function(participants) {
 }
 
 
-export {tournament_data};
+export {tournament_data, tournament};
 
 function gmaee() {
   const subprotocols = ['token', get_localstorage('token')];

@@ -321,6 +321,7 @@ display: none;
 
   .main-content .player_name {
     padding: 11px;
+    height: 45px;
     width: 150px;
     background-color: black;
     font-size: 21px;
@@ -383,8 +384,8 @@ display: none;
   .winner_nextgame #next_match {
     padding: 15px;
     width: 200px;
-    /* display: inline; */
-    display: none;
+    display: inline;
+    /* display: none; */
     /* align-items: center; */
     border-radius: 25px;
     cursor: pointer;
@@ -392,7 +393,7 @@ display: none;
   }
 
   .winner_nextgame .winneer {
-    display: flex;
+    display: none;
     flex-direction: column;
     align-items: center;
     padding: 15px;
