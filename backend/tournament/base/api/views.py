@@ -12,6 +12,49 @@ import sys
 
 tournament_count : int = 0
 
+def check_unfinished_tournament(w3, contract, creator_id):
+    try:
+        matches = contract.functions.getLatestTournament(creator_id).call()
+    except Exception as e:
+        return Response({'message': 'there is no unfinished tournament'}, status=200)
+
+    formatted_matches = [
+        {
+            'tournamentId': match[0],
+            'matchNumber': match[1],
+            'playerOneId': match[2],
+            'playerOneName': match[3],
+            'playerTwoId': match[4],
+            'playerTwoName': match[5],
+            'playerOneScore': match[6],
+            'playerTwoScore': match[7],
+            'winnerId': match[8],
+            'status': match[9],
+            'stage': match[10],
+        }
+        for match in matches
+    ]
+    if len(formatted_matches) != 7 or formatted_matches[6]['status'] != 'complete':
+        return Response({'message': 'tournament unfinished', 'tournament_matches': formatted_matches}, status=200)
+    
+    return Response({'message': 'there is no unfinished tournament'}, status=200)
+
+@api_view(['POST'])
+def check_tournament(request):
+    w3 = request.w3
+    contract = request.contract
+    AUTH_HEADER = request.META.get('HTTP_AUTHORIZATION')
+    auth_check_response = check_auth(AUTH_HEADER)
+    if auth_check_response.status_code != 200:
+        return Response(data=auth_check_response.json(), status=auth_check_response.status_code)
+    
+    creator_id = auth_check_response.json()['user_data']['id']
+
+    response = check_unfinished_tournament(w3, contract, creator_id)
+    return response
+
+    
+
 @api_view(['POST'])
 def create_tournament(request):
     global tournament_count
@@ -28,6 +71,11 @@ def create_tournament(request):
         return Response({'message': 'user not available to create tournament'}, status=400)
 
     creator_id = auth_check_response.json()['user_data']['id']
+
+    check_response = check_unfinished_tournament(w3=w3, contract=contract, creator_id=creator_id)
+
+    if check_response.data['message'] == 'tournament unfinished':
+        return check_response
 
     participants = request.data.get('participants', [])
 
