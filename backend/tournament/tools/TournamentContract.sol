@@ -63,6 +63,48 @@ contract TournamentContract {
         }
     }
 
+    function getLatestTournament(uint256 _creatorId) public view returns (Match[] memory _matches){
+        uint256 tournamentId;
+
+        require(tournaments.length > 0, "there are zero tournaments");
+
+        for (uint256 i = tournaments.length - 1; i >= 0; i--) {
+            if (tournaments[i].creatorId == _creatorId) {
+                tournamentId = tournaments[i].id;
+                break;
+            }
+        }
+
+        uint count = 0;
+        for (uint256 i = 0; i < matches.length; i++) {
+            if (matches[i].tournamentId == tournamentId) {
+                count++;
+            }
+        }
+
+        Match[] memory returnMatches =  new Match[](count);
+
+        uint index = 0;
+        for (uint256 i = 0; i < matches.length; i++) {
+            if (matches[i].tournamentId == tournamentId) {
+                returnMatches[index++] = Match({
+                    tournamentId: matches[i].tournamentId,
+                    matchNumber: matches[i].matchNumber,
+                    playerOneId: matches[i].playerOneId,
+                    playerOneName: matches[i].playerOneName,
+                    playerTwoId: matches[i].playerTwoId,
+                    playerTwoName: matches[i].playerTwoName,
+                    playerOneScore: matches[i].playerOneScore,
+                    playerTwoScore: matches[i].playerTwoScore,
+                    winnerId: matches[i].winnerId,
+                    status: matches[i].status,
+                    stage: matches[i].stage
+                });
+            }
+        }
+        return (returnMatches);
+    }
+
     function    getTournamentMatches(uint256 _tournamentId) public view returns (Match[] memory _matches) {
 
         require(tournaments.length > 0, "No tournaments exist");
