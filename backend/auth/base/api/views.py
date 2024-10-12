@@ -43,8 +43,8 @@ class CustomTokenObtainPairView(TokenObtainPairView):
         try:
             # raise Exception
             user = User.objects.get(username=request.data.get('username'))
-            if user.is_authentication_completed:
-                return Response({'message': 'user already logged in'}, status=400)
+            # if user.is_authentication_completed:
+            #     return Response({'message': 'user already logged in'}, status=400)
             response = super().post(request, args, kwargs)
             user.is_online = True
             user.is_logged_out = False

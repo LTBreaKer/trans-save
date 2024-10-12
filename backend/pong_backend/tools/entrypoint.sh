@@ -16,7 +16,7 @@
 #     			/etc/ssl/private/cert-key.pem
 # sleep infinity
 
-# python /app/pong_game/pong_game/manage.py makemigrations
-# python /app/pong_game/pong_game/manage.py migrate
+python /app/pong_game/pong_game/manage.py makemigrations
+python /app/pong_game/pong_game/manage.py migrate
 
-# exec "$@"
+exec "$@"

@@ -173,6 +173,13 @@ body {
 }
 
 /* ////// head ////// */
+@font-face {
+  font-family: 'Volax';
+  src: url('../assets/Valorax-lg25V.otf') format('opentype');
+  font-weight: bold;
+  font-style: italic;
+}
+
 .ml_cover_logo {
   display: flex;
   height: 52px;
@@ -241,6 +248,9 @@ body {
 .pong_sidebar li a:hover {
   background: var(--primary-color);
 }
+.ml_nav-link:hover {
+  background: var(--primary-color);
+}
 
 .pong_sidebar li a:hover .icon {
   color: var(--sidebar-color);
@@ -268,7 +278,9 @@ body {
   list-style: none;
   display: flex;
   display: flex;
-  margin: 10px 5px;
+  padding: 9px 4px;
+  margin: 1px 1px;
+  border-radius: 10px;
 }
 
 .ml_btn_content {
@@ -320,6 +332,7 @@ body {
 }
 
 .ml_local_game {
+  font-family: 'Volax', sans-serif;
   width: 290px;
   height: fit-content;
   min-height: 150px;
@@ -331,6 +344,9 @@ body {
   align-items: center;
   background-color: rgba(25, 26, 29, 0.6);
   color: #e8ebfb;
+  /* border-radius: 22%; */
+  /* border-radius: 1750px; */
+  border-radius: 14px;
 }
 
 .ml_description_game {
@@ -660,7 +676,7 @@ display: none;
     padding: 15px;
     margin: 25px;
     width: 18px 32px;
-    background-color: #0E5A84;
+    background-color: rgb(235, 222, 222);
     border-radius: 25px;
   }
 
@@ -683,8 +699,8 @@ display: none;
   .players h3 {
     padding: 10px;
     margin: 10px;
-    width: 185px;
-    background-color: #0E5A84;
+    width: 155px;
+    background-color: rgb(78, 69, 69);
     border-radius: 25px;
     display: flex;
     justify-content: center;

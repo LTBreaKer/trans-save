@@ -203,7 +203,9 @@ services:
     env_file: .env
     volumes:
       - ./backend/pong_backend/pong_game:/app/pong_game
-    # entrypoint: /entrypoint.sh
+    entrypoint: /entrypoint.sh
+    command: python /app/pong_game/pong_game/manage.py runserver 0.0.0.0:8006
+    # command: python manage.py runsslserver --certificate /etc/ssl/certs/cert.pem --key /etc/ssl/private/cert-key.pem 0.0.0.0:8006
   jupyter:
     container_name: jupyter
     networks:
