@@ -35,7 +35,9 @@ async function Ping() {
   const tournament_players = document.querySelector('.tournament_players');
   const tournament_close = document.querySelector('.bi-x');
 
-  start_tournament.addEventListener('click', () => {
+  start_tournament.addEventListener('click', async () => {
+    console.log("hello wa9ila khasoo yji hnaaa");
+    await check_tournament_finish();
     tournament_players.style.display = 'flex';
   })
 
@@ -79,6 +81,39 @@ tournament_star.addEventListener('click', async () => {
   
 }
 
+
+
+// here i will check if there is a tournament that are still not finished
+
+async function check_tournament_finish() {
+  try {
+    const response = await fetch(tournament + 'check-tournament/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + get_localstorage('token'),
+      },
+      credentials: 'include',
+    });
+    console.log(response);
+
+    const jsonData = await response.json();
+    console.log("here is messae: ", jsonData.message)
+    console.log("here are checked if there is any tournament or no ==>   ", jsonData);
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    if (jsonData.message === "tournament unfinished"){
+      window.location.hash = "/tournament";
+
+    }
+    // await login(jsonData.access, jsonData.refresh);
+    
+  } catch (error) {
+    console.error('There was a problem with the fetch operation:', error);
+  }
+
+}
 
 
 

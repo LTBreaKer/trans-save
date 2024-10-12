@@ -1,7 +1,9 @@
 import { loadHTML, loadCSS, player_webSocket} from '../../utils.js';
 import { log_out_func ,login , logoutf, get_localstorage, getCookie } from '../../auth.js';
-import {tournament_data, tournament} from '../ping/script.js';
-let tournament_here = tournament_data;
+// import {tournament} from '../ping/script.js';
+let tournament = "https://127.0.0.1:9008/api/tournament/";
+
+let tournament_data;
 var api = "https://127.0.0.1:9004/api/";
 var api_game = "https://127.0.0.1:9006/api/gamedb/";
 let game_socket = "wss://127.0.0.1:9006/ws/game-db/"
@@ -14,6 +16,7 @@ async function Tournament() {
   const app = document.getElementById('app');
   app.innerHTML = html;
   setHeaderContent();
+  await define_object_matches();
   setNaveBarContent();
   await checkFirst();
   player_webSocket();
@@ -29,10 +32,16 @@ async function Tournament() {
   next_match.addEventListener('click', async () => {
 
     console.log(tournament_data.tournament_matches);
-    tournament_data.tournament_matches.map(element => {
+     tournament_data.map(element  => {
+      if (element.status === "ongoing"){
+        add_tournament_match_score(element);
+      }
+      if (element.status === "upcoming") {
+        start_tournament_match(element);
+      }
       console.log("hello we ar")
-      console.log(tournament_data);
-        console.log("==> ", element);
+      // console.log(tournament_data);
+        // console.log("==> ", element);
     });
 
   //   const participants = {
@@ -94,22 +103,127 @@ async function Tournament() {
   // });
 
   get_stage();
+
 }
 
 
-async function get_stage() {
-  const participants = {
-    tournament_id: 11
-  }
+
+async function start_tournament_match(params) {
+  console.log("====>> ", params);
+
+    const participant = {
+      match_id: params.matchNumber,
+      tournament_id: params.tournamentId,
+    }
+    // const data = JSON.parse(participant);
+    const urlEncodedData = new URLSearchParams(participant);
+    console.log("djskfjksdjfksjd fsdfkjdsj =====? ", participant)
+    console.log("hello we are from morocco ")
     try {
-      const response = await fetch(tournament + 'get-next-stage/', {
+      const response = await fetch(tournament + 'start-match/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Authorization': 'Bearer ' + get_localstorage('token'),
+        },
+        credentials: 'include',
+        body: urlEncodedData
+      });
+      console.log(response);
+      const jsonData = await response.json();
+      console.log(jsonData);
+  
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      // await login(jsonData.access, jsonData.refresh);
+      
+    } catch (error) {
+      console.error('There was a problem with the fetch e here operation:', error);
+    }
+    // await add_tournament_match_scire(params);
+
+
+}
+// add-match-score
+
+
+async function add_tournament_match_score(params) {
+  const participants = {
+    match_id: params.matchNumber,
+    tournament_id: params.tournamentId,
+    player_one_score: 5, 
+    player_two_score: 7,
+  }
+
+  const urlEncodedData = new URLSearchParams(participants);
+  console.log("hello we are from morocco ")
+  try {
+    const response = await fetch(tournament + 'add-match-score/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Authorization': 'Bearer ' + get_localstorage('token'),
+      },
+      credentials: 'include',
+      body: urlEncodedData
+    });
+    const jsonData = await response.json();
+    console.log("here are match add score: =>  ", jsonData);
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    
+  } catch (error) {
+    console.error('There was a problem with the fetch e here operation:', error);
+  }
+
+}
+
+async function define_object_matches() {
+    try {
+      const response = await fetch(tournament + 'check-tournament/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer ' + get_localstorage('token'),
         },
         credentials: 'include',
-        body: JSON.stringify(participants)
+      });
+      console.log(response);
+  
+      const jsonData = await response.json();
+      tournament_data = jsonData.tournament_matches;
+      console.log("here is messae: ", tournament_data[0])
+
+      console.log("here are checked if there is any tournament or no ==>   ", jsonData);
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+    } catch (error) {
+      console.error('There was a problem with the fetch operation:', error);
+    }
+  
+    
+}
+
+
+async function get_stage() {
+  const participants = {
+    tournament_id: 0
+  }
+  const urlEncodedData = new URLSearchParams(participants);
+
+    try {
+      const response = await fetch(tournament + 'get-next-stage/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Authorization': 'Bearer ' + get_localstorage('token'),
+        },
+        credentials: 'include',
+        body: urlEncodedData
       });
       console.log(response);
       const jsonData = await response.json();
@@ -130,27 +244,27 @@ async function get_stage() {
 
 function set_players_sh() {
   const main_content  = document.getElementById('players_sh_content');
-
+  console.log("here we go again=? :  ", tournament_data[0].playerOneName)
   main_content.innerHTML = `
               <div class="matches_hist">
 
                 <div class="first_match">
                     <div class="match_n1 string">
-                      <p id="player1_match1" class="player_name">${tournament_data?.tournament_matches[0].playerOneName} <span class="left_score">8</span></p>
+                      <p id="player1_match1" class="player_name">${tournament_data[0].playerOneName} <span class="left_score">8</span></p>
                         <h2>Vs</h2>
-                        <p id="player2_match1" class="player_name"> ${tournament_data?.tournament_matches[0].playerTwoName}<span class="left_score">5</span></p>
+                        <p id="player2_match1" class="player_name"> ${tournament_data[0].playerTwoName}<span class="left_score">5</span></p>
                     </div>
                     <div class="match_n2 string">
-                        <p id="player1_match2" class="player_name"> ${tournament_data?.tournament_matches[1].playerOneName}<span class="left_score">5</span></p>
+                        <p id="player1_match2" class="player_name"> ${tournament_data[1].playerOneName}<span class="left_score">5</span></p>
                         <h2>Vs</h2>
-                        <p id="player2_match2" class="player_name"> ${tournament_data?.tournament_matches[1].playerOneName}<span class="left_score">5</span></p>
+                        <p id="player2_match2" class="player_name"> ${tournament_data[1].playerOneName}<span class="left_score">5</span></p>
                     </div>
                 </div>
 
 
                 <div class="center_matches">
                     <fiv class="match_2">
-                        <p id="player1_match5" class="player_name topp"> <span class="left_score">5</span></p>
+                        <p id="player1_match5" class="player_name topp"> ${tournament_data[0].playerOneName} <span class="left_score">5</span></p>
                         <h2>Vs</h2>
                         <p id="player2_match5" class="player_name downn"> <span class="left_score">5</span></p>
 
@@ -172,14 +286,14 @@ function set_players_sh() {
 
                 <div class="first_match">
                     <div class="match_n1 string">
-                        <p id="player1_match3" class="player_name right_p"><span class="right_score" id="scoore"></span> ${tournament_data?.tournament_matches[2].playerOneName}</p>
+                        <p id="player1_match3" class="player_name right_p"><span class="right_score" id="scoore"></span> ${tournament_data[2].playerOneName}</p>
                         <h2>Vs</h2>
-                        <p id="player2_match3" class="player_name right_p"><span class="right_score">5</span>${tournament_data?.tournament_matches[2].playerOneName} </p>
+                        <p id="player2_match3" class="player_name right_p"><span class="right_score">5</span>${tournament_data[2].playerOneName} </p>
                     </div>
                     <div class="match_n2 string">
-                        <p id="player1_match4" class="player_name right_p"><span class="right_score">5</span>${tournament_data?.tournament_matches[3].playerOneName} </p>
+                        <p id="player1_match4" class="player_name right_p"><span class="right_score">5</span>${tournament_data[3].playerOneName} </p>
                         <h2>Vs</h2>
-                        <p id="player1_match4" class="player_name right_p"><span class="right_score">5</span>${tournament_data?.tournament_matches[3].playerOneName} </p>
+                        <p id="player1_match4" class="player_name right_p"><span class="right_score">5</span>${tournament_data[3].playerOneName} </p>
                     </div>
                 </div>
             </div>
