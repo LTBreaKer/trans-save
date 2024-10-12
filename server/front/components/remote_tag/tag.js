@@ -1,27 +1,37 @@
 import { socket } from './script.js'
 import {imageR1, imageL1, imageIR1, imageIL1, imageR2, imageL2, imageIR2, imageIL2, arrow, go_arrow, numbers, background, platform} from './image_src.js';
 import {tag_game_info, setTagGameInfo} from '../ta/script.js'
-import {get_localstorage} from '../../auth.js'
+import {get_localstorage, check_access_token} from '../../auth.js'
 
-// tag_game_info = {
-//     game_id: ,
-//     player1name: ,
-//     player2name: ,
-//     player1_id: ,
-//     player2_id: 
-//   }
+var api = "https://127.0.0.1:9004/api/";
+var api_tag = "https://127.0.0.1:9007/api/tag-gamedb/"
 
-var api = "https://127.0.0.1:9007/api/tag-gamedb/"
-function start_game()
+async function fetchUserName() {
+    // await check_access_token();
+      try {
+        const userResponse = await fetch(api + 'auth/get-user/', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + get_localstorage('token')
+          },
+          credentials: 'include',
+        });
+        
+        if (!userResponse.ok)
+          throw new Error(`HTTP error! Status: ${response.status}, Message: ${jsonData.message || 'Unknown error'}`);
+
+        let data_user = await userResponse.json()
+        let username = data_user.user_data.username
+        return (username);
+      }
+      catch(error){
+        console.error('There was a problem with the fetch operation:', error);
+      }
+}
+
+async function start_game()
 {
-    console.log(tag_game_info)
-    if (!tag_game_info)
-    {
-        console.error("invalid players")
-        window.location.hash = '/'
-        socket.close()
-        return
-    }
 
     class Platform{
     
@@ -83,6 +93,7 @@ function start_game()
 
     async function game_score(winner)
     {
+        console.log("score sent")
         let winner_id
         if (winner === tag_game_info.player1name)
             winner_id =  tag_game_info.player1_id
@@ -94,9 +105,8 @@ function start_game()
             winner_name: winner,
             winner_id: winner_id
         }
-        console.log(data)
         try{
-            const response = await fetch(api + 'add-game-score/', {
+            const response = await fetch(api_tag + 'add-game-score/', {
                 method: 'POST',
                 headers: {
                 'Content-Type': 'application/json',
@@ -106,8 +116,6 @@ function start_game()
                 body: JSON.stringify(data)
             });
             const jsonData = await response.json()
-            console.log("Add score =>", jsonData)
-          
             if (!response.ok) {
               console.error(`HTTP error! Status: ${response.status}, Message: ${jsonData.message || 'Unknown error'}`)
             }
@@ -156,8 +164,6 @@ function start_game()
         });
     }
 
-    console.log("start game")
-
     const canvas = document.getElementById('canva');
     const c = canvas.getContext("2d");
     const platforms = Array.from({ length: 15 }, () => new Platform())
@@ -165,9 +171,32 @@ function start_game()
     
     let GO = false
     let time = 1
-    let winner
+    let winner, winner_color
 
     canvas.width = 0;
+    if (socket.readyState === WebSocket.OPEN)
+    {
+        let p1_name 
+        let p2_name
+        const username = await fetchUserName()
+
+        if (players[0].name === username)
+        {
+            p1_name = username 
+            p2_name = players[1].name 
+        }
+        else
+        {
+            p1_name = username
+            p2_name = players[0].name 
+        }
+        socket.send(JSON.stringify({
+            'action': 'players name',
+            'p1': p1_name,
+            'p2': p2_name,
+        }))
+    }
+
     resizeWindow()
     animation()
 
@@ -229,15 +258,6 @@ function start_game()
         draw_timer(time, players[0])
         if (time === 0 && socket.readyState === WebSocket.OPEN)
         {
-            document.getElementById('overlay').style.visibility = 'visible';
-            // game_score(winner)
-            if (winner === players[0].name)
-                document.getElementById('overlay').style.textShadow = '2px 0px 8px rgba(207, 62, 90, 0.8)'
-            else
-                document.getElementById('overlay').style.textShadow = '2px 0px 8px rgba(32, 174, 221, 0.8)'
-
-            const overlay = document.querySelector('.overlay-text')
-            overlay.textContent = winner + ' wins'
             socket.close()
             time = 1
         }
@@ -264,7 +284,6 @@ function start_game()
     function receive_message(event)
     {
         let socket_data = JSON.parse(event.data)
-        // console.log("from consumer", socket_data)
         if (socket_data.action === "game update")
         {
             canvas.height = socket_data.canvas_height
@@ -303,6 +322,7 @@ function start_game()
             GO = socket_data.GO
             time = socket_data.time
             winner = socket_data.winner
+            winner_color = socket_data.winner_color
         }
 
         if (socket_data.action === "update key")
@@ -336,7 +356,7 @@ function start_game()
 
     function resizeWindow()
     {
-        console.log("red:", players[0].name, "blue:", players[1].name)
+
         if (socket.readyState === WebSocket.OPEN)
             {
                 console.log("resize")
@@ -398,13 +418,6 @@ function start_game()
         }
     }
 
-    function quitgame()
-    {
-        reload_data()
-        document.getElementById('overlay').style.visibility = 'hidden'
-        window.location.hash = '#/ta'
-    }
-
     // function handleblur()
     // {
     //     players.forEach(player=>{
@@ -425,6 +438,13 @@ function start_game()
     //     })
     // }
 
+    function quitgame()
+    {
+        reload_data()
+        document.getElementById('overlay').style.visibility = 'hidden'
+        window.location.hash = '#/ta'
+    }
+
     let button = document.querySelector('.overlay-button')
 
     button.addEventListener("click", quitgame)
@@ -442,44 +462,42 @@ function start_game()
     function handleRelodQuit(event)
     {
         console.log("beforeunload")
-        disconnect()
+        if (socket.readyState === WebSocket.OPEN)
+            socket.close()
         event.preventDefault() // This is needed in some browsers to trigger the alert
     }
 
     function disconnect()
     {
-        // console.log("disconnected socket", window.location.hash)
-
-        if (winner === null)
-            winner = "unknown"
-        game_score(winner)
-        winner = null
-        // setTagGameInfo(null)
-        if (window.location.hash !== "#/remoteTag")
+        console.log("disconnected socket")
+      
+        if (window.location.hash === "#/remoteTag")
         {
             document.getElementById('overlay').style.visibility = 'visible';
-            if (winner === players[0].name)
-                document.getElementById('overlay').style.textShadow = '2px 0px 8px rgba(207, 62, 90, 0.8)'
-            else
-                document.getElementById('overlay').style.textShadow = '2px 0px 8px rgba(32, 174, 221, 0.8)'
+            document.getElementById('overlay').style.textShadow = winner_color
 
             const overlay = document.querySelector('.overlay-text')
             overlay.textContent = winner + ' wins'    
         }
+        if (winner)
+            game_score(winner)
+        winner = null
+        setTagGameInfo(null)
+        reload_data()
     }
 
     function hashchange()
     {
         if (window.location.hash !== "#/remoteTag")
         {
-            reload_data()
+            socket.close()
             console.log("Hash changed, and it's not #/remoteTag!")
         }
     }
 
     function reload_data()
     {
-        socket.close()
+        console.log("data reloaded")
 
         window.removeEventListener("keydown", keydown)
         window.removeEventListener("keyup", keyup)

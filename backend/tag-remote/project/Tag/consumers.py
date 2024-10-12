@@ -1,15 +1,14 @@
 import json
 import asyncio
 from channels.generic.websocket import AsyncWebsocketConsumer
-# from asgiref.sync import async_to_sync
 
-from . import init
-from .init import gameMonitor, Player
+from .init import gameMonitor, Player, resizeWindow
 
 class MyConsumer(AsyncWebsocketConsumer):
 
     players_c = []
     games = []
+    #[[1,[p1, p2]], [2,[p1, p2]]]
 
     async def connect(self):
         self.is_open = True
@@ -30,7 +29,6 @@ class MyConsumer(AsyncWebsocketConsumer):
             self.players_c.append(self)
 
         if len(self.players_c) == 2:
-            # await self.send_all('start game')
             self.players_c[0].monitor.players = [Player(0, "player"), Player(1, "enemy")]
             self.players_c[1].monitor.players = [Player(0, "enemy"), Player(1, "player")]
 
@@ -38,27 +36,28 @@ class MyConsumer(AsyncWebsocketConsumer):
         text_data_json = json.loads(text_data)
         action = text_data_json.get('action')
         game_id = text_data_json.get('game_id')
+
+        ###########################################################################################
         if self.is_open and action == "new game":
             if len(self.players_c) == 2:
                 if add_game_if_not_exists(self.games, game_id, self.players_c):
                     await self.send_all('start game')
 
-            # print(self.games)
-
-
+        ###########################################################################################
         if self.is_open and self.start_game and action == "window resize":
-            await init.resizeWindow(text_data_json, self, self.monitor)
+            await resizeWindow(text_data_json, self, self.monitor)
 
-            if self.monitor.players[self.id].name == None and self.monitor.players[self.enemy_id].name == None:
-                if self.id % 2 == 0:
-                    self.monitor.players[self.id].name = text_data_json.get("player0_name")
-                    self.monitor.players[self.enemy_id].name = text_data_json.get("player1_name")
-                else:
-                    self.monitor.players[self.id].name = text_data_json.get("player1_name")
-                    self.monitor.players[self.enemy_id].name = text_data_json.get("player0_name")
+        ###########################################################################################
+        if self.is_open and self.start_game and action == "players name":
+            self.monitor.players[self.id].name = text_data_json.get("p1")
+            self.monitor.players[self.enemy_id].name = text_data_json.get("p2")
+            print("status", self.monitor.players[self.id].status, self.monitor.players[self.id].name)
 
+        ###########################################################################################
         if self.is_open and self.start_game and action == "key update":
             index = get_game_index(self.games, self.game_id)
+            if len(self.games[index][1]) < 2:
+                return
 
             self.games[index][1][self.id].monitor.players[self.id].key['right'] = text_data_json.get('P0_rightPressed')
             self.games[index][1][self.enemy_id].monitor.players[self.id].key['right'] = text_data_json.get('P0_rightPressed')
@@ -76,6 +75,7 @@ class MyConsumer(AsyncWebsocketConsumer):
             if self.games[index][1][self.enemy_id].monitor.players[self.id].key['upReleas'] == False and self.games[index][1][self.enemy_id].monitor.players[self.id].key['upPressed'] == False:
                 self.games[index][1][self.enemy_id].monitor.players[self.id].velocity['y'] = self.games[index][1][self.enemy_id].monitor.players[self.id].vitesse['up']
                 self.games[index][1][self.enemy_id].monitor.players[self.id].key['upPressed'] = True
+        ###########################################################################################
 
     async def send_all(self, message):
         await self.channel_layer.group_send(
@@ -101,7 +101,6 @@ class MyConsumer(AsyncWebsocketConsumer):
         }))
 
     async def send_playerUpdate(self):
-        index = get_game_index(self.games, self.game_id)
         await self.send(text_data=json.dumps({
             'action': 'update player',
             'player0_x': self.monitor.players[0].position['x'],
@@ -120,8 +119,12 @@ class MyConsumer(AsyncWebsocketConsumer):
             'GO': self.monitor.GO,
             'time': self.monitor.game_time,
             'winner': self.monitor.winner,
+            'winner_color': self.monitor.winner_color
         }))
-
+        index = get_game_index(self.games, self.game_id)
+        if len(self.games[index][1]) < 2:
+            return
+        
         await self.send(text_data=json.dumps({
             'action': 'update key',
             'leftPressed0': self.games[index][1][self.id].monitor.players[0].key['left'],
@@ -133,22 +136,21 @@ class MyConsumer(AsyncWebsocketConsumer):
 
     async def disconnect(self, code):
         self.is_open = False
+        index = get_game_index(self.games, self.game_id)
+        print("disconnected consumer", self)
+        if self.games[index][1][0] == self:
+            self.games[index][1].pop(0)
+        else:
+            self.games[index][1].pop(1)
 
-        # # If the array is not empty, clear it and disconnect other consumers
-        # if len(self.players_c) > 0:
-        #     # Disconnect all other consumers
-        #     for player in self.players_c:
-        #         if player != self and player.is_open:
-        #             await player.close()
-
-        #     # Clear the entire array
-        #     self.players_c.clear()
-
-        # # Remove the current consumer from the group
-        # await self.channel_layer.group_discard(
-        #     self.room_group_name,
-        #     self.channel_name
-        # )
+        print("consumers in game after", self.games[index][1])
+        await self.channel_layer.group_discard(
+            self.room_group_name,
+            self.channel_name
+        )
+        if len(self.games[index][1]) == 0:
+            self.games.pop(index)
+        print("games array after", self.games)
 
 def add_game_if_not_exists(games, game_id, players):
 
@@ -167,8 +169,6 @@ def add_game_if_not_exists(games, game_id, players):
     games.append([game_id, [players[0], players[1]]])
     players.clear()
     return 1
-
-
 
 def get_game_index(games, game_id):
     for i, game in enumerate(games):

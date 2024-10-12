@@ -12,6 +12,13 @@ async function RemoteTag() {
 
   console.log("here object=: ", tag_game_info);
   
+  if (!tag_game_info)
+  {
+        console.error("invalid players")
+        window.location.hash = '#/ta'
+        return
+  }
+  
   function connectWebSocket(url) {
     return new Promise((resolve, reject) => {
         const socket = new WebSocket(url);

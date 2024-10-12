@@ -15,23 +15,25 @@
 
 <body>
     <div class="d-flex justify-content-center align-items-center vv">
-        <canvas id = "canva"></canvas>
+        <canvas id="canva"></canvas>
         <div id="overlay">
             <div class="overlay-text"></div>
-            <button class="overlay-button">𝙌𝙪𝙞𝙩</button>
+            <button class="overlay-button">Quit</button>
         </div>
     </div>
-    <!-- <script src="purevanilla.js"></script> -->
-    <script type="module" src="script.js"></script>
+    <!-- <script type="module" src="socket.js"></script> -->
 </body>
 </html>
 
 <!-- 
-    To do:
-    ~ wait until all images load to start game
-    ~change button and win message
 
-    ~add second player remotly
+    docker exec -it db bash
+
+    psql -U postgres
+
+
+    \c taggamedb
+    SELECT * FROM base_taggamedb;
+
+
 -->
-
-<!-- need to fix platforms position -->
