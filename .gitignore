@@ -1,4 +1,5 @@
 venv
+requ.txt
 user.json
 .env
 # index.*

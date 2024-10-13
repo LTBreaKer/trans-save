@@ -60,7 +60,7 @@ class gameMonitor:
                     start_time += time.time() - esc_time
                     esc_time = 0
                 if self.game_time > 0:
-                    self.game_time = math.floor(9 - time.time() + start_time)
+                    self.game_time = math.floor(99 - time.time() + start_time)
                 if self.game_time == 0:
                     if not self.players[0].tagger:
                         self.winner = self.players[0].name

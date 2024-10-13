@@ -345,7 +345,7 @@ def verify_token(request, *args, **kwargs):
             return Response(data={'message': 'Token is Valid'})
         except User.DoesNotExist:
             return Response({'message': 'user does not exist'}, status=404)    
-    except (TokenError, InvalidToken) as e:
+    except Exception as e:
         return Response(data={'message': 'Invalid token'}, status=401)
 
 @api_view(['GET'])
