@@ -69,7 +69,15 @@ class PlayerConsumer(AsyncWebsocketConsumer):
 			await self.add_group(text_data_json)
 		elif (type == "assigning_paddle"):
 			await self.assigning_paddle(text_data_json)
+		elif (type == "close"):
+			await self.close_game_consumers()
 	
+	async def close_game_consumers(self):
+		await self.channel_layer.group_send(
+			self.room_group_name, {
+				'type': 'desconnect_consumer',
+			})
+
 	async def update_paddle(self, e):
 		update_paddle = "update_right_paddle"
 		if (self.paddle.x == 0):

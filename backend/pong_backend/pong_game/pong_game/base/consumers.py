@@ -62,6 +62,8 @@ class LocalGameConsumer(AsyncWebsocketConsumer):
             asyncio.create_task(self.update_ball(type))
         elif (type == 'stop'):
             self.ball.gameOver = True
+        elif (type == "close"):
+            await self.close(code=1000)
 
     async def update_ball(self, event):
         print("game_over: ", self.ball.gameOver, file=sys.stderr)
