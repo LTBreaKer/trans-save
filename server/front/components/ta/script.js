@@ -15,12 +15,99 @@ async function Ta() {
   await checkFirst();
   const remote_butt_game = document.getElementById('butt_game');
   const local_butt_game = document.getElementById('local_butt_game_tag');
+
+  const cancel_game_func = document.getElementById('cancel_game');
+
+  cancel_game_func.addEventListener('click', async () => {
+
+
+    try {
+      const response = await fetch(game_api + 'cancel-remote-game-creation/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'AUTHORIZATION': 'Bearer ' + get_localstorage('token'),
+        },
+        credentials: 'include',
+      });
+      console.log(response);
+      const jsonData = await response.json();
+      console.log("data=>  : ", jsonData);
+      if (jsonData.message === "player removed from game queue") {
+        document.querySelector('#cancel_game').style.display = 'none';
+        document.querySelector('#butt_game').style.display = 'flex';
+        document.querySelector('.spinner').style.display = 'none';
+      }
+     
+        
+      if (!response.ok) 
+        throw new Error(`HTTP error! Status: ${response.status}`);
+    } catch (error) {
+      console.error('There was a problem with the fetch operation:', error);
+    }
+
+
+
+
+
+  })
   // input = document.getElementById('input_tag');
   // player_name = input.value; 
-  remote_butt_game.addEventListener('click', remote_game_function);
+  // remote_butt_game.addEventListener('click', remote_game_function);
+
+
+  remote_butt_game.addEventListener('click', async () => {
+    try {
+      const response = await fetch(game_api + 'create-remote-game/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'AUTHORIZATION': 'Bearer ' + get_localstorage('token'),
+        },
+        credentials: 'include',
+      });
+      console.log(response);
+      const jsonData = await response.json();
+      console.log(jsonData);
+      if (jsonData.message === "waiting for second player to join") {
+        document.querySelector('#cancel_game').style.display = 'flex';
+        document.querySelector('#butt_game').style.display = 'none';
+        document.querySelector('.spinner').style.display = 'flex';
+      }
+
+      else if (jsonData.message === "player is already in a game") {
+        document.querySelector('.success_update').style.display = "flex";
+        setTimeout(function() {
+          document.querySelector('.success_update').style.display = 'none';
+      }, 2000);
+    
+      }
+      else if (jsonData.message === "game created") {
+          window.location.hash = "/remoteTag";
+      }
+      if (!response.ok) 
+        throw new Error(`HTTP error! Status: ${response.status}`);
+    } catch (error) {
+      console.error('There was a problem with the fetch operation:', error);
+    }
+  })
+
+
+
+
   local_butt_game.addEventListener('click', localgame_tag);
   tag_socket();
   
+  // window.addEventListener('beforeunload', function (event) {
+  //   cancel_game_func.click();
+  //   console.log("==========================================")
+  //   console.log("==========================================")
+  //   console.log("==========================================")
+  //   console.log("==========================================")
+  // });
+
+
+
 }
 // data dyal game tag kayan fhad object just import it 
 export  {tag_game_info};
@@ -58,7 +145,6 @@ try {
 }
 
 async function remote_game_function() {
-  console.log("************remote game -----------------------------")
   try {
     const response = await fetch(game_api + 'create-remote-game/', {
       method: 'POST',
@@ -71,42 +157,26 @@ async function remote_game_function() {
     console.log(response);
     const jsonData = await response.json();
     if (jsonData.message === "player is already in a game") {
-      console.log('hdsklfjsldkjflsdjk    => :', jsonData.message);
       document.querySelector('.success_update').style.display = "flex";
       setTimeout(function() {
         document.querySelector('.success_update').style.display = 'none';
     }, 2000);
   
     }
-    else if (jsonData.message === "game created") {
+    if (jsonData.message === "game created") {
         window.location.hash = "/remoteTag";
     }
-    else{
-      console.log("hello we are here")
-      document.querySelector('#butt_game').style.display = 'flex';
-      document.querySelector('#spinner').style.display = 'flex';
-      document.querySelector('#butt_game').style.display = 'none';
+    // else{
+    //   console.log("hello we are here")
+    //   document.querySelector('#butt_game').style.display = 'flex';
+    //   document.querySelector('#spinner').style.display = 'flex';
+    //   document.querySelector('#butt_game').style.display = 'none';
 
 
-    }
-    console.log(jsonData)
-    console.log(jsonData.message)
-    // const game_id =  jsonData.game_id;
-    // const player1_name =  jsonData.player1_name;
-    // const player2_name =  jsonData.player2_name;
-    // tag_game_info = {
-    //   game_id: game_id,
-    //   player1_name: player1_name,
-    //   player2_name: player2_name,
     // }
-    // if (response.status === 201)
-    //   window.location.hash = '/game'
-    // console.log(jsonData.message)
     
-    if (!response.ok) {
-      // console.log(jsonData.message)
+    if (!response.ok) 
       throw new Error(`HTTP error! Status: ${response.status}`);
-    }
   } catch (error) {
     console.error('There was a problem with the fetch operation:', error);
   }

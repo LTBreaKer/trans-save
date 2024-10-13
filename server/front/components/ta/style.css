@@ -464,14 +464,14 @@ display: none;
 
 
   
-  .mer_cont #cancel_game {
+  #cancel_game {
     padding: 11px;
     display: none;
     background-color: black;
     border-radius: 15px;
     cursor: pointer;
   }
-  .mer_cont #butt_game {
+  #butt_game {
     padding: 11px;
     display: flex;
     background-color: black;

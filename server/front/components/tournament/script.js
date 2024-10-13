@@ -266,35 +266,35 @@ function set_players_sh() {
 
                 <div class="first_match">
                     <div class="match_n1 string">
-                      <p id="player1_match1" class="player_name">${tournament_data[0].playerOneName} <span class="left_score">8</span></p>
+                      <p id="player1_match1" class="player_name">${tournament_data[0].playerOneName} <span class="left_score">${tournament_data[0]?.playerOneScore ? tournament_data[0].playerOneScore : ''}</span></p>
                         <h2>Vs</h2>
-                        <p id="player2_match1" class="player_name"> ${tournament_data[0].playerTwoName}<span class="left_score">5</span></p>
+                        <p id="player2_match1" class="player_name"> ${tournament_data[0].playerTwoName}<span class="left_score">${tournament_data[0]?.playerTwoScore ? tournament_data[0].playerTwoScore : ''}</span></p>
                     </div>
                     <div class="match_n2 string">
-                        <p id="player1_match2" class="player_name"> ${tournament_data[1].playerOneName}<span class="left_score">5</span></p>
+                        <p id="player1_match2" class="player_name"> ${tournament_data[1].playerOneName}<span class="left_score">${tournament_data[1]?.playerOneScore ? tournament_data[1].playerOneScore : ''}</span></p>
                         <h2>Vs</h2>
-                        <p id="player2_match2" class="player_name"> ${tournament_data[1].playerTwoName}<span class="left_score">5</span></p>
+                        <p id="player2_match2" class="player_name"> ${tournament_data[1].playerTwoName}<span class="left_score">${tournament_data[1]?.playerTwoScore ? tournament_data[1].playerTwoScore : ''}</span></p>
                     </div>
                 </div>
 
 
                 <div class="center_matches">
                     <fiv class="match_2">
-                        <p id="player1_match5" class="player_name topp"> ${tournament_data[4]?.playerOneName ? tournament_data[4].playerOneName : ''} <span class="left_score">5</span></p>
+                        <p id="player1_match5" class="player_name topp"> ${tournament_data[4]?.playerOneName ? tournament_data[4].playerOneName : ''} <span class="left_score">${tournament_data[4]?.playerOneScore ? tournament_data[4].playerOneScore : ''}</span></p>
                         <h2>Vs</h2>
-                        <p id="player2_match5" class="player_name downn">  ${tournament_data[4]?.playerTwoName ? tournament_data[4].playerTwoName : ''}<span class="left_score">5</span></p>
+                        <p id="player2_match5" class="player_name downn">  ${tournament_data[4]?.playerTwoName ? tournament_data[4].playerTwoName : ''}<span class="left_score">${tournament_data[4]?.playerTwoScore ? tournament_data[4].playerTwoScore : ''}</span></p>
 
                     </fiv>
                     <fiv class="match_final">
-                        <p id="player1_match7" class="player_name">${tournament_data[6]?.playerOneName ? tournament_data[6].playerOneName : ''}<span class="left_score">5</span></p>
+                        <p id="player1_match7" class="player_name">${tournament_data[6]?.playerOneName ? tournament_data[6].playerOneName : ''}<span class="left_score">${tournament_data[6]?.playerOneScore ? tournament_data[6].playerOneScore : ''}</span></p>
                         <h2>Vs</h2>
-                        <p id="player2_match7" class="player_name ">${tournament_data[6]?.playerTwoName ? tournament_data[6].playerTwoName : ''}<span class="left_score">5</span></p>
+                        <p id="player2_match7" class="player_name ">${tournament_data[6]?.playerTwoName ? tournament_data[6].playerTwoName : ''}<span class="left_score">${tournament_data[6]?.playerTwoScore ? tournament_data[6].playerTwoScore : ''}</span></p>
 
                     </fiv>
                     <fiv class="match_2">
-                        <p id="player1_match6"  class="player_name topp right_p"> <span class="right_score">5</span> ${tournament_data[5]?.playerOneName ? tournament_data[5].playerOneName : ''} </p>
+                        <p id="player1_match6"  class="player_name topp right_p"> <span class="right_score">${tournament_data[5]?.playerOneScore ? tournament_data[5].playerOneScore : ''}</span> ${tournament_data[5]?.playerOneName ? tournament_data[5].playerOneName : ''} </p>
                         <h2>Vs</h2>
-                        <p id="player2_match6"  class="player_name downn right_p"><span class="right_score">5</span> ${tournament_data[5]?.playerTwoName ? tournament_data[5].playerTwoName : ''}</p>
+                        <p id="player2_match6"  class="player_name downn right_p"><span class="right_score">${tournament_data[5]?.playerTwoScore ? tournament_data[5].playerTwoScore : ''}</span> ${tournament_data[5]?.playerTwoName ? tournament_data[5].playerTwoName : ''}</p>
 
                     </fiv>
                 </div>
@@ -302,14 +302,14 @@ function set_players_sh() {
 
                 <div class="first_match">
                     <div class="match_n1 string">
-                        <p id="player1_match3" class="player_name right_p"><span class="right_score" id="scoore"></span> ${tournament_data[2].playerOneName}</p>
+                        <p id="player1_match3" class="player_name right_p"><span class="right_score" id="scoore">${tournament_data[2]?.playerOneScore ? tournament_data[2].playerOneScore : ''}</span> ${tournament_data[2].playerOneName}</p>
                         <h2>Vs</h2>
-                        <p id="player2_match3" class="player_name right_p"><span class="right_score">5</span>${tournament_data[2].playerTwoName} </p>
+                        <p id="player2_match3" class="player_name right_p"><span class="right_score">${tournament_data[2]?.playerTwoScore ? tournament_data[2].playerTwoScore : ''}</span>${tournament_data[2].playerTwoName} </p>
                     </div>
                     <div class="match_n2 string">
-                        <p id="player1_match4" class="player_name right_p"><span class="right_score">5</span>${tournament_data[3].playerOneName} </p>
+                        <p id="player1_match4" class="player_name right_p"><span class="right_score">${tournament_data[3]?.playerOneScore ? tournament_data[3].playerOneScore : ''}</span>${tournament_data[3].playerOneName} </p>
                         <h2>Vs</h2>
-                        <p id="player1_match4" class="player_name right_p"><span class="right_score">5</span>${tournament_data[3].playerTwoName} </p>
+                        <p id="player1_match4" class="player_name right_p"><span class="right_score">${tournament_data[3]?.playerTwoScore ? tournament_data[3].playerTwoScore : ''}</span>${tournament_data[3].playerTwoName} </p>
                     </div>
                 </div>
             </div>
