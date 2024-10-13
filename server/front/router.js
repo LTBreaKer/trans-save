@@ -10,6 +10,7 @@ import Ta from './components/ta/script.js';
 import Ping from './components/ping/script.js';
 import Tournament from './components/tournament/script.js';
 import RemoteTag from './components/remote_tag/script.js';
+import TournamentScore from './components/tournamentscore/script.js';
 
 
 const api_one = "https://127.0.0.1:9005/api/";
@@ -27,6 +28,7 @@ const routes = {
   '/ping': Ping,
   '/tournament': Tournament,
   '/remoteTag': RemoteTag,
+  '/tournamentScore': TournamentScore,
 };
 
 async function Router() {

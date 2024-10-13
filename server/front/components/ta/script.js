@@ -61,14 +61,6 @@ try {
 
 }
 
-
-
-
-
-
-
-
-
 async function remote_game_function() {
   console.log("************remote game -----------------------------")
   try {
@@ -90,8 +82,16 @@ async function remote_game_function() {
     }, 2000);
   
     }
-    if (jsonData.message === "game created") {
+    else if (jsonData.message === "game created") {
         window.location.hash = "/remoteTag";
+    }
+    else{
+      console.log("hello we are here")
+      document.querySelector('#butt_game').style.display = 'flex';
+      document.querySelector('#spinner').style.display = 'flex';
+      document.querySelector('#butt_game').style.display = 'none';
+
+
     }
     console.log(jsonData)
     console.log(jsonData.message)
