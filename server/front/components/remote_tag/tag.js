@@ -1,13 +1,12 @@
 import { socket } from './script.js'
 import {imageR1, imageL1, imageIR1, imageIL1, imageR2, imageL2, imageIR2, imageIL2, arrow, go_arrow, numbers, background, platform} from './image_src.js';
 import {tag_game_info, setTagGameInfo} from '../ta/script.js'
-import {get_localstorage, check_access_token} from '../../auth.js'
+import {get_localstorage} from '../../auth.js'
 
 var api = "https://127.0.0.1:9004/api/";
 var api_tag = "https://127.0.0.1:9007/api/tag-gamedb/"
 
 async function fetchUserName() {
-    // await check_access_token();
       try {
         const userResponse = await fetch(api + 'auth/get-user/', {
           method: 'GET',
@@ -19,7 +18,7 @@ async function fetchUserName() {
         });
         
         if (!userResponse.ok)
-          throw new Error(`HTTP error! Status: ${response.status}, Message: ${jsonData.message || 'Unknown error'}`);
+          throw new Error(`Status: ${response.status}, Message: ${jsonData.message || 'Unknown error'}`);
 
         let data_user = await userResponse.json()
         let username = data_user.user_data.username
@@ -93,12 +92,11 @@ async function start_game()
 
     async function game_score(winner)
     {
-        console.log("score sent")
         let winner_id
         if (winner === tag_game_info.player1name)
             winner_id =  tag_game_info.player1_id
         else
-        winner_id =  tag_game_info.player2_id
+            winner_id =  tag_game_info.player2_id
 
         const data = {
             game_id: tag_game_info.game_id,
@@ -117,7 +115,7 @@ async function start_game()
             });
             const jsonData = await response.json()
             if (!response.ok) {
-              console.error(`HTTP error! Status: ${response.status}, Message: ${jsonData.message || 'Unknown error'}`)
+              console.error(`Status: ${response.status}, Message: ${jsonData.message || 'Unknown error'}`)
             }
         }
         catch(error){
@@ -136,31 +134,31 @@ async function start_game()
 
     async function rain()
     {
-        let raindrops = [];
-        let count = canvas.width * 60 / 1697;//
+        let raindrops = []
+        let count = canvas.width * 60 / 1697
     
         for (let i = 0; i < count; i++) {
             raindrops.push({
                 x: Math.random() * canvas.width,
                 y: Math.random() * canvas.height,
-                speedX: canvas.width * -20 / 1697, // Horizontal wind effect          //
-                length: canvas.height * (Math.random() * 20 + 30) / 955 //
+                speedX: canvas.width * -20 / 1697, // Horizontal wind effect
+                length: canvas.height * (Math.random() * 20 + 30) / 955
             });
         }
     
         raindrops.forEach(raindrop => {
             // Create a gradient for the raindrop
-            let grd = c.createLinearGradient(raindrop.x, raindrop.y, raindrop.x + raindrop.speedX, raindrop.y + raindrop.length);
-            grd.addColorStop(0, "rgba(255, 255, 255, 0.2)");
-            grd.addColorStop(1, "rgba(255, 255, 255, 0)");
+            let grd = c.createLinearGradient(raindrop.x, raindrop.y, raindrop.x + raindrop.speedX, raindrop.y + raindrop.length)
+            grd.addColorStop(0, "rgba(255, 255, 255, 0.2)")
+            grd.addColorStop(1, "rgba(255, 255, 255, 0)")
     
-            c.strokeStyle = grd;
-            c.lineWidth = canvas.height * 3.5 / 955;//
+            c.strokeStyle = grd
+            c.lineWidth = canvas.height * 3.5 / 955
     
-            c.beginPath();
-            c.moveTo(raindrop.x, raindrop.y);
-            c.lineTo(raindrop.x + raindrop.speedX, raindrop.y + raindrop.length);
-            c.stroke();
+            c.beginPath()
+            c.moveTo(raindrop.x, raindrop.y)
+            c.lineTo(raindrop.x + raindrop.speedX, raindrop.y + raindrop.length)
+            c.stroke()
         });
     }
 
@@ -359,7 +357,6 @@ async function start_game()
 
         if (socket.readyState === WebSocket.OPEN)
             {
-                console.log("resize")
                 socket.send(JSON.stringify({
                     'action': 'window resize',
                     'window_innerHeight': window.innerHeight,
@@ -418,25 +415,25 @@ async function start_game()
         }
     }
 
-    // function handleblur()
-    // {
-    //     players.forEach(player=>{
-    //         if (player.keyStatus.leftPressed)
-    //         {
-    //             player.keyStatus.leftPressed = false
-    //             player.image = player.imageIdlL[2]
-    //         }
+    function handleblur()
+    {
+        players.forEach(player=>{
+            if (player.keyStatus.leftPressed)
+            {
+                player.keyStatus.leftPressed = false
+                player.image = player.imageIdlL[2]
+            }
         
-    //         if (player.keyStatus.rightPressed)
-    //         {
-    //             player.keyStatus.rightPressed = false
-    //             player.image = player.imageIdlR[2]
-    //         }
+            if (player.keyStatus.rightPressed)
+            {
+                player.keyStatus.rightPressed = false
+                player.image = player.imageIdlR[2]
+            }
         
-    //         if (!player.keyStatus.upreleased)
-    //             player.keyStatus.upreleased = true
-    //     })
-    // }
+            if (!player.keyStatus.upreleased)
+                player.keyStatus.upreleased = true
+        })
+    }
 
     function quitgame()
     {
@@ -454,23 +451,20 @@ async function start_game()
     window.addEventListener("keydown", keydown)
     window.addEventListener("keyup", keyup)
 
-    // window.addEventListener("blur", handleblur)
+    window.addEventListener("blur", handleblur)
     window.addEventListener("hashchange", hashchange)
     socket.addEventListener("close", disconnect)
     window.addEventListener("beforeunload", handleRelodQuit)
 
     function handleRelodQuit(event)
     {
-        console.log("beforeunload")
         if (socket.readyState === WebSocket.OPEN)
             socket.close()
-        event.preventDefault() // This is needed in some browsers to trigger the alert
+        event.preventDefault() // This triggers the alert
     }
 
     function disconnect()
     {
-        console.log("disconnected socket")
-      
         if (window.location.hash === "#/remoteTag")
         {
             document.getElementById('overlay').style.visibility = 'visible';
@@ -489,19 +483,14 @@ async function start_game()
     function hashchange()
     {
         if (window.location.hash !== "#/remoteTag")
-        {
             socket.close()
-            console.log("Hash changed, and it's not #/remoteTag!")
-        }
     }
 
     function reload_data()
     {
-        console.log("data reloaded")
-
         window.removeEventListener("keydown", keydown)
         window.removeEventListener("keyup", keyup)
-        // window.removeEventListener("blur", handleblur)
+        window.removeEventListener("blur", handleblur)
         window.removeEventListener("hashchange", hashchange)
         window.removeEventListener("close", disconnect)
         window.removeEventListener("beforeunload", handleRelodQuit)

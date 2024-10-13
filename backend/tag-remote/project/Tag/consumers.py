@@ -8,7 +8,6 @@ class MyConsumer(AsyncWebsocketConsumer):
 
     players_c = []
     games = []
-    #[[1,[p1, p2]], [2,[p1, p2]]]
 
     async def connect(self):
         self.is_open = True
