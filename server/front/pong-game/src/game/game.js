@@ -121,7 +121,7 @@ export function animate() {
 }
 
 async function updatePaddles(){
-	if (statePongGame == "local") {
+	if (statePongGame == "local" || statePongGame == "tournament") {
 		lpaddle.update()
 		rpaddle.update()
 		if (lpaddle.y != lpaddle.lastY || rpaddle.y != lpaddle.lastY) {

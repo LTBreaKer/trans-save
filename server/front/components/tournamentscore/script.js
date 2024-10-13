@@ -1,44 +1,46 @@
 import { loadHTML, loadCSS } from '../../utils.js';
 import { tournament_match_data } from '../tournament/script.js';
-import { log_out_func ,login , logoutf, get_localstorage, getCookie } from '../../auth.js';
+import { log_out_func ,login , logoutf, get_localstorage, getCookie, check_access_token } from '../../auth.js';
+import { loadHtmlWidthModuleScript, playGame } from '../pingpong/ping.js';
 
 
 let tournament = "https://127.0.0.1:9008/api/tournament/";
 
 async function TournamentScore() {
-  const html = await loadHTML('./components/tournamentscore/index.html');
-  loadCSS('./components/tournamentscore/style.css');
+//   const html = await loadHTML('./components/tournamentscore/index.html');
+//   loadCSS('./components/tournamentscore/style.css');
 
-  const app = document.getElementById('app');
-  app.innerHTML = html;
+//   const app = document.getElementById('app');
+//   app.innerHTML = html;
 
+//   const bottun = document.getElementById('bbbb');
+//   bottun.addEventListener('click', 
+  //   async () =>  {
+  //   await add_tournament_match_score(tournament_match_data)
+  //   (tournament_match_data.matchNumber === 7) ?
+  //    window.location.hash = "/ping" :
+  //    window.location.hash = "/tournament";
+  // })
 
-const bottun = document.getElementById('bbbb');
-bottun.addEventListener('click', async () =>  {
-  await add_tournament_match_score(tournament_match_data)
-  console.log("hello we are from bottun");
-  if (tournament_match_data.matchNumber === 7)
-    window.location.hash = "/ping";
-  else
-    window.location.hash = "/tournament";
-})
-
-console.log("text that i need to use it's here => : ", tournament_match_data)
-
+// console.log("text that i need to use it's here => : ", tournament_match_data)
+  await loadHtmlWidthModuleScript();
+  await playGame();
 }
 
+export async function endTournamentMatchScore(player1_score, player2_score) {
+	await add_tournament_match_score(tournament_match_data, player1_score, player2_score);
+	(tournament_match_data.matchNumber === 7) ?
+	window.location.hash = "/ping" :
+	window.location.hash = "/tournament";
+}
 
-
-
-
-
-
-async function add_tournament_match_score(params) {
+async function add_tournament_match_score(params, player1_score, player2_score) {
+  await check_access_token();
   const participants = {
     match_id: params.matchNumber,
     tournament_id: params.tournamentId,
-    player_one_score: 5, 
-    player_two_score: 7,
+    player_one_score: player1_score, 
+    player_two_score: player2_score,
   }
   
   const urlEncodedData = new URLSearchParams(participants);
@@ -74,6 +76,7 @@ async function add_tournament_match_score(params) {
 
 
 async function get_stage(param) {
+  await check_access_token();
   const participants = {
     tournament_id: param
   }

@@ -1,16 +1,12 @@
 import { loadHTML, loadCSS } from '../../utils.js';
 
-let playGame = async () => {
+export let playGame = async () => {
 	console.log("  playGame  playGame  playGame  playGame");
 
 };
 
 export const initPlayGame = async (initgame) => {
   playGame = await initgame;
-} 
-
-function sleep(s) {
-	return new Promise((resolve) => setTimeout(resolve, s * 1000));
 }
 
 let html = ""
@@ -21,7 +17,7 @@ async function PingPong() {
   await playGame();
 }
 
-async function loadHtmlWidthModuleScript() {
+export async function loadHtmlWidthModuleScript() {
   if (!html) {
     // html = await loadHTML('./pong-game/local/public/3dgame.html')
     html = await loadHTML('./pong-game/public/3dgame.html')

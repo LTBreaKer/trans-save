@@ -11,6 +11,7 @@ import { moveCamera } from '../components/camera.js';
 import { renderer } from '../components/renderer.js';
 import { scene } from '../components/scene.js';
 import { disposeScene } from '../components/disposeComponent.js';
+import { endTournamentMatchScore } from '../../../components/tournamentscore/script.js';
 // import { data_remote_player,  sendPlayerPaddleCreated } from '../../../components/ping/script.js';
 // console.log("game API: ", gameApi);
 let gameSocket;
@@ -43,7 +44,7 @@ export function sendScore(left_paddle_score = lpaddle.nb_goal, right_paddle_scor
 		return res.json();
 	})
 	.then(data => console.log(data))
-	.catch(error => console.error(`Could not get players: ${error}`));
+	.catch(error => console.error(`${error}`));
 }
 
 function draw_info(data) {
@@ -78,14 +79,14 @@ export function fnGameOver(state = "rtn_menu") {
 	if (renderer) renderer.dispose();
 	if (scene) disposeScene();
 	removeEventsListener();
-	window.location.hash = "/ping"
+	if (statePongGame !== "tournament")
+		window.location.hash = "/ping"
 	// if (state == "rtn_menu")
 }
 
 // export function fnLocalGameOver() {
 
 // }
-
 
 export async function localGameSocket(group_name) {
 	console.log("group name: ", group_name);
@@ -99,8 +100,14 @@ export async function localGameSocket(group_name) {
 			if (message.type === "draw_info")
 				draw_info(message);
 			else if (message.type === "game_over") {
-				sendScore(message.left_paddle_score, message.right_paddle_score);
-				popup_replay.style.display = 'flex';
+				console.log("statePongGame === tournament: ", statePongGame === "tournament");
+				if (statePongGame === "tournament") {
+					endTournamentMatchScore(message.left_paddle_score, message.right_paddle_score);
+					fnGameOver();
+				} else {
+					sendScore(message.left_paddle_score, message.right_paddle_score);
+					popup_replay.style.display = 'flex';
+				}
 			}
 		}
 		return (ws);

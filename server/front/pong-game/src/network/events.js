@@ -20,7 +20,7 @@ import { initGameComponents } from '../components/renderer.js';
 import { fnGameOver, sendScore } from './socket.js';
 
 
-// console.log("0 statePongGame: ", statePongGame);
+console.log("0 statePongGame: ", statePongGame);
 
 export function resizeCanvas(){
 	let minHW = Math.min(window.innerWidth*0.99, window.innerHeight*0.99);
@@ -115,15 +115,15 @@ let replayGame = async () => {
 	await loadDocument();
 	resizeCanvas();
 	initGame();
-	if (statePongGame == "local" || statePongGame == "ai_bot") {
+	if (statePongGame == "remote"){
+		lancePongGame();
+		await connectPaddleSocket();
+	}
+	else {
 		lancePongGame();
 		leftPaddle();
 		await connectLocalGameSocket();
 		await descounter();
-	}
-	else if (statePongGame == "remote"){
-		lancePongGame();
-		await connectPaddleSocket();
 	}
 }
 
