@@ -336,6 +336,7 @@ def callback_42(request):
 @api_view(['POST'])
 def verify_token(request, *args, **kwargs):
     try:
+
         access_token = AccessToken(request.data.get('token'))
 
         user_id = access_token['user_id']
@@ -345,7 +346,7 @@ def verify_token(request, *args, **kwargs):
             return Response(data={'message': 'Token is Valid'})
         except User.DoesNotExist:
             return Response({'message': 'user does not exist'}, status=404)    
-    except (TokenError, InvalidToken) as e:
+    except Exception as e:
         return Response(data={'message': 'Invalid token'}, status=401)
 
 @api_view(['GET'])
