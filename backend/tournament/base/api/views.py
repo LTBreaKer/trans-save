@@ -122,6 +122,7 @@ def create_tournament(request):
 
     return Response({'message': 'tournament created', 'tournament_matches': formatted_matches}, status=201)
 
+
 @api_view(['POST'])
 def start_match(request):
     w3 = request.w3
@@ -311,3 +312,69 @@ def get_next_stage(request):
     ]
     return Response({'message': formatted_matches}, status=200)
 
+@api_view(['GET'])
+def get_tournament_history(request):
+    w3 = request.w3
+    contract = request.contract
+
+    AUTH_HEADER = request.META.get('HTTP_AUTHORIZATION')
+    auth_check_response = check_auth(AUTH_HEADER)
+    if auth_check_response.status_code != 200:
+        return Response(data=auth_check_response.json(), status=auth_check_response.status_code)
+    
+    creator_id = auth_check_response.json()['user_data']['id']
+
+    try:
+        matches = contract.functions.getTournamentHistory(creator_id).call()
+    except Exception as e:
+        return Response({'message': str(e)}, status=400)
+    
+    print('---- matches ----', matches, file=sys.stderr)
+
+    formatted_matches = [
+        {
+            'tournamentId': match[0],
+            'firstPlayerName': match[3] if match[8] == match[2] else match[5],
+            'secondPlayerName': match[3] if match[8] != match[2] else match[5],
+        }
+        for match in matches
+    ]
+    return Response({'message': formatted_matches}, status=200)
+
+@api_view(['POST'])
+def get_tournament_by_id(request):
+    w3 = request.w3
+    contract = request.contract
+
+    AUTH_HEADER = request.META.get('HTTP_AUTHORIZATION')
+    auth_check_response = check_auth(AUTH_HEADER)
+    if auth_check_response.status_code != 200:
+        return Response(data=auth_check_response.json(), status=auth_check_response.status_code)
+    
+    tournament_id = request.data.get('tournament_id')
+
+    if not tournament_id:
+        return Response({'message': 'tournament_id is required'}, status=400)
+    
+    try:
+        matches = contract.functions.getTournamentMatches(int(tournament_id)).call()
+    except Exception as e:
+        return Response({'message': str(e)}, status=400)
+    
+    formatted_matches = [
+        {
+            'tournamentId': match[0],
+            'matchNumber': match[1],
+            'playerOneId': match[2],
+            'playerOneName': match[3],
+            'playerTwoId': match[4],
+            'playerTwoName': match[5],
+            'playerOneScore': match[6],
+            'playerTwoScore': match[7],
+            'winnerId': match[8],
+            'status': match[9],
+            'stage': match[10],
+        }
+        for match in matches
+    ]
+    return Response({'message': 'tournament found', 'matches': formatted_matches}, status=200)

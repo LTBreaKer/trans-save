@@ -336,6 +336,7 @@ def callback_42(request):
 @api_view(['POST'])
 def verify_token(request, *args, **kwargs):
     try:
+
         access_token = AccessToken(request.data.get('token'))
 
         user_id = access_token['user_id']
