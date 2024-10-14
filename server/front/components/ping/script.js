@@ -19,13 +19,77 @@ async function Ping() {
 
   const local_butt_game = document.getElementById('local_butt_game');
   const remote_butt_game = document.getElementById('butt_game');
+  const cancel_game_func = document.getElementById('cancel_game');
+
+  cancel_game_func.addEventListener('click', async () => {
+
+
+    try {
+      const response = await fetch(api_game + 'cancel-remote-game-creation/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'AUTHORIZATION': 'Bearer ' + get_localstorage('token'),
+        },
+        credentials: 'include',
+      });
+      console.log(response);
+      const jsonData = await response.json();
+      console.log("data=>  : ", jsonData);
+      if (jsonData.message === "player removed from game queue") {
+        document.querySelector('#cancel_game').style.display = 'none';
+        document.querySelector('#butt_game').style.display = 'flex';
+        document.querySelector('.spinner').style.display = 'none';
+      }
+     
+        
+      if (!response.ok) 
+        throw new Error(`HTTP error! Status: ${response.status}`);
+    } catch (error) {
+      console.error('There was a problem with the fetch operation:', error);
+    }
+
+
+
+
+
+  })
 
 
 
   const input = document.getElementById('input');
   name = input.value; 
   local_butt_game.addEventListener('click', localgame);
-  remote_butt_game.addEventListener('click', remore_game_fun);
+  remote_butt_game.addEventListener('click', async () => {
+    try {
+      const response = await fetch(api_game + 'create-remote-game/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + get_localstorage('token'),
+        },
+        credentials: 'include',
+      });
+      console.log(response);
+      const jsonData = await response.json();
+      if (jsonData.message === "waiting for second player to join") {
+        document.querySelector('#cancel_game').style.display = 'flex';
+        document.querySelector('#butt_game').style.display = 'none';
+        document.querySelector('.spinner').style.display = 'flex';
+      }
+
+      console.log(jsonData);
+  
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      // await login(jsonData.access, jsonData.refresh);
+      
+    } catch (error) {
+      console.error('There was a problem with the fetch operation:', error);
+    }
+  
+  });
   gmaee();
 
 
