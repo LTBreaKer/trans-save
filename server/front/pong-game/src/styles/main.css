@@ -1,3 +1,11 @@
+
+@font-face {
+    font-family: 'Volax';
+    src: url('../../../components/assets/Valorax-lg25V.otf') format('opentype');
+    font-weight: bold;
+    font-style: italic;
+}
+
 .p_box_result {
 	position:absolute;
 	z-index: 100;
@@ -25,6 +33,7 @@
 
 .p_first {
 	/* width: 360px; */
+	font-family: 'Volax', sans-serif;
 	text-align: left;
 	/* color: white; */
 	/* color: rgb(45, 204, 45); */
@@ -32,11 +41,24 @@
 	text-shadow: 1px 1px rgb(255, 255, 255, 0.8);
 	padding-top: 60px;
 	padding-left: 50px;
-	font-size: 60px;
+	font-size: 30px;
+    padding-right: 10px;
+	display: flex;
+    flex-direction: row;
+	justify-content: space-between;
+}
+
+.double_point {
+	font-family: 'Volax', sans-serif;
+	color: #11698C;
+	display: flex;
+	padding-top: 51.06px;
+	font-size: 30px;
 }
 
 .p_second {
 	/* width: 360px; */
+	font-family: 'Volax', sans-serif;
 	text-align: right;
 	/* color: white; */
 	/* color: rgb(204, 45, 45); */
@@ -44,7 +66,11 @@
 	text-shadow: 1px 1px rgb(255, 255, 255, 0.8);
 	padding-top: 60px;
 	padding-right: 50px;
-	font-size: 60px;
+	font-size: 30px;
+    padding-left: 10px;
+	display: flex;
+    flex-direction: row;
+	justify-content: space-between;
 }
 
 #c {
@@ -80,16 +106,21 @@
 }
 
 .p_popup_replay {
-    display: none;
+	font-family: 'Volax', sans-serif;
+	display: none;
     position: absolute;
+    top: 0;
+    left: 0;
     z-index: 2;
     width: calc(100vw - 100px);
     height: calc(100vh - 100px);
-    background-color: rgba(0, 0, 0, 0.6);
-    flex-direction: column;
-    align-items: center;
-    /* justify-items: center; */
+    color: #d6ddd5;
+    flex-direction: column; /* Stack children vertically */
     justify-content: center;
+    align-items: center;
+    font-size: 5vw;
+    background-color: rgba(0, 0, 0, 0.6);
+    text-shadow: 2vw 0vw 8vw rgba(0, 0, 0, 0.8);    
 }
 
 .p_ptn_replay{

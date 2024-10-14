@@ -18,6 +18,10 @@ export let click = false;
 
 export let first_player_goal;
 export let second_player_goal;
+export let p_first;
+export let p_second;
+export let first_player_name;
+export let second_player_name;
 export let replay;
 export let pong_menu;
 export let box_result;
@@ -29,6 +33,10 @@ export let popup_replay;
 export async function loadDocument() {
 	first_player_goal = document.querySelector("#first_player");
 	second_player_goal = document.querySelector("#second_player");
+	p_first = document.querySelector(".p_first");
+	p_second = document.querySelector(".p_second");
+	first_player_name = document.querySelector("#first_player_name");
+	second_player_name = document.querySelector("#second_player_name");
 	replay = document.querySelector('#replay');
 	pong_menu = document.querySelector('#pong_menu');
 	box_result = document.querySelector(".p_box_result");

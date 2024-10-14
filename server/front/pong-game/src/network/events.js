@@ -1,5 +1,5 @@
 
-import {canvas, click, TABLE_WIDTH, paddleHeight, height, box_result, first_player_goal, second_player_goal, counter, replay, popup_replay, pong_menu, loadDocument, sleep, back_counter, leftPaddle, paddle_way} from '../utils/globaleVariable.js';
+import {canvas, click, TABLE_WIDTH, paddleHeight, height, box_result, first_player_goal, second_player_goal, counter, replay, popup_replay, pong_menu, loadDocument, sleep, back_counter, leftPaddle, paddle_way, first_player_name, second_player_name, p_second, p_first} from '../utils/globaleVariable.js';
 // import { setPointerMouse, rotateTable, zoomCamera } from '../game/staduim.js'
 import { closeGameSocket, connectAI, connectLocalGameSocket, connectPaddleSocket, launchGame } from '../game/game.js';
 import {sendSocket} from '../game/game.js'
@@ -9,7 +9,7 @@ import { moveCamera } from '../components/camera.js';
 ////////       ------ LOCAL -----        //////////
 import { lpaddle, rpaddle } from '../game/paddle.js';
 import { keyDownHandler, keyUpHandler } from '../events/keyboardEvent.js';
-import { aiGame, localgame, statePongGame } from '../../../components/ping/script.js';
+import { aiGame, data_remote_player, gameApi, localgame, statePongGame } from '../../../components/ping/script.js';
 import { initPlayGame } from '../../../components/pingpong/ping.js';
 
 ////////       ------ REMOTE ----------        //////////
@@ -32,16 +32,21 @@ export function resizeCanvas(){
 	
 	box_result.style.width = canvas.clientWidth + "px";
 	box_result.style.marginLeft = canvas.style.marginLeft;
-	first_player_goal.style.width = (canvas.clientWidth * 0.9) / 2 + "px";
-	second_player_goal.style.width = (canvas.clientWidth * 0.9) / 2 + "px";
+	p_first.style.width = (canvas.clientWidth * 0.9) / 2 + "px";
+	p_second.style.width = (canvas.clientWidth * 0.9) / 2 + "px";
 	let padding_top =  canvas.clientWidth * 0.06;
 	let padding_left = canvas.clientWidth * 0.05;
-	first_player_goal.style.paddingTop = padding_top + "px";
-	first_player_goal.style.paddingLeft = padding_left + "px";
-	second_player_goal.style.paddingTop = padding_top + "px";
-	second_player_goal.style.paddingRight = padding_left + "px";
+	p_first.style.paddingTop = padding_top + "px";
+	p_first.style.paddingLeft = padding_left + "px";
+	p_second.style.paddingTop = padding_top + "px";
+	p_second.style.paddingRight = padding_left + "px";
 	console.log("--------- resize Canvas: ", canvas.style.height, " ", canvas.style.width);
 	moveCamera(statePongGame);
+}
+
+async function assignPlayers({player1_name, player2_name}) {
+	first_player_name.innerHTML = player1_name;
+	second_player_name.innerHTML = player2_name;
 }
 
 async function replayLocalGame() {
@@ -108,6 +113,7 @@ export async function descounter() {
 function initGame() {
 	back_counter.style.display = 'none';
 	popup_replay.style.display = 'none';
+	(statePongGame === "remote") ? assignPlayers(data_remote_player) : assignPlayers(gameApi); 
 	initGameComponents();
 }
 

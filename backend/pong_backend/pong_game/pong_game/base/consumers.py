@@ -109,7 +109,7 @@ class LocalGameConsumer(AsyncWebsocketConsumer):
                 'left_paddle': self.lpaddle.fn_str(),	
                 'right_paddle': self.rpaddle.fn_str()
             }))
-            if (self.ball.gameOver and (self.lpaddle.nb_goal == 3 or self.rpaddle.nb_goal == 3)):
+            if (self.ball.gameOver and (self.lpaddle.nb_goal == 1 or self.rpaddle.nb_goal == 1)):
                 await self.send_scores()
                 await self.close(code=1000)
             #     self.gameOver = True

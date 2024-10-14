@@ -94,7 +94,7 @@ export async function localGameSocket(group_name) {
 		// const wssUrl = "ws://" + window.env.DJANGO_HOSTNAME + ":9009/ws/pong_game/";
 		const wssUrl = "ws://127.0.0.1:9009/ws/local_pong_game/";
 		let ws = new WebSocket(wssUrl);
-		ws.onopen = (event) => console.log('local game WebSocket conection established.');
+		ws.onopen = (event) => {console.log('local game WebSocket conection established.')};
 		ws.onmessage = (event) => {
 			const message = JSON.parse(event.data);
 			if (message.type === "draw_info")
