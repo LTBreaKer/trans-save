@@ -44,7 +44,8 @@ def check_tournament(request):
     w3 = request.w3
     contract = request.contract
     AUTH_HEADER = request.META.get('HTTP_AUTHORIZATION')
-    auth_check_response = check_auth(AUTH_HEADER)
+    session_id = request.headers.get('Session-ID')
+    auth_check_response = check_auth(AUTH_HEADER, session_id)
     if auth_check_response.status_code != 200:
         return Response(data=auth_check_response.json(), status=auth_check_response.status_code)
     
@@ -61,12 +62,13 @@ def create_tournament(request):
     w3 = request.w3
     contract = request.contract
     AUTH_HEADER = request.META.get('HTTP_AUTHORIZATION')
-    auth_check_response = check_auth(AUTH_HEADER)
+    session_id = request.headers.get('Session-ID')
+    auth_check_response = check_auth(AUTH_HEADER, session_id)
     if auth_check_response.status_code != 200:
         return Response(data=auth_check_response.json(), status=auth_check_response.status_code)
     
     # check if user is not in a game
-    response = requests.get('https://server:9006/api/gamedb/is-available/', headers={'AUTHORIZATION': AUTH_HEADER}, verify=False)
+    response = requests.get('https://server:9006/api/gamedb/is-available/', headers={'AUTHORIZATION': AUTH_HEADER, 'Session-ID': session_id}, verify=False)
     if response.status_code != 200:
         return Response({'message': 'user not available to create tournament'}, status=400)
 
@@ -129,7 +131,8 @@ def start_match(request):
     contract = request.contract
 
     AUTH_HEADER = request.META.get('HTTP_AUTHORIZATION')
-    auth_check_response = check_auth(AUTH_HEADER)
+    session_id = request.headers.get('Session-ID')
+    auth_check_response = check_auth(AUTH_HEADER, session_id)
     if auth_check_response.status_code != 200:
         return Response(data=auth_check_response.json(), status=auth_check_response.status_code)
     
@@ -206,7 +209,8 @@ def add_match_score(request):
     contract = request.contract
 
     AUTH_HEADER = request.META.get('HTTP_AUTHORIZATION')
-    auth_check_response = check_auth(AUTH_HEADER)
+    session_id = request.headers.get('Session-ID')
+    auth_check_response = check_auth(AUTH_HEADER, session_id)
     if auth_check_response.status_code != 200:
         return Response(data=auth_check_response.json(), status=auth_check_response.status_code)
     
@@ -272,7 +276,8 @@ def get_next_stage(request):
     contract = request.contract
 
     AUTH_HEADER = request.META.get('HTTP_AUTHORIZATION')
-    auth_check_response = check_auth(AUTH_HEADER)
+    session_id = request.headers.get('Session-ID')
+    auth_check_response = check_auth(AUTH_HEADER, session_id)
     if auth_check_response.status_code != 200:
         return Response(data=auth_check_response.json(), status=auth_check_response.status_code)
     
@@ -318,7 +323,8 @@ def get_tournament_history(request):
     contract = request.contract
 
     AUTH_HEADER = request.META.get('HTTP_AUTHORIZATION')
-    auth_check_response = check_auth(AUTH_HEADER)
+    session_id = request.headers.get('Session-ID')
+    auth_check_response = check_auth(AUTH_HEADER, session_id)
     if auth_check_response.status_code != 200:
         return Response(data=auth_check_response.json(), status=auth_check_response.status_code)
     
@@ -347,7 +353,8 @@ def get_tournament_by_id(request):
     contract = request.contract
 
     AUTH_HEADER = request.META.get('HTTP_AUTHORIZATION')
-    auth_check_response = check_auth(AUTH_HEADER)
+    session_id = request.headers.get('Session-ID')
+    auth_check_response = check_auth(AUTH_HEADER, session_id)
     if auth_check_response.status_code != 200:
         return Response(data=auth_check_response.json(), status=auth_check_response.status_code)
     

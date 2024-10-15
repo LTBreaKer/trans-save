@@ -87,7 +87,6 @@ services:
       - .env
     depends_on:
       - db
-      # - blockchain
     restart: always
     networks:
       - my_network
@@ -116,7 +115,6 @@ services:
     networks:
       - my_network
   db:
-    # image: postgres:15.6
     image: db
     build:
       context: ./db
@@ -133,39 +131,10 @@ services:
     ports:
       - 0.0.0.0:5432:5432
     restart: always
-    # entrypoint: bash -c "sleep infinity"
-    # command: bash -c "groupadd -g 2019 2019 && useradd -u 1000 -g 2019 -m aharrass && chmod -R 700 /var/lib/postgresql/data && gosu aharrass /usr/local/bin/docker-entrypoint.sh postgres"
-    # user: "postgres:postgres"
-    # entrypoint: /db.sh
     command: postgres
     networks:
       - my_network
-    # volumes: 
-    #   - ./init.sql:/docker-entrypoint-initdb.d/init.sql
-    # volumes:
-    #   - /nfs/homes/aharrass/data/postgres:/var/lib/postgresql/data
-  # redis:
-  #   image: redis_i
-  #   build:
-  #     context: ./redis
-  #   container_name: redis_c
-  #   ports:
-  #    - 6380:6380
-  #   restart: always
-  #   networks:
-  #     - my_network
-  #   command: redis-server /etc/redis/redis.conf
 
-  # blockchain:
-  #   image: blockchain
-  #   build: ./backend/blockchain
-  #   container_name: blockchain
-  #   ports:
-  #     - 9545:9545
-  #   restart: always
-  #   entrypoint: truffle develop > /hmmm
-  #   networks:
-  #     - my_network
   backend:
     container_name: back
     build: ./backend/Tag
@@ -184,7 +153,6 @@ services:
       # - front-tier
     depends_on:
       - db
-      # - redis
     build: ./backend/pong_backend
     ports:
       - "8006:8006"
