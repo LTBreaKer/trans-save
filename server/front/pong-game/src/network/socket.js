@@ -3,7 +3,7 @@ import { sphere } from '../components/sphere.js'
 import { leftPaddle, rightPaddle, paddle_way, TABLE_HEIGHT, BALL_RADUIS, popup_replay, sleep, back_counter } from '../utils/globaleVariable.js';
 import { TABLE_DEPTH, TABLE_WIDTH, PADDLE_LONG, height, width, first_player_goal, second_player_goal} from '../utils/globaleVariable.js';
 // import {gameSocket} from '../main3d.js';
-import  {gameApi, statePongGame } from '../../../../components/ping/script.js'
+import  {statePongGame } from '../../../../components/ping/script.js'
 import { descounter, removeEventsListener } from './events.js';
 import { assingGameApiToNULL, data_remote_player, initPlayRemoteGame, sendPlayerPaddleCreated } from '../../../components/ping/script.js';
 import { animationFrameId, launchGame, playRemotePongGame } from '../game/game.js';
@@ -24,7 +24,7 @@ export function sendScore(left_paddle_score = lpaddle.nb_goal, right_paddle_scor
 	// const url = "http://"+ window.env.DJANGO_HOSTNAME +":8080/server/auth/users/me/";
 	let data;
 	if (statePongGame == "local" || statePongGame == "ai_bot")
-		data = gameApi;
+		data = data_remote_player;
 	else
 		data = data_remote_player;
 	data.player1_score = left_paddle_score;

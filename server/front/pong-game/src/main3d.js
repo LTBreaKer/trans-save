@@ -2,6 +2,7 @@
 // import WebGL from 'three/addons/capabilities/WebGL.js';
 import { setupEventListeners} from './network/events.js';
 import { animate } from './game/game.js';
+import { data_remote_player } from '../../components/ping/script.js';
 
 
 // export let startGame = false;
@@ -18,6 +19,10 @@ import { animate } from './game/game.js';
 	
 	// setupEventListeners();
 // }
+
+if (data_remote_player === null) {
+	window.location.hash = "/ping";
+}
 
 export function lancePongGame(){
 	console.log("-------------- lancePongGame")

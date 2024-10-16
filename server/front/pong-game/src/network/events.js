@@ -9,7 +9,7 @@ import { moveCamera } from '../components/camera.js';
 ////////       ------ LOCAL -----        //////////
 import { lpaddle, rpaddle } from '../game/paddle.js';
 import { keyDownHandler, keyUpHandler } from '../events/keyboardEvent.js';
-import { aiGame, data_remote_player, gameApi, localgame, statePongGame } from '../../../components/ping/script.js';
+import { aiGame, data_remote_player, localgame, statePongGame } from '../../../components/ping/script.js';
 import { initPlayGame } from '../../../components/pingpong/ping.js';
 
 ////////       ------ REMOTE ----------        //////////
@@ -113,11 +113,13 @@ export async function descounter() {
 function initGame() {
 	back_counter.style.display = 'none';
 	popup_replay.style.display = 'none';
-	(statePongGame === "remote") ? assignPlayers(data_remote_player) : assignPlayers(gameApi); 
+	(statePongGame === "remote") ? assignPlayers(data_remote_player) : assignPlayers(data_remote_player); 
 	initGameComponents();
 }
 
 let replayGame = async () => {
+	if (data_remote_player === null)
+		window.location.hash = "/ping";	
 	await loadDocument();
 	resizeCanvas();
 	initGame();
