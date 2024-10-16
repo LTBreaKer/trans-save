@@ -12,6 +12,10 @@ export let statePongGame;
 export let _player_webSocket;
 let tournament_data;
 
+export function assingGameApiToNULL() {
+  gameApi = NULL;
+}
+
 export function statePongGameToTournament() {
   statePongGame = "tournament";
 }
@@ -263,10 +267,18 @@ export async function localgame() {
   if (typeof input !== 'undefined')
     name = input.value;
   else
-    name = JSON.parse(gameApi).player2_name;
+    name = gameApi.player2_name;
   console.log("name of user: ", name);
   statePongGame = "local";
   await lanceLocalGame();
+}
+
+function changePlayerPosition() {
+  if (statePongGame === "ai_bot") {
+    const tmp = gameApi.player1_name;
+    gameApi.player1_name = gameApi.player2_name;
+    gameApi.player2_name = tmp;
+  }
 }
 
 async function lanceLocalGame() {
@@ -289,7 +301,8 @@ async function lanceLocalGame() {
     // console.log("jsonData: ", jsonData);
     // console.log("jsonData.stringify(): ", JSON.stringify(jsonData));
     console.log("###  pingpong: ", window.location.hash);
-    gameApi = JSON.stringify(jsonData);
+    gameApi = jsonData;
+    changePlayerPosition();
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response}`);
     }

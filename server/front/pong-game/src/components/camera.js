@@ -12,7 +12,8 @@ export function moveCamera(stateGame = "local") {
     if (stateGame == "remote")
         moveCameraRemoteGame()
     else {
-        camera.position.z = 5.8;
+        // camera.position.z = 5.8;
+        camera.position.z = 6.2;
         camera.lookAt(0, 0, 0 );
         camera.rotation.z += 3 * Math.PI / 2;
     }

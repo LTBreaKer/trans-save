@@ -12,22 +12,22 @@
 	display: flex;
 	margin-top: calc((((99vh - min(99vw, 99vh)) * 0.1)));
 	margin-left: calc((((99vw - min(99vw, 99vh)) / 2)));
-	width: calc(( min(99vw, 99vh) - 100px));
+	width: calc(( min(99vw, 99vh)));
 	/* min-width: 350px; */
 }
 
 .p_container {
 	position: relative;
-	width: calc(100vw - 100px);
-	height: calc(100vh - 100px);
+	width: calc(100vw);
+	height: calc(100vh);
 }
 
 .p_canvas_background {
 	position: absolute;
 	color: rgba(0, 0, 0, 1);
 	z-index: 0;
-	width: calc(100vw - 100px);
-	height: calc(100vh - 100px);
+	width: calc(100vw);
+	height: calc(100vh);
 	display: flex;
 }
 
@@ -82,8 +82,8 @@
 	z-index: 1;
 	padding: 0px;
 	margin: 0px;
-	margin-top: calc(((99vh - min(99vw, 99vh)) * 0.1) - 100px / 2);
-	margin-left: calc(((99vw - min(99vw, 99vh)) / 2) - 100px / 2);
+	margin-top: calc(((99vh - min(99vw, 99vh)) * 0.1));
+	margin-left: calc(((99vw - min(99vw, 99vh)) / 2));
 	margin-bottom: 1%;
 	padding-left: -4rem;
 }
@@ -92,8 +92,8 @@
 	display: 'none';
 	position: absolute;
 	z-index: 100;
-	width: calc(100vw - 100px);
-	height: calc(100vh - 100px);
+	width: calc(100vw);
+	height: calc(100vh);
 	background-color: rgba(0,0,0,0.6);
     align-items: center;
     justify-content: center;
@@ -112,8 +112,8 @@
     top: 0;
     left: 0;
     z-index: 2;
-    width: calc(100vw - 100px);
-    height: calc(100vh - 100px);
+    width: calc(100vw);
+    height: calc(100vh);
     color: #d6ddd5;
     flex-direction: column; /* Stack children vertically */
     justify-content: center;

@@ -24,8 +24,8 @@ console.log("0 statePongGame: ", statePongGame);
 
 export function resizeCanvas(){
 	let minHW = Math.min(window.innerWidth*0.99, window.innerHeight*0.99);
-	canvas.style.width = (minHW - 100) + "px";
-	canvas.style.height = (minHW - 100) + "px";
+	canvas.style.width = (minHW) + "px";
+	canvas.style.height = (minHW) + "px";
 	canvas.style.marginTop = ((0.99 * window.innerHeight - minHW) * 0.5) + "px";
 	canvas.style.marginLeft = ((0.99 * window.innerWidth - minHW) / 2) + "px";
 	canvas.style.marginBottom = (0.01 * window.innerHeight) + "px";

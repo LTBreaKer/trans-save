@@ -5,7 +5,7 @@ import { TABLE_DEPTH, TABLE_WIDTH, PADDLE_LONG, height, width, first_player_goal
 // import {gameSocket} from '../main3d.js';
 import  {gameApi, statePongGame } from '../../../../components/ping/script.js'
 import { descounter, removeEventsListener } from './events.js';
-import { data_remote_player, initPlayRemoteGame, sendPlayerPaddleCreated } from '../../../components/ping/script.js';
+import { assingGameApiToNULL, data_remote_player, initPlayRemoteGame, sendPlayerPaddleCreated } from '../../../components/ping/script.js';
 import { animationFrameId, launchGame, playRemotePongGame } from '../game/game.js';
 import { moveCamera } from '../components/camera.js';
 import { renderer } from '../components/renderer.js';
@@ -24,7 +24,7 @@ export function sendScore(left_paddle_score = lpaddle.nb_goal, right_paddle_scor
 	// const url = "http://"+ window.env.DJANGO_HOSTNAME +":8080/server/auth/users/me/";
 	let data;
 	if (statePongGame == "local" || statePongGame == "ai_bot")
-		data = JSON.parse(gameApi);
+		data = gameApi;
 	else
 		data = data_remote_player;
 	data.player1_score = left_paddle_score;
@@ -81,6 +81,7 @@ export function fnGameOver(state = "rtn_menu") {
 	removeEventsListener();
 	if (statePongGame !== "tournament")
 		window.location.hash = "/ping"
+	assingGameApiToNULL();
 	// if (state == "rtn_menu")
 }
 

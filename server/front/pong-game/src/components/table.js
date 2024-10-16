@@ -10,14 +10,15 @@ let right_side;
 
 export function initTable() {
     // const texture = loader.load('/images/pong/textures/staduim_wood_worn.jpeg');
-    // texture.colorSpace = THREE.SRGBColorSpace;
+    const texture = loader.load('/images/pong/textures/running_track_diff_4k.jpg');
+    texture.colorSpace = THREE.SRGBColorSpace;
     
     const table_geometry = new THREE.BoxGeometry( TABLE_WIDTH, TABLE_DEPTH, TABLE_HEIGHT );
     const table_milieu_geometry = new THREE.BoxGeometry( TABLE_WIDTH, TABLE_DEPTH / 100, TABLE_HEIGHT + 0.001);
     const table_milieu_material = new THREE.MeshPhongMaterial( { color: 0x246D97 } );
     table_milieu = new THREE.Mesh( table_milieu_geometry, table_milieu_material);
-    // const table_material = new THREE.MeshPhongMaterial( { map: texture } );
-    const table_material = new THREE.MeshPhongMaterial( { color: 0x11698C } );
+    const table_material = new THREE.MeshPhongMaterial( { map: texture } );
+    // const table_material = new THREE.MeshPhongMaterial( { color: 0x11698C } );
     table = new THREE.Mesh( table_geometry, table_material);
     
     const side_geometry = new THREE.BoxGeometry(TABLE_HEIGHT, TABLE_DEPTH, PADDLE_HEIGHT * 2);
