@@ -6,6 +6,7 @@ let game_socket = "wss://127.0.0.1:9006/ws/game-db/"
 // https://{{ip}}:9008/api/tournament/create-tournament/
 let tournament = "https://127.0.0.1:9008/api/tournament/"
 let name = "";
+let check_remote = 0;
 let tournament_data;
 var remote_object;
 async function Ping() {
@@ -20,6 +21,9 @@ async function Ping() {
   const local_butt_game = document.getElementById('local_butt_game');
   const remote_butt_game = document.getElementById('butt_game');
   const cancel_game_func = document.getElementById('cancel_game');
+  const logout = document.getElementById('logout')
+  
+  logout.addEventListener('click', log_out_func);
 
   cancel_game_func.addEventListener('click', async () => {
 
