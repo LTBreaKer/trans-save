@@ -33,7 +33,8 @@ function sendScore(left_paddle_score, right_paddle_score) {
 		method: 'POST',
 		headers: {
 			'Authorization': `Bearer ${localStorage.getItem("token")}`,
-			'Content-Type': 'application/x-www-form-urlencoded'
+			'Content-Type': 'application/x-www-form-urlencoded',
+			'Session-ID': get_localstorage('session_id')
 		},
 		body: urlEncodedData
 	});

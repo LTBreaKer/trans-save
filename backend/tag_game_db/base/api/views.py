@@ -13,7 +13,8 @@ game_queue = global_vars.game_queue
 
 def check_user_availablity(request):
     AUTH_HEADER = request.META.get('HTTP_AUTHORIZATION')
-    auth_check_response = check_auth(AUTH_HEADER)
+    session_id = request.headers.get('Session-ID')
+    auth_check_response = check_auth(AUTH_HEADER, session_id)
     if auth_check_response.status_code != 200:
         return {
             'is_available': False,
@@ -78,6 +79,7 @@ def create_local_game(request):
 @api_view(['POST'])
 def create_remote_game(request):
     AUTH_HEADER = request.META.get('HTTP_AUTHORIZATION')
+    session_id = request.headers.get('Session-ID')
     user_availablity = check_user_availablity(request)
     if not user_availablity['is_available']:
         return user_availablity['res']
@@ -86,7 +88,7 @@ def create_remote_game(request):
     if len(game_queue) >= 2:
         player1_id = game_queue.pop()
         player2_id = game_queue.pop()
-        player2_data = get_user(user_id=player2_id, auth_header=AUTH_HEADER).json()
+        player2_data = get_user(user_id=player2_id, auth_header=AUTH_HEADER, session_id=session_id).json()
 
         player1_avatar = user_availablity['avatar']
         player2_avatar = player2_data['user_data']['avatar']
@@ -104,7 +106,7 @@ def create_remote_game(request):
         if serializer.is_valid():
             instance = serializer.save()
             channel_layer = get_channel_layer()
-            player2_data = get_user(user_id=player2_id, auth_header=AUTH_HEADER).json()
+            player2_data = get_user(user_id=player2_id, auth_header=AUTH_HEADER, session_id=session_id).json()
             async_to_sync(channel_layer.group_send)(
                 f"player_{player1_id}",
                 {
@@ -150,7 +152,8 @@ def create_remote_game(request):
 @api_view(['POST'])
 def cancel_remote_game_creation(request):
     AUTH_HEADER = request.META.get('HTTP_AUTHORIZATION')
-    auth_check_response = check_auth(AUTH_HEADER)
+    session_id = request.headers.get('Session-ID')
+    auth_check_response = check_auth(AUTH_HEADER, session_id)
     if auth_check_response.status_code != 200:
         return Response(data=auth_check_response.json(), status=auth_check_response.status_code)
     player_id = auth_check_response.json()['user_data']['id']
@@ -163,7 +166,8 @@ def cancel_remote_game_creation(request):
 @api_view(['POST'])
 def add_game_score(request):
     AUTH_HEADER = request.META.get('HTTP_AUTHORIZATION')
-    auth_check_response = check_auth(AUTH_HEADER)
+    session_id = request.headers.get('Session-ID')
+    auth_check_response = check_auth(AUTH_HEADER, session_id)
     if auth_check_response.status_code != 200:
         return Response(data=auth_check_response.json(), status=auth_check_response.status_code)
     game_id = request.data.get('game_id')
@@ -196,7 +200,8 @@ def add_game_score(request):
 @api_view(['GET'])
 def get_game_history(request):
     AUTH_HEADER = request.META.get('HTTP_AUTHORIZATION')
-    auth_check_response = check_auth(AUTH_HEADER)
+    session_id = request.headers.get('Session-ID')
+    auth_check_response = check_auth(AUTH_HEADER, session_id)
     if auth_check_response.status_code != 200:
         return Response(data=auth_check_response.json(), status=auth_check_response.status_code)
     user_id = auth_check_response.json()['user_data']['id']
@@ -207,7 +212,8 @@ def get_game_history(request):
 @api_view(['POST'])
 def get_game_history_by_username(request):
     AUTH_HEADER = request.META.get('HTTP_AUTHORIZATION')
-    auth_check_response = check_auth(AUTH_HEADER)
+    session_id = request.headers.get('Session-ID')
+    auth_check_response = check_auth(AUTH_HEADER, session_id)
     if auth_check_response.status_code != 200:
         return Response(data=auth_check_response.json(), status = auth_check_response.status_code)
     username = request.data.get('username')

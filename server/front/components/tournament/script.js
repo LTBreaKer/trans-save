@@ -140,6 +140,7 @@ async function start_tournament_match(params) {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
           'Authorization': 'Bearer ' + get_localstorage('token'),
+          'Session-ID': get_localstorage('session_id')
         },
         credentials: 'include',
         body: urlEncodedData
@@ -179,6 +180,7 @@ async function add_tournament_match_score(params) {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
         'Authorization': 'Bearer ' + get_localstorage('token'),
+        'Session-ID': get_localstorage('session_id')
       },
       credentials: 'include',
       body: urlEncodedData
@@ -203,6 +205,7 @@ async function define_object_matches() {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer ' + get_localstorage('token'),
+          'Session-ID': get_localstorage('session_id')
         },
         credentials: 'include',
       });
@@ -237,6 +240,7 @@ async function get_stage() {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
           'Authorization': 'Bearer ' + get_localstorage('token'),
+          'Session-ID': get_localstorage('session_id')
         },
         credentials: 'include',
         body: urlEncodedData
@@ -467,7 +471,8 @@ async function changeAccess() {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + get_localstorage('token')
+          'Authorization': 'Bearer ' + get_localstorage('token'),
+          'Session-ID': get_localstorage('session_id')
         },
         credentials: 'include',
       });

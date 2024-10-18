@@ -47,6 +47,7 @@ async function get_history_by_id() {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
         'Authorization': 'Bearer ' + get_localstorage('token'),
+        'Session-ID': get_localstorage('session_id')
       },
       credentials: 'include',
       body: urlEncodedData
@@ -223,7 +224,13 @@ async function changeAccess() {
       const response = await fetch(api + 'auth/token/refresh/', {
         method: 'POST',
         headers: {
+<<<<<<< HEAD
           'Content-Type': 'application/json',
+=======
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Authorization': 'Bearer ' + get_localstorage('token'),
+          'Session-ID': get_localstorage('session_id')
+>>>>>>> 95798d377b4838b9f88550bdb7047c15791bf2d5
         },
         credentials: 'include',
         body: JSON.stringify(data)

@@ -84,6 +84,7 @@ function start_game()
                 headers: {
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + get_localstorage('token'),
+                'Session-ID': get_localstorage('session_id')
                 },
                 credentials: 'include',
                 body: JSON.stringify(data)

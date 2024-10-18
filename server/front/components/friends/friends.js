@@ -140,6 +140,7 @@ async function get_pong_history_by_name(name) {
     headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer ' + get_localstorage('token'),
+      'Session-ID': get_localstorage('session_id')
     },
     credentials: 'include',
     body: JSON.stringify(data)
@@ -166,6 +167,7 @@ async function remove_friend() {
     headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer ' + get_localstorage('token'),
+      'Session-ID': get_localstorage('session_id')
     },
     credentials: 'include',
     body: JSON.stringify(data)
@@ -232,7 +234,8 @@ async function fetchUserData() {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + get_localstorage('token')
+        'Authorization': 'Bearer ' + get_localstorage('token'),
+        'Session-ID': get_localstorage('session_id')
       },
       credentials: 'include',
     });
@@ -267,7 +270,8 @@ async function fetch_friend_data() {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'AUTHORIZATION': "Bearer " + get_localstorage('token')
+        'AUTHORIZATION': "Bearer " + get_localstorage('token'),
+        'Session-ID': get_localstorage('session_id')
       },
       credentials: 'include',
       body: JSON.stringify(data)

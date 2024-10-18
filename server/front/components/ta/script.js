@@ -32,6 +32,7 @@ async function Ta() {
         headers: {
           'Content-Type': 'application/json',
           'AUTHORIZATION': 'Bearer ' + get_localstorage('token'),
+          'Session-ID': get_localstorage('session_id')
         },
         credentials: 'include',
       });
@@ -68,6 +69,7 @@ async function Ta() {
         headers: {
           'Content-Type': 'application/json',
           'AUTHORIZATION': 'Bearer ' + get_localstorage('token'),
+          'Session-ID': get_localstorage('session_id')
         },
         credentials: 'include',
       });
@@ -160,6 +162,7 @@ async function remote_game_function() {
       headers: {
         'Content-Type': 'application/json',
         'AUTHORIZATION': 'Bearer ' + get_localstorage('token'),
+        'Session-ID': get_localstorage('session_id')
       },
       credentials: 'include',
     });
@@ -207,6 +210,7 @@ async function localgame_tag() {
       headers: {
         'Content-Type': 'application/json',
         'AUTHORIZATION': 'Bearer ' + get_localstorage('token'),
+        'Session-ID': get_localstorage('session_id')
       },
       credentials: 'include',
       body: JSON.stringify(data)
@@ -304,7 +308,8 @@ async function changeAccess() {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + get_localstorage('token')
+          'Authorization': 'Bearer ' + get_localstorage('token'),
+          'Session-ID': get_localstorage('session_id')
         },
         credentials: 'include',
       });
