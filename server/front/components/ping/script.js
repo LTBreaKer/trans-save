@@ -30,6 +30,7 @@ async function Ping() {
         headers: {
           'Content-Type': 'application/json',
           'AUTHORIZATION': 'Bearer ' + get_localstorage('token'),
+          'Session-ID': get_localstorage('session_id')
         },
         credentials: 'include',
       });
@@ -67,6 +68,7 @@ async function Ping() {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer ' + get_localstorage('token'),
+          'Session-ID': get_localstorage('session_id')
         },
         credentials: 'include',
       });
@@ -156,6 +158,7 @@ async function check_tournament_finish() {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + get_localstorage('token'),
+        'Session-ID': get_localstorage('session_id')
       },
       credentials: 'include',
     });
@@ -189,6 +192,7 @@ async function create_tournament_function(participants) {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + get_localstorage('token'),
+        'Session-ID': get_localstorage('session_id')
       },
       credentials: 'include',
       body: JSON.stringify(participants)
@@ -253,6 +257,7 @@ async function remore_game_fun() {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + get_localstorage('token'),
+        'Session-ID': get_localstorage('session_id')
       },
       credentials: 'include',
     });
@@ -288,6 +293,7 @@ async function localgame() {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + get_localstorage('token'),
+        'Session-ID': get_localstorage('session_id')
       },
       credentials: 'include',
       body: JSON.stringify(data)
@@ -368,7 +374,8 @@ async function changeAccess() {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + get_localstorage('token')
+          'Authorization': 'Bearer ' + get_localstorage('token'),
+          'Session-ID': get_localstorage('session_id')
         },
         credentials: 'include',
       });

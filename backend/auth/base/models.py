@@ -6,9 +6,6 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 import requests
 
-
-# Create your models here.
-
 class User(AbstractUser):
 
     username_validator = CustomUsernameValidator()
@@ -36,14 +33,9 @@ class User(AbstractUser):
     max_otp_try = models.CharField(max_length=2, default=3)
     otp_max_out = models.DateTimeField(blank=True, null=True)
 
-# @receiver(post_save, sender=User)
-# def create_user_profile(sender, instance=None, created=False, **kwargs):
-#     if created:
-#         response = requests.post(
-#             'https://127.0.0.1:8001/api/user/create_profile',
-#             {
-#                 'user_id': instance.id,
-#             }
-#         )
-#         response_data = response.json()
-#         print(response_data)
+class UserSession(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    session_id = models.CharField(max_length=255, unique=True)
+    is_authentication_completed = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    last_active = models.DateTimeField(auto_now=True)

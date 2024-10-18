@@ -12,7 +12,8 @@ async function fetchUserName() {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + get_localstorage('token')
+            'Authorization': 'Bearer ' + get_localstorage('token'),
+            'Session-ID': get_localstorage('session_id')
           },
           credentials: 'include',
         });
@@ -109,6 +110,7 @@ async function start_game()
                 headers: {
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + get_localstorage('token'),
+                'Session-ID': get_localstorage('session_id')
                 },
                 credentials: 'include',
                 body: JSON.stringify(data)
