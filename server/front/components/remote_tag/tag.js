@@ -1,12 +1,13 @@
 import { socket } from './script.js'
 import {imageR1, imageL1, imageIR1, imageIL1, imageR2, imageL2, imageIR2, imageIL2, arrow, go_arrow, numbers, background, platform} from './image_src.js';
 import {tag_game_info, setTagGameInfo} from '../ta/script.js'
-import {get_localstorage} from '../../auth.js'
+import {get_localstorage, check_access_token} from '../../auth.js'
 
 var api = "https://127.0.0.1:9004/api/";
 var api_tag = "https://127.0.0.1:9007/api/tag-gamedb/"
 
 async function fetchUserName() {
+    await check_access_token()
       try {
         const userResponse = await fetch(api + 'auth/get-user/', {
           method: 'GET',
@@ -92,6 +93,7 @@ async function start_game()
 
     async function game_score(winner)
     {
+        await check_access_token()
         let winner_id
         if (winner === tag_game_info.player1name)
             winner_id =  tag_game_info.player1_id

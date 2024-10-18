@@ -510,7 +510,8 @@ export async function changeAccess() {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
     const jsonData = await response.json();
-    await login(jsonData.access, jsonData.refresh);
+    if (response.status === 200)
+      login(jsonData.access, jsonData.refresh);
   } catch (error) {
     console.error('There was a problem with the fetch operation:', error);
   }

@@ -1,5 +1,6 @@
 import { loadHTML, loadCSS } from '../../utils.js';
 import {start_game} from './tag.js';
+import {tag_game_info} from '../ta/script.js'
 let socket;
 
 async function Game() {
@@ -39,9 +40,16 @@ async function Game() {
     }
   }
   socket = await(initializeApp());
+  
+  if (!tag_game_info)
+  {
+    console.error("invalid players")
+    window.location.hash = '#/ta'
+    return
+  }
 
   if (socket.readyState === WebSocket.OPEN) 
-    start_game();
+    await start_game();
 }
 
 export{socket}
