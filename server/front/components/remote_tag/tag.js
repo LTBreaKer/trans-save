@@ -198,7 +198,7 @@ async function start_game()
     }
 
     resizeWindow()
-    animation()
+    await animation()
 
     function delay(ms) {
         return new Promise(resolve => setTimeout(resolve, ms));
@@ -225,7 +225,7 @@ async function start_game()
 
     const blinK = setInterval(blink, 2000)
 
-    function animation()
+    async function animation()
     {
         if (socket.readyState === WebSocket.OPEN)
         {
@@ -254,7 +254,7 @@ async function start_game()
                     load_draw(arrow, player.position.x + player.width/4, player.position.y - player.height, player.width/2, player.height/2)
             }
         })
-        rain();
+        await rain();
         draw_timer(time, players[0])
         if (time === 0 && socket.readyState === WebSocket.OPEN)
         {
@@ -465,7 +465,7 @@ async function start_game()
         event.preventDefault() // This triggers the alert
     }
 
-    function disconnect()
+    async function disconnect()
     {
         if (window.location.hash === "#/remoteTag")
         {
@@ -476,7 +476,7 @@ async function start_game()
             overlay.textContent = winner + ' wins'    
         }
         if (winner)
-            game_score(winner)
+            await game_score(winner)
         winner = null
         setTagGameInfo(null)
         reload_data()
