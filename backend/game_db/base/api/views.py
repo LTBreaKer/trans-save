@@ -24,19 +24,19 @@ def check_user_availablity(request):
     player_id = user_data['id']
     username = user_data['username']
     avatar = user_data['avatar']
-    # if GameDb.objects.filter(
-    #     Q(player1_id=player_id) | Q(player2_id=player_id),
-    #     is_active=True
-    # ).exists():
-    #     return {
-    #         'is_available': False,
-    #         'res': Response({'message': 'player is already in a game'}, status=400)
-    #         }
-    # if player_id in game_queue:
-    #     return {
-    #         'is_available': False,
-    #         'res': Response({'message': 'player already in queue'}, status=400)
-    #         }
+    if GameDb.objects.filter(
+        Q(player1_id=player_id) | Q(player2_id=player_id),
+        is_active=True
+    ).exists():
+        return {
+            'is_available': False,
+            'res': Response({'message': 'player is already in a game'}, status=400)
+            }
+    if player_id in game_queue:
+        return {
+            'is_available': False,
+            'res': Response({'message': 'player already in queue'}, status=400)
+            }
     return {
         'is_available' : True,
         'res': None,

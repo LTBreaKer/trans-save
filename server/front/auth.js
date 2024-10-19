@@ -9,6 +9,7 @@ function isAuthenticated() {
 }
   
   function login(token, refresh, session_id) {
+    console.log("------ ", session_id)
     localStorage.setItem('token', token);
     localStorage.setItem('refresh', refresh);
     localStorage.setItem('session_id', session_id);

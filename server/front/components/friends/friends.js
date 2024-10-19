@@ -240,6 +240,10 @@ async function fetchUserData() {
       credentials: 'include',
     });
 
+    if (userResponse.status === 404) {
+      logoutf();
+      window.location.hash = '/login';
+    }
     if (!userResponse.ok) {
       throw new Error('Network response was not ok');
     }

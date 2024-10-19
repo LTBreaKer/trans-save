@@ -18,10 +18,16 @@ async function fetchUserName() {
           credentials: 'include',
         });
         
+        if (userResponse.status === 404) {
+            logoutf();
+            window.location.hash = '/login';
+          }
+
         if (!userResponse.ok)
           throw new Error(`Status: ${response.status}, Message: ${jsonData.message || 'Unknown error'}`);
 
         let data_user = await userResponse.json()
+
         let username = data_user.user_data.username
         return (username);
       }

@@ -335,7 +335,7 @@ async function changeAccess() {
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
-      await login(jsonData.access, jsonData.refresh);
+      login(jsonData.access, jsonData.refresh, get_localstorage('session_id'));
       
     } catch (error) {
       console.error('There was a problem with the fetch operation:', error);
@@ -383,6 +383,11 @@ async function changeAccess() {
         },
         credentials: 'include',
       });
+
+      if (userResponse.status === 404) {
+        logoutf();
+        window.location.hash = '/login';
+      }
       
       if (!userResponse.ok) {
         throw new Error('Network response was not ok');

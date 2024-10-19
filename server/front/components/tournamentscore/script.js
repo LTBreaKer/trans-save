@@ -224,13 +224,9 @@ async function changeAccess() {
       const response = await fetch(api + 'auth/token/refresh/', {
         method: 'POST',
         headers: {
-<<<<<<< HEAD
-          'Content-Type': 'application/json',
-=======
           'Content-Type': 'application/x-www-form-urlencoded',
           'Authorization': 'Bearer ' + get_localstorage('token'),
           'Session-ID': get_localstorage('session_id')
->>>>>>> 95798d377b4838b9f88550bdb7047c15791bf2d5
         },
         credentials: 'include',
         body: JSON.stringify(data)
@@ -239,7 +235,7 @@ async function changeAccess() {
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
-      await login(jsonData.access, jsonData.refresh);
+      login(jsonData.access, jsonData.refresh, get_localstorage('session_id'));
       
     } catch (error) {
       console.error('There was a problem with the fetch operation:', error);
@@ -287,6 +283,11 @@ async function changeAccess() {
         credentials: 'include',
       });
       
+      if (userResponse.status === 404) {
+        logoutf();
+        window.location.hash = '/login';
+      }
+
       if (!userResponse.ok) {
         throw new Error('Network response was not ok');
       }

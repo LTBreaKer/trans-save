@@ -102,7 +102,7 @@ class FriendRequestConsumer(AsyncWebsocketConsumer):
             friend_requests = await sync_to_async(lambda: list(FriendRequest.objects.filter(to_user_id=self.user_id)))()
 
             for friend_request in friend_requests:
-                response = await sync_to_async(get_user)(user_id=friend_request.from_user_id, auth_header=auth_header)
+                response = await sync_to_async(get_user)(user_id=friend_request.from_user_id, auth_header=auth_header, session_id=session_id)
                 from_user_data = await sync_to_async(response.json)()
                 print(from_user_data, "")
                 await self.channel_layer.group_send(
@@ -134,6 +134,14 @@ class FriendRequestConsumer(AsyncWebsocketConsumer):
         await self.send(text_data=json.dumps({
             'type': 'friend_request',
             'friend_request': friend_request_data
+        }))
+    
+    async def accepted_friend_request(self, event):
+        user_data = event['user_data']
+
+        await self.send(text_data=json.dumps({
+            'type': 'friend_request_accepted',
+            'user_data': user_data,
         }))
     # async def send_data(self):
     #     scope_data = self.prepare_scope_data()

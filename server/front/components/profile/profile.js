@@ -146,6 +146,7 @@ async function get_tournament_history() {
     headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer ' + get_localstorage('token'),
+      'Session-ID': get_localstorage('session_id')
     },
     credentials: 'include',
   });
@@ -580,7 +581,7 @@ export async function changeAccess() {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
     const jsonData = await response.json();
-    await login(jsonData.access, jsonData.refresh);
+    login(jsonData.access, jsonData.refresh, get_localstorage('session_id'));
   } catch (error) {
     console.error('There was a problem with the fetch operation:', error);
   }
@@ -665,10 +666,17 @@ async function fetchUserData() {
       },
       credentials: 'include',
     });
+
+    if (userResponse.status === 404) {
+      logoutf();
+      window.location.hash = '/login';
+    }
+
     if (!userResponse.ok) {
       throw new Error('Network response was not ok');
     }
     const userData = await userResponse.json();
+
 
     const change_user = document.getElementById('UserName');
     const avata = document.getElementById('avatar');
