@@ -1,7 +1,7 @@
 import { loadHTML, loadCSS } from '../../utils.js';
 import { tournament_match_data } from '../tournament/script.js';
 import { log_out_func ,login , logoutf, get_localstorage, getCookie, check_access_token } from '../../auth.js';
-import { loadHtmlWidthModuleScript, playGame } from '../pingpong/ping.js';
+import { isGameDataFull, loadHtmlWidthModuleScript, playGame } from '../pingpong/ping.js';
 
 
 let tournament = "https://127.0.0.1:9008/api/tournament/";
@@ -23,15 +23,17 @@ async function TournamentScore() {
   // })
 
 // console.log("text that i need to use it's here => : ", tournament_match_data)
-  await loadHtmlWidthModuleScript();
-  await playGame();
+  if (await isGameDataFull()) {
+    await loadHtmlWidthModuleScript();
+    await playGame();
+  }
 }
 
 export async function endTournamentMatchScore(player1_score, player2_score) {
 	await add_tournament_match_score(tournament_match_data, player1_score, player2_score);
-	(tournament_match_data.matchNumber === 7) ?
-	window.location.hash = "/ping" :
-	window.location.hash = "/tournament";
+	// (tournament_match_data.matchNumber === 7) ?
+	// window.location.hash = "/ping" :
+	// window.location.hash = "/tournament";
 }
 
 async function add_tournament_match_score(params, player1_score, player2_score) {

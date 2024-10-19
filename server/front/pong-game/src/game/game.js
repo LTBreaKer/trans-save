@@ -6,7 +6,7 @@ import { first_player_goal, second_player_goal, box_result, canvas } from '../ut
 import { scene } from '../components/scene.js'
 import { renderer } from '../components/renderer.js'
 import { localGameSocket, paddleSocket } from '../network/socket.js';
-import { data_remote_player, statePongGame } from '../../../components/ping/script.js';
+import { game_data, statePongGame } from '../../../components/ping/script.js';
 import { mousePosition, mousePositionHelper } from '../events/mouseEvent.js';
 import { resizeCanvas } from '../network/events.js';
 
@@ -152,7 +152,7 @@ function playerChoicePaddle({name_current_user, player1_name}) {
 }
 
 if (statePongGame == "remote")
-	playerChoicePaddle(data_remote_player);
+	playerChoicePaddle(game_data);
 // if ( WebGL.isWebGLAvailable() )
 // 	animate();
 // else {

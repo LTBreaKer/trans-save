@@ -6,14 +6,21 @@ let game_socket = "wss://127.0.0.1:9006/ws/game-db/";
 let tournament = "https://127.0.0.1:9008/api/tournament/"
 let name = "";
 let html = "";
-export let data_remote_player;
+export let game_data;
 // export let gameApi;
 export let statePongGame;
 export let _player_webSocket;
 let tournament_data;
 
 export function assingGameApiToNULL() {
-  data_remote_player = null;
+  game_data = null;
+}
+export function assingDataToGameData(data) {
+  data.player1_id = data.playerOneId;
+  data.player2_id = data.playerTwoId;
+  data.player1_name = data.playerOneName;
+  data.player2_name = data.playerTwoName;
+  game_data = data;
 }
 
 export function statePongGameToTournament() {
@@ -22,7 +29,7 @@ export function statePongGameToTournament() {
 
 export async function sendPlayerPaddleCreated(){
   console.log("----------------  sendPlayerPaddleCreated  --------------------------");
-  let data = data_remote_player;
+  let data = game_data;
   console.log("data.name_current_user : ", data.name_current_user)
   console.log("data.player1_name : ", data.player1_name)
   let player_id = (data.name_current_user === data.player1_name)
@@ -203,7 +210,7 @@ async function connectPlayerSocket() {
       if (data.type === "remote_game_created")
         {
           let name_current_user = await fetchUserName();
-          data_remote_player = {
+          game_data = {
             name_current_user: name_current_user,
             game_id: data.game.id,
             player1_name: data.game.player1_name,
@@ -211,7 +218,7 @@ async function connectPlayerSocket() {
             player1_id: data.game.player1_id,
             player2_id: data.game.player2_id
           }
-          // console.log("data are here => ", data_remote_player)
+          // console.log("data are here => ", game_data)
           statePongGame = "remote";
           // window.location.hash = '/remote_pong';
           window.location.hash = "/pingpong";
@@ -267,7 +274,7 @@ export async function localgame() {
   if (typeof input !== 'undefined')
     name = input.value;
   else
-    name = data_remote_player.player2_name;
+    name = game_data.player2_name;
   console.log("name of user: ", name);
   statePongGame = "local";
   await lanceLocalGame();
@@ -275,9 +282,9 @@ export async function localgame() {
 
 function changePlayerPosition() {
   if (statePongGame === "ai_bot") {
-    const tmp = data_remote_player.player1_name;
-    data_remote_player.player1_name = data_remote_player.player2_name;
-    data_remote_player.player2_name = tmp;
+    const tmp = game_data.player1_name;
+    game_data.player1_name = game_data.player2_name;
+    game_data.player2_name = tmp;
   }
 }
 
@@ -301,7 +308,7 @@ async function lanceLocalGame() {
     // console.log("jsonData: ", jsonData);
     // console.log("jsonData.stringify(): ", JSON.stringify(jsonData));
     console.log("###  pingpong: ", window.location.hash);
-    data_remote_player = jsonData;
+    game_data = jsonData;
     changePlayerPosition();
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response}`);

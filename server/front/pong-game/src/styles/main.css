@@ -107,7 +107,7 @@
 
 .p_popup_replay {
 	font-family: 'Volax', sans-serif;
-	display: none;
+	display: flex;
     position: absolute;
     top: 0;
     left: 0;

@@ -313,6 +313,8 @@ body {
   display: flex;
   width: 100%;
   justify-content: space-evenly;
+  align-items: center;
+  flex-direction: row;
   z-index: 1;
 }
 

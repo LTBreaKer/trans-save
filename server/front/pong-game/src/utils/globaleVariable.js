@@ -30,6 +30,15 @@ export let back_counter;
 export let counter;
 export let popup_replay;
 
+export async function loadReplayDocument() {
+	replay = document.querySelector('#replay');
+	pong_menu = document.querySelector('#pong_menu');
+}
+
+export async function loadQuitDocument() {
+	pong_menu = document.querySelector('#pong_menu');
+}
+
 export async function loadDocument() {
 	first_player_goal = document.querySelector("#first_player");
 	second_player_goal = document.querySelector("#second_player");
@@ -37,8 +46,8 @@ export async function loadDocument() {
 	p_second = document.querySelector(".p_second");
 	first_player_name = document.querySelector("#first_player_name");
 	second_player_name = document.querySelector("#second_player_name");
-	replay = document.querySelector('#replay');
-	pong_menu = document.querySelector('#pong_menu');
+	// replay = document.querySelector('#replay');
+	// pong_menu = document.querySelector('#pong_menu');
 	box_result = document.querySelector(".p_box_result");
 	canvas = document.querySelector('#c');
 	back_counter = document.querySelector('#back_counter');

@@ -1,20 +1,23 @@
 import { lpaddle, rpaddle } from '../components/paddle.js'
 import { sphere } from '../components/sphere.js'
-import { leftPaddle, rightPaddle, paddle_way, TABLE_HEIGHT, BALL_RADUIS, popup_replay, sleep, back_counter } from '../utils/globaleVariable.js';
+import { leftPaddle, rightPaddle, paddle_way, TABLE_HEIGHT, BALL_RADUIS, popup_replay, sleep, back_counter, replay, pong_menu, loadReplayDocument } from '../utils/globaleVariable.js';
 import { TABLE_DEPTH, TABLE_WIDTH, PADDLE_LONG, height, width, first_player_goal, second_player_goal} from '../utils/globaleVariable.js';
 // import {gameSocket} from '../main3d.js';
 import  {statePongGame } from '../../../../components/ping/script.js'
-import { descounter, removeEventsListener } from './events.js';
-import { assingGameApiToNULL, data_remote_player, initPlayRemoteGame, sendPlayerPaddleCreated } from '../../../components/ping/script.js';
+import { descounter, loadPopupGameOver, loadPopupReply, removeEventsListener, replayLocalGame } from './events.js';
+import { assingGameApiToNULL, game_data, initPlayRemoteGame, sendPlayerPaddleCreated } from '../../../components/ping/script.js';
 import { animationFrameId, launchGame, playRemotePongGame } from '../game/game.js';
 import { moveCamera } from '../components/camera.js';
 import { renderer } from '../components/renderer.js';
 import { scene } from '../components/scene.js';
 import { disposeScene } from '../components/disposeComponent.js';
 import { endTournamentMatchScore } from '../../../components/tournamentscore/script.js';
-// import { data_remote_player,  sendPlayerPaddleCreated } from '../../../components/ping/script.js';
+import { loadHTML } from '../../../utils.js';
+import { tournament_match_data } from '../../../components/tournament/script.js';
+// import { game_data,  sendPlayerPaddleCreated } from '../../../components/ping/script.js';
 // console.log("game API: ", gameApi);
 let gameSocket;
+let html_popup_replay;
 window.env = {
 	DJANGO_HOSTNAME : "c3r4p5.1337.ma"
 };
@@ -23,10 +26,7 @@ export function sendScore(left_paddle_score = lpaddle.nb_goal, right_paddle_scor
 	const url = "https://127.0.0.1:9006/api/gamedb/add-game-score/";
 	// const url = "http://"+ window.env.DJANGO_HOSTNAME +":8080/server/auth/users/me/";
 	let data;
-	if (statePongGame == "local" || statePongGame == "ai_bot")
-		data = data_remote_player;
-	else
-		data = data_remote_player;
+	data = game_data;
 	data.player1_score = left_paddle_score;
 	data.player2_score = right_paddle_score;
 	const urlEncodedData = new URLSearchParams(data);
@@ -73,21 +73,31 @@ function draw_info(data) {
 	second_player_goal.innerHTML = lpaddle.nb_goal;
 }
 
-export function fnGameOver(state = "rtn_menu") {
-	popup_replay.style.display = 'flex';
-	cancelAnimationFrame(animationFrameId);
-	if (renderer) renderer.dispose();
-	if (scene) disposeScene();
+export async function fnGameOver(state = "rtn_menu") {
 	removeEventsListener();
-	if (statePongGame !== "tournament")
-		window.location.hash = "/ping"
+	console.log("state: ", state);
+	if (state === "show winner")
+		await loadPopupGameOver();
+	else {
+		cancelAnimationFrame(animationFrameId);
+		if (renderer) renderer.dispose();
+		if (scene) disposeScene();
+		if (statePongGame !== "tournament")
+			window.location.hash = "/ping"
+		else {
+			(tournament_match_data.matchNumber === 7) ?
+			window.location.hash = "/ping" :
+			window.location.hash = "/tournament";
+		}
+	}
 	assingGameApiToNULL();
-	// if (state == "rtn_menu")
 }
 
 // export function fnLocalGameOver() {
 
 // }
+
+
 
 export async function localGameSocket(group_name) {
 	console.log("group name: ", group_name);
@@ -104,10 +114,13 @@ export async function localGameSocket(group_name) {
 				console.log("statePongGame === tournament: ", statePongGame === "tournament");
 				if (statePongGame === "tournament") {
 					endTournamentMatchScore(message.left_paddle_score, message.right_paddle_score);
-					fnGameOver();
+					game_data.player1_score = message.left_paddle_score;
+					game_data.player2_score = message.right_paddle_score;
+					fnGameOver("show winner");
 				} else {
 					sendScore(message.left_paddle_score, message.right_paddle_score);
-					popup_replay.style.display = 'flex';
+					// popup_replay.style.display = 'flex';
+					loadPopupReply();
 				}
 			}
 		}
@@ -135,8 +148,8 @@ export async function paddleSocket(group_name) {
 		let ws = new WebSocket(wssUrl);
 		ws.onopen = async (event) => {
 			console.log('paddle game WebSocket conection established.');
-			await ws.send(JSON.stringify({'type_msg': 'add_group', 'group_name': data_remote_player.game_id}));
-			await ws.send(JSON.stringify({'type_msg': 'assigning_paddle', 'paddle': choicePaddle(data_remote_player)}));
+			await ws.send(JSON.stringify({'type_msg': 'add_group', 'group_name': game_data.game_id}));
+			await ws.send(JSON.stringify({'type_msg': 'assigning_paddle', 'paddle': choicePaddle(game_data)}));
 			await sendPlayerPaddleCreated();
 		}
 		ws.onmessage = (event) => {
@@ -145,7 +158,9 @@ export async function paddleSocket(group_name) {
 				draw_info(message);
 			else if (message.type_msg === "game_over") {
 				console.log("message: ", message);
-				fnGameOver("rtn_menu");
+				game_data.player1_score = message.left_paddle_score;
+				game_data.player2_score = message.right_paddle_score;
+				fnGameOver("show winner");
 			}
 			else
 				console.log("else message: ", message);
@@ -163,7 +178,7 @@ async function connectBallSocket() {
 		let ws = new WebSocket(wssUrl);
 		ws.onopen = async (event) => {
 			console.log('remote game WebSocket conection established.');
-			await ws.send(JSON.stringify({'type_msg': 'add_group', 'group_name': data_remote_player.game_id}));
+			await ws.send(JSON.stringify({'type_msg': 'add_group', 'group_name': game_data.game_id}));
 		}
 		ws.onmessage = (event) => {
 			const message = JSON.parse(event.data);

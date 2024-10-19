@@ -1,5 +1,5 @@
 
-import {canvas, click, TABLE_WIDTH, paddleHeight, height, box_result, first_player_goal, second_player_goal, counter, replay, popup_replay, pong_menu, loadDocument, sleep, back_counter, leftPaddle, paddle_way, first_player_name, second_player_name, p_second, p_first} from '../utils/globaleVariable.js';
+import {canvas, click, TABLE_WIDTH, paddleHeight, height, box_result, first_player_goal, second_player_goal, counter, replay, popup_replay, pong_menu, loadDocument, sleep, back_counter, leftPaddle, paddle_way, first_player_name, second_player_name, p_second, p_first, loadReplayDocument, loadQuitDocument} from '../utils/globaleVariable.js';
 // import { setPointerMouse, rotateTable, zoomCamera } from '../game/staduim.js'
 import { closeGameSocket, connectAI, connectLocalGameSocket, connectPaddleSocket, launchGame } from '../game/game.js';
 import {sendSocket} from '../game/game.js'
@@ -9,7 +9,7 @@ import { moveCamera } from '../components/camera.js';
 ////////       ------ LOCAL -----        //////////
 import { lpaddle, rpaddle } from '../game/paddle.js';
 import { keyDownHandler, keyUpHandler } from '../events/keyboardEvent.js';
-import { aiGame, data_remote_player, localgame, statePongGame } from '../../../components/ping/script.js';
+import { aiGame, game_data, localgame, statePongGame } from '../../../components/ping/script.js';
 import { initPlayGame } from '../../../components/pingpong/ping.js';
 
 ////////       ------ REMOTE ----------        //////////
@@ -18,8 +18,10 @@ import { lancePongGame } from '../main3d.js';
 import { setMousePosition, setMousePositionHelper } from '../events/mouseEvent.js';
 import { initGameComponents } from '../components/renderer.js';
 import { fnGameOver, sendScore } from './socket.js';
+import { loadHTML } from '../../../utils.js';
 
-
+let html_popup_replay;
+let html_popup_game_over;
 console.log("0 statePongGame: ", statePongGame);
 
 export function resizeCanvas(){
@@ -44,17 +46,53 @@ export function resizeCanvas(){
 	moveCamera(statePongGame);
 }
 
+export async function loadPopupReply() {
+	if (!html_popup_replay) {
+		html_popup_replay = document.createElement('div');
+		html_popup_replay.innerHTML = await loadHTML('./pong-game/public/popup_replay.html')
+	}
+	const data = game_data;
+	let winner = (data.player1_score <= data.player2_score) ? data.player1_name : data.player2_name;
+	html_popup_replay.querySelector('.overlay-text').textContent =  winner + " win";
+	const container = document.querySelector('.p_container');
+	container.appendChild(html_popup_replay);
+	await loadReplayDocument();
+	replay.addEventListener("click", replayLocalGame);
+	pong_menu.addEventListener("click", fnGameOver);
+}
+
+export async function loadPopupGameOver() {
+	if (!html_popup_game_over) {
+		html_popup_game_over = document.createElement('div');
+		html_popup_game_over.innerHTML = await loadHTML('./pong-game/public/popup_game_over.html');
+	}
+	const data = game_data ;
+	console.log("----data-----: ", data);
+	let winner = (data.player1_score <= data.player2_score) ? data.player1_name : data.player2_name;
+	html_popup_game_over.querySelector('.overlay-text').textContent =  winner + " win";
+	const container = document.querySelector('.p_container');
+	container.appendChild(html_popup_game_over);
+	await loadQuitDocument();
+	pong_menu.addEventListener("click", fnGameOver);
+}
+
+async function removePopupReplay() {
+	const container = document.querySelector('.p_container');
+	container.removeChild(html_popup_replay);
+}
+
 async function assignPlayers({player1_name, player2_name}) {
 	first_player_name.innerHTML = player1_name;
 	second_player_name.innerHTML = player2_name;
 }
 
-async function replayLocalGame() {
+export async function replayLocalGame() {
 	(statePongGame == "local") ? await localgame() : await aiGame();
 	await loadDocument();
 	resizeCanvas();
-	back_counter.style.display = 'none';
-	popup_replay.style.display = 'none';
+	// back_counter.style.display = 'none';
+	// popup_replay.style.display = 'none';
+	removePopupReplay();
 	leftPaddle();
 	await connectLocalGameSocket();
 	await descounter();
@@ -75,11 +113,11 @@ export function setupEventListeners() {
 	document.addEventListener("keyup", keyUpHandler, false);
 	window.addEventListener("beforeunload", handleRelodQuit)
 	window.addEventListener("hashchange", handleRelodQuit)
-	if (statePongGame == "local" || statePongGame == "ai_bot") {
-		replay.addEventListener("click", replayLocalGame);
-		pong_menu.addEventListener("click", fnGameOver);
-	}
-	else if (statePongGame == "remote") {
+	// if (statePongGame == "local" || statePongGame == "ai_bot") {
+	// 	replay.addEventListener("click", replayLocalGame);
+	// 	pong_menu.addEventListener("click", fnGameOver);
+	// }
+	if (statePongGame == "remote") {
 		setMousePositionHelper();
 		window.addEventListener('mousemove', setMousePosition);
 	}
@@ -87,8 +125,8 @@ export function setupEventListeners() {
 }
 
 export function removeEventsListener() {
-	replay.removeEventListener("click", replayLocalGame);
-	pong_menu.removeEventListener("click", fnGameOver);
+	(replay) && replay.removeEventListener("click", replayLocalGame);
+	(pong_menu) && pong_menu.removeEventListener("click", fnGameOver);
 	window.removeEventListener('resize', resizeCanvas);
 	document.removeEventListener("keydown", keyDownHandler);
 	document.removeEventListener("keyup", keyUpHandler);
@@ -111,15 +149,14 @@ export async function descounter() {
 }
 
 function initGame() {
-	back_counter.style.display = 'none';
-	popup_replay.style.display = 'none';
-	(statePongGame === "remote") ? assignPlayers(data_remote_player) : assignPlayers(data_remote_player); 
+	// back_counter.style.display = 'none';
+	// popup_replay.style.display = 'none';
+	removePopupReplay();
+	(statePongGame === "remote") ? assignPlayers(game_data) : assignPlayers(game_data); 
 	initGameComponents();
 }
 
 let replayGame = async () => {
-	if (data_remote_player === null)
-		window.location.hash = "/ping";	
 	await loadDocument();
 	resizeCanvas();
 	initGame();

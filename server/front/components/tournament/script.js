@@ -1,6 +1,6 @@
 import { loadHTML, loadCSS, player_webSocket} from '../../utils.js';
 import { log_out_func ,login , logoutf, get_localstorage, getCookie } from '../../auth.js';
-import { statePongGameToTournament } from '../ping/script.js';
+import { assingDataToGameData, statePongGameToTournament } from '../ping/script.js';
 // import {tournament} from '../ping/script.js';
 let tournament = "https://127.0.0.1:9008/api/tournament/";
 
@@ -39,6 +39,7 @@ async function Tournament() {
         console.log("=-----------------> ", tournament_data[i]);
         await start_tournament_match(tournament_data[i]);
         tournament_match_data = tournament_data[i];
+        assingDataToGameData(tournament_match_data);
         statePongGameToTournament();
         window.location.hash = '/tournamentScore';
         return;

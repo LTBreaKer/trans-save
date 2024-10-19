@@ -1,5 +1,5 @@
 import { loadHTML, loadCSS } from '../../utils.js';
-
+import { game_data } from '../ping/script.js';
 export let playGame = async () => {
 	console.log("  playGame  playGame  playGame  playGame");
 
@@ -12,9 +12,20 @@ export const initPlayGame = async (initgame) => {
 let html = ""
 export let script;
 
+export async function isGameDataFull()
+{
+  if (!game_data) {
+	  window.location.hash = "/ping";	
+    return (0);
+  }
+  return (1);
+}
+
 async function PingPong() {
-  await loadHtmlWidthModuleScript();
-  await playGame();
+  if (await isGameDataFull()) {
+    await loadHtmlWidthModuleScript();
+    await playGame();
+  }
 }
 
 export async function loadHtmlWidthModuleScript() {
