@@ -218,7 +218,7 @@ async function create_tournament_function(participants) {
 export {tournament_data, tournament};
 
 function gmaee() {
-  const subprotocols = ['token', get_localstorage('token')];
+  const subprotocols = ['token', get_localstorage('token'), 'session_id', get_localstorage('session_id')];
 
 
   const socket = new WebSocket(game_socket, subprotocols);

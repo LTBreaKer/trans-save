@@ -40,7 +40,7 @@ function removeAllCSSLinks() {
 
 export async function player_webSocket() {
   return new Promise((resolve) => {
-    let socket = new WebSocket("wss://127.0.0.1:9005/ws/friend-requests/", ["token", get_localstorage('token')]);
+    let socket = new WebSocket("wss://127.0.0.1:9005/ws/friend-requests/", ["token", get_localstorage('token'), "session_id", get_localstorage('session_id')]);
     
     socket.onopen = function () {
       console.log('WebSocket connection established.');

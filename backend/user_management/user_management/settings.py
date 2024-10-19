@@ -93,6 +93,7 @@ CORS_ALLOW_HEADERS = [
     'x-csrftoken',
     'Access-Control-Allow-Origin',
     'Authorization',
+    'Session-ID'
 ]
 
 OAUTH2_PROVIDER = {

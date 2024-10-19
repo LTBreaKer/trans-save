@@ -93,7 +93,7 @@ async function Login() {
             }
     
             if (data.message === 'Login successful') {
-                login(data.token.access, data.token.refresh);
+                login(data.token.access, data.token.refresh, data.session_id);
                 window.location.href = '/';
             }
         })

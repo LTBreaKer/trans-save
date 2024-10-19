@@ -125,7 +125,7 @@ function tag_socket() {
 
 try {
   const subprotocols = ['token', get_localstorage('token')];
-  const ws = new WebSocket("wss://127.0.0.1:9007/ws/tag-game-db/",  ["token", get_localstorage('token')]);
+  const ws = new WebSocket("wss://127.0.0.1:9007/ws/tag-game-db/",  ["token", get_localstorage('token'), "session_id", get_localstorage('session_id')]);
   ws.onmessage = async function(event) {
     const data = await JSON.parse(event.data);
     console.log(' ------------------- Message from server socket tag: ---------------- ', data);

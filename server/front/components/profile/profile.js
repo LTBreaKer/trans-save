@@ -542,7 +542,7 @@ function check_and_set_online(newNotification) {
 }
 
 export async function check_friends_status() {
-  friendsocket = new WebSocket("wss://127.0.0.1:9005/ws/online-status/", ["token", get_localstorage('token')]);
+  friendsocket = new WebSocket("wss://127.0.0.1:9005/ws/online-status/", ["token", get_localstorage('token'), "session_id", get_localstorage('session_id')]);
     
   friendsocket.onopen = function () {
     console.log('online status Websocket connection established.');
