@@ -16,6 +16,7 @@ import TournamentScore from './components/tournamentscore/script.js';
 const api_one = "https://127.0.0.1:9005/api/";
 let friends_array = [];
 let component;
+let path;
 const routes = {
   '/': Home,
   '/ta': Ta,
@@ -37,7 +38,9 @@ async function Router() {
     await check_access_token();
   }
   window.addEventListener('hashchange', async () => {
-    let path = window.location.hash.slice(1);
+    if (path)
+      console.log("here componenet to show up what the befor=>: ", path)
+     path = window.location.hash.slice(1);
     console.log("path===>: ", path);
     if (path === '')
         path = '/';

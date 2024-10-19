@@ -18,6 +18,11 @@ async function Ta() {
 
   const cancel_game_func = document.getElementById('cancel_game');
 
+  const logout = document.getElementById('logout')
+  
+  logout.addEventListener('click', log_out_func);
+
+
   cancel_game_func.addEventListener('click', async () => {
 
 
