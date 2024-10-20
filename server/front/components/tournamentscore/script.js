@@ -14,7 +14,7 @@ async function TournamentScore() {
   if (!id_of_tournament){
     console.log("ksdfjksjdkfjksdjfkldjslfkj")
     window.location.hash = "/profile";
-    
+    return;
   }
   setHeaderContent();
   setNaveBarContent();

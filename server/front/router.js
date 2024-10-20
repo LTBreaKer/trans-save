@@ -12,6 +12,8 @@ import Tournament from './components/tournament/script.js';
 import RemoteTag from './components/remote_tag/script.js';
 import TournamentScore from './components/tournamentscore/script.js';
 
+var api_game = "https://127.0.0.1:9006/api/gamedb/";
+let game_api = 'https://127.0.0.1:9007/api/tag-gamedb/';
 
 const api_one = "https://127.0.0.1:9005/api/";
 let friends_array = [];
@@ -38,7 +40,69 @@ async function Router() {
     await check_access_token();
   }
   window.addEventListener('hashchange', async () => {
-    if (path)
+    if (path && path === '/ta' || path === '/ping') {
+      if (path === '/ta') {
+        try {
+          const response = await fetch(game_api + 'cancel-remote-game-creation/', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'AUTHORIZATION': 'Bearer ' + get_localstorage('token'),
+              'Session-ID': get_localstorage('session_id')
+            },
+            credentials: 'include',
+          });
+          console.log(response);
+          const jsonData = await response.json();
+          console.log("data=>  : ", jsonData);
+          if (jsonData.message === "player removed from game queue") {
+            document.querySelector('#cancel_game').style.display = 'none';
+            document.querySelector('#butt_game').style.display = 'flex';
+            document.querySelector('.spinner').style.display = 'none';
+          }
+         
+            
+          if (!response.ok) 
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        } catch (error) {
+          console.error('There was a problem with the fetch operation:', error);
+        }    
+      }
+
+      else if (path === '/ping') {
+        try {
+          const response = await fetch(api_game + 'cancel-remote-game-creation/', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'AUTHORIZATION': 'Bearer ' + get_localstorage('token'),
+              'Session-ID': get_localstorage('session_id')
+            },
+            credentials: 'include',
+          });
+          console.log(response);
+          const jsonData = await response.json();
+          console.log("data=>  : ", jsonData);
+          if (jsonData.message === "player removed from game queue") {
+            document.querySelector('#cancel_game').style.display = 'none';
+            document.querySelector('#butt_game').style.display = 'flex';
+            document.querySelector('.spinner').style.display = 'none';
+          }
+         
+            
+          if (!response.ok) 
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        } catch (error) {
+          console.error('There was a problem with the fetch operation:', error);
+        }
+    
+    
+      }
+
+    }
+
+
+    
       console.log("here componenet to show up what the befor=>: ", path)
      path = window.location.hash.slice(1);
     console.log("path===>: ", path);
