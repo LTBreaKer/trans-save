@@ -50,12 +50,25 @@ export async function player_webSocket() {
     
     socket.onmessage = async function(event) {
       const newNotification = await JSON.parse(event.data);
-      const isDuplicate = accumulatedNotifications.some(notification => notification.friend_request.id === newNotification.friend_request.id
-      );
-      if (!isDuplicate)
-        accumulatedNotifications.push(newNotification);
+      console.log(newNotification);
+      if (newNotification.type === "friend_request_accepted"){
+        console.log("hello we are hhhlsdflsdjfjsdfjkdlsj")
+        console.log("hello we are => ", window.location.hash)
+        const loca = window.location.hash;
+        if (loca.startsWith('/user') || loca === '#/profile')
+          await get_friends_home();
+        return;
+      }
+      else {
 
-      await displayNotifications(accumulatedNotifications);
+        const isDuplicate = accumulatedNotifications.some(notification => notification.friend_request.id === newNotification.friend_request.id
+        );
+        if (!isDuplicate)
+          accumulatedNotifications.push(newNotification);
+        
+        await displayNotifications(accumulatedNotifications);
+      }
+    
     };
 
     socket.onerror = function (error) {
@@ -69,40 +82,39 @@ export async function player_webSocket() {
 }
 
 async function displayNotifications(notifications) {
-  console.log("hhhhhhhhhhhhhhhhhhhhh");
-  console.log("notification here check what's the problem =>    ", notifications);
-  const notificationsArray =  Array.isArray(notifications) ? notifications : [notifications];
-  console.log(notificationsArray);
-  const notifiDisplay = document.querySelector('.notifi_btn');
-  if (!notifiDisplay) {
-    console.error('Notification display container not found');
-    return;
-  }
 
-  // Generate HTML for all notifications
-  if (!notificationsArray)
-      console.log("alaho akbar ");
-  // console.log("here is avatar==>    ", notificationsArray[0].friend_request.sender?_data.avatar);
-  notifiDisplay.innerHTML = notificationsArray.map(notification => `
-    <div class="send_request">
+    console.log("hhhhhhhhhhhhhhhhhhhhh");
+    console.log("notification here check what's the problem =>    ", notifications);
+    const notificationsArray =  Array.isArray(notifications) ? notifications : [notifications];
+    console.log(notifications[0].type);
+    
+    
+    const notifiDisplay = document.querySelector('.notifi_btn');
+    if (!notifiDisplay) {
+      console.error('Notification display container not found');
+      return;
+    }
+    
+    notifiDisplay.innerHTML = notificationsArray.map(notification => `
+      <div class="send_request">
       <div class="img_text">
-        <img src="${notification.friend_request.sender_data.avatar}" alt="">
-        <h6>${notification.friend_request.message}</h6>
+      <img src="${notification.friend_request.sender_data.avatar}" alt="">
+      <h6>${notification.friend_request.message}</h6>
       </div>
       <div class="acc_dec">
-        <button class="accept" data-id="${notification.friend_request.id}">Accept</button>
-        <button class="decline" data-id="${notification.friend_request.id}">Decline</button>
+      <button class="accept" data-id="${notification.friend_request.id}">Accept</button>
+      <button class="decline" data-id="${notification.friend_request.id}">Decline</button>
       </div>
-    </div>
-  `).join(''); 
-
-  notifiDisplay.querySelectorAll('.accept').forEach(button => {
-    button.addEventListener('click', handleAccept);
-  });
-
-  notifiDisplay.querySelectorAll('.decline').forEach(button => {
-    button.addEventListener('click', handleDecline);
-  });
+      </div>
+      `).join(''); 
+      
+      notifiDisplay.querySelectorAll('.accept').forEach(button => {
+        button.addEventListener('click', handleAccept);
+      });
+      
+      notifiDisplay.querySelectorAll('.decline').forEach(button => {
+        button.addEventListener('click', handleDecline);
+      });
 }
 
 
@@ -131,6 +143,8 @@ console.log(notificationId);
   if (!response.ok) {
     console.log((`HTTP error! Status: ${response.status}`), Error);
   }
+  const loca = window.location.hash;
+  if (loca.startsWith('/user') || loca === '#/profile')
     await get_friends_home();
 }
 
@@ -165,6 +179,8 @@ async function handleDecline(event) {
 }
 
 export async function remove_tag_remote_game() {
+  await check_access_token();
+
   try {
     const response = await fetch(game_api + 'cancel-remote-game-creation/', {
       method: 'POST',
@@ -194,6 +210,8 @@ export async function remove_tag_remote_game() {
 }
 
 export async function remove_ping_remote_game() {
+  await check_access_token();
+
   try {
     const response = await fetch(api_game + 'cancel-remote-game-creation/', {
       method: 'POST',

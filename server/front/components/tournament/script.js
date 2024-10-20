@@ -58,10 +58,10 @@ function updateContent() {
 // 1235 1227
   if (width < 1235) {
     set_players_sh1();
-    loadCSS('./components/tournament/style.css');
+    // loadCSS('./components/tournament/style.css');
   } else {
     set_players_sh();
-    loadCSS('./components/tournament/style.css');
+    // loadCSS('./components/tournament/style.css');
   }
 }
 
@@ -70,6 +70,7 @@ function updateContent() {
 
 async function start_tournament_match(params) {
   console.log("====>> ", params);
+  await check_access_token();
 
     const participant = {
       match_id: params.matchNumber,
@@ -144,6 +145,8 @@ async function add_tournament_match_score(params) {
 }
 
 async function define_object_matches() {
+  await check_access_token();
+
     try {
       const response = await fetch(tournament + 'check-tournament/', {
         method: 'POST',
@@ -419,6 +422,7 @@ document.addEventListener('click', (event) => {
 }
 
 async function changeAccess() {
+  
     const data = {
       refresh: get_localstorage('refresh')
     };

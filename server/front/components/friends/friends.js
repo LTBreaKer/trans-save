@@ -1,5 +1,5 @@
 import { loadHTML, loadCSS, player_webSocket } from '../../utils.js';
-import {log_out_func, logoutf, get_localstorage, getCookie, login } from '../../auth.js';
+import {log_out_func, logoutf, get_localstorage, getCookie, login, check_access_token } from '../../auth.js';
 import {get_friends_home, set_pong_history , send_freinds_request, changeAccess} from '../profile/profile.js';
 
 
@@ -159,6 +159,7 @@ async function get_pong_history_by_name(name) {
 
 
 async function remove_friend() {
+  await check_access_token();
   const data = {
     friend_id: friend_user_id
   }

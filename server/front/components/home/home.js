@@ -1,6 +1,6 @@
 
 import { loadHTML, loadCSS, player_webSocket } from '../../utils.js';
-import { login ,log_out_func, logoutf, get_localstorage, getCookie } from '../../auth.js';
+import { login ,log_out_func, logoutf, get_localstorage } from '../../auth.js';
 import {tag_game_info} from '../ta/script.js'
 import {check_friends_status} from '../profile/profile.js'
 import {setHeaderContent, setNaveBarContent} from '../tournament/script.js';

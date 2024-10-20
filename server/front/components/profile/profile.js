@@ -423,6 +423,8 @@ async function set_tag_score() {
 
 
 export async function get_friends_home() {
+  await check_access_token();
+
   const response = await fetch(api_one + 'user/get-friend-list/', {
     method: 'GET',
     headers: {
@@ -477,7 +479,7 @@ const isValidEmail = signupemail => {
 }
 
 async function update_profile_fun() {
-  check_access_token()
+  await check_access_token()
   const update_Email = document.getElementById('update_Email');
   const update_UserName = document.getElementById('update_UserName');
   const new_password = document.getElementById('new_password');
@@ -524,6 +526,8 @@ async function update_backend(data) {
 }
 
 export async function send_freinds_request(userna) {
+  await check_access_token();
+
     const data = {
     username: userna
   };
@@ -606,6 +610,8 @@ function check_and_set_online(newNotification) {
 }
 
 export async function check_friends_status() {
+  await check_access_token();
+
   friendsocket = new WebSocket("wss://127.0.0.1:9005/ws/online-status/", ["token", get_localstorage('token'), "session_id", get_localstorage('session_id')]);
     
   friendsocket.onopen = function () {

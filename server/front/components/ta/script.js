@@ -75,6 +75,8 @@ cancel_game_func.addEventListener('click', await remove_tag_remote_game);
 
 
   remote_butt_game.addEventListener('click', async () => {
+    await check_access_token();
+
     try {
       const response = await fetch(game_api + 'create-remote-game/', {
         method: 'POST',
@@ -167,49 +169,12 @@ try {
 
 }
 
-async function remote_game_function() {
-  try {
-    const response = await fetch(game_api + 'create-remote-game/', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'AUTHORIZATION': 'Bearer ' + get_localstorage('token'),
-        'Session-ID': get_localstorage('session_id')
-      },
-      credentials: 'include',
-    });
-    console.log(response);
-    const jsonData = await response.json();
-    if (jsonData.message === "player is already in a game") {
-      document.querySelector('.success_update').style.display = "flex";
-      setTimeout(function() {
-        document.querySelector('.success_update').style.display = 'none';
-    }, 2000);
-  
-    }
-    if (jsonData.message === "game created") {
-        window.location.hash = "/remoteTag";
-    }
-    // else{
-    //   console.log("hello we are here")
-    //   document.querySelector('#butt_game').style.display = 'flex';
-    //   document.querySelector('#spinner').style.display = 'flex';
-    //   document.querySelector('#butt_game').style.display = 'none';
 
-
-    // }
-    
-    if (!response.ok) 
-      throw new Error(`HTTP error! Status: ${response.status}`);
-  } catch (error) {
-    console.error('There was a problem with the fetch operation:', error);
-  }
-
-}
 
 async function localgame_tag() {
   const input = document.getElementById('input_tag');
   const player_name = input.value; 
+  await check_access_token();
 
   console.log("name of user: ", player_name);
   const data = {
