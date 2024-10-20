@@ -240,6 +240,33 @@ display: none;
 } */
 
 /* // =========================== here i will work with media =========================== */
+@media (max-width: 1235px) {
+  .main-content .matches_hist {
+  
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+      margin: 15px;
+      margin-right: 25px;
+      margin-top: 55px;
+      align-items: center;
+      
+    }
+    #text-final {
+      padding: 40px 10px;
+    }
+    .first_8 {
+      display: flex;
+    }
+    .match_final {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+      margin: 15px;
+      margin-right: 25px;
+      align-items: center;
+    }
+}
 
 @media (max-width: 444px) {
 
@@ -393,7 +420,7 @@ display: none;
   }
 
   .winner_nextgame .winneer {
-    display: none;
+    display: flex;
     flex-direction: column;
     align-items: center;
     padding: 15px;
