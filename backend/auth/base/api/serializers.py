@@ -44,5 +44,6 @@ class UserSerializer(serializers.ModelSerializer):
             instance.first_name = validated_data.get('first_name', instance.first_name)
             instance.last_name = validated_data.get('last_name', instance.last_name)
             instance.twofa_active = validated_data.get('twofa_active', instance.twofa_active)
+            instance.tournament_username = validated_data,get('tournament_username', instance.tournament_username)
             instance.save()
             return instance

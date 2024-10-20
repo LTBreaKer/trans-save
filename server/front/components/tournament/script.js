@@ -38,7 +38,7 @@ async function Tournament() {
         console.log("=-----------------> ", tournament_data[i]);
         await start_tournament_match(tournament_data[i]);
         tournament_match_data = tournament_data[i];
-        window.location.hash = '/tournamentScore';
+        window.location.hash = '/tournamentScore'; 
         return;
       }
       i++;

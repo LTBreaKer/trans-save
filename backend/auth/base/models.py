@@ -12,15 +12,19 @@ class User(AbstractUser):
 
     username = models.CharField(
         _("username"),
-        max_length=150,
+        max_length=10,
         unique=True,
         help_text=_(
-            "Required.4 characters or more and 150 characters or fewer. Letters, digits and @/./+/-/_ only."
+            "Required.4 characters or more and 10 characters or fewer. Letters, digits and @/./+/-/_ only."
         ),
         validators=[username_validator],
         error_messages={
             "unique": _("A user with that username already exists."),
         },
+    )
+    tournament_username = models.CharField(
+        max_length=10,
+        validators=[username_validator],
     )
     email = models.EmailField(unique=True, blank=False, null=False)
     avatar = models.ImageField(default='avatars/avatar-default.webp', upload_to='avatars/')

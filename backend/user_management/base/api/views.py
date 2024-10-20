@@ -118,7 +118,7 @@ def accept_friend_request(request, *args, **kwargs):
         f"friends_{from_user_id}",
         {
             "type": "accepted_friend_request",
-            "user_data": from_user_data.json()['user_data']
+            "user_data": response.json()['user_data']
         }
     )
     friend_request.delete()

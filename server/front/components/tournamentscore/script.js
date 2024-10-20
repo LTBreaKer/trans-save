@@ -42,6 +42,7 @@ async function get_history_by_id() {
   // const data = JSON.parse(participant);
   const urlEncodedData = new URLSearchParams(participant);
   try {
+    console.log('this is the token -------> ', get_localstorage('token'))
     const response = await fetch(tournament + 'get-tournament-by-id/', {
       method: 'POST',
       headers: {
@@ -278,7 +279,8 @@ async function changeAccess() {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + get_localstorage('token')
+          'Authorization': 'Bearer ' + get_localstorage('token'),
+          'Session-ID': get_localstorage('session_id')
         },
         credentials: 'include',
       });

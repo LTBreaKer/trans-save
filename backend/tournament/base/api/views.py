@@ -97,7 +97,9 @@ def create_tournament(request):
             validator(participant)
         except ValidationError as e:
             return Response({'message': f"Invalid username {participant}: {e.message}"}, status=400)
+    owner_username = participants[0]
 
+    update_data_response = requests.put('https://server:9004/api/auth/update-user/', headers={'AUTHORIZATION': AUTH_HEADER, 'Session-ID': session_id}, json={'tournament_username': owner_username}, verify=False)
     random.shuffle(participants)
 
     create_tournament_tx_hash = contract.functions.createTournament(int(tournament_count), int(creator_id), participants).transact()
@@ -353,6 +355,7 @@ def get_tournament_by_id(request):
     contract = request.contract
 
     AUTH_HEADER = request.META.get('HTTP_AUTHORIZATION')
+    print('------ auth token ------', AUTH_HEADER, file=sys.stderr)
     session_id = request.headers.get('Session-ID')
     auth_check_response = check_auth(AUTH_HEADER, session_id)
     if auth_check_response.status_code != 200:
