@@ -74,11 +74,11 @@ function draw_info(data) {
 }
 
 export async function fnGameOver(state = "rtn_menu") {
-	removeEventsListener();
 	console.log("state: ", state);
 	if (state === "show winner")
 		await loadPopupGameOver();
 	else {
+		removeEventsListener();
 		cancelAnimationFrame(animationFrameId);
 		if (renderer) renderer.dispose();
 		if (scene) disposeScene();
@@ -89,8 +89,8 @@ export async function fnGameOver(state = "rtn_menu") {
 			window.location.hash = "/ping" :
 			window.location.hash = "/tournament";
 		}
+		assingGameApiToNULL();
 	}
-	assingGameApiToNULL();
 }
 
 // export function fnLocalGameOver() {

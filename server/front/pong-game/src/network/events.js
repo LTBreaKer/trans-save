@@ -22,6 +22,7 @@ import { loadHTML } from '../../../utils.js';
 
 let html_popup_replay;
 let html_popup_game_over;
+let html_pong_loader;
 console.log("0 statePongGame: ", statePongGame);
 
 export function resizeCanvas(){
@@ -59,6 +60,16 @@ export async function loadPopupReply() {
 	await loadReplayDocument();
 	replay.addEventListener("click", replayLocalGame);
 	pong_menu.addEventListener("click", fnGameOver);
+}
+
+export async function pongLoader() {
+	if (!html_pong_loader) {
+		html_pong_loader = document.createElement('div');
+		html_pong_loader.innerHTML = await loadHTML('./pong-game/public/pong_loader.html');
+	}
+	const container = document.querySelector('.p_container');
+	container.appendChild(html_pong_loader);
+
 }
 
 export async function loadPopupGameOver() {

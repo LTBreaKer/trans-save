@@ -8,6 +8,7 @@
 
 body {
   height: 100vh;
+  min-width: 293px;
   background: var(--body-color);
 }
 
@@ -104,7 +105,8 @@ body {
   left: 0;
   height: calc(100vh - 80px);
   border-radius: 25px;
-  padding: 14px 11px;
+  border-radius: 14px;
+  padding: 14px 10px;
   background-color: var(--sidebar-color);
   transition: var(--tran-05);
   width: fit-content;
@@ -281,7 +283,7 @@ body {
   display: flex;
   padding: 9px 4px;
   margin: 1px 1px;
-  border-radius: 10px;
+  border-radius: 14px;
 }
 
 .ml_btn_content {
@@ -431,8 +433,31 @@ display: none;
 }
 
 /* // =========================== here i will work with media =========================== */
+@media (min-width:518px) and (max-width: 623px) {
+  .ml_local_game {
+    width: 219px;
+  }
+}
 
-@media (max-width: 444px) {
+@media (min-width: 377px) and (max-width: 517px) {
+  .ml_rl_game {
+    flex-direction: column;
+  }
+  .ml_local_game {
+    width: 290px;
+  }
+}
+
+@media (max-width: 376px) {
+  .ml_rl_game {
+    flex-direction: column;
+  }
+  .ml_local_game {
+    width: 219px;
+  }
+}
+
+/* @media (max-width: 444px) {
 
   .pong_sidebar {
       margin-top: 80px;
@@ -460,9 +485,9 @@ display: none;
       cursor: pointer;
       color: #e8ebfb;
   }
-}
+} */
 
-@media (max-width: 350px) {
+/* @media (max-width: 350px) {
 
   #butt {
       display: flex;
@@ -477,7 +502,7 @@ display: none;
       display: none;
   }
 }
-
+ */
 
 
 
