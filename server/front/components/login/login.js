@@ -1,5 +1,5 @@
 import { loadHTML, loadCSS, getQueryParams } from '../../utils.js';
-import {login } from '../../auth.js';
+import {get_localstorage, login } from '../../auth.js';
 
 let tokenn;
 let error_nbr = 0;
@@ -93,7 +93,7 @@ async function Login() {
             }
     
             if (data.message === 'Login successful') {
-                login(data.token.access, data.token.refresh);
+                login(data.token.access, data.token.refresh, data.session_id);
                 window.location.href = '/';
             }
         })
@@ -244,7 +244,7 @@ const sign_up_data = () => {
     })
     .then(data => {
         if (data.message === "User created"){
-            login(data.token.access, data.token.refresh)
+            login(data.token.access, data.token.refresh, data.session_id)
             window.location.hash = '/'
         }
     })
@@ -290,7 +290,7 @@ const signindata = () => {
             handle_otp();
         }
         if (name === 1){
-            login(data.access ,data.refresh)
+            login(data.access ,data.refresh, data.session_id)
             window.location.hash = '/';
         }
         if (data.message === 'user already logged in') {
@@ -334,6 +334,7 @@ const signindata = () => {
             headers: {
                 'Content-Type': 'application/json',
                 'AUTHORIZATION': 'Bearer ' + tokenn,
+                // 'Session-ID': get_localstorage('session_id')
             },
             credentials: 'include',
             body: jsonData
@@ -350,7 +351,7 @@ const signindata = () => {
         .then(data => {
             console.log('========= ',data);
             if (data.message === "otp verified successfully"){
-                login(tokenn, refrech);
+                login(tokenn, refrech, data.session_id);
                 window.location.hash = '/'
             }
         })

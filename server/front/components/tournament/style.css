@@ -239,56 +239,6 @@ display: none;
   cursor: pointer;
 } */
 
-/* // =========================== here i will work with media =========================== */
-
-@media (max-width: 444px) {
-
-  .sidebar {
-      margin-top: 80px;
-      position: relative;
-      top: 0;
-      left: 0;
-      border-radius: 25px;
-      height: 1px;
-      width: 88px;
-      padding: 3px 14px;
-      background-color: var(--body-color);
-      transition: var(--tran-05);
-      overflow: hidden;
-  }
-
-  .sidebar.active {
-      height: 100vh;
-      padding: 10px 14px;
-      background-color: var(--sidebar-color);
-  }
-
-  #butt {
-      display: flex;
-      font-size: 30px;
-      cursor: pointer;
-      color: #e8ebfb;
-  }
-}
-
-@media (max-width: 350px) {
-
-  #butt {
-      display: flex;
-      font-size: 30px;
-      cursor: pointer;
-      color: #e8ebfb;
-  }
-}
-
-@media (max-width: 400px) {
-  .header .profile .image img {
-      display: none;
-  }
-}
-
-
-
 
 
 
@@ -393,7 +343,7 @@ display: none;
   }
 
   .winner_nextgame .winneer {
-    display: none;
+    display: flex;
     flex-direction: column;
     align-items: center;
     padding: 15px;
@@ -481,4 +431,113 @@ display: none;
     cursor: pointer;
   }
   
+    #text-final {
+      padding: 40px 10px;
+    }
+    .first_8 {
+      display: flex;
+    }
+
+
+  /* // =========================== here i will work with media =========================== */
+@media (max-width: 1235px) {
+  /* .main-content .matches_hist {
   
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+      margin: 15px;
+      margin-right: 25px;
+      margin-top: 55px;
+      align-items: center;
+      
+    } */
+    .match_final {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+      margin: 15px;
+      margin-right: 25px;
+      align-items: center;
+    }
+}
+
+@media (max-width: 565px) {
+
+  .sidebar {
+      margin-top: 80px;
+      position: relative;
+      top: 0;
+      left: 0;
+      border-radius: 25px;
+      height: 1px;
+      width: 88px;
+      padding: 3px 14px;
+      background-color: var(--body-color);
+      transition: var(--tran-05);
+      overflow: hidden;
+  }
+
+  .sidebar.active {
+      height: 92vh;
+      padding: 10px 14px;
+      background-color: var(--sidebar-color);
+  }
+
+  #butt {
+      display: flex;
+      font-size: 30px;
+      cursor: pointer;
+      color: #e8ebfb;
+  }
+
+
+  .container .main-content {
+    /* background-color: green; */
+    width: 100%;
+    padding-top: 11vh;
+    padding-left: 0em;
+    height: 100vh;
+    color: white;
+  }
+
+
+}
+
+
+@media (max-width: 456px) {
+  .first_8 {
+    display: flex;
+    flex-direction: column;
+  }
+  .main-content .center_matches {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
+
+
+@media (max-width: 350px) {
+
+  #butt {
+      display: flex;
+      font-size: 30px;
+      cursor: pointer;
+      color: #e8ebfb;
+  }
+}
+
+@media (max-width: 400px) {
+  .header .profile .image img {
+      display: none;
+  }
+  .notifi_btn {
+    right: 50px;
+  }
+  
+}
+
+
+

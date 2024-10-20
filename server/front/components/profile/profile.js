@@ -2,11 +2,14 @@ import { loadHTML, loadCSS, player_webSocket } from '../../utils.js';
 import {log_out_func,  logoutf, get_localstorage, check_access_token, getCookie, login } from '../../auth.js';
 import {setHeaderContent, setNaveBarContent} from '../tournament/script.js';
 let friendsocket;
+let id_of_tournament;
 
 const api = "https://127.0.0.1:9004/api/";
 const api_one = "https://127.0.0.1:9005/api/";
 // https://{{ip}}:9006/api/gamedb/get-game-history/
 // https://{{ip}}:9007/api/tag-gamedb/get-game-history/
+
+const tourna_game = "https://127.0.0.1:9008/api/tournament/";
 const pong_game = "https://127.0.0.1:9006/api/gamedb/";
 const tag_game = "https://127.0.0.1:9007/api/tag-gamedb/";
 var photo = null;
@@ -131,9 +134,70 @@ async function Friends() {
   get_tag_history();
   // set_pong_score()
   // set_tag_score()
+  get_tournament_history();
 }
 
-export {friendsocket};
+export {friendsocket, id_of_tournament};
+
+
+async function get_tournament_history() {
+  const response = await fetch(tourna_game + 'get-tournament-history/', {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + get_localstorage('token'),
+      'Session-ID': get_localstorage('session_id')
+    },
+    credentials: 'include',
+  });
+  const jsonData = await response.json();
+
+  console.log("history of game of tournament ==> : ", jsonData);
+  console.log("--------------------------------------------------");
+
+  if (!response.ok) {
+    console.log((`HTTP error! Status: ${response.status}`), Error);
+  }
+
+  set_tournament_data(jsonData.message);
+}
+// here i will set function that i set the players and id of everyfunctio
+
+
+function set_tournament_data(data) {
+  const games_container = document.querySelector(".tur_game_history");
+
+  data.forEach((index) => {
+    const gameDiv = document.createElement('div');
+    gameDiv.classList.add('play');
+    gameDiv.setAttribute('data-id', index.tournamentId); 
+    gameDiv.style.cursor = 'pointer';
+    gameDiv.innerHTML = `
+      <div class="first_pl">
+        <img id="player1" src="/images/hello.png" alt="">
+        <h2 class="player1">${index.firstPlayerName}</h2>
+      </div>
+      <h2>First</h2>
+      <h2>Second</h2>
+      <div class="second_pl">
+        <img id="player2" src="/images/hello.png" alt="">
+        <h2 class="player2">${index.secondPlayerName}</h2>
+      </div>
+    `;
+
+    gameDiv.addEventListener('click', () => {
+    const tournamentId = gameDiv.getAttribute('data-id');
+    id_of_tournament = tournamentId;
+    window.location.hash = '/tournamentScore';
+    console.log(id_of_tournament);
+
+
+    });
+    games_container.appendChild(gameDiv);
+  })
+}
+
+
 
 
 async function get_pong_history() {
@@ -142,6 +206,7 @@ async function get_pong_history() {
     headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer ' + get_localstorage('token'),
+      'Session-ID': get_localstorage('session_id')
     },
     credentials: 'include',
   });
@@ -187,6 +252,7 @@ async function get_tag_history() {
     headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer ' + get_localstorage('token'),
+      'Session-ID': get_localstorage('session_id')
     },
     credentials: 'include',
   });
@@ -293,6 +359,7 @@ async function set_pong_score() {
     headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer ' + get_localstorage('token'),
+      'Session-ID': get_localstorage('session_id')
     },
     credentials: 'include',
     body: JSON.stringify(data)
@@ -320,6 +387,7 @@ async function set_tag_score() {
     headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer ' + get_localstorage('token'),
+      'Session-ID': get_localstorage('session_id')
     },
     credentials: 'include',
     body: JSON.stringify(data)
@@ -360,6 +428,7 @@ export async function get_friends_home() {
     headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer ' + get_localstorage('token'),
+      'Session-ID': get_localstorage('session_id')
     },
     credentials: 'include',
   });
@@ -442,7 +511,8 @@ async function update_backend(data) {
   const response = await fetch(api + 'auth/update-user/', {
     method: 'PUT',
     headers: {
-      'AUTHORIZATION': "Bearer " + get_localstorage('token')
+      'AUTHORIZATION': "Bearer " + get_localstorage('token'),
+      'Session-ID': get_localstorage('session_id')
     },
     credentials: 'include',
     body: data
@@ -464,7 +534,8 @@ export async function send_freinds_request(userna) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': "Bearer " + get_localstorage('token')
+        'Authorization': "Bearer " + get_localstorage('token'),
+        'Session-ID': get_localstorage('session_id')
       },
       credentials: 'include',
       body: JSON.stringify(data)
@@ -510,8 +581,7 @@ export async function changeAccess() {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
     const jsonData = await response.json();
-    if (response.status === 200)
-      login(jsonData.access, jsonData.refresh);
+    login(jsonData.access, jsonData.refresh, get_localstorage('session_id'));
   } catch (error) {
     console.error('There was a problem with the fetch operation:', error);
   }
@@ -536,7 +606,7 @@ function check_and_set_online(newNotification) {
 }
 
 export async function check_friends_status() {
-  friendsocket = new WebSocket("wss://127.0.0.1:9005/ws/online-status/", ["token", get_localstorage('token')]);
+  friendsocket = new WebSocket("wss://127.0.0.1:9005/ws/online-status/", ["token", get_localstorage('token'), "session_id", get_localstorage('session_id')]);
     
   friendsocket.onopen = function () {
     console.log('online status Websocket connection established.');
@@ -591,14 +661,22 @@ async function fetchUserData() {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + get_localstorage('token')
+        'Authorization': 'Bearer ' + get_localstorage('token'),
+        'Session-ID': get_localstorage('session_id')
       },
       credentials: 'include',
     });
+
+    if (userResponse.status === 404) {
+      logoutf();
+      window.location.hash = '/login';
+    }
+
     if (!userResponse.ok) {
       throw new Error('Network response was not ok');
     }
     const userData = await userResponse.json();
+
 
     const change_user = document.getElementById('UserName');
     const avata = document.getElementById('avatar');

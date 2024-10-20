@@ -1447,6 +1447,17 @@ display: none;
     .header .profile .image img {
         display: none;
     }
-  
+    .notifi_btn {
+      display: none;
+      width: 200px;
+      height: 250px;
+      background-color: #474554;
+      position: absolute;
+      right: 50px;
+      top: 65px;
+      border-radius: 25px;
+      overflow-y: auto;
+    }
+    
   }
   

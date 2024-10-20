@@ -75,6 +75,7 @@ CORS_ALLOW_HEADERS = [
     'x-csrftoken',
     'Access-Control-Allow-Origin',
     'Authorization',
+    'Session-ID'
 ]
 CSRF_COOKIE_SECURE = True
 

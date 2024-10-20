@@ -1,56 +1,74 @@
-import { loadHTML, loadCSS } from '../../utils.js';
+import { loadHTML, loadCSS,  remove_tag_remote_game} from '../../utils.js';
 import { login ,log_out_func, logoutf, get_localstorage, getCookie } from '../../auth.js';
+import {setHeaderContent, setNaveBarContent} from '../tournament/script.js';
+
 // https://{{ip}}:9007:ws/tag-game-db/
 var api = "https://127.0.0.1:9004/api/";
 let game_api = 'https://127.0.0.1:9007/api/tag-gamedb/';
 const ta_socket = 'wss://127.0.0.1:9007/ws/tag-game-db/';
 let tag_game_info;
 async function Ta() {
+  window.onload = async function() {
+    await remove_tag_remote_game();
+    // document.querySelector('#cancel_game').style.display = 'none';
+    // document.querySelector('#butt_game').style.display = 'flex';
+    // document.querySelector('.spinner').style.display = 'none';
+
+  };
+
   const html = await loadHTML('./components/ta/index.html');
   loadCSS('./components/ta/style.css');
 
   const app = document.getElementById('app');
   app.innerHTML = html;
-  
+  setHeaderContent();
+  setNaveBarContent();
+
   await checkFirst();
   const remote_butt_game = document.getElementById('butt_game');
   const local_butt_game = document.getElementById('local_butt_game_tag');
 
   const cancel_game_func = document.getElementById('cancel_game');
 
-  cancel_game_func.addEventListener('click', async () => {
+  const logout = document.getElementById('logout')
+  
+  logout.addEventListener('click', log_out_func);
+cancel_game_func.addEventListener('click', await remove_tag_remote_game);
+
+  // cancel_game_func.addEventListener('click', async () => {
 
 
-    try {
-      const response = await fetch(game_api + 'cancel-remote-game-creation/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'AUTHORIZATION': 'Bearer ' + get_localstorage('token'),
-        },
-        credentials: 'include',
-      });
-      console.log(response);
-      const jsonData = await response.json();
-      console.log("data=>  : ", jsonData);
-      if (jsonData.message === "player removed from game queue") {
-        document.querySelector('#cancel_game').style.display = 'none';
-        document.querySelector('#butt_game').style.display = 'flex';
-        document.querySelector('.spinner').style.display = 'none';
-      }
+  //   try {
+  //     const response = await fetch(game_api + 'cancel-remote-game-creation/', {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //         'AUTHORIZATION': 'Bearer ' + get_localstorage('token'),
+  //         'Session-ID': get_localstorage('session_id')
+  //       },
+  //       credentials: 'include',
+  //     });
+  //     console.log(response);
+  //     const jsonData = await response.json();
+  //     console.log("data=>  : ", jsonData);
+  //     if (jsonData.message === "player removed from game queue") {
+  //       document.querySelector('#cancel_game').style.display = 'none';
+  //       document.querySelector('#butt_game').style.display = 'flex';
+  //       document.querySelector('.spinner').style.display = 'none';
+  //     }
      
         
-      if (!response.ok) 
-        throw new Error(`HTTP error! Status: ${response.status}`);
-    } catch (error) {
-      console.error('There was a problem with the fetch operation:', error);
-    }
+  //     if (!response.ok) 
+  //       throw new Error(`HTTP error! Status: ${response.status}`);
+  //   } catch (error) {
+  //     console.error('There was a problem with the fetch operation:', error);
+  //   }
 
 
 
 
 
-  })
+  // })
   // input = document.getElementById('input_tag');
   // player_name = input.value; 
   // remote_butt_game.addEventListener('click', remote_game_function);
@@ -63,6 +81,7 @@ async function Ta() {
         headers: {
           'Content-Type': 'application/json',
           'AUTHORIZATION': 'Bearer ' + get_localstorage('token'),
+          'Session-ID': get_localstorage('session_id')
         },
         credentials: 'include',
       });
@@ -123,7 +142,7 @@ function tag_socket() {
 
 try {
   const subprotocols = ['token', get_localstorage('token')];
-  const ws = new WebSocket("wss://127.0.0.1:9007/ws/tag-game-db/",  ["token", get_localstorage('token')]);
+  const ws = new WebSocket("wss://127.0.0.1:9007/ws/tag-game-db/",  ["token", get_localstorage('token'), "session_id", get_localstorage('session_id')]);
   ws.onmessage = async function(event) {
     const data = await JSON.parse(event.data);
     console.log(' ------------------- Message from server socket tag: ---------------- ', data);
@@ -155,6 +174,7 @@ async function remote_game_function() {
       headers: {
         'Content-Type': 'application/json',
         'AUTHORIZATION': 'Bearer ' + get_localstorage('token'),
+        'Session-ID': get_localstorage('session_id')
       },
       credentials: 'include',
     });
@@ -202,6 +222,7 @@ async function localgame_tag() {
       headers: {
         'Content-Type': 'application/json',
         'AUTHORIZATION': 'Bearer ' + get_localstorage('token'),
+        'Session-ID': get_localstorage('session_id')
       },
       credentials: 'include',
       body: JSON.stringify(data)
@@ -256,7 +277,7 @@ async function changeAccess() {
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
-      await login(jsonData.access, jsonData.refresh);
+      login(jsonData.access, jsonData.refresh, get_localstorage('session_id'));
       
     } catch (error) {
       console.error('There was a problem with the fetch operation:', error);
@@ -299,11 +320,17 @@ async function changeAccess() {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + get_localstorage('token')
+          'Authorization': 'Bearer ' + get_localstorage('token'),
+          'Session-ID': get_localstorage('session_id')
         },
         credentials: 'include',
       });
       
+      if (userResponse.status === 404) {
+        logoutf();
+        window.location.hash = '/login';
+      }
+
       if (!userResponse.ok) {
         throw new Error('Network response was not ok');
       }

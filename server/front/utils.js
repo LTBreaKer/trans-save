@@ -1,6 +1,8 @@
 import { get_localstorage, check_access_token } from './auth.js';
 import { get_friends_home } from './components/profile/profile.js';
 
+let game_api = 'https://127.0.0.1:9007/api/tag-gamedb/';
+var api_game = "https://127.0.0.1:9006/api/gamedb/";
 
 export function loadHTML(url) {
   console.log(url);
@@ -40,7 +42,7 @@ function removeAllCSSLinks() {
 
 export async function player_webSocket() {
   return new Promise((resolve) => {
-    let socket = new WebSocket("wss://127.0.0.1:9005/ws/friend-requests/", ["token", get_localstorage('token')]);
+    let socket = new WebSocket("wss://127.0.0.1:9005/ws/friend-requests/", ["token", get_localstorage('token'), "session_id", get_localstorage('session_id')]);
     
     socket.onopen = function () {
       console.log('WebSocket connection established.');
@@ -119,6 +121,7 @@ console.log(notificationId);
     headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer ' + get_localstorage('token'),
+      'Session-ID': get_localstorage('session_id')
     },
     credentials: 'include',
     body: JSON.stringify(data)
@@ -146,6 +149,7 @@ async function handleDecline(event) {
     headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer ' + get_localstorage('token'),
+      'Session-ID': get_localstorage('session_id')
     },
     credentials: 'include',
     body: JSON.stringify(data)
@@ -157,6 +161,62 @@ async function handleDecline(event) {
   }
 
 
+  
+}
 
+export async function remove_tag_remote_game() {
+  try {
+    const response = await fetch(game_api + 'cancel-remote-game-creation/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'AUTHORIZATION': 'Bearer ' + get_localstorage('token'),
+        'Session-ID': get_localstorage('session_id')
+      },
+      credentials: 'include',
+    });
+    console.log(response);
+    const jsonData = await response.json();
+    console.log("data=>  : ", jsonData);
+    if (jsonData.message === "player removed from game queue") {
+      document.querySelector('#cancel_game').style.display = 'none';
+      document.querySelector('#butt_game').style.display = 'flex';
+      document.querySelector('.spinner').style.display = 'none';
+    }
+   
+      
+    if (!response.ok) 
+      throw new Error(`HTTP error! Status: ${response.status}`);
+  } catch (error) {
+    console.error('There was a problem with the fetch operation:', error);
+  }
 
+}
+
+export async function remove_ping_remote_game() {
+  try {
+    const response = await fetch(api_game + 'cancel-remote-game-creation/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'AUTHORIZATION': 'Bearer ' + get_localstorage('token'),
+        'Session-ID': get_localstorage('session_id')
+      },
+      credentials: 'include',
+    });
+    console.log(response);
+    const jsonData = await response.json();
+    console.log("data=>  : ", jsonData);
+    if (jsonData.message === "player removed from game queue") {
+      document.querySelector('#cancel_game').style.display = 'none';
+      document.querySelector('#butt_game').style.display = 'flex';
+      document.querySelector('.spinner').style.display = 'none';
+    }
+   
+      
+    if (!response.ok) 
+      throw new Error(`HTTP error! Status: ${response.status}`);
+  } catch (error) {
+    console.error('There was a problem with the fetch operation:', error);
+  }
 }

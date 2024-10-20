@@ -20,7 +20,8 @@ def create_profile(request, *args, **kwargs):
 
 @api_view(['POST'])
 def sendFriendRequest(request, *args, **kwargs):
-    response = check_auth(request.META.get('HTTP_AUTHORIZATION'))
+    session_id = request.headers.get('Session-ID')
+    response = check_auth(request.META.get('HTTP_AUTHORIZATION'), session_id)
     if response.status_code != 200:
         return Response(data=response.json(), status=response.status_code)
     from_user_data = response.json()['user_data']
@@ -31,14 +32,14 @@ def sendFriendRequest(request, *args, **kwargs):
     if not to_user_username:
         return Response({'message': 'username is required'}, status=400)
 
-    to_user_request = get_user(username=to_user_username, auth_header=request.META.get('HTTP_AUTHORIZATION'))
+    to_user_request = get_user(username=to_user_username, auth_header=request.META.get('HTTP_AUTHORIZATION'), session_id=session_id)
     if to_user_request.status_code != 200:
         return Response({'message': 'user not found'}, status=404)
 
     to_user_id = to_user_request.json()['user_data']['id']
 
     
-    response = get_user(user_id=to_user_id, auth_header=request.META.get('HTTP_AUTHORIZATION'))
+    response = get_user(user_id=to_user_id, auth_header=request.META.get('HTTP_AUTHORIZATION'), session_id=session_id)
 
     if int(to_user_id) == int(from_user_id):
         return Response({'message': 'Cannot send friend request to self'}, status=400)
@@ -74,7 +75,8 @@ def sendFriendRequest(request, *args, **kwargs):
 
 @api_view(['GET'])
 def get_friend_requests(request, *args, **kwargs):
-    response = check_auth(request.META.get('HTTP_AUTHORIZATION'))
+    session_id = request.headers.get('Session-ID')
+    response = check_auth(request.META.get('HTTP_AUTHORIZATION'), session_id)
     if response.status_code != 200:
         return Response(data=response.json(), status=response.status_code)
     user_id = response.json()['user_data']['id']
@@ -85,7 +87,8 @@ def get_friend_requests(request, *args, **kwargs):
 
 @api_view(['POST'])
 def accept_friend_request(request, *args, **kwargs):
-    response = check_auth(request.META.get('HTTP_AUTHORIZATION'))
+    session_id = request.headers.get('Session-ID')
+    response = check_auth(request.META.get('HTTP_AUTHORIZATION'), session_id)
     if response.status_code != 200:
         return Response(response.json(), status=response.status_code)
     user_id = response.json()['user_data']['id']
@@ -110,7 +113,7 @@ def accept_friend_request(request, *args, **kwargs):
     user_profile = UserProfile.objects.get(user_id=user_id)
     user_profile.friends.add(from_user_profile)
     channel_layer = get_channel_layer()
-    from_user_data = get_user(user_id=from_user_id, auth_header=request.META.get('HTTP_AUTHORIZATION'))
+    from_user_data = get_user(user_id=from_user_id, auth_header=request.META.get('HTTP_AUTHORIZATION'), session_id=session_id)
     async_to_sync(channel_layer.group_send)(
         f"friends_{from_user_id}",
         {
@@ -123,7 +126,8 @@ def accept_friend_request(request, *args, **kwargs):
     
 @api_view(['DELETE'])
 def deny_friend_request(request, *args, **kwargs):
-    response = check_auth(request.META.get('HTTP_AUTHORIZATION'))
+    session_id = request.headers.get('Session-ID')
+    response = check_auth(request.META.get('HTTP_AUTHORIZATION'), session_id)
     if response.status_code != 200:
         return Response(response.json(), status=response.status_code)
     user_id = response.json()['user_data']['id']
@@ -144,7 +148,8 @@ def deny_friend_request(request, *args, **kwargs):
 
 @api_view(['DELETE'])
 def delete_friend(request, *args, **kwargs):
-    response = check_auth(request.META.get('HTTP_AUTHORIZATION'))
+    session_id = request.headers.get('Session-ID')
+    response = check_auth(request.META.get('HTTP_AUTHORIZATION'), session_id)
     if response.status_code != 200:
         return Response(response.json(), status=response.status_code)
     
@@ -169,7 +174,8 @@ def delete_friend(request, *args, **kwargs):
 @api_view(['GET'])
 def get_friend_list(request):
     AUTH_HEADER = request.META.get('HTTP_AUTHORIZATION')
-    response = check_auth(AUTH_HEADER)
+    session_id = request.headers.get('Session-ID')
+    response = check_auth(AUTH_HEADER, session_id)
     if response.status_code != 200:
         return Response(response.json(), status=response.status_code)
     
@@ -181,7 +187,7 @@ def get_friend_list(request):
 
     data = {
         'friend_list': {
-            friend.id: get_user(user_id=friend.user_id, auth_header=AUTH_HEADER).json()['user_data'] for friend in friends
+            friend.id: get_user(user_id=friend.user_id, auth_header=AUTH_HEADER, session_id=session_id).json()['user_data'] for friend in friends
         }
     }
 
