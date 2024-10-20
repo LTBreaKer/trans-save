@@ -275,19 +275,19 @@ function set_players_sh1() {
   const main_content  = document.getElementById('players_sh_content');
   console.log("here we go again=? :  ", tournament_data[0].playerOneName)
   main_content.innerHTML = `
-   <div class="matches_hist" style={{ display: 'flex', flexDirection: 'column' }}>
+   <div class="matches_hist"  style="flex-direction: column;">
             <h3 id="text-final">hna ghadi ykon wach nisf ola roboaa ola final</h3>
             <div class="first_8">
             <div class="first_match">
                 <div class="match_n1 string">
-                    <p id="player1_match1" class="player_name">${tournament_data[0].playerOneName} <span class="left_score">${tournament_data[0]?.playerOneScore ? tournament_data[0].playerOneScore : ''}</span></p>
+                    <p id="player1_match1" class="player_name"> ${tournament_data[0]?.playerOneName ? tournament_data[0].playerOneName : ''} <span class="left_score">${tournament_data[0]?.playerOneScore ? tournament_data[0].playerOneScore : ''}</span></p>
                     <h2>Vs</h2>
-                    <p id="player2_match1" class="player_name">${tournament_data[0].playerTwoName} <span class="left_score">${tournament_data[0]?.playerTwoScore ? tournament_data[0].playerTwoScore : ''}</span></p>
+                    <p id="player2_match1" class="player_name">${tournament_data[0]?.playerTwoName ? tournament_data[0].playerTwoName : ''} <span class="left_score">${tournament_data[0]?.playerTwoScore ? tournament_data[0].playerTwoScore : ''}</span></p>
                 </div>
                 <div class="match_n2 string">
-                    <p id="player1_match2" class="player_name">${tournament_data[1].playerOneName} <span class="left_score">${tournament_data[1]?.playerOneScore ? tournament_data[1].playerOneScore : ''}</span></p>
+                    <p id="player1_match2" class="player_name">${tournament_data[1]?.playerOneName ? tournament_data[1].playerOneName : ''}  <span class="left_score">${tournament_data[1]?.playerOneScore ? tournament_data[1].playerOneScore : ''}</span></p>
                     <h2>Vs</h2>
-                    <p id="player2_match2" class="player_name">${tournament_data[1].playerTwoName} <span class="left_score">${tournament_data[1]?.playerTwoScore ? tournament_data[1].playerTwoScore : ''}</span></p>
+                    <p id="player2_match2" class="player_name">${tournament_data[1]?.playerTwoName ? tournament_data[1].playerTwoName : ''} <span class="left_score">${tournament_data[1]?.playerTwoScore ? tournament_data[1].playerTwoScore : ''}</span></p>
                 </div>
             </div>
             <div class="first_match">
