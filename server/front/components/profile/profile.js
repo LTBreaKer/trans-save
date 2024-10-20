@@ -6,9 +6,6 @@ let id_of_tournament;
 
 const api = "https://127.0.0.1:9004/api/";
 const api_one = "https://127.0.0.1:9005/api/";
-// https://{{ip}}:9006/api/gamedb/get-game-history/
-// https://{{ip}}:9007/api/tag-gamedb/get-game-history/
-
 const tourna_game = "https://127.0.0.1:9008/api/tournament/";
 const pong_game = "https://127.0.0.1:9006/api/gamedb/";
 const tag_game = "https://127.0.0.1:9007/api/tag-gamedb/";
@@ -74,13 +71,6 @@ async function Friends() {
           photo = file;
   });
 
-  // const notific = document.querySelector('.notification');
-  // const notifi_display = document.querySelector('.notifi_btn');
-
-  // notific.addEventListener('click', function() {
-  //   notifi_display.classList.toggle('active');
-  // })
-
   window.addEventListener('resize', () => {
     if (window.innerWidth > 666) 
       perso_list.style.display = 'flex';
@@ -97,17 +87,10 @@ async function Friends() {
       perso_list.style.display = 'none';
     else 
       perso_list.style.display = 'flex';
-
-
-    // const perso_list = document.querySelector('.friends_list');
-    
-    // perso_list.classList.toggle('active');
-
   });
 
   if (newNotification)
     check_and_set_online(newNotification);
-
 
   const tag_history = document.querySelector('.tag_game_click');
   const pong_history = document.querySelector('.pong_game_click');
@@ -193,6 +176,7 @@ function set_tournament_data(data) {
         <img id="player2" src="/images/hello.png" alt="">
         <h2 class="player2">${index.secondPlayerName}</h2>
       </div>
+      <h4 id="datofgame"> ${game.created_at.slice(0, 10)}</h4>
     `;
 
     gameDiv.addEventListener('click', () => {
@@ -249,6 +233,8 @@ export async function set_pong_history(friendList) {
         <h2>${game.player2_score}</h2>
         <h2 class="player2">${game.player2_name}</h2>
         <img id="player2" src="${game.player2_avatar}" alt="Player 2 Avatar">
+        <h4 id="datofgame"> ${game.created_at.slice(0, 10)}</h4>
+
       `;
       gamesContainer.appendChild(gameDiv);
     });
@@ -296,6 +282,7 @@ async function set_tag_history(friendList) {
         <h2>unknown</h2>
         <h2 class="player2">${game.player2_name}</h2>
         <img id="player2" src="${game.player2_avatar}" alt="">
+        <h4 id="datofgame"> ${game.created_at.slice(0, 10)}</h4>
       `;
 
       }
@@ -309,6 +296,8 @@ async function set_tag_history(friendList) {
         <h2 style="color: red;">${user2}</h2>
         <h2 class="player2">${game.player2_name}</h2>
         <img id="player2" src="${game.player2_avatar}" alt="">
+        <h4 id="datofgame"> ${game.created_at.slice(0, 10)}</h4>
+
       `;
 
       } else {
@@ -321,6 +310,7 @@ async function set_tag_history(friendList) {
         <h2 style="color: green;" >${user2}</h2>
         <h2 class="player2">${game.player2_name}</h2>
         <img id="player2" src="${game.player2_avatar}" alt="">
+        <h4 id="datofgame"> ${game.created_at.slice(0, 10)}</h4>
       `;
       }
       gamesContainer.appendChild(gameDiv);

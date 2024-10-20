@@ -491,9 +491,18 @@ border-radius: 50%;
 object-fit: cover;
 }
 
+#datofgame {
+  display: flex;
+  position: absolute;
+ bottom: 1px;
+ left: 50px;
+ font-size: 10px;
+ color: white; 
+}
 
 .play {
 display: flex;        
+position: relative;
 align-items: center; 
 justify-content: space-between;
 margin-top: 15px;
@@ -1277,16 +1286,9 @@ display: none;
 
   }
 
-/* 
-  .main .friends_list.active {
-    display: flex;
-    } */
 
 
   @media (max-width: 666px) {
-    .main .friends_list.active {
-      display: flex;
-      }
   
   
     .main .friends_list {
