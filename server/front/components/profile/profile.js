@@ -2,11 +2,11 @@ import { loadHTML, loadCSS, player_webSocket } from '../../utils.js';
 import {log_out_func,  logoutf, get_localstorage, check_access_token, getCookie, login } from '../../auth.js';
 import {setHeaderContent, setNaveBarContent} from '../tournament/script.js';
 let friendsocket;
+let id_of_tournament;
 
 const api = "https://127.0.0.1:9004/api/";
 const api_one = "https://127.0.0.1:9005/api/";
-// https://{{ip}}:9006/api/gamedb/get-game-history/
-// https://{{ip}}:9007/api/tag-gamedb/get-game-history/
+const tourna_game = "https://127.0.0.1:9008/api/tournament/";
 const pong_game = "https://127.0.0.1:9006/api/gamedb/";
 const tag_game = "https://127.0.0.1:9007/api/tag-gamedb/";
 var photo = null;
@@ -71,30 +71,26 @@ async function Friends() {
           photo = file;
   });
 
-  // const notific = document.querySelector('.notification');
-  // const notifi_display = document.querySelector('.notifi_btn');
-
-  // notific.addEventListener('click', function() {
-  //   notifi_display.classList.toggle('active');
-  // })
-
   window.addEventListener('resize', () => {
     if (window.innerWidth > 666) 
       perso_list.style.display = 'flex';
-    if (window.innerWidth < 666) 
+    if (window.innerWidth < 666)  {
       perso_list.style.display = 'none';
+    }
   })
 
   const perso = document.querySelector('.bi-person-add');
   const perso_list = document.querySelector('.friends_list');
 
   perso.addEventListener('click', () => {
-    perso_list.classList.toggle('active');
+    if (perso_list.style.display === 'flex')
+      perso_list.style.display = 'none';
+    else 
+      perso_list.style.display = 'flex';
   });
 
   if (newNotification)
     check_and_set_online(newNotification);
-
 
   const tag_history = document.querySelector('.tag_game_click');
   const pong_history = document.querySelector('.pong_game_click');
@@ -131,9 +127,71 @@ async function Friends() {
   get_tag_history();
   // set_pong_score()
   // set_tag_score()
+  get_tournament_history();
 }
 
-export {friendsocket};
+export {friendsocket, id_of_tournament};
+
+
+async function get_tournament_history() {
+  const response = await fetch(tourna_game + 'get-tournament-history/', {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + get_localstorage('token'),
+      'Session-ID': get_localstorage('session_id')
+    },
+    credentials: 'include',
+  });
+  const jsonData = await response.json();
+
+  console.log("history of game of tournament ==> : ", jsonData);
+  console.log("--------------------------------------------------");
+
+  if (!response.ok) {
+    console.log((`HTTP error! Status: ${response.status}`), Error);
+  }
+
+  set_tournament_data(jsonData.message);
+}
+// here i will set function that i set the players and id of everyfunctio
+
+
+function set_tournament_data(data) {
+  const games_container = document.querySelector(".tur_game_history");
+
+  data.forEach((index) => {
+    const gameDiv = document.createElement('div');
+    gameDiv.classList.add('play');
+    gameDiv.setAttribute('data-id', index.tournamentId); 
+    gameDiv.style.cursor = 'pointer';
+    gameDiv.innerHTML = `
+      <div class="first_pl">
+        <img id="player1" src="/images/hello.png" alt="">
+        <h2 class="player1">${index.firstPlayerName}</h2>
+      </div>
+      <h2>First</h2>
+      <h2>Second</h2>
+      <div class="second_pl">
+        <img id="player2" src="/images/hello.png" alt="">
+        <h2 class="player2">${index.secondPlayerName}</h2>
+      </div>
+      <h4 id="datofgame"> ${game.created_at.slice(0, 10)}</h4>
+    `;
+
+    gameDiv.addEventListener('click', () => {
+    const tournamentId = gameDiv.getAttribute('data-id');
+    id_of_tournament = tournamentId;
+    window.location.hash = '/tournamentScore';
+    console.log(id_of_tournament);
+
+
+    });
+    games_container.appendChild(gameDiv);
+  })
+}
+
+
 
 
 async function get_pong_history() {
@@ -142,6 +200,7 @@ async function get_pong_history() {
     headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer ' + get_localstorage('token'),
+      'Session-ID': get_localstorage('session_id')
     },
     credentials: 'include',
   });
@@ -174,6 +233,8 @@ export async function set_pong_history(friendList) {
         <h2>${game.player2_score}</h2>
         <h2 class="player2">${game.player2_name}</h2>
         <img id="player2" src="${game.player2_avatar}" alt="Player 2 Avatar">
+        <h4 id="datofgame"> ${game.created_at.slice(0, 10)}</h4>
+
       `;
       gamesContainer.appendChild(gameDiv);
     });
@@ -187,6 +248,7 @@ async function get_tag_history() {
     headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer ' + get_localstorage('token'),
+      'Session-ID': get_localstorage('session_id')
     },
     credentials: 'include',
   });
@@ -220,6 +282,7 @@ async function set_tag_history(friendList) {
         <h2>unknown</h2>
         <h2 class="player2">${game.player2_name}</h2>
         <img id="player2" src="${game.player2_avatar}" alt="">
+        <h4 id="datofgame"> ${game.created_at.slice(0, 10)}</h4>
       `;
 
       }
@@ -233,6 +296,8 @@ async function set_tag_history(friendList) {
         <h2 style="color: red;">${user2}</h2>
         <h2 class="player2">${game.player2_name}</h2>
         <img id="player2" src="${game.player2_avatar}" alt="">
+        <h4 id="datofgame"> ${game.created_at.slice(0, 10)}</h4>
+
       `;
 
       } else {
@@ -245,6 +310,7 @@ async function set_tag_history(friendList) {
         <h2 style="color: green;" >${user2}</h2>
         <h2 class="player2">${game.player2_name}</h2>
         <img id="player2" src="${game.player2_avatar}" alt="">
+        <h4 id="datofgame"> ${game.created_at.slice(0, 10)}</h4>
       `;
       }
       gamesContainer.appendChild(gameDiv);
@@ -293,6 +359,7 @@ async function set_pong_score() {
     headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer ' + get_localstorage('token'),
+      'Session-ID': get_localstorage('session_id')
     },
     credentials: 'include',
     body: JSON.stringify(data)
@@ -320,6 +387,7 @@ async function set_tag_score() {
     headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer ' + get_localstorage('token'),
+      'Session-ID': get_localstorage('session_id')
     },
     credentials: 'include',
     body: JSON.stringify(data)
@@ -355,11 +423,14 @@ async function set_tag_score() {
 
 
 export async function get_friends_home() {
+  await check_access_token();
+
   const response = await fetch(api_one + 'user/get-friend-list/', {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer ' + get_localstorage('token'),
+      'Session-ID': get_localstorage('session_id')
     },
     credentials: 'include',
   });
@@ -408,7 +479,7 @@ const isValidEmail = signupemail => {
 }
 
 async function update_profile_fun() {
-  check_access_token()
+  await check_access_token()
   const update_Email = document.getElementById('update_Email');
   const update_UserName = document.getElementById('update_UserName');
   const new_password = document.getElementById('new_password');
@@ -442,7 +513,8 @@ async function update_backend(data) {
   const response = await fetch(api + 'auth/update-user/', {
     method: 'PUT',
     headers: {
-      'AUTHORIZATION': "Bearer " + get_localstorage('token')
+      'AUTHORIZATION': "Bearer " + get_localstorage('token'),
+      'Session-ID': get_localstorage('session_id')
     },
     credentials: 'include',
     body: data
@@ -454,6 +526,8 @@ async function update_backend(data) {
 }
 
 export async function send_freinds_request(userna) {
+  await check_access_token();
+
     const data = {
     username: userna
   };
@@ -464,7 +538,8 @@ export async function send_freinds_request(userna) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': "Bearer " + get_localstorage('token')
+        'Authorization': "Bearer " + get_localstorage('token'),
+        'Session-ID': get_localstorage('session_id')
       },
       credentials: 'include',
       body: JSON.stringify(data)
@@ -510,7 +585,7 @@ export async function changeAccess() {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
     const jsonData = await response.json();
-    await login(jsonData.access, jsonData.refresh);
+    login(jsonData.access, jsonData.refresh, get_localstorage('session_id'));
   } catch (error) {
     console.error('There was a problem with the fetch operation:', error);
   }
@@ -535,7 +610,9 @@ function check_and_set_online(newNotification) {
 }
 
 export async function check_friends_status() {
-  friendsocket = new WebSocket("wss://127.0.0.1:9005/ws/online-status/", ["token", get_localstorage('token')]);
+  await check_access_token();
+
+  friendsocket = new WebSocket("wss://127.0.0.1:9005/ws/online-status/", ["token", get_localstorage('token'), "session_id", get_localstorage('session_id')]);
     
   friendsocket.onopen = function () {
     console.log('online status Websocket connection established.');
@@ -590,14 +667,22 @@ async function fetchUserData() {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + get_localstorage('token')
+        'Authorization': 'Bearer ' + get_localstorage('token'),
+        'Session-ID': get_localstorage('session_id')
       },
       credentials: 'include',
     });
+
+    if (userResponse.status === 404) {
+      logoutf();
+      window.location.hash = '/login';
+    }
+
     if (!userResponse.ok) {
       throw new Error('Network response was not ok');
     }
     const userData = await userResponse.json();
+
 
     const change_user = document.getElementById('UserName');
     const avata = document.getElementById('avatar');

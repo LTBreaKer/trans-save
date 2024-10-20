@@ -14,6 +14,7 @@ class gameMonitor:
         self.GO = False
         self.game_time = 1
         self.winner = None
+        self.winner_color = None
 
         self.platforms = [
             Platform(1000, 280, 138),
@@ -48,19 +49,37 @@ class gameMonitor:
         while self.game_time:
             if not self.gameconsumer.is_open:
                 break
-            try:
+        ################################################################################
+            from .consumers import get_game_index
+            index = get_game_index(self.gameconsumer.games, self.gameconsumer.game_id)
+            if len(self.gameconsumer.games[index][1]) < 2:
+                id = self.gameconsumer.id
+                self.winner = self.players[id].name
+                if id == 0:
+                    self.winner_color = "2px 0px 8px rgba(207, 62, 90, 0.8)"
+                else:
+                    self.winner_color = "2px 0px 8px rgba(32, 174, 221, 0.8)"
 
+                await self.gameconsumer.send_playerUpdate()
+                await asyncio.sleep(0.005)
+                await self.gameconsumer.close()
+                break
+        ################################################################################
+
+            try:
                 if self.game_time > 0:
-                    self.game_time = math.floor(9 - time.time() + start_time)
+                    self.game_time = math.floor(99 - time.time() + start_time)
                 if self.game_time == 0:
                     if not self.players[0].tagger:
                         self.winner = self.players[0].name
+                        self.winner_color = "2px 0px 8px rgba(207, 62, 90, 0.8)"
                     else:
                         self.winner = self.players[1].name
+                        self.winner_color = "2px 0px 8px rgba(32, 174, 221, 0.8)"
                 collision = None
                 for self.player in self.players:
                     self.player.fall(self)
-                    
+
                     for self.platform in self.platforms:
                         if self.player.topCollision(self.platform):
                             self.platform.collision[self.player.id] = True

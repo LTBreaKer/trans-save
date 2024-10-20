@@ -63,6 +63,45 @@ contract TournamentContract {
         }
     }
 
+    function getTournamentHistory(uint256 _creatorId) public view returns (Match[] memory _matches) {
+
+        uint256 matchCount = 0;
+        for (uint256 i = 0; i < tournaments.length; i++) {
+            if (tournaments[i].creatorId == _creatorId) {
+                for (uint256 j = 0; j < matches.length; j++) {
+                    if (matches[j].tournamentId == tournaments[i].id) {
+                        if (keccak256(abi.encodePacked(matches[j].stage)) == keccak256(abi.encodePacked('1/1'))){
+                            if (keccak256(abi.encodePacked(matches[j].status)) == keccak256(abi.encodePacked('complete'))){
+                                matchCount++;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        Match[] memory returnMatches = new Match[](matchCount);
+        uint256 returnindex = 0;
+
+        for (uint256 i = 0; i < tournaments.length; i++) {
+            if (tournaments[i].creatorId == _creatorId) {
+                for (uint256 j = 0; j < matches.length; j++) {
+                    if (matches[j].tournamentId == tournaments[i].id) {
+                        if (keccak256(abi.encodePacked(matches[j].stage)) == keccak256(abi.encodePacked('1/1'))){
+                            if (keccak256(abi.encodePacked(matches[j].status)) == keccak256(abi.encodePacked('complete'))){
+                                returnMatches[returnindex++] = matches[j];
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return returnMatches;
+    }
+
+
+
+
     function getLatestTournament(uint256 _creatorId) public view returns (Match[] memory _matches){
         uint256 tournamentId;
 

@@ -11,12 +11,13 @@ class RemoteGame(AsyncWebsocketConsumer):
 
         SUBPROTOCOLS = self.scope.get('subprotocols')
         token = SUBPROTOCOLS[1] if SUBPROTOCOLS and len(SUBPROTOCOLS) > 1 else None
-        if not token:
+        session_id = SUBPROTOCOLS[3] if SUBPROTOCOLS and len(SUBPROTOCOLS) > 3 else None
+        if not token or not session_id:
             await self.close(code=4000)
             return
         auth_header = f"Bearer {token}"
 
-        response = await sync_to_async(check_auth)(auth_header)
+        response = await sync_to_async(check_auth)(auth_header, session_id)
         if response.status_code != 200:
             await self.close(code=4001)
             return

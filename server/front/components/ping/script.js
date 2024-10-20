@@ -87,6 +87,14 @@ async function Ping() {
   const local_butt_game = document.getElementById('local_butt_game');
   const btn_ai = document.getElementById('btn_ai');
   const remote_butt_game = document.getElementById('butt_game');
+  const cancel_game_func = document.getElementById('cancel_game');
+  const logout = document.getElementById('logout')
+  
+  logout.addEventListener('click', log_out_func);
+
+  cancel_game_func.addEventListener('click', async () => {
+    await remove_ping_remote_game();
+  })
 
 
 
@@ -147,6 +155,7 @@ async function check_tournament_finish() {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + get_localstorage('token'),
+        'Session-ID': get_localstorage('session_id')
       },
       credentials: 'include',
     });
@@ -245,6 +254,7 @@ async function remore_game_fun() {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + get_localstorage('token'),
+        'Session-ID': get_localstorage('session_id')
       },
       credentials: 'include',
     });
@@ -343,7 +353,7 @@ async function changeAccess() {
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
-      await login(jsonData.access, jsonData.refresh);
+      login(jsonData.access, jsonData.refresh, get_localstorage('session_id'));
       
     } catch (error) {
       console.error('There was a problem with the fetch operation:', error);
@@ -386,10 +396,16 @@ async function changeAccess() {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + get_localstorage('token')
+          'Authorization': 'Bearer ' + get_localstorage('token'),
+          'Session-ID': get_localstorage('session_id')
         },
         credentials: 'include',
       });
+
+      if (userResponse.status === 404) {
+        logoutf();
+        window.location.hash = '/login';
+      }
       
       if (!userResponse.ok) {
         throw new Error('Network response was not ok');

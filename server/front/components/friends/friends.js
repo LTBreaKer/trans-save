@@ -1,5 +1,5 @@
 import { loadHTML, loadCSS, player_webSocket } from '../../utils.js';
-import {log_out_func, logoutf, get_localstorage, getCookie, login } from '../../auth.js';
+import {log_out_func, logoutf, get_localstorage, getCookie, login, check_access_token } from '../../auth.js';
 import {get_friends_home, set_pong_history , send_freinds_request, changeAccess} from '../profile/profile.js';
 
 
@@ -140,6 +140,7 @@ async function get_pong_history_by_name(name) {
     headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer ' + get_localstorage('token'),
+      'Session-ID': get_localstorage('session_id')
     },
     credentials: 'include',
     body: JSON.stringify(data)
@@ -158,6 +159,7 @@ async function get_pong_history_by_name(name) {
 
 
 async function remove_friend() {
+  await check_access_token();
   const data = {
     friend_id: friend_user_id
   }
@@ -166,6 +168,7 @@ async function remove_friend() {
     headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer ' + get_localstorage('token'),
+      'Session-ID': get_localstorage('session_id')
     },
     credentials: 'include',
     body: JSON.stringify(data)
@@ -232,11 +235,16 @@ async function fetchUserData() {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + get_localstorage('token')
+        'Authorization': 'Bearer ' + get_localstorage('token'),
+        'Session-ID': get_localstorage('session_id')
       },
       credentials: 'include',
     });
 
+    if (userResponse.status === 404) {
+      logoutf();
+      window.location.hash = '/login';
+    }
     if (!userResponse.ok) {
       throw new Error('Network response was not ok');
     }
@@ -267,7 +275,8 @@ async function fetch_friend_data() {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'AUTHORIZATION': "Bearer " + get_localstorage('token')
+        'AUTHORIZATION': "Bearer " + get_localstorage('token'),
+        'Session-ID': get_localstorage('session_id')
       },
       credentials: 'include',
       body: JSON.stringify(data)

@@ -53,7 +53,6 @@ class MyConsumer(AsyncWebsocketConsumer):
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)
         action = text_data_json.get('action')
-        # print('action sent from client: ', action)
         if action == "window resize":
             await init.resizeWindow(text_data_json, self, self.monitor)
 

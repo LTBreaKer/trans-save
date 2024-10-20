@@ -8,15 +8,17 @@ function isAuthenticated() {
     return !!localStorage.getItem('token');
 }
   
-  function login(token, refresh) {
+  function login(token, refresh, session_id) {
     localStorage.setItem('token', token);
     localStorage.setItem('refresh', refresh);
-}
+    localStorage.setItem('session_id', session_id);
+  }
   
   function logoutf() {
     friendsocket.close();
     localStorage.removeItem('token'); 
     localStorage.removeItem('refresh'); 
+    localStorage.removeItem('session_id');
   }
 
   function get_localstorage(string) {
@@ -24,6 +26,8 @@ function isAuthenticated() {
         return (localStorage.getItem('token'));
     else if (string === 'refresh')
         return (localStorage.getItem('refresh'));
+    else if (string === 'session_id')
+        return(localStorage.getItem('session_id'));
   }
 
   function getCookie(name) {
@@ -118,7 +122,9 @@ function isAuthenticated() {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'AUTHORIZATION': 'Bearer ' + get_localstorage('token')
+            'AUTHORIZATION': 'Bearer ' + get_localstorage('token'),
+            'Session-ID': get_localstorage('session_id')
+
         },
         credentials: 'include',
         body: JSON.stringify(bod)

@@ -34,7 +34,8 @@ export function sendScore(left_paddle_score = lpaddle.nb_goal, right_paddle_scor
 		method: 'POST',
 		headers: {
 			'Authorization': `Bearer ${localStorage.getItem("token")}`,
-			'Content-Type': 'application/x-www-form-urlencoded'
+			'Content-Type': 'application/x-www-form-urlencoded',
+			'Session-ID': get_localstorage('session_id')
 		},
 		body: urlEncodedData
 	});

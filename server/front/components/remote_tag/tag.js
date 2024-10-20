@@ -3,25 +3,41 @@ import {imageR1, imageL1, imageIR1, imageIL1, imageR2, imageL2, imageIR2, imageI
 import {tag_game_info, setTagGameInfo} from '../ta/script.js'
 import {get_localstorage} from '../../auth.js'
 
-// tag_game_info = {
-//     game_id: ,
-//     player1name: ,
-//     player2name: ,
-//     player1_id: ,
-//     player2_id: 
-//   }
+var api = "https://127.0.0.1:9004/api/";
+var api_tag = "https://127.0.0.1:9007/api/tag-gamedb/"
 
-var api = "https://127.0.0.1:9007/api/tag-gamedb/"
-function start_game()
+async function fetchUserName() {
+      try {
+        const userResponse = await fetch(api + 'auth/get-user/', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + get_localstorage('token'),
+            'Session-ID': get_localstorage('session_id')
+          },
+          credentials: 'include',
+        });
+        
+        if (userResponse.status === 404) {
+            logoutf();
+            window.location.hash = '/login';
+          }
+
+        if (!userResponse.ok)
+          throw new Error(`Status: ${response.status}, Message: ${jsonData.message || 'Unknown error'}`);
+
+        let data_user = await userResponse.json()
+
+        let username = data_user.user_data.username
+        return (username);
+      }
+      catch(error){
+        console.error('There was a problem with the fetch operation:', error);
+      }
+}
+
+async function start_game()
 {
-    console.log(tag_game_info)
-    if (!tag_game_info)
-    {
-        console.error("invalid players")
-        window.location.hash = '/'
-        socket.close()
-        return
-    }
 
     class Platform{
     
@@ -87,29 +103,27 @@ function start_game()
         if (winner === tag_game_info.player1name)
             winner_id =  tag_game_info.player1_id
         else
-        winner_id =  tag_game_info.player2_id
+            winner_id =  tag_game_info.player2_id
 
         const data = {
             game_id: tag_game_info.game_id,
             winner_name: winner,
             winner_id: winner_id
         }
-        console.log(data)
         try{
-            const response = await fetch(api + 'add-game-score/', {
+            const response = await fetch(api_tag + 'add-game-score/', {
                 method: 'POST',
                 headers: {
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + get_localstorage('token'),
+                'Session-ID': get_localstorage('session_id')
                 },
                 credentials: 'include',
                 body: JSON.stringify(data)
             });
             const jsonData = await response.json()
-            console.log("Add score =>", jsonData)
-          
             if (!response.ok) {
-              console.error(`HTTP error! Status: ${response.status}, Message: ${jsonData.message || 'Unknown error'}`)
+              console.error(`Status: ${response.status}, Message: ${jsonData.message || 'Unknown error'}`)
             }
         }
         catch(error){
@@ -128,35 +142,33 @@ function start_game()
 
     async function rain()
     {
-        let raindrops = [];
-        let count = canvas.width * 60 / 1697;//
+        let raindrops = []
+        let count = canvas.width * 60 / 1697
     
         for (let i = 0; i < count; i++) {
             raindrops.push({
                 x: Math.random() * canvas.width,
                 y: Math.random() * canvas.height,
-                speedX: canvas.width * -20 / 1697, // Horizontal wind effect          //
-                length: canvas.height * (Math.random() * 20 + 30) / 955 //
+                speedX: canvas.width * -20 / 1697, // Horizontal wind effect
+                length: canvas.height * (Math.random() * 20 + 30) / 955
             });
         }
     
         raindrops.forEach(raindrop => {
             // Create a gradient for the raindrop
-            let grd = c.createLinearGradient(raindrop.x, raindrop.y, raindrop.x + raindrop.speedX, raindrop.y + raindrop.length);
-            grd.addColorStop(0, "rgba(255, 255, 255, 0.2)");
-            grd.addColorStop(1, "rgba(255, 255, 255, 0)");
+            let grd = c.createLinearGradient(raindrop.x, raindrop.y, raindrop.x + raindrop.speedX, raindrop.y + raindrop.length)
+            grd.addColorStop(0, "rgba(255, 255, 255, 0.2)")
+            grd.addColorStop(1, "rgba(255, 255, 255, 0)")
     
-            c.strokeStyle = grd;
-            c.lineWidth = canvas.height * 3.5 / 955;//
+            c.strokeStyle = grd
+            c.lineWidth = canvas.height * 3.5 / 955
     
-            c.beginPath();
-            c.moveTo(raindrop.x, raindrop.y);
-            c.lineTo(raindrop.x + raindrop.speedX, raindrop.y + raindrop.length);
-            c.stroke();
+            c.beginPath()
+            c.moveTo(raindrop.x, raindrop.y)
+            c.lineTo(raindrop.x + raindrop.speedX, raindrop.y + raindrop.length)
+            c.stroke()
         });
     }
-
-    console.log("start game")
 
     const canvas = document.getElementById('canva');
     const c = canvas.getContext("2d");
@@ -165,9 +177,32 @@ function start_game()
     
     let GO = false
     let time = 1
-    let winner
+    let winner, winner_color
 
     canvas.width = 0;
+    if (socket.readyState === WebSocket.OPEN)
+    {
+        let p1_name 
+        let p2_name
+        const username = await fetchUserName()
+
+        if (players[0].name === username)
+        {
+            p1_name = username 
+            p2_name = players[1].name 
+        }
+        else
+        {
+            p1_name = username
+            p2_name = players[0].name 
+        }
+        socket.send(JSON.stringify({
+            'action': 'players name',
+            'p1': p1_name,
+            'p2': p2_name,
+        }))
+    }
+
     resizeWindow()
     animation()
 
@@ -229,15 +264,6 @@ function start_game()
         draw_timer(time, players[0])
         if (time === 0 && socket.readyState === WebSocket.OPEN)
         {
-            document.getElementById('overlay').style.visibility = 'visible';
-            // game_score(winner)
-            if (winner === players[0].name)
-                document.getElementById('overlay').style.textShadow = '2px 0px 8px rgba(207, 62, 90, 0.8)'
-            else
-                document.getElementById('overlay').style.textShadow = '2px 0px 8px rgba(32, 174, 221, 0.8)'
-
-            const overlay = document.querySelector('.overlay-text')
-            overlay.textContent = winner + ' wins'
             socket.close()
             time = 1
         }
@@ -264,7 +290,6 @@ function start_game()
     function receive_message(event)
     {
         let socket_data = JSON.parse(event.data)
-        // console.log("from consumer", socket_data)
         if (socket_data.action === "game update")
         {
             canvas.height = socket_data.canvas_height
@@ -303,6 +328,7 @@ function start_game()
             GO = socket_data.GO
             time = socket_data.time
             winner = socket_data.winner
+            winner_color = socket_data.winner_color
         }
 
         if (socket_data.action === "update key")
@@ -336,10 +362,9 @@ function start_game()
 
     function resizeWindow()
     {
-        console.log("red:", players[0].name, "blue:", players[1].name)
+
         if (socket.readyState === WebSocket.OPEN)
             {
-                console.log("resize")
                 socket.send(JSON.stringify({
                     'action': 'window resize',
                     'window_innerHeight': window.innerHeight,
@@ -398,32 +423,32 @@ function start_game()
         }
     }
 
+    function handleblur()
+    {
+        players.forEach(player=>{
+            if (player.keyStatus.leftPressed)
+            {
+                player.keyStatus.leftPressed = false
+                player.image = player.imageIdlL[2]
+            }
+        
+            if (player.keyStatus.rightPressed)
+            {
+                player.keyStatus.rightPressed = false
+                player.image = player.imageIdlR[2]
+            }
+        
+            if (!player.keyStatus.upreleased)
+                player.keyStatus.upreleased = true
+        })
+    }
+
     function quitgame()
     {
         reload_data()
         document.getElementById('overlay').style.visibility = 'hidden'
         window.location.hash = '#/ta'
     }
-
-    // function handleblur()
-    // {
-    //     players.forEach(player=>{
-    //         if (player.keyStatus.leftPressed)
-    //         {
-    //             player.keyStatus.leftPressed = false
-    //             player.image = player.imageIdlL[2]
-    //         }
-        
-    //         if (player.keyStatus.rightPressed)
-    //         {
-    //             player.keyStatus.rightPressed = false
-    //             player.image = player.imageIdlR[2]
-    //         }
-        
-    //         if (!player.keyStatus.upreleased)
-    //             player.keyStatus.upreleased = true
-    //     })
-    // }
 
     let button = document.querySelector('.overlay-button')
 
@@ -434,56 +459,46 @@ function start_game()
     window.addEventListener("keydown", keydown)
     window.addEventListener("keyup", keyup)
 
-    // window.addEventListener("blur", handleblur)
+    window.addEventListener("blur", handleblur)
     window.addEventListener("hashchange", hashchange)
     socket.addEventListener("close", disconnect)
     window.addEventListener("beforeunload", handleRelodQuit)
 
     function handleRelodQuit(event)
     {
-        console.log("beforeunload")
-        disconnect()
-        event.preventDefault() // This is needed in some browsers to trigger the alert
+        if (socket.readyState === WebSocket.OPEN)
+            socket.close()
+        event.preventDefault() // This triggers the alert
     }
 
     function disconnect()
     {
-        // console.log("disconnected socket", window.location.hash)
-
-        if (winner === null)
-            winner = "unknown"
-        game_score(winner)
-        winner = null
-        // setTagGameInfo(null)
-        if (window.location.hash !== "#/remoteTag")
+        if (window.location.hash === "#/remoteTag")
         {
             document.getElementById('overlay').style.visibility = 'visible';
-            if (winner === players[0].name)
-                document.getElementById('overlay').style.textShadow = '2px 0px 8px rgba(207, 62, 90, 0.8)'
-            else
-                document.getElementById('overlay').style.textShadow = '2px 0px 8px rgba(32, 174, 221, 0.8)'
+            document.getElementById('overlay').style.textShadow = winner_color
 
             const overlay = document.querySelector('.overlay-text')
             overlay.textContent = winner + ' wins'    
         }
+        if (winner)
+            game_score(winner)
+        winner = null
+        setTagGameInfo(null)
+        reload_data()
     }
 
     function hashchange()
     {
         if (window.location.hash !== "#/remoteTag")
-        {
-            reload_data()
-            console.log("Hash changed, and it's not #/remoteTag!")
-        }
+            socket.close()
     }
 
     function reload_data()
     {
-        socket.close()
-
         window.removeEventListener("keydown", keydown)
         window.removeEventListener("keyup", keyup)
-        // window.removeEventListener("blur", handleblur)
+        window.removeEventListener("blur", handleblur)
         window.removeEventListener("hashchange", hashchange)
         window.removeEventListener("close", disconnect)
         window.removeEventListener("beforeunload", handleRelodQuit)

@@ -36,6 +36,7 @@ body {
 
 .container .header {  
   position: fixed;
+  background-color: #262b36;
   margin: 0;
   padding-left: 7.2em;
   height: 100px;
@@ -490,9 +491,19 @@ border-radius: 50%;
 object-fit: cover;
 }
 
+#datofgame {
+  display: flex;
+  position: absolute;
+ bottom: 0px;
+  justify-content: center;
+  width: 100%;
+ font-size: 10px;
+ color: white;
+}
 
 .play {
 display: flex;        
+position: relative;
 align-items: center; 
 justify-content: space-between;
 margin-top: 15px;
@@ -1277,12 +1288,10 @@ display: none;
   }
 
 
-  .main .friends_list.active {
-    display: flex;
-    }
-
 
   @media (max-width: 666px) {
+  
+  
     .main .friends_list {
       width: 250px;
       height: 55vh;
@@ -1451,6 +1460,17 @@ display: none;
     .header .profile .image img {
         display: none;
     }
-  
+    .notifi_btn {
+      display: none;
+      width: 200px;
+      height: 250px;
+      background-color: #474554;
+      position: absolute;
+      right: 50px;
+      top: 65px;
+      border-radius: 25px;
+      overflow-y: auto;
+    }
+    
   }
   
