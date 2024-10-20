@@ -36,6 +36,7 @@ body {
 
 .container .header {  
   position: fixed;
+  background-color: #262b36;
   margin: 0;
   padding-left: 7.2em;
   height: 100px;
@@ -1276,13 +1277,18 @@ display: none;
 
   }
 
-
+/* 
   .main .friends_list.active {
     display: flex;
-    }
+    } */
 
 
   @media (max-width: 666px) {
+    .main .friends_list.active {
+      display: flex;
+      }
+  
+  
     .main .friends_list {
       width: 250px;
       height: 55vh;

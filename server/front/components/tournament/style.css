@@ -40,6 +40,7 @@ body {
   margin: 0;
   padding-left: 7.2em;
   height: 100px;
+  background-color: #262b36;
   width: 100%;
 }
 
@@ -334,6 +335,7 @@ display: none;
   .winner_nextgame #next_match {
     padding: 15px;
     width: 200px;
+    margin: 25px;
     display: inline;
     /* display: none; */
     /* align-items: center; */

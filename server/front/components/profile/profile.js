@@ -84,15 +84,25 @@ async function Friends() {
   window.addEventListener('resize', () => {
     if (window.innerWidth > 666) 
       perso_list.style.display = 'flex';
-    if (window.innerWidth < 666) 
+    if (window.innerWidth < 666)  {
       perso_list.style.display = 'none';
+    }
   })
 
   const perso = document.querySelector('.bi-person-add');
   const perso_list = document.querySelector('.friends_list');
 
   perso.addEventListener('click', () => {
-    perso_list.classList.toggle('active');
+    if (perso_list.style.display === 'flex')
+      perso_list.style.display = 'none';
+    else 
+      perso_list.style.display = 'flex';
+
+
+    // const perso_list = document.querySelector('.friends_list');
+    
+    // perso_list.classList.toggle('active');
+
   });
 
   if (newNotification)
