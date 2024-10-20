@@ -27,7 +27,8 @@ class UserSerializer(serializers.ModelSerializer):
             'email',
             'avatar',
             'twofa_active',
-            'is_online'
+            'is_online',
+            'tournament_username',
         ]
         extra_kwargs = {
             'username': {'required': False},
