@@ -21,7 +21,8 @@ async function Tournament() {
   setNaveBarContent();
   await checkFirst();
   player_webSocket();
-  set_players_sh();
+  updateContent();
+
 
 
   const logout = document.getElementById('logout')
@@ -35,93 +36,37 @@ async function Tournament() {
     console.log(tournament_data.tournament_matches);
     while (tournament_data[i]) {
       if (tournament_data[i].status === "upcoming") {
-        console.log("=-----------------> ", tournament_data[i]);
         await start_tournament_match(tournament_data[i]);
         tournament_match_data = tournament_data[i];
         window.location.hash = '/tournamentScore';
         return;
       }
       i++;
-    }
-    //  tournament_data.map(element  => {
-    //   // if (element.status === "ongoing"){
-    //     // add_tournament_match_score(element);
-    //   // }
-    //   if (element.status === "upcoming") {
-    //     start_tournament_match(element);
-    //     tournament_match_data = element;
-    //     window.location.hash = '/tournamentScore';
-    //     return;
-
-    //   }
-    //   console.log("hello we ar")
-    //   // console.log(tournament_data);
-    //     // console.log("==> ", element);
-    // });
-
-  //   const participants = {
-  //     match_id: name,
-  //     tournament_id: kdfj
-  //   }
-
-
-  //   console.log("hello we are from morocco ")
-  //   try {
-  //     const response = await fetch(tournament + 'start-match/', {
-  //       method: 'POST',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //         'Authorization': 'Bearer ' + get_localstorage('token'),
-  //       },
-  //       credentials: 'include',
-  //       body: JSON.stringify(participants)
-  //     });
-  //     console.log(response);
-  //     const jsonData = await response.json();
-  //     console.log(jsonData);
-  
-  //     if (!response.ok) {
-  //       throw new Error(`HTTP error! Status: ${response.status}`);
-  //     }
-  //     // await login(jsonData.access, jsonData.refresh);
-      
-  //   } catch (error) {
-  //     console.error('There was a problem with the fetch e here operation:', error);
-  //   }
-  
+    }  
   })
 
-  // console.log(tournament_data.tournament_matches)
-  // console.log(tournament_data.tournament_matches[0])
-  // const scoore = document.getElementById('scoore');
-  // scoore.innerText = "4";
-
-  // match3_player2.innerText = "hello";
-
-  // const notific = document.querySelector('.notification');
-  // const notifi_display = document.querySelector('.notifi_btn');
-
-  // notific.addEventListener('click', function() {
-  //   notifi_display.classList.toggle('active');
-  // })
-  // const butt = document.querySelector('#butt');
-  // const side = document.querySelector('.sidebar');
-
-  // butt.addEventListener('click', function() {
-  //   side.classList.toggle('active');
-  // });
-
-  // document.addEventListener('click', (event) => {
-  //   if (!side.contains(event.target) && !butt.contains(event.target)) {
-  //     side.classList.remove('active');
-  //   }
-  // });
-
-  // get_stage();
+  window.addEventListener('resize', updateContent);
 
 }
 
 export {tournament_match_data};
+
+// script.js
+function updateContent() {
+  const contentDiv = document.getElementById('content');
+  const width = window.innerWidth;
+
+  if (width < 600) {
+      contentDiv.textContent = 'You are in mobile view!';
+  } else if (width < 1227) {
+      contentDiv.textContent = 'You are in tablet view!';
+  } else {
+    set_players_sh();
+  }
+}
+
+
+
 
 async function start_tournament_match(params) {
   console.log("====>> ", params);
