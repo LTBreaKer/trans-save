@@ -1,5 +1,7 @@
 import { loadHTML, loadCSS,  remove_tag_remote_game} from '../../utils.js';
 import { login ,log_out_func, logoutf, get_localstorage, getCookie } from '../../auth.js';
+import {setHeaderContent, setNaveBarContent} from '../tournament/script.js';
+
 // https://{{ip}}:9007:ws/tag-game-db/
 var api = "https://127.0.0.1:9004/api/";
 let game_api = 'https://127.0.0.1:9007/api/tag-gamedb/';
@@ -19,7 +21,9 @@ async function Ta() {
 
   const app = document.getElementById('app');
   app.innerHTML = html;
-  
+  setHeaderContent();
+  setNaveBarContent();
+
   await checkFirst();
   const remote_butt_game = document.getElementById('butt_game');
   const local_butt_game = document.getElementById('local_butt_game_tag');
