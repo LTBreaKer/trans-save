@@ -56,12 +56,12 @@ function updateContent() {
   const contentDiv = document.getElementById('content');
   const width = window.innerWidth;
 // 1235 1227
-  if (width < 600) {
-      contentDiv.textContent = 'You are in mobile view!';
-  } else if (width < 1235) {
+  if (width < 1235) {
     set_players_sh1();
+    loadCSS('./components/tournament/style.css');
   } else {
     set_players_sh();
+    loadCSS('./components/tournament/style.css');
   }
 }
 
@@ -208,10 +208,11 @@ async function get_stage() {
 }
 
 function set_players_sh() {
+  // document.querySelector('.matches_hist').style.flexDirection = '';
   const main_content  = document.getElementById('players_sh_content');
   console.log("here we go again=? :  ", tournament_data[0].playerOneName)
   main_content.innerHTML = `
-              <div class="matches_hist">
+              <div class="matches_hist" style={{ display: 'flex', flexDirection: '' }}>
 
                 <div class="first_match">
                     <div class="match_n1 string">
@@ -270,10 +271,11 @@ function set_players_sh() {
 }
 
 function set_players_sh1() {
+  // document.querySelector('.matches_hist').style.flexDirection = 'column';
   const main_content  = document.getElementById('players_sh_content');
   console.log("here we go again=? :  ", tournament_data[0].playerOneName)
   main_content.innerHTML = `
-   <div class="matches_hist">
+   <div class="matches_hist" style={{ display: 'flex', flexDirection: 'column' }}>
             <h3 id="text-final">hna ghadi ykon wach nisf ola roboaa ola final</h3>
             <div class="first_8">
             <div class="first_match">
@@ -329,15 +331,10 @@ function set_players_sh1() {
             </fiv>
 
         </div>
-        <div class="winner_nextgame">
-            <div class="winneer">
-                <h2 id="winn">Winner <i class="bi bi-trophy-fill"></i></h2>
-                <h3><i class="bi bi-trophy "></i> winner name</h3>
-                <hr id="line1">
-                <hr id="line2">
-                <hr id="line3">
+            <div class="winner_nextgame">
+                <h2 id="next_match">Start Match  <i class="bi bi-arrow-right-circle-fill"></i></h2>
             </div>
-        </div>
+
   `
 }
 
