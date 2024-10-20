@@ -11,7 +11,10 @@ import Ping from './components/ping/script.js';
 import Tournament from './components/tournament/script.js';
 import RemoteTag from './components/remote_tag/script.js';
 import TournamentScore from './components/tournamentscore/script.js';
+import {remove_tag_remote_game, remove_ping_remote_game} from './utils.js';
 
+var api_game = "https://127.0.0.1:9006/api/gamedb/";
+let game_api = 'https://127.0.0.1:9007/api/tag-gamedb/';
 
 const api_one = "https://127.0.0.1:9005/api/";
 let friends_array = [];
@@ -38,7 +41,19 @@ async function Router() {
     await check_access_token();
   }
   window.addEventListener('hashchange', async () => {
-    if (path)
+    if (path && path === '/ta' || path === '/ping') {
+      if (path === '/ta') {
+        await remove_tag_remote_game();
+      }
+
+      else if (path === '/ping') {    
+        await remove_ping_remote_game();
+      }
+
+    }
+
+
+    
       console.log("here componenet to show up what the befor=>: ", path)
      path = window.location.hash.slice(1);
     console.log("path===>: ", path);

@@ -1,4 +1,4 @@
-import { loadHTML, loadCSS } from '../../utils.js';
+import { loadHTML, loadCSS, remove_ping_remote_game } from '../../utils.js';
 import { login ,log_out_func, logoutf, get_localstorage, getCookie } from '../../auth.js';
 var api = "https://127.0.0.1:9004/api/";
 var api_game = "https://127.0.0.1:9006/api/gamedb/";
@@ -10,6 +10,10 @@ let check_remote = 0;
 let tournament_data;
 var remote_object;
 async function Ping() {
+  window.onload = async function() {
+    await remove_ping_remote_game();
+  };
+
   const html = await loadHTML('./components/ping/index.html');
   loadCSS('./components/ping/style.css');
 
@@ -26,38 +30,7 @@ async function Ping() {
   logout.addEventListener('click', log_out_func);
 
   cancel_game_func.addEventListener('click', async () => {
-
-
-    try {
-      const response = await fetch(api_game + 'cancel-remote-game-creation/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'AUTHORIZATION': 'Bearer ' + get_localstorage('token'),
-          'Session-ID': get_localstorage('session_id')
-        },
-        credentials: 'include',
-      });
-      console.log(response);
-      const jsonData = await response.json();
-      console.log("data=>  : ", jsonData);
-      if (jsonData.message === "player removed from game queue") {
-        document.querySelector('#cancel_game').style.display = 'none';
-        document.querySelector('#butt_game').style.display = 'flex';
-        document.querySelector('.spinner').style.display = 'none';
-      }
-     
-        
-      if (!response.ok) 
-        throw new Error(`HTTP error! Status: ${response.status}`);
-    } catch (error) {
-      console.error('There was a problem with the fetch operation:', error);
-    }
-
-
-
-
-
+    await remove_ping_remote_game();
   })
 
 
