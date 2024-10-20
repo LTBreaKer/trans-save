@@ -597,7 +597,7 @@ display: none;
     background-color: rgba(25, 26, 29, 0.6);
   }
   
-  .re_local #local_game {
+  .pong_re_local #local_game {
     width: 290px;
     height: 50%;
     display: flex;
@@ -608,73 +608,8 @@ display: none;
     background-color: rgba(25, 26, 29, 0.6);
     
   }
-
-
-  .re_local #tournament_game {
-    width: 290px;
-    height: 50%;
-    padding: 10px 15px 15px 15px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
-    background-color: rgba(25, 26, 29, 0.6);
-  }
   
-  .re_local #boot_game {
-    width: 290px;
-    height: 50%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    padding: 10px 15px 15px 15px;
-    align-items: center;
-    background-color: rgba(25, 26, 29, 0.6);
-    
-  }
-
-
-  .mer_cont #boot_game_btt {
-    padding: 11px;
-    background-color: black;
-    border-radius: 15px;
-    cursor: pointer;
-  }
-  .mer_cont #tournament_game_btt {
-    padding: 11px;
-    background-color: black;
-    border-radius: 15px;
-    cursor: pointer;
-  }
-
   
-  /* anomation on remote game  */ 
-.spinner {
-  display: none;
-  background-image: linear-gradient(rgb(186, 66, 255) 35%,rgb(0, 225, 255));
-  width: 70px;
-  height: 70px;
-  animation: spinning82341 1.7s linear infinite;
-  text-align: center;
-  border-radius: 50px;
-  filter: blur(1px);
-  box-shadow: 0px -5px 20px 0px rgb(186, 66, 255), 0px 5px 20px 0px rgb(0, 225, 255);
-}
-
-.spinner1 {
-  background-color: rgb(36, 36, 36);
-  width: 70px;
-  height: 70px;
-  border-radius: 50px;
-  filter: blur(10px);
-}
-
-@keyframes spinning82341 {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
   #local_game  .input {
     width: 200px;
     height: 40px;
@@ -689,15 +624,8 @@ display: none;
     font-size: 13.4px;
   }
   
-  #cancel_game {
-    padding: 11px;
-    display: none;
-    background-color: black;
-    border-radius: 15px;
-    cursor: pointer;
-  }
-
-   #butt_game {
+  
+  .pong_mer_cont #butt_game {
     padding: 11px;
     background-color: black;
     border-radius: 15px;
@@ -935,3 +863,37 @@ display: none;
   justify-content: center;
   cursor: pointer;
 }
+
+
+
+
+
+  /* anomation on remote game  */ 
+  .spinner {
+    display: none;
+    background-image: linear-gradient(rgb(186, 66, 255) 35%,rgb(0, 225, 255));
+    width: 70px;
+    height: 70px;
+    animation: spinning82341 1.7s linear infinite;
+    text-align: center;
+    border-radius: 50px;
+    filter: blur(1px);
+    box-shadow: 0px -5px 20px 0px rgb(186, 66, 255), 0px 5px 20px 0px rgb(0, 225, 255);
+  }
+  
+  .spinner1 {
+    background-color: rgb(36, 36, 36);
+    width: 70px;
+    height: 70px;
+    border-radius: 50px;
+    filter: blur(10px);
+  }
+  
+
+  #cancel_game {
+    padding: 11px;
+    display: none;
+    background-color: black;
+    border-radius: 15px;
+    cursor: pointer;
+  }

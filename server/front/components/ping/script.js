@@ -1,4 +1,4 @@
-import { loadHTML, loadCSS } from '../../utils.js';
+import { loadHTML, loadCSS, remove_ping_remote_game } from '../../utils.js';
 import { login ,log_out_func, logoutf, get_localstorage, getCookie, check_access_token } from '../../auth.js';
 var api = "https://127.0.0.1:9004/api/";
 var api_game = "https://127.0.0.1:9006/api/gamedb/";
@@ -54,6 +54,7 @@ async function create_tournament_function(participants) {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + get_localstorage('token'),
+        'Session-ID': get_localstorage('session_id')
       },
       credentials: 'include',
       body: JSON.stringify(participants)
@@ -76,6 +77,10 @@ async function create_tournament_function(participants) {
 }
 
 async function Ping() {
+  window.onload = async function() {
+    await remove_ping_remote_game();
+  };
+
   if (!html)
     html = await loadHTML('./components/ping/index.html');
 
@@ -188,7 +193,8 @@ async function fetchUserName() {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + get_localstorage('token')
+        'Authorization': 'Bearer ' + get_localstorage('token'),
+        'Session-ID': get_localstorage('session_id')
       },
       credentials: 'include',
     });
@@ -211,7 +217,7 @@ export const initPlayRemoteGame = async (initRemotegame) => {
 async function connectPlayerSocket() {
   await check_access_token();
   try {
-    const subprotocols = ['token', get_localstorage('token')];
+    const subprotocols = ['token', get_localstorage('token'), "session_id", get_localstorage('session_id')];
     const ws = new WebSocket(game_socket, subprotocols);
     ws.onmessage = async function(event) {
       const data = JSON.parse(event.data);
@@ -248,29 +254,34 @@ async function connectPlayerSocket() {
 
 async function remore_game_fun() {
   await check_access_token();
-  try {
-    const response = await fetch(api_game + 'create-remote-game/', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + get_localstorage('token'),
-        'Session-ID': get_localstorage('session_id')
-      },
-      credentials: 'include',
-    });
-    console.log(response);
-    const jsonData = await response.json();
-    console.log(jsonData);
+try {
+      const response = await fetch(api_game + 'create-remote-game/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + get_localstorage('token'),
+          'Session-ID': get_localstorage('session_id')
+        },
+        credentials: 'include',
+      });
+      console.log(response);
+      const jsonData = await response.json();
+      if (jsonData.message === "waiting for second player to join") {
+        document.querySelector('#cancel_game').style.display = 'flex';
+        document.querySelector('#butt_game').style.display = 'none';
+        document.querySelector('.spinner').style.display = 'flex';
+      }
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
+      console.log(jsonData);
+  
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      // await login(jsonData.access, jsonData.refresh);
+      
+    } catch (error) {
+      console.error('There was a problem with the fetch operation:', error);
     }
-    // await login(jsonData.access, jsonData.refresh);
-    
-  } catch (error) {
-    console.error('There was a problem with the fetch operation:', error);
-  }
-
 
 }
 
@@ -309,6 +320,7 @@ async function lanceLocalGame() {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + get_localstorage('token'),
+        'Session-ID': get_localstorage('session_id')
       },  
       credentials: 'include',
       body: JSON.stringify(data)
@@ -345,6 +357,7 @@ async function changeAccess() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Session-ID': get_localstorage('session_id')
         },
         credentials: 'include',
         body: JSON.stringify(data)
@@ -353,7 +366,7 @@ async function changeAccess() {
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
-      login(jsonData.access, jsonData.refresh, get_localstorage('session_id'));
+      await login(jsonData.access, jsonData.refresh);
       
     } catch (error) {
       console.error('There was a problem with the fetch operation:', error);
@@ -367,6 +380,7 @@ async function changeAccess() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Session-ID': get_localstorage('session_id')
         },
         credentials: 'include',
         body: JSON.stringify({ token }) 
@@ -401,11 +415,6 @@ async function changeAccess() {
         },
         credentials: 'include',
       });
-
-      if (userResponse.status === 404) {
-        logoutf();
-        window.location.hash = '/login';
-      }
       
       if (!userResponse.ok) {
         throw new Error('Network response was not ok');

@@ -176,7 +176,6 @@ function set_tournament_data(data) {
         <img id="player2" src="/images/hello.png" alt="">
         <h2 class="player2">${index.secondPlayerName}</h2>
       </div>
-      <h4 id="datofgame"> ${game.created_at.slice(0, 10)}</h4>
     `;
 
     gameDiv.addEventListener('click', () => {
