@@ -1,7 +1,7 @@
 
 import {canvas, click, TABLE_WIDTH, paddleHeight, height, box_result, first_player_goal, second_player_goal, counter, replay, popup_replay, pong_menu, loadDocument, sleep, back_counter, leftPaddle, paddle_way, first_player_name, second_player_name, p_second, p_first, loadReplayDocument, loadQuitDocument} from '../utils/globaleVariable.js';
 // import { setPointerMouse, rotateTable, zoomCamera } from '../game/staduim.js'
-import { closeGameSocket, connectAI, connectLocalGameSocket, connectPaddleSocket, launchGame } from '../game/game.js';
+import { closeGameSocket, connectAI, connectLocalGameSocket, connectPaddleSocket, launchGame, startGame } from '../game/game.js';
 import {sendSocket} from '../game/game.js'
 // import { connectGame , connect_ai} from '../utils/globaleVariable.js';
 import { moveCamera } from '../components/camera.js';
@@ -70,6 +70,11 @@ export async function pongLoader() {
 	const container = document.querySelector('.p_container');
 	container.appendChild(html_pong_loader);
 
+}
+
+async function removePongLoader() {
+	const container = document.querySelector('.p_container');
+	container.removeChild(html_pong_loader);
 }
 
 export async function loadPopupGameOver() {
@@ -150,13 +155,27 @@ export function removeEventsListener() {
 
 export async function descounter() {
 	back_counter.style.display = 'flex';
-	for(let c=3; c > 0; c--) {
-		counter.textContent = c;
-		await sleep(1);
+	let n = 0;
+	while (!startGame) {
+		if (n%2 == 0)
+			counter.textContent = "Loading.." + n / 2;
+		await sleep(0.5);
+		sendSocket();
+		n++;
 	}
 	back_counter.style.display = 'none';
-	sendSocket();
-	launchGame();
+}
+
+export async function loadPongGame() {
+	back_counter.style.display = 'flex';
+	let n = 0;
+	while (!startGame) {
+		if (n%2 == 0)
+			counter.textContent = "Loading.." + n / 2;
+		await sleep(0.5);
+		n++;
+	}
+	back_counter.style.display = 'none';
 }
 
 function initGame() {
@@ -174,6 +193,7 @@ let replayGame = async () => {
 	if (statePongGame == "remote"){
 		lancePongGame();
 		await connectPaddleSocket();
+		loadPongGame();
 	}
 	else {
 		lancePongGame();

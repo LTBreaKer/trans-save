@@ -4,9 +4,9 @@ import { leftPaddle, rightPaddle, paddle_way, TABLE_HEIGHT, BALL_RADUIS, popup_r
 import { TABLE_DEPTH, TABLE_WIDTH, PADDLE_LONG, height, width, first_player_goal, second_player_goal} from '../utils/globaleVariable.js';
 // import {gameSocket} from '../main3d.js';
 import  {statePongGame } from '../../../../components/ping/script.js'
-import { descounter, loadPopupGameOver, loadPopupReply, removeEventsListener, replayLocalGame } from './events.js';
+import { descounter, loadPongGame, loadPopupGameOver, loadPopupReply, removeEventsListener, replayLocalGame } from './events.js';
 import { assingGameApiToNULL, game_data, initPlayRemoteGame, sendPlayerPaddleCreated } from '../../../components/ping/script.js';
-import { animationFrameId, launchGame, playRemotePongGame } from '../game/game.js';
+import { animationFrameId, launchGame, playRemotePongGame, sendSocket, stopGame } from '../game/game.js';
 import { moveCamera } from '../components/camera.js';
 import { renderer } from '../components/renderer.js';
 import { scene } from '../components/scene.js';
@@ -47,7 +47,8 @@ export function sendScore(left_paddle_score = lpaddle.nb_goal, right_paddle_scor
 	.catch(error => console.error(`${error}`));
 }
 
-function draw_info(data) {
+async function draw_info(data) {
+	launchGame();
 	const data_ball = JSON.parse(data.ball);
 	const data_right_paddle = JSON.parse(data.right_paddle);
 	const data_left_paddle = JSON.parse(data.left_paddle);
@@ -60,8 +61,14 @@ function draw_info(data) {
 		sphere.position.x += (1 - r) * ((data_ball.y * TABLE_WIDTH) / height);
 		sphere.position.y += (1 - r) * ((data_ball.x * TABLE_DEPTH) / width);
 	}
-	else if (data_ball.ballOut == 59 && rpaddle.nb_goal < 3 && lpaddle.nb_goal < 3)
-		descounter();
+	// else if (data_ball.ballOut == 60 && rpaddle.nb_goal < 3 && lpaddle.nb_goal < 3) {
+	else if (data_ball.endTurn && rpaddle.nb_goal < 3 && lpaddle.nb_goal < 3) {
+		console.log("data_ball.ballOut: ", data_ball.ballOut);
+		stopGame();
+		loadPongGame();
+		await sendSocket();
+	}
+		// descounter();
 	else {
 		sphere.position.x = ((data_ball.y - (height / 2)) * (TABLE_WIDTH / 2)) / (height / 2);
 		sphere.position.y = ((data_ball.x - (width / 2)) * (TABLE_DEPTH / 2)) / (width / 2);
@@ -74,6 +81,7 @@ function draw_info(data) {
 }
 
 export async function fnGameOver(state = "rtn_menu") {
+	stopGame();
 	console.log("state: ", state);
 	if (state === "show winner")
 		await loadPopupGameOver();
@@ -119,6 +127,7 @@ export async function localGameSocket(group_name) {
 					fnGameOver("show winner");
 				} else {
 					sendScore(message.left_paddle_score, message.right_paddle_score);
+					stopGame();
 					// popup_replay.style.display = 'flex';
 					loadPopupReply();
 				}
@@ -199,12 +208,13 @@ async function connectBallSocket() {
 initPlayRemoteGame(connectBallSocket);
 
 async function descounterRemoteGame() {
-	back_counter.style.display = 'flex';
-	for(let c=3; c > 0; c--) {
-		back_counter.textContent = c;
-		await sleep(1);
-	}
-	back_counter.style.display = 'none';
-	playRemotePongGame();
+	// back_counter.style.display = 'flex';
+	// for(let c=3; c > 0; c--) {
+	// 	back_counter.textContent = c;
+	// 	await sleep(1);
+	// }
+	// back_counter.style.display = 'none';
+	await sleep(3);
+	await playRemotePongGame();
 	launchGame();
 }

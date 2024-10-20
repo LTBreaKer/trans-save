@@ -89,7 +89,8 @@
 }
 
 .p_background_descounter {
-	display: 'none';
+	/* display: 'none'; */
+	display: 'flex';
 	position: absolute;
 	z-index: 100;
 	width: calc(100vw);
@@ -102,7 +103,7 @@
 .p_descounter {
 	color:white;
 	/* width: calc(100vw - 100px); */
-	font-size: 120px;
+	font-size: 26px;
 }
 
 .p_popup_replay {
