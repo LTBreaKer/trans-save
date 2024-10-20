@@ -1,4 +1,4 @@
-import { loadHTML, loadCSS } from '../../utils.js';
+import { loadHTML, loadCSS,  remove_tag_remote_game} from '../../utils.js';
 import { login ,log_out_func, logoutf, get_localstorage, getCookie } from '../../auth.js';
 // https://{{ip}}:9007:ws/tag-game-db/
 var api = "https://127.0.0.1:9004/api/";
@@ -7,31 +7,11 @@ const ta_socket = 'wss://127.0.0.1:9007/ws/tag-game-db/';
 let tag_game_info;
 async function Ta() {
   window.onload = async function() {
-    try {
-      const response = await fetch(game_api + 'cancel-remote-game-creation/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'AUTHORIZATION': 'Bearer ' + get_localstorage('token'),
-          'Session-ID': get_localstorage('session_id')
-        },
-        credentials: 'include',
-      });
-      console.log(response);
-      const jsonData = await response.json();
-      console.log("data=>  : ", jsonData);
-      if (jsonData.message === "player removed from game queue") {
-        document.querySelector('#cancel_game').style.display = 'none';
-        document.querySelector('#butt_game').style.display = 'flex';
-        document.querySelector('.spinner').style.display = 'none';
-      }
-     
-        
-      if (!response.ok) 
-        throw new Error(`HTTP error! Status: ${response.status}`);
-    } catch (error) {
-      console.error('There was a problem with the fetch operation:', error);
-    }
+    await remove_tag_remote_game();
+    // document.querySelector('#cancel_game').style.display = 'none';
+    // document.querySelector('#butt_game').style.display = 'flex';
+    // document.querySelector('.spinner').style.display = 'none';
+
   };
 
   const html = await loadHTML('./components/ta/index.html');
@@ -49,42 +29,42 @@ async function Ta() {
   const logout = document.getElementById('logout')
   
   logout.addEventListener('click', log_out_func);
+cancel_game_func.addEventListener('click', await remove_tag_remote_game);
+
+  // cancel_game_func.addEventListener('click', async () => {
 
 
-  cancel_game_func.addEventListener('click', async () => {
-
-
-    try {
-      const response = await fetch(game_api + 'cancel-remote-game-creation/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'AUTHORIZATION': 'Bearer ' + get_localstorage('token'),
-          'Session-ID': get_localstorage('session_id')
-        },
-        credentials: 'include',
-      });
-      console.log(response);
-      const jsonData = await response.json();
-      console.log("data=>  : ", jsonData);
-      if (jsonData.message === "player removed from game queue") {
-        document.querySelector('#cancel_game').style.display = 'none';
-        document.querySelector('#butt_game').style.display = 'flex';
-        document.querySelector('.spinner').style.display = 'none';
-      }
+  //   try {
+  //     const response = await fetch(game_api + 'cancel-remote-game-creation/', {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //         'AUTHORIZATION': 'Bearer ' + get_localstorage('token'),
+  //         'Session-ID': get_localstorage('session_id')
+  //       },
+  //       credentials: 'include',
+  //     });
+  //     console.log(response);
+  //     const jsonData = await response.json();
+  //     console.log("data=>  : ", jsonData);
+  //     if (jsonData.message === "player removed from game queue") {
+  //       document.querySelector('#cancel_game').style.display = 'none';
+  //       document.querySelector('#butt_game').style.display = 'flex';
+  //       document.querySelector('.spinner').style.display = 'none';
+  //     }
      
         
-      if (!response.ok) 
-        throw new Error(`HTTP error! Status: ${response.status}`);
-    } catch (error) {
-      console.error('There was a problem with the fetch operation:', error);
-    }
+  //     if (!response.ok) 
+  //       throw new Error(`HTTP error! Status: ${response.status}`);
+  //   } catch (error) {
+  //     console.error('There was a problem with the fetch operation:', error);
+  //   }
 
 
 
 
 
-  })
+  // })
   // input = document.getElementById('input_tag');
   // player_name = input.value; 
   // remote_butt_game.addEventListener('click', remote_game_function);
