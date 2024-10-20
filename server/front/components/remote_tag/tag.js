@@ -221,7 +221,7 @@ async function start_game()
 
                 if (player.imageIdlR.includes(player.image))
                     player.image = player.imageIdlR[i]
-                else 
+                else if (player.imageIdlL.includes(player.image))
                     player.image = player.imageIdlL[i]
 
                 c.clearRect(0, 0, canvas.width, canvas.height)
@@ -338,10 +338,10 @@ async function start_game()
             if (imageL1 === players[0].image && socket_data.leftPressed0 === false)
                 players[0].image = players[0].imageIdlL[2]
 
-            if (imageR1 === players[0].image && socket_data.rightPressed0 === false)
+            else if (imageR1 === players[0].image && socket_data.rightPressed0 === false)
                 players[0].image = players[0].imageIdlR[2]
 
-            if (socket_data.rightPressed0)
+            else if (socket_data.rightPressed0)
                 players[0].image = players[0].imageR
             
             else if (socket_data.leftPressed0)
@@ -350,15 +350,14 @@ async function start_game()
             if (imageL2 === players[1].image && socket_data.leftPressed1 === false)
                 players[1].image = players[1].imageIdlL[2]
 
-            if (imageR2 === players[1].image && socket_data.rightPressed1 === false)
+            else if (imageR2 === players[1].image && socket_data.rightPressed1 === false)
                 players[1].image = players[1].imageIdlR[2]
 
-            if (socket_data.rightPressed1)
+            else if (socket_data.rightPressed1)
                 players[1].image = players[1].imageR
             
             else if (socket_data.leftPressed1)
                 players[1].image = players[1].imageL
-
         }
     }
 

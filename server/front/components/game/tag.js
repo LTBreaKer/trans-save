@@ -157,7 +157,7 @@ async function start_game()
 
                 if (player.imageIdlR.includes(player.image))
                     player.image = player.imageIdlR[i]
-                else 
+                else if (player.imageIdlL.includes(player.image))
                     player.image = player.imageIdlL[i]
 
                 c.clearRect(0, 0, canvas.width, canvas.height)
@@ -166,7 +166,9 @@ async function start_game()
             await delay(100)
         }
     }
+    
     const blinK = setInterval(blink, 2000)
+
     async function animation()
     {
         if (socket.readyState === WebSocket.OPEN)
@@ -549,6 +551,7 @@ async function start_game()
                 headers: {
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + get_localstorage('token'),
+                'Session-ID': get_localstorage('session_id')
                 },
                 credentials: 'include',
                 body: JSON.stringify(data)
