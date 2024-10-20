@@ -6,6 +6,34 @@ let game_api = 'https://127.0.0.1:9007/api/tag-gamedb/';
 const ta_socket = 'wss://127.0.0.1:9007/ws/tag-game-db/';
 let tag_game_info;
 async function Ta() {
+  window.onload = async function() {
+    try {
+      const response = await fetch(game_api + 'cancel-remote-game-creation/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'AUTHORIZATION': 'Bearer ' + get_localstorage('token'),
+          'Session-ID': get_localstorage('session_id')
+        },
+        credentials: 'include',
+      });
+      console.log(response);
+      const jsonData = await response.json();
+      console.log("data=>  : ", jsonData);
+      if (jsonData.message === "player removed from game queue") {
+        document.querySelector('#cancel_game').style.display = 'none';
+        document.querySelector('#butt_game').style.display = 'flex';
+        document.querySelector('.spinner').style.display = 'none';
+      }
+     
+        
+      if (!response.ok) 
+        throw new Error(`HTTP error! Status: ${response.status}`);
+    } catch (error) {
+      console.error('There was a problem with the fetch operation:', error);
+    }
+  };
+
   const html = await loadHTML('./components/ta/index.html');
   loadCSS('./components/ta/style.css');
 
