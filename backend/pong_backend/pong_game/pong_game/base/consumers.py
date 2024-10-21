@@ -109,13 +109,14 @@ class LocalGameConsumer(AsyncWebsocketConsumer):
                 'left_paddle': self.lpaddle.fn_str(),	
                 'right_paddle': self.rpaddle.fn_str()
             }))
-            if (self.ball.gameOver and (self.lpaddle.nb_goal == 3 or self.rpaddle.nb_goal == 3)):
+            if (self.ball.gameOver and (self.lpaddle.nb_goal == 2 or self.rpaddle.nb_goal == 2)):
                 await self.send_scores()
                 await self.close(code=1000)
             #     self.gameOver = True
             #     self.ball.gameOver = False
 
     async def send_scores(self):
+        print("--------------send score------------", file=sys.stderr)
         await self.send(text_data=json.dumps({
             'type': 'game_over',
             'left_paddle_score': self.lpaddle.nb_goal,

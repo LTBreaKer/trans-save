@@ -6,15 +6,18 @@ let lpaddle, rpaddle, lcenter_paddle, rcenter_paddle;
 
 export function initPaddles() {
     const center_paddle_geometry = new THREE.BoxGeometry( PADDLE_LONG / 32, PADDLE_WIDTH+ 0.001, PADDLE_HEIGHT + 0.001 );
-    const center_paddle_material = new THREE.MeshPhongMaterial( { color: 0xffffff} );
+    // const center_paddle_material = new THREE.MeshPhongMaterial( { color: 0xffffff} );
+    const center_paddle_material = new THREE.MeshStandardMaterial( { color: 0xffffff} );
     rcenter_paddle = new THREE.Mesh( center_paddle_geometry, center_paddle_material);
     lcenter_paddle = new THREE.Mesh( center_paddle_geometry, center_paddle_material);
     
     const paddle_geometry = new THREE.BoxGeometry( PADDLE_LONG, PADDLE_WIDTH, PADDLE_HEIGHT );
-    const left_paddle_material = new THREE.MeshPhongMaterial( { color: 0xFF000C } );
+    const left_paddle_material = new THREE.MeshStandardMaterial( { color: 0xFF000C } );
+    // const left_paddle_material = new THREE.MeshPhongMaterial( { color: 0xFF000C } );
     lpaddle = new THREE.Mesh( paddle_geometry, left_paddle_material);
     
-    const right_paddle_material = new THREE.MeshPhongMaterial( { color: 0xA4FF25 } );
+    const right_paddle_material = new THREE.MeshStandardMaterial( { color: 0xA4FF25 } );
+    // const right_paddle_material = new THREE.MeshPhongMaterial( { color: 0xA4FF25 } );
     rpaddle = new THREE.Mesh( paddle_geometry, right_paddle_material);
     
     lpaddle.castShadow = true;

@@ -1,27 +1,34 @@
 import { loadHTML, loadCSS } from '../../utils.js';
-
-let playGame = async () => {
+import { game_data } from '../ping/script.js';
+export let playGame = async () => {
 	console.log("  playGame  playGame  playGame  playGame");
 
 };
 
 export const initPlayGame = async (initgame) => {
   playGame = await initgame;
-} 
-
-function sleep(s) {
-	return new Promise((resolve) => setTimeout(resolve, s * 1000));
 }
 
 let html = ""
 export let script;
 
-async function PingPong() {
-  await loadHtmlWidthModuleScript();
-  await playGame();
+export async function isGameDataFull()
+{
+  if (!game_data) {
+	  window.location.hash = "/ping";	
+    return (0);
+  }
+  return (1);
 }
 
-async function loadHtmlWidthModuleScript() {
+async function PingPong() {
+  if (await isGameDataFull()) {
+    await loadHtmlWidthModuleScript();
+    await playGame();
+  }
+}
+
+export async function loadHtmlWidthModuleScript() {
   if (!html) {
     // html = await loadHTML('./pong-game/local/public/3dgame.html')
     html = await loadHTML('./pong-game/public/3dgame.html')

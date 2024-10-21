@@ -6,16 +6,16 @@ let tournament = "https://127.0.0.1:9008/api/tournament/";
 var api = "https://127.0.0.1:9004/api/";
 
 async function TournamentScore() {
-  const html = await loadHTML('./components/tournamentscore/index.html');
-  loadCSS('./components/tournamentscore/style.css');
-  const app = document.getElementById('app');
-  app.innerHTML = html;
-  console.log("******************************************** ")
   if (!id_of_tournament){
     console.log("ksdfjksjdkfjksdjfkldjslfkj")
     window.location.hash = "/profile";
     return;
   }
+  const html = await loadHTML('./components/tournamentscore/index.html');
+  loadCSS('./components/tournamentscore/style.css');
+  const app = document.getElementById('app');
+  app.innerHTML = html;
+  console.log("******************************************** ")
   setHeaderContent();
   setNaveBarContent();
   await checkFirst();

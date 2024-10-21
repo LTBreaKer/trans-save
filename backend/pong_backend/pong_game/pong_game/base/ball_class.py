@@ -66,7 +66,7 @@ class Ball():
 				self.reset()
 
 	def fn_str(self):
-		return ((f'{{"x": {self.x}, "y": {self.y}, "ballOut": {self.ballOut}}}'))
+		return ((f'{{"x": {self.x}, "y": {self.y}, "ballOut": {self.ballOut}, "endTurn": {"true" if self.gameOver else "false"} }}'))
 		# return (f'{{"x": {self.x}, "y": {self.y}}}')
  
 	def __str__(self):
