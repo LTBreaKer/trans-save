@@ -2,19 +2,11 @@
 import { socket } from './game.js'
 import {imageR1, imageL1, imageIR1, imageIL1, imageR2, imageL2, imageIR2, imageIL2, arrow, go_arrow, numbers, background, platform} from './image_src.js'
 import {tag_game_info, setTagGameInfo} from '../ta/script.js'
-import {get_localstorage} from '../../auth.js'
+import {get_localstorage, check_access_token} from '../../auth.js'
 
 var api = "https://127.0.0.1:9007/api/tag-gamedb/"
-function start_game()
+async function start_game()
 {
-    if (!tag_game_info)
-    {
-        console.error("invalid players")
-        window.location.hash = '#/ta'
-        socket.close()
-        return
-    }
-
     class Player{
         constructor({imgR, imgL, imgIR, imgIL, ply_name}) {
             this.name = ply_name
@@ -74,6 +66,8 @@ function start_game()
     
     async function game_score(winner)
     {
+        console.log("game score send")
+        await check_access_token()
         const data = {
             game_id: tag_game_info.game_id,
             winner_name: winner
@@ -148,7 +142,7 @@ function start_game()
 
     canvas.width = 0
     resizeWindow()
-    animation()
+    await animation()
 
     function delay(ms) {
         return new Promise(resolve => setTimeout(resolve, ms))
@@ -163,7 +157,7 @@ function start_game()
 
                 if (player.imageIdlR.includes(player.image))
                     player.image = player.imageIdlR[i]
-                else 
+                else if (player.imageIdlL.includes(player.image))
                     player.image = player.imageIdlL[i]
 
                 c.clearRect(0, 0, canvas.width, canvas.height)
@@ -172,8 +166,10 @@ function start_game()
             await delay(100)
         }
     }
+    
     const blinK = setInterval(blink, 2000)
-    function animation()
+
+    async function animation()
     {
         if (socket.readyState === WebSocket.OPEN)
         {
@@ -213,7 +209,7 @@ function start_game()
                     load_draw(arrow, player.position.x + player.width/4, player.position.y - player.height, player.width/2, player.height/2)
             }
         })
-        rain()
+        await rain()
 
         draw_timer(time, players[0])
         if (time === 0 && socket.readyState === WebSocket.OPEN)
@@ -465,6 +461,7 @@ function start_game()
 
     function quitgame()
     {
+        console.log("quit button")
         reload_data()
         document.getElementById('overlay').style.visibility = 'hidden'
         esc = false
@@ -486,13 +483,19 @@ function start_game()
 
     function handleRelodQuit(event)
     {
+        console.log("handleRelodQuit")
         if (socket.readyState === WebSocket.OPEN)
-            socket.close()
+        {
+            if (!winner)
+                winner = "unknown"
+            noAwaitScore(winner)
+        }
         event.preventDefault() // This triggers the alert
     }
 
-    function disconnect()
+    async function disconnect()
     {
+        console.log("socket disconnect")
         if (window.location.hash === "#/game")
         {
             pause_game()
@@ -507,14 +510,16 @@ function start_game()
         }
         if (winner === null)
             winner = "unknown"
-        game_score(winner)
+        await game_score(winner)
         winner = null
+        console.log("setTagGameInfo")
         setTagGameInfo(null)
         reload_data()
     }
 
     function hashchange()
     {
+        console.log("change hash")
         if (window.location.hash !== "#/game")
             socket.close()
     }
@@ -530,6 +535,35 @@ function start_game()
         window.removeEventListener("close", disconnect)
         window.removeEventListener("beforeunload", handleRelodQuit)
         clearInterval(blinK)
+    }
+
+    function noAwaitScore(winner)
+    {
+        console.log("game score send")
+        check_access_token()
+        const data = {
+            game_id: tag_game_info.game_id,
+            winner_name: winner
+        }
+        try{
+            const response = fetch(api + 'add-game-score/', {
+                method: 'POST',
+                headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + get_localstorage('token'),
+                'Session-ID': get_localstorage('session_id')
+                },
+                credentials: 'include',
+                body: JSON.stringify(data)
+            });
+            const jsonData = response.json()
+            if (!response.ok) {
+              console.error(`Status: ${response.status}, Message: ${jsonData.message || 'Unknown error'}`)
+            }
+        }
+        catch(error){
+            console.error('Request failed', error)
+        }
     }
 }
 

@@ -1,12 +1,13 @@
 import { socket } from './script.js'
 import {imageR1, imageL1, imageIR1, imageIL1, imageR2, imageL2, imageIR2, imageIL2, arrow, go_arrow, numbers, background, platform} from './image_src.js';
 import {tag_game_info, setTagGameInfo} from '../ta/script.js'
-import {get_localstorage} from '../../auth.js'
+import {get_localstorage, check_access_token} from '../../auth.js'
 
 var api = "https://127.0.0.1:9004/api/";
 var api_tag = "https://127.0.0.1:9007/api/tag-gamedb/"
 
 async function fetchUserName() {
+    await check_access_token()
       try {
         const userResponse = await fetch(api + 'auth/get-user/', {
           method: 'GET',
@@ -99,6 +100,7 @@ async function start_game()
 
     async function game_score(winner)
     {
+        await check_access_token()
         let winner_id
         if (winner === tag_game_info.player1name)
             winner_id =  tag_game_info.player1_id
@@ -204,7 +206,7 @@ async function start_game()
     }
 
     resizeWindow()
-    animation()
+    await animation()
 
     function delay(ms) {
         return new Promise(resolve => setTimeout(resolve, ms));
@@ -219,7 +221,7 @@ async function start_game()
 
                 if (player.imageIdlR.includes(player.image))
                     player.image = player.imageIdlR[i]
-                else 
+                else if (player.imageIdlL.includes(player.image))
                     player.image = player.imageIdlL[i]
 
                 c.clearRect(0, 0, canvas.width, canvas.height)
@@ -231,7 +233,7 @@ async function start_game()
 
     const blinK = setInterval(blink, 2000)
 
-    function animation()
+    async function animation()
     {
         if (socket.readyState === WebSocket.OPEN)
         {
@@ -260,7 +262,7 @@ async function start_game()
                     load_draw(arrow, player.position.x + player.width/4, player.position.y - player.height, player.width/2, player.height/2)
             }
         })
-        rain();
+        await rain();
         draw_timer(time, players[0])
         if (time === 0 && socket.readyState === WebSocket.OPEN)
         {
@@ -336,10 +338,10 @@ async function start_game()
             if (imageL1 === players[0].image && socket_data.leftPressed0 === false)
                 players[0].image = players[0].imageIdlL[2]
 
-            if (imageR1 === players[0].image && socket_data.rightPressed0 === false)
+            else if (imageR1 === players[0].image && socket_data.rightPressed0 === false)
                 players[0].image = players[0].imageIdlR[2]
 
-            if (socket_data.rightPressed0)
+            else if (socket_data.rightPressed0)
                 players[0].image = players[0].imageR
             
             else if (socket_data.leftPressed0)
@@ -348,15 +350,14 @@ async function start_game()
             if (imageL2 === players[1].image && socket_data.leftPressed1 === false)
                 players[1].image = players[1].imageIdlL[2]
 
-            if (imageR2 === players[1].image && socket_data.rightPressed1 === false)
+            else if (imageR2 === players[1].image && socket_data.rightPressed1 === false)
                 players[1].image = players[1].imageIdlR[2]
 
-            if (socket_data.rightPressed1)
+            else if (socket_data.rightPressed1)
                 players[1].image = players[1].imageR
             
             else if (socket_data.leftPressed1)
                 players[1].image = players[1].imageL
-
         }
     }
 
@@ -471,7 +472,7 @@ async function start_game()
         event.preventDefault() // This triggers the alert
     }
 
-    function disconnect()
+    async function disconnect()
     {
         if (window.location.hash === "#/remoteTag")
         {
@@ -482,7 +483,7 @@ async function start_game()
             overlay.textContent = winner + ' wins'    
         }
         if (winner)
-            game_score(winner)
+            await game_score(winner)
         winner = null
         setTagGameInfo(null)
         reload_data()

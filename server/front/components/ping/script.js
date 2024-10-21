@@ -163,6 +163,7 @@ async function check_tournament_finish() {
         'Session-ID': get_localstorage('session_id')
       },
       credentials: 'include',
+      body: JSON.stringify(participants)
     });
     console.log(response);
 
