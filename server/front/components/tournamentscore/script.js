@@ -6,16 +6,16 @@ let tournament = "https://127.0.0.1:9008/api/tournament/";
 var api = "https://127.0.0.1:9004/api/";
 
 async function TournamentScore() {
-  const html = await loadHTML('./components/tournamentscore/index.html');
-  loadCSS('./components/tournamentscore/style.css');
-  const app = document.getElementById('app');
-  app.innerHTML = html;
-  console.log("******************************************** ")
   if (!id_of_tournament){
     console.log("ksdfjksjdkfjksdjfkldjslfkj")
     window.location.hash = "/profile";
     return;
   }
+  const html = await loadHTML('./components/tournamentscore/index.html');
+  loadCSS('./components/tournamentscore/style.css');
+  const app = document.getElementById('app');
+  app.innerHTML = html;
+  console.log("******************************************** ")
   setHeaderContent();
   setNaveBarContent();
   await checkFirst();
@@ -42,6 +42,7 @@ async function get_history_by_id() {
   // const data = JSON.parse(participant);
   const urlEncodedData = new URLSearchParams(participant);
   try {
+    console.log('this is the token -------> ', get_localstorage('token'))
     const response = await fetch(tournament + 'get-tournament-by-id/', {
       method: 'POST',
       headers: {
@@ -278,7 +279,8 @@ async function changeAccess() {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + get_localstorage('token')
+          'Authorization': 'Bearer ' + get_localstorage('token'),
+          'Session-ID': get_localstorage('session_id')
         },
         credentials: 'include',
       });

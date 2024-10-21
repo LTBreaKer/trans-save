@@ -1,30 +1,39 @@
+
+@font-face {
+    font-family: 'Volax';
+    src: url('../../../components/assets/Valorax-lg25V.otf') format('opentype');
+    font-weight: bold;
+    font-style: italic;
+}
+
 .p_box_result {
 	position:absolute;
 	z-index: 100;
 	display: flex;
 	margin-top: calc((((99vh - min(99vw, 99vh)) * 0.1)));
 	margin-left: calc((((99vw - min(99vw, 99vh)) / 2)));
-	width: calc(( min(99vw, 99vh) - 100px));
+	width: calc(( min(99vw, 99vh)));
 	/* min-width: 350px; */
 }
 
 .p_container {
 	position: relative;
-	width: calc(100vw - 100px);
-	height: calc(100vh - 100px);
+	width: calc(100vw);
+	height: calc(100vh);
 }
 
 .p_canvas_background {
 	position: absolute;
 	color: rgba(0, 0, 0, 1);
 	z-index: 0;
-	width: calc(100vw - 100px);
-	height: calc(100vh - 100px);
+	width: calc(100vw);
+	height: calc(100vh);
 	display: flex;
 }
 
 .p_first {
 	/* width: 360px; */
+	font-family: 'Volax', sans-serif;
 	text-align: left;
 	/* color: white; */
 	/* color: rgb(45, 204, 45); */
@@ -32,11 +41,24 @@
 	text-shadow: 1px 1px rgb(255, 255, 255, 0.8);
 	padding-top: 60px;
 	padding-left: 50px;
-	font-size: 60px;
+	font-size: 30px;
+    padding-right: 10px;
+	display: flex;
+    flex-direction: row;
+	justify-content: space-between;
+}
+
+.double_point {
+	font-family: 'Volax', sans-serif;
+	color: #11698C;
+	display: flex;
+	padding-top: 51.06px;
+	font-size: 30px;
 }
 
 .p_second {
 	/* width: 360px; */
+	font-family: 'Volax', sans-serif;
 	text-align: right;
 	/* color: white; */
 	/* color: rgb(204, 45, 45); */
@@ -44,7 +66,11 @@
 	text-shadow: 1px 1px rgb(255, 255, 255, 0.8);
 	padding-top: 60px;
 	padding-right: 50px;
-	font-size: 60px;
+	font-size: 30px;
+    padding-left: 10px;
+	display: flex;
+    flex-direction: row;
+	justify-content: space-between;
 }
 
 #c {
@@ -56,18 +82,19 @@
 	z-index: 1;
 	padding: 0px;
 	margin: 0px;
-	margin-top: calc(((99vh - min(99vw, 99vh)) * 0.1) - 100px / 2);
-	margin-left: calc(((99vw - min(99vw, 99vh)) / 2) - 100px / 2);
+	margin-top: calc(((99vh - min(99vw, 99vh)) * 0.1));
+	margin-left: calc(((99vw - min(99vw, 99vh)) / 2));
 	margin-bottom: 1%;
 	padding-left: -4rem;
 }
 
 .p_background_descounter {
-	display: 'none';
+	/* display: 'none'; */
+	display: 'flex';
 	position: absolute;
 	z-index: 100;
-	width: calc(100vw - 100px);
-	height: calc(100vh - 100px);
+	width: calc(100vw);
+	height: calc(100vh);
 	background-color: rgba(0,0,0,0.6);
     align-items: center;
     justify-content: center;
@@ -76,20 +103,25 @@
 .p_descounter {
 	color:white;
 	/* width: calc(100vw - 100px); */
-	font-size: 120px;
+	font-size: 26px;
 }
 
 .p_popup_replay {
-    display: none;
+	font-family: 'Volax', sans-serif;
+	display: flex;
     position: absolute;
+    top: 0;
+    left: 0;
     z-index: 2;
-    width: calc(100vw - 100px);
-    height: calc(100vh - 100px);
-    background-color: rgba(0, 0, 0, 0.6);
-    flex-direction: column;
-    align-items: center;
-    /* justify-items: center; */
+    width: calc(100vw);
+    height: calc(100vh);
+    color: #d6ddd5;
+    flex-direction: column; /* Stack children vertically */
     justify-content: center;
+    align-items: center;
+    font-size: 5vw;
+    background-color: rgba(0, 0, 0, 0.6);
+    text-shadow: 2vw 0vw 8vw rgba(0, 0, 0, 0.8);    
 }
 
 .p_ptn_replay{

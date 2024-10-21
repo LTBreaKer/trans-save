@@ -1,5 +1,6 @@
 import { loadHTML, loadCSS, player_webSocket} from '../../utils.js';
-import { log_out_func ,login , logoutf, get_localstorage, getCookie } from '../../auth.js';
+import { log_out_func ,login , logoutf, get_localstorage, getCookie, check_access_token } from '../../auth.js';
+import { assingDataToGameData, statePongGameToTournament } from '../ping/script.js';
 // import {tournament} from '../ping/script.js';
 let tournament = "https://127.0.0.1:9008/api/tournament/";
 
@@ -38,7 +39,9 @@ async function Tournament() {
       if (tournament_data[i].status === "upcoming") {
         await start_tournament_match(tournament_data[i]);
         tournament_match_data = tournament_data[i];
-        window.location.hash = '/tournamentScore';
+        assingDataToGameData(tournament_match_data);
+        statePongGameToTournament();
+        window.location.hash = '/pingpong';
         return;
       }
       i++;

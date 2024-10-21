@@ -1,24 +1,47 @@
 import * as THREE from 'three';
-import { TABLE_DEPTH, TABLE_WIDTH } from '../utils/globaleVariable.js';
+import { RectAreaLightHelper } from 'three/addons/helpers/RectAreaLightHelper.js';
+import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
+import { TABLE_DEPTH, TABLE_HEIGHT, TABLE_WIDTH } from '../utils/globaleVariable.js';
 
 let light1, light2, light3, light4;
 
-export function initLight() {
-    light1 = new THREE.DirectionalLight( 0xffffff, 1);
-    light1.position.set( TABLE_WIDTH/2, TABLE_WIDTH/2, 5);
-    light1.castShadow = true;
-    light2 = new THREE.DirectionalLight( 0xffffff, 1);
-    light2.position.set( -TABLE_WIDTH/2, -TABLE_WIDTH/2, 5);
-    light2.castShadow = true;
-    light3 = new THREE.DirectionalLight( 0xffffff, 1);
-    light3.position.set( -TABLE_WIDTH/2, TABLE_WIDTH/2, 5);
-    light3.castShadow = true;
-    light4 = new THREE.DirectionalLight( 0xffffff, 1);
-    light4.position.set( TABLE_WIDTH/2, -TABLE_WIDTH/2, 5);
-    light4.castShadow = true;
-}
-// const light = new THREE.DirectionalLight( 0xffffff, 8 );
-// light.position.set( 0, 1, 4);
-// light.castShadow = true;
+let light, light_1, light_2;
 
-export { light1, light2 , light3, light4};
+function makeXYZGUI( gui, vector3, name, onChangeFn ) {
+
+    const folder = gui.addFolder( name );
+    folder.add( vector3, 'x', - 10, 10 ).onChange( onChangeFn );
+    folder.add( vector3, 'y', 0, 10 ).onChange( onChangeFn );
+    folder.add( vector3, 'z', - 10, 10 ).onChange( onChangeFn );
+    folder.open();
+
+}
+
+export function initLight() {
+    light1 = new THREE.DirectionalLight( 0x80c0d2, 0.4);
+    light1.position.set( TABLE_WIDTH/4, TABLE_WIDTH/4, 5);
+    light1.castShadow = true;
+    light2 = new THREE.DirectionalLight( 0x80c0d2, 0.4);
+    light2.position.set( -TABLE_WIDTH/4, -TABLE_WIDTH/4, 5);
+    light2.castShadow = true;
+    light3 = new THREE.DirectionalLight( 0x80c0d2, 0.4);
+    light3.position.set( -TABLE_WIDTH/4, TABLE_WIDTH/4, 5);
+    light3.castShadow = true;
+    light4 = new THREE.DirectionalLight( 0x80c0d2, 0.4);
+    light4.position.set( TABLE_WIDTH/4, -TABLE_WIDTH/4, 5);
+    light4.castShadow = true;
+
+    light = new THREE.RectAreaLight(0x80c0d2, 8, 4.74, 6.26);
+    light.position.z = 3.64;
+
+    light_1 = new THREE.RectAreaLight(0x80c0d2, 10, 0.11, 8.64);
+    light_1.position.x = 2.56;
+    light_1.position.z = 0.16;
+
+    light_2 = new THREE.RectAreaLight(0x80c0d2, 10, 0.11, 8.64);
+    light_2.position.x = -2.56;
+    light_2.position.z = 0.16;
+    
+}
+
+export { light1, light2 , light3, light4, light, light_1, light_2};
