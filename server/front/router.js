@@ -10,11 +10,16 @@ import Ta from './components/ta/script.js';
 import Ping from './components/ping/script.js';
 import Tournament from './components/tournament/script.js';
 import RemoteTag from './components/remote_tag/script.js';
+import TournamentScore from './components/tournamentscore/script.js';
+import {remove_tag_remote_game, remove_ping_remote_game} from './utils.js';
 
+var api_game = "https://127.0.0.1:9006/api/gamedb/";
+let game_api = 'https://127.0.0.1:9007/api/tag-gamedb/';
 
 const api_one = "https://127.0.0.1:9005/api/";
 let friends_array = [];
 let component;
+let path;
 const routes = {
   '/': Home,
   '/ta': Ta,
@@ -27,6 +32,7 @@ const routes = {
   '/ping': Ping,
   '/tournament': Tournament,
   '/remoteTag': RemoteTag,
+  '/tournamentScore': TournamentScore,
 };
 
 async function Router() {
@@ -35,7 +41,21 @@ async function Router() {
     await check_access_token();
   }
   window.addEventListener('hashchange', async () => {
-    let path = window.location.hash.slice(1);
+    if (path && path === '/ta' || path === '/ping') {
+      if (path === '/ta') {
+        await remove_tag_remote_game();
+      }
+
+      else if (path === '/ping') {    
+        await remove_ping_remote_game();
+      }
+
+    }
+
+
+    
+      console.log("here componenet to show up what the befor=>: ", path)
+     path = window.location.hash.slice(1);
     console.log("path===>: ", path);
     if (path === '')
         path = '/';
@@ -94,6 +114,7 @@ async function get_friends_list() {
     headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer ' + get_localstorage('token'),
+      'Session-ID': get_localstorage('session_id')
     },
     credentials: 'include',
   });

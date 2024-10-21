@@ -2,6 +2,7 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 import json
 from .helpers import check_auth, get_user
 from asgiref.sync import sync_to_async
+import sys
 # from base.models import OnlineStatus, UserProfile
 
 class OnlineStatusConsumer(AsyncWebsocketConsumer):
@@ -9,14 +10,17 @@ class OnlineStatusConsumer(AsyncWebsocketConsumer):
         from base.models import UserProfile
         self.user_id = -1
         self.user_profile = None
-        token = self.scope.get('subprotocols')[1] if self.scope.get('subprotocols') and len(self.scope.get('subprotocols')) > 1 else None
-        if not token:
+        subprotocols = self.scope.get('subprotocols')
+        print("subprotocols", subprotocols, file=sys.stderr)
+        token = subprotocols[1] if subprotocols and len(subprotocols) > 1 else None
+        session_id = subprotocols[3] if subprotocols and len(subprotocols) > 3 else None
+        if not token or not session_id:
             await self.close(code=4000)
             return
         
         auth_header = f"Bearer {token}"
 
-        response = await sync_to_async(check_auth)(auth_header)
+        response = await sync_to_async(check_auth)(auth_header, session_id)
         
         
         if response.status_code == 200:
@@ -74,14 +78,16 @@ class FriendRequestConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         from base.models import FriendRequest
         self.user_id = -1
-        token = self.scope.get('subprotocols')[1] if self.scope.get('subprotocols') and len(self.scope.get('subprotocols')) > 1 else None
-        if not token:
+        subprotocols = self.scope.get('subprotocols')
+        token = subprotocols[1] if subprotocols and len(subprotocols) > 1 else None
+        session_id = subprotocols[3] if subprotocols and len(subprotocols) > 3 else None
+        if not token or not session_id:
             await self.close(code=4000)
             return
         
         auth_header = f"Bearer {token}"
 
-        response = await sync_to_async(check_auth)(auth_header)
+        response = await sync_to_async(check_auth)(auth_header, session_id)
         
         
         if response.status_code == 200:
@@ -96,7 +102,7 @@ class FriendRequestConsumer(AsyncWebsocketConsumer):
             friend_requests = await sync_to_async(lambda: list(FriendRequest.objects.filter(to_user_id=self.user_id)))()
 
             for friend_request in friend_requests:
-                response = await sync_to_async(get_user)(user_id=friend_request.from_user_id, auth_header=auth_header)
+                response = await sync_to_async(get_user)(user_id=friend_request.from_user_id, auth_header=auth_header, session_id=session_id)
                 from_user_data = await sync_to_async(response.json)()
                 print(from_user_data, "")
                 await self.channel_layer.group_send(
@@ -128,6 +134,14 @@ class FriendRequestConsumer(AsyncWebsocketConsumer):
         await self.send(text_data=json.dumps({
             'type': 'friend_request',
             'friend_request': friend_request_data
+        }))
+    
+    async def accepted_friend_request(self, event):
+        user_data = event['user_data']
+
+        await self.send(text_data=json.dumps({
+            'type': 'friend_request_accepted',
+            'user_data': user_data,
         }))
     # async def send_data(self):
     #     scope_data = self.prepare_scope_data()

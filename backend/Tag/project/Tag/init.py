@@ -23,16 +23,17 @@ class gameMonitor:
             Platform(1245, 400, 135),
             Platform(0, 472, 359),
             Platform(636, 480, 180),
-            Platform(1520, 560, 100),
+            Platform(1420, 570, 100),
 
-            Platform(1070, 675, 245),
             Platform(545, 700, 351),
+            Platform(1070, 720, 245),
             Platform(0, 800, 300),
-            Platform(1200, 840, 275),
 
             Platform(0, 935, 375),
             Platform(375, 935, 375),
-            Platform(750, 935, 377),
+            Platform(750, 935, 375),
+            Platform(1125, 935, 375),
+            Platform(1500, 935, 377),
         ]
         
         self.canvas_width = 0
@@ -54,13 +55,13 @@ class gameMonitor:
                 if self.esc:
                     if esc_time == 0:
                         esc_time = time.time()
-                    await asyncio.sleep(0.005)
+                    await asyncio.sleep(0.05)
                     continue
                 if esc_time:
                     start_time += time.time() - esc_time
                     esc_time = 0
                 if self.game_time > 0:
-                    self.game_time = math.floor(9 - time.time() + start_time)
+                    self.game_time = math.floor(99 - time.time() + start_time)
                 if self.game_time == 0:
                     if not self.players[0].tagger:
                         self.winner = self.players[0].name

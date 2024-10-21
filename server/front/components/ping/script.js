@@ -1,4 +1,4 @@
-import { loadHTML, loadCSS } from '../../utils.js';
+import { loadHTML, loadCSS, remove_ping_remote_game } from '../../utils.js';
 import { login ,log_out_func, logoutf, get_localstorage, getCookie } from '../../auth.js';
 var api = "https://127.0.0.1:9004/api/";
 var api_game = "https://127.0.0.1:9006/api/gamedb/";
@@ -6,9 +6,14 @@ let game_socket = "wss://127.0.0.1:9006/ws/game-db/"
 // https://{{ip}}:9008/api/tournament/create-tournament/
 let tournament = "https://127.0.0.1:9008/api/tournament/"
 let name = "";
+let check_remote = 0;
 let tournament_data;
 var remote_object;
 async function Ping() {
+  window.onload = async function() {
+    await remove_ping_remote_game();
+  };
+
   const html = await loadHTML('./components/ping/index.html');
   loadCSS('./components/ping/style.css');
 
@@ -19,13 +24,51 @@ async function Ping() {
 
   const local_butt_game = document.getElementById('local_butt_game');
   const remote_butt_game = document.getElementById('butt_game');
+  const cancel_game_func = document.getElementById('cancel_game');
+  const logout = document.getElementById('logout')
+  
+  logout.addEventListener('click', log_out_func);
+
+  cancel_game_func.addEventListener('click', async () => {
+    await remove_ping_remote_game();
+  })
 
 
 
   const input = document.getElementById('input');
   name = input.value; 
   local_butt_game.addEventListener('click', localgame);
-  remote_butt_game.addEventListener('click', remore_game_fun);
+  remote_butt_game.addEventListener('click', async () => {
+    try {
+      const response = await fetch(api_game + 'create-remote-game/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + get_localstorage('token'),
+          'Session-ID': get_localstorage('session_id')
+        },
+        credentials: 'include',
+      });
+      console.log(response);
+      const jsonData = await response.json();
+      if (jsonData.message === "waiting for second player to join") {
+        document.querySelector('#cancel_game').style.display = 'flex';
+        document.querySelector('#butt_game').style.display = 'none';
+        document.querySelector('.spinner').style.display = 'flex';
+      }
+
+      console.log(jsonData);
+  
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      // await login(jsonData.access, jsonData.refresh);
+      
+    } catch (error) {
+      console.error('There was a problem with the fetch operation:', error);
+    }
+  
+  });
   gmaee();
 
 
@@ -35,7 +78,9 @@ async function Ping() {
   const tournament_players = document.querySelector('.tournament_players');
   const tournament_close = document.querySelector('.bi-x');
 
-  start_tournament.addEventListener('click', () => {
+  start_tournament.addEventListener('click', async () => {
+    console.log("hello wa9ila khasoo yji hnaaa");
+    await check_tournament_finish();
     tournament_players.style.display = 'flex';
   })
 
@@ -81,6 +126,41 @@ tournament_star.addEventListener('click', async () => {
 
 
 
+// here i will check if there is a tournament that are still not finished
+
+async function check_tournament_finish() {
+  try {
+    const response = await fetch(tournament + 'check-tournament/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + get_localstorage('token'),
+        'Session-ID': get_localstorage('session_id')
+      },
+      credentials: 'include',
+      body: JSON.stringify(participants)
+    });
+    console.log(response);
+
+    const jsonData = await response.json();
+    console.log("here is messae: ", jsonData.message)
+    console.log("here are checked if there is any tournament or no ==>   ", jsonData);
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    if (jsonData.message === "tournament unfinished"){
+      window.location.hash = "/tournament";
+
+    }
+    // await login(jsonData.access, jsonData.refresh);
+    
+  } catch (error) {
+    console.error('There was a problem with the fetch operation:', error);
+  }
+
+}
+
+
 
 async function create_tournament_function(participants) {
   console.log("=====================================================");
@@ -90,6 +170,7 @@ async function create_tournament_function(participants) {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + get_localstorage('token'),
+        'Session-ID': get_localstorage('session_id')
       },
       credentials: 'include',
       body: JSON.stringify(participants)
@@ -97,11 +178,6 @@ async function create_tournament_function(participants) {
     console.log(response);
     const jsonData = await response.json();
     console.log(jsonData);
-    console.log(jsonData.tournament_matches[0])
-    console.log(jsonData.tournament_matches[1])
-    console.log(jsonData.tournament_matches[2])
-    console.log(jsonData.tournament_matches[3])
-
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
@@ -117,10 +193,10 @@ async function create_tournament_function(participants) {
 }
 
 
-export {tournament_data};
+export {tournament_data, tournament};
 
 function gmaee() {
-  const subprotocols = ['token', get_localstorage('token')];
+  const subprotocols = ['token', get_localstorage('token'), 'session_id', get_localstorage('session_id')];
 
 
   const socket = new WebSocket(game_socket, subprotocols);
@@ -159,6 +235,7 @@ async function remore_game_fun() {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + get_localstorage('token'),
+        'Session-ID': get_localstorage('session_id')
       },
       credentials: 'include',
     });
@@ -194,6 +271,7 @@ async function localgame() {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + get_localstorage('token'),
+        'Session-ID': get_localstorage('session_id')
       },
       credentials: 'include',
       body: JSON.stringify(data)
@@ -231,7 +309,7 @@ async function changeAccess() {
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
-      await login(jsonData.access, jsonData.refresh);
+      login(jsonData.access, jsonData.refresh, get_localstorage('session_id'));
       
     } catch (error) {
       console.error('There was a problem with the fetch operation:', error);
@@ -274,10 +352,16 @@ async function changeAccess() {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + get_localstorage('token')
+          'Authorization': 'Bearer ' + get_localstorage('token'),
+          'Session-ID': get_localstorage('session_id')
         },
         credentials: 'include',
       });
+
+      if (userResponse.status === 404) {
+        logoutf();
+        window.location.hash = '/login';
+      }
       
       if (!userResponse.ok) {
         throw new Error('Network response was not ok');

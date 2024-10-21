@@ -432,7 +432,33 @@ display: none;
   }
 
   
-  
+  /* anomation on remote game  */ 
+.spinner {
+  display: none;
+  background-image: linear-gradient(rgb(186, 66, 255) 35%,rgb(0, 225, 255));
+  width: 70px;
+  height: 70px;
+  animation: spinning82341 1.7s linear infinite;
+  text-align: center;
+  border-radius: 50px;
+  filter: blur(1px);
+  box-shadow: 0px -5px 20px 0px rgb(186, 66, 255), 0px 5px 20px 0px rgb(0, 225, 255);
+}
+
+.spinner1 {
+  background-color: rgb(36, 36, 36);
+  width: 70px;
+  height: 70px;
+  border-radius: 50px;
+  filter: blur(10px);
+}
+
+@keyframes spinning82341 {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
   #local_game  .input {
     width: 200px;
     height: 40px;
@@ -447,8 +473,15 @@ display: none;
     font-size: 13.4px;
   }
   
-  
-  .mer_cont #butt_game {
+  #cancel_game {
+    padding: 11px;
+    display: none;
+    background-color: black;
+    border-radius: 15px;
+    cursor: pointer;
+  }
+
+   #butt_game {
     padding: 11px;
     background-color: black;
     border-radius: 15px;
@@ -462,15 +495,15 @@ display: none;
     cursor: pointer;
   }
 
-  
+/*   
   .mer_cont .discription_game {
-    /* width: 100%;
+    width: 100%;
     display: flex;
     padding: 15px;
     justify-content: center; */
   }
-  
-  .mer_cont .discription_game .text {
+   */
+  /* .mer_cont .discription_game .text { */
     /* background-color: rgba(25, 26, 29, 0.9);
     padding: 15px;
     width: 55%;
@@ -490,7 +523,7 @@ display: none;
     font-weight: 400;
     font-style: italic; */
       /* text-rendering: auto; */
-  }
+  /* } */
   
 
    /*  ======= ====== ====== ======= ======= ====== ======= ======= */

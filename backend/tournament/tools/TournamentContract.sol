@@ -14,7 +14,9 @@ contract TournamentContract {
         uint256 tournamentId;
         uint256 matchNumber;
         uint256 playerOneId;
+        string playerOneName;
         uint256 playerTwoId;
+        string playerTwoName;
         uint256 playerOneScore;
         uint256 playerTwoScore;
         uint256 winnerId;
@@ -47,8 +49,10 @@ contract TournamentContract {
             returnMatches[i / 2] = Match(
                 tournamentId,
                 i / 2 + 1,
-                participants[oldNumberOfParticipants++].id,
-                participants[oldNumberOfParticipants++].id,
+                participants[oldNumberOfParticipants].id,
+                participants[oldNumberOfParticipants++].username,
+                participants[oldNumberOfParticipants].id,
+                participants[oldNumberOfParticipants++].username,
                 0,
                 0,
                 0,
@@ -57,6 +61,87 @@ contract TournamentContract {
                 );
             matches.push(returnMatches[i / 2]);
         }
+    }
+
+    function getTournamentHistory(uint256 _creatorId) public view returns (Match[] memory _matches) {
+
+        uint256 matchCount = 0;
+        for (uint256 i = 0; i < tournaments.length; i++) {
+            if (tournaments[i].creatorId == _creatorId) {
+                for (uint256 j = 0; j < matches.length; j++) {
+                    if (matches[j].tournamentId == tournaments[i].id) {
+                        if (keccak256(abi.encodePacked(matches[j].stage)) == keccak256(abi.encodePacked('1/1'))){
+                            if (keccak256(abi.encodePacked(matches[j].status)) == keccak256(abi.encodePacked('complete'))){
+                                matchCount++;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        Match[] memory returnMatches = new Match[](matchCount);
+        uint256 returnindex = 0;
+
+        for (uint256 i = 0; i < tournaments.length; i++) {
+            if (tournaments[i].creatorId == _creatorId) {
+                for (uint256 j = 0; j < matches.length; j++) {
+                    if (matches[j].tournamentId == tournaments[i].id) {
+                        if (keccak256(abi.encodePacked(matches[j].stage)) == keccak256(abi.encodePacked('1/1'))){
+                            if (keccak256(abi.encodePacked(matches[j].status)) == keccak256(abi.encodePacked('complete'))){
+                                returnMatches[returnindex++] = matches[j];
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return returnMatches;
+    }
+
+
+
+
+    function getLatestTournament(uint256 _creatorId) public view returns (Match[] memory _matches){
+        uint256 tournamentId;
+
+        require(tournaments.length > 0, "there are zero tournaments");
+
+        for (uint256 i = tournaments.length - 1; i >= 0; i--) {
+            if (tournaments[i].creatorId == _creatorId) {
+                tournamentId = tournaments[i].id;
+                break;
+            }
+        }
+
+        uint count = 0;
+        for (uint256 i = 0; i < matches.length; i++) {
+            if (matches[i].tournamentId == tournamentId) {
+                count++;
+            }
+        }
+
+        Match[] memory returnMatches =  new Match[](count);
+
+        uint index = 0;
+        for (uint256 i = 0; i < matches.length; i++) {
+            if (matches[i].tournamentId == tournamentId) {
+                returnMatches[index++] = Match({
+                    tournamentId: matches[i].tournamentId,
+                    matchNumber: matches[i].matchNumber,
+                    playerOneId: matches[i].playerOneId,
+                    playerOneName: matches[i].playerOneName,
+                    playerTwoId: matches[i].playerTwoId,
+                    playerTwoName: matches[i].playerTwoName,
+                    playerOneScore: matches[i].playerOneScore,
+                    playerTwoScore: matches[i].playerTwoScore,
+                    winnerId: matches[i].winnerId,
+                    status: matches[i].status,
+                    stage: matches[i].stage
+                });
+            }
+        }
+        return (returnMatches);
     }
 
     function    getTournamentMatches(uint256 _tournamentId) public view returns (Match[] memory _matches) {
@@ -80,7 +165,9 @@ contract TournamentContract {
                     tournamentId: matches[i].tournamentId,
                     matchNumber: matches[i].matchNumber,
                     playerOneId: matches[i].playerOneId,
+                    playerOneName: matches[i].playerOneName,
                     playerTwoId: matches[i].playerTwoId,
+                    playerTwoName: matches[i].playerTwoName,
                     playerOneScore: matches[i].playerOneScore,
                     playerTwoScore: matches[i].playerTwoScore,
                     winnerId: matches[i].winnerId,
@@ -141,7 +228,9 @@ contract TournamentContract {
                     tournamentId: matches[i].tournamentId,
                     matchNumber: matches[i].matchNumber,
                     playerOneId: matches[i].playerOneId,
+                    playerOneName: matches[i].playerOneName,
                     playerTwoId: matches[i].playerTwoId,
+                    playerTwoName: matches[i].playerTwoName,
                     playerOneScore: matches[i].playerOneScore,
                     playerTwoScore: matches[i].playerTwoScore,
                     winnerId: matches[i].winnerId,
@@ -155,11 +244,25 @@ contract TournamentContract {
             correct = true;
             Match[] memory nextStage = new Match[](completedMatchesNumber / 2);
             for (uint256 i = 0; i < completedMatchesNumber; i += 2) {
+                string memory playerOneName = "";
+                string memory playerTwoName = "";
+
+                if (completedMatches[i].winnerId == completedMatches[i].playerOneId)
+                    playerOneName = completedMatches[i].playerOneName;
+                else
+                    playerOneName = completedMatches[i].playerTwoName;
+
+                if (completedMatches[i + 1].winnerId == completedMatches[i + 1].playerOneId)
+                    playerTwoName = completedMatches[i + 1].playerOneName;
+                else
+                    playerTwoName = completedMatches[i + 1].playerTwoName;
                 nextStage[i / 2] = Match({
                     tournamentId: completedMatches[i].tournamentId,
                     matchNumber: matchNumber++,
                     playerOneId: completedMatches[i].winnerId,
+                    playerOneName: playerOneName,
                     playerTwoId: completedMatches[i + 1].winnerId,
+                    playerTwoName: playerTwoName,
                     playerOneScore: 0,
                     playerTwoScore: 0,
                     winnerId: 0,
@@ -180,7 +283,9 @@ contract TournamentContract {
                         tournamentId: completedMatches[i].tournamentId,
                         matchNumber: completedMatches[i].matchNumber,
                         playerOneId: completedMatches[i].playerOneId,
+                        playerOneName: completedMatches[i].playerOneName,
                         playerTwoId: completedMatches[i].playerTwoId,
+                        playerTwoName: completedMatches[i].playerTwoName,
                         playerOneScore: completedMatches[i].playerOneScore,
                         playerTwoScore: completedMatches[i].playerTwoScore,
                         winnerId: completedMatches[i].winnerId,
@@ -189,11 +294,25 @@ contract TournamentContract {
                     });
                 }
             }
+            string memory playerOneName = "";
+            string memory playerTwoName = "";
+
+            if (tmp[0].winnerId == tmp[0].playerOneId)
+                playerOneName = tmp[0].playerOneName;
+            else
+                playerOneName = tmp[0].playerTwoName;
+
+            if (tmp[1].winnerId == tmp[1].playerOneId)
+                playerTwoName = tmp[1].playerOneName;
+            else
+                playerTwoName = tmp[1].playerTwoName;
             nextStage[0] = Match({
                 tournamentId: tmp[0].tournamentId,
                 matchNumber: matchNumber++,
                 playerOneId: tmp[0].winnerId,
+                playerOneName: playerOneName,
                 playerTwoId: tmp[1].winnerId,
+                playerTwoName: playerTwoName,
                 playerOneScore: 0,
                 playerTwoScore: 0,
                 winnerId: 0,
@@ -228,7 +347,9 @@ contract TournamentContract {
                     tournamentId: matches[i].tournamentId,
                     matchNumber: matches[i].matchNumber,
                     playerOneId: matches[i].playerOneId,
+                    playerOneName: matches[i].playerOneName,
                     playerTwoId: matches[i].playerTwoId,
+                    playerTwoName: matches[i].playerTwoName,
                     playerOneScore: matches[i].playerOneScore,
                     playerTwoScore: matches[i].playerTwoScore,
                     winnerId: matches[i].winnerId,
@@ -247,7 +368,9 @@ contract TournamentContract {
                         tournamentId: tournamentMatches[i].tournamentId,
                         matchNumber: tournamentMatches[i].matchNumber,
                         playerOneId: tournamentMatches[i].playerOneId,
+                        playerOneName: tournamentMatches[i].playerOneName,
                         playerTwoId: tournamentMatches[i].playerTwoId,
+                        playerTwoName: tournamentMatches[i].playerTwoName,
                         playerOneScore: tournamentMatches[i].playerOneScore,
                         playerTwoScore: tournamentMatches[i].playerTwoScore,
                         winnerId: tournamentMatches[i].winnerId,
@@ -267,7 +390,9 @@ contract TournamentContract {
                         tournamentId: tournamentMatches[i].tournamentId,
                         matchNumber: tournamentMatches[i].matchNumber,
                         playerOneId: tournamentMatches[i].playerOneId,
+                        playerOneName: tournamentMatches[i].playerOneName,
                         playerTwoId: tournamentMatches[i].playerTwoId,
+                        playerTwoName: tournamentMatches[i].playerTwoName,
                         playerOneScore: tournamentMatches[i].playerOneScore,
                         playerTwoScore: tournamentMatches[i].playerTwoScore,
                         winnerId: tournamentMatches[i].winnerId,

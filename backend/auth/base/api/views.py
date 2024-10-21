@@ -16,7 +16,7 @@ from django.conf import settings
 from django.core.files.base import ContentFile
 from django.core.files.storage import default_storage
 from django.utils import timezone
-from base.models import User
+from base.models import User, UserSession
 from urllib.parse import urlencode
 from .helpers import generate_otp, send_otp_email
 import requests
@@ -28,6 +28,7 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import string, random, datetime, mimetypes, magic
 from requests.exceptions import RequestException
+import uuid
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
@@ -38,17 +39,20 @@ def test_token(request):
     # print(r_token)
     return Response(status=200)
 
+
 class CustomTokenObtainPairView(TokenObtainPairView):
     def post(self, request: Request, *args, **kwargs) -> Response:
         try:
             # raise Exception
             user = User.objects.get(username=request.data.get('username'))
-            if user.is_authentication_completed:
-                return Response({'message': 'user already logged in'}, status=400)
+            # if user.is_authentication_completed:
+            #     return Response({'message': 'user already logged in'}, status=400)
             response = super().post(request, args, kwargs)
             user.is_online = True
             user.is_logged_out = False
             user.save()
+            session_id = uuid.uuid4()
+            user_session = UserSession.objects.create(user=user, session_id=session_id)
             
             #need to generate otp and send it to user email
             if user.twofa_active:
@@ -74,8 +78,9 @@ class CustomTokenObtainPairView(TokenObtainPairView):
                 send_otp_email(user.otp, user.email)
                 return Response({'message': 'Waiting for otp verification', 'token': response.data}, status=200)
             else:
-                user.is_authentication_completed = True
-                user.save()
+                user_session.is_authentication_completed = True
+                user_session.save()
+                response.data['session_id'] = session_id
                 return response
         except Exception as e:
             raise InvalidToken(str(e))
@@ -86,10 +91,17 @@ class LogoutView(TokenBlacklistView):
 
     def post(self, request: Request, *args, **kwargs):
         try:
-            super().post(request, args, kwargs)
+            session_id = request.headers.get('Session-ID')
+            if not session_id:
+                return Response({'message': 'session_id is required'}, status=400)
             user = request.user
+            try:
+                user_session = UserSession.objects.get(user=user, session_id=session_id)
+            except UserSession.DoesNotExist:
+                return Response({'message': 'user_session does not exist'}, status=404)
+            super().post(request, args, kwargs)
             user.is_online = False
-            user.is_authentication_completed = False
+            user_session.delete()
             user.is_logged_out = True
             user.save()
             return Response({'message': 'User logged out'}, status=200)
@@ -101,12 +113,18 @@ class LogoutView(TokenBlacklistView):
 @permission_classes([IsAuthenticated])
 def verifyOtpView(request, *args, **kwargs):
     user = request.user
-    if user.is_logged_out:
-        return Response({'message': 'user logged out'}, status=403)
+    session_id = request.headers.get('Session-ID')
+
+    try:
+        user_session = UserSession.objects.get(user=user, session_id=session_id)
+    except UserSession.DoesNotExist:
+        return Response({'message': 'user_session does not exist'}, status=404)
+    # if user.is_logged_out:
+    #     return Response({'message': 'user logged out'}, status=403)
     otp = request.data.get('otp')
     if not otp:
         return Response({'message': 'otp is required'}, statu=400)
-    if user.is_authentication_completed == True:
+    if user_session.is_authentication_completed == True:
         return Response({'message': 'user already authenticated'})
     if user.otp_expiry <= timezone.now():
         return Response({'message': 'otp expired'})
@@ -118,10 +136,11 @@ def verifyOtpView(request, *args, **kwargs):
         user.max_otp_try = 3
         user.otp_max_out = None
 
-        user.is_authentication_completed = True
+        user_session.is_authentication_completed = True
         user.is_online = True
 
         user.save()
+        user_session.save()
 
     return Response({'message': 'otp verified successfully'}, status=200)
 
@@ -168,9 +187,10 @@ def registerView(request, *args, **kwargs):
             data = {'message': str(e)}
             return Response(data=data, content_type='application/json', status=400)
         user.set_password(request.data.get('password'))
-        user.is_authentication_completed = True
         user.is_online = True
         user.save()
+        session_id = uuid.uuid4()
+        UserSession.objects.create(user=user, session_id=session_id, is_authentication_completed=True)
 
         refresh = RefreshToken.for_user(user)
 
@@ -204,7 +224,7 @@ def registerView(request, *args, **kwargs):
         # Handle the error appropriately
         # response_data = response.json()
         # print(response_data)
-        return Response(data={'message':'User created', 'token':token}, status=201)
+        return Response(data={'message':'User created', 'token':token, 'session_id':session_id}, status=201)
     else:
         data = {'message': serializer.errors}
         return Response(data=data, content_type='application/json', status=400)
@@ -306,6 +326,8 @@ def callback_42(request):
         # response.raise_for_status()  # Raise an exception for HTTP errors
     except RequestException as e:
         return Response({'message': str(e)}, status=500)
+    session_id = uuid.uuid4()
+    user_session = UserSession.objects.create(user=user, session_id=session_id)
     if user.twofa_active:
         if int(user.max_otp_try) == 0 and user.otp_max_out:
                 t = user.otp_max_out - timezone.now()
@@ -329,13 +351,15 @@ def callback_42(request):
         send_otp_email(user.otp, user.email)
         return Response({'message': 'Waiting for otp verification', 'token': token}, status=200)
     else:
-        user.is_authentication_completed = True
+        user_session.is_authentication_completed = True
         user.save()
-    return Response(data={'message': 'Login successful', 'token': token}, status=201)
+        user_session.save()
+    return Response(data={'message': 'Login successful', 'token': token, 'session_id':session_id}, status=201)
 
 @api_view(['POST'])
 def verify_token(request, *args, **kwargs):
     try:
+
         access_token = AccessToken(request.data.get('token'))
 
         user_id = access_token['user_id']
@@ -345,14 +369,19 @@ def verify_token(request, *args, **kwargs):
             return Response(data={'message': 'Token is Valid'})
         except User.DoesNotExist:
             return Response({'message': 'user does not exist'}, status=404)    
-    except (TokenError, InvalidToken) as e:
+    except Exception as e:
         return Response(data={'message': 'Invalid token'}, status=401)
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def get_user(request, *args, **kwargs):
     user = request.user
-    if not user.is_authentication_completed:
+    session_id = request.headers.get('Session-ID')
+    try:
+        user_session = UserSession.objects.get(user=user, session_id=session_id)
+    except UserSession.DoesNotExist:
+        return Response({'message': 'user_session does not exist'}, status=404)
+    if not user_session.is_authentication_completed:
         return Response({'message': 'User not authenticated properly'}, status=403)
     serializer = UserSerializer(user)
     data = {
@@ -365,7 +394,13 @@ def get_user(request, *args, **kwargs):
 @permission_classes([IsAuthenticated])
 def get_user_by_id(request, *args, **kwargs):
     user = request.user
-    if not user.is_authentication_completed:
+    session_id = request.headers.get('Session-ID')
+    try:
+        user_session = UserSession.objects.get(user=user, session_id=session_id)
+    except UserSession.DoesNotExist:
+        return Response({'message': 'user_session does not exist'}, status=404)
+    
+    if not user_session.is_authentication_completed:
         return Response({'message': 'User not authenticated properly'}, status=403)
     id = request.data.get('user_id')
     if not id:
@@ -385,7 +420,13 @@ def get_user_by_id(request, *args, **kwargs):
 @permission_classes([IsAuthenticated])
 def get_user_by_username(request):
     user = request.user
-    if not user.is_authentication_completed:
+    session_id = request.headers.get('Session-ID')
+    try:
+        user_session = UserSession.objects.get(user=user, session_id=session_id)
+    except UserSession.DoesNotExist:
+        return Response({'message': 'user_session does not exist'}, status=404)
+        
+    if not user_session.is_authentication_completed:
         return Response({'message': 'User not authenticated properly'}, status=403)
     
     username = request.data.get('username')
@@ -407,6 +448,14 @@ def get_user_by_username(request):
 @permission_classes([IsAuthenticated])
 def update_user(request, *args, **kwargs):
     user = request.user
+    session_id = request.headers.get('Session-ID')
+    try:
+        user_session = UserSession.objects.get(user=user, session_id=session_id)
+    except UserSession.DoesNotExist:
+        return Response({'message': 'user_session does not exist'}, status=404)
+        
+    if not user_session.is_authentication_completed:
+        return Response({'message': 'User not authenticated properly'}, status=403)
     # serializer = UserSerializer(data=request.data)
     # if not serializer.is_valid():
     #     return Response(data={'message': serializer.errors}, status=401)

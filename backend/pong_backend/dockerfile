@@ -19,6 +19,10 @@ RUN python -m pip install -U 'channels[daphne]'
 RUN python -m pip install channels_redis
 RUN pip install --no-cache-dir pandas numpy tensorflow
 
+COPY ./tools/entrypoint.sh /entrypoint.sh
+# COPY ./tools/cert-key.pem /etc/ssl/private/cert-key.pem
+# COPY ./tools/cert.pem /etc/ssl/certs/cert.pem
+RUN chmod +x /entrypoint.sh
 
 EXPOSE 8006
 

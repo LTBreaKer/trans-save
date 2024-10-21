@@ -1,5 +1,6 @@
 import { loadHTML, loadCSS } from '../../utils.js';
 import {start_game} from './tag.js';
+import {tag_game_info} from '../ta/script.js'
 let socket;
 
 async function Game() {
@@ -9,6 +10,12 @@ async function Game() {
 
   const app = document.getElementById('app');
   app.innerHTML = html;
+  if (!tag_game_info)
+  {
+    console.error("invalid players")
+    window.location.hash = '#/ta'
+    return
+  }
 
   function connectWebSocket(url)
   {
@@ -38,10 +45,10 @@ async function Game() {
         console.error('Failed to connect WebSocket:', error);
     }
   }
-  socket = await(initializeApp());
 
+  socket = await(initializeApp());
   if (socket.readyState === WebSocket.OPEN) 
-    start_game();
+    await start_game();
 }
 
 export{socket}
