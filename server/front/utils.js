@@ -62,7 +62,7 @@ export async function player_webSocket() {
       }
       else {
 
-        const isDuplicate = accumulatedNotifications.some(notification => notification.friend_request.id === newNotification.friend_request.id
+        const isDuplicate = accumulatedNotifications.some(notification => notification.friend_request.sender_data.id === newNotification.friend_request.sender_data.id
         );
         if (!isDuplicate)
           accumulatedNotifications.push(newNotification);
@@ -123,6 +123,9 @@ async function handleAccept(event) {
   await check_access_token();
   const notificationDiv = event.target.closest('.send_request');
   const notificationId = event.target.getAttribute('data-id');
+  console.log("here is it:::::::  ", accumulatedNotifications)
+  // const newArray = accumulatedNotifications.filter(item => item.id !== idToRemove);
+
   console.log(`Declined notification with ID: ${notificationId}`);
   notificationDiv.remove(); 
 console.log(notificationId);
