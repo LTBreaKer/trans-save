@@ -262,7 +262,7 @@ async function get_tag_history() {
 }
 
 
-async function set_tag_history(friendList) {
+export async function set_tag_history(friendList) {
   let user1;
   let user2;
   if (!friendList) {

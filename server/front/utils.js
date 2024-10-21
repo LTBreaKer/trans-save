@@ -62,9 +62,9 @@ export async function player_webSocket() {
       }
       else {
 
-        const isDuplicate = accumulatedNotifications.some(notification => notification.friend_request.sender_data.id === newNotification.friend_request.sender_data.id
-        );
-        if (!isDuplicate)
+        // const isDuplicate = accumulatedNotifications.some(notification => notification.friend_request.id === newNotification.friend_request.id
+        // );
+        // if (!isDuplicate)
           accumulatedNotifications.push(newNotification);
         
         await displayNotifications(accumulatedNotifications);
@@ -123,9 +123,6 @@ async function handleAccept(event) {
   await check_access_token();
   const notificationDiv = event.target.closest('.send_request');
   const notificationId = event.target.getAttribute('data-id');
-  console.log("here is it:::::::  ", accumulatedNotifications)
-  // const newArray = accumulatedNotifications.filter(item => item.id !== idToRemove);
-
   console.log(`Declined notification with ID: ${notificationId}`);
   notificationDiv.remove(); 
 console.log(notificationId);
@@ -148,6 +145,10 @@ console.log(notificationId);
     console.log((`HTTP error! Status: ${response.status}`), Error);
   }
   const loca = window.location.hash;
+  for(let i = 0; i < accumulatedNotifications.length; i++) {
+    if (accumulatedNotifications[i].friend_request.id === notificationId) 
+      array.splice(i, 1);
+  }
   if (loca.startsWith('/user') || loca === '#/profile')
     await get_friends_home();
 }

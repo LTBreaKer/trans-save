@@ -1,5 +1,5 @@
 import { loadHTML, loadCSS,  remove_tag_remote_game} from '../../utils.js';
-import { login ,log_out_func, logoutf, get_localstorage, getCookie } from '../../auth.js';
+import { login ,log_out_func, logoutf, get_localstorage, getCookie, check_access_token } from '../../auth.js';
 import {setHeaderContent, setNaveBarContent} from '../tournament/script.js';
 
 // https://{{ip}}:9007:ws/tag-game-db/
