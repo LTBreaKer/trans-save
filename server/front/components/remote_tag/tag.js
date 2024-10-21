@@ -474,7 +474,7 @@ async function start_game()
 
     async function disconnect()
     {
-        if (window.location.hash === "#/remoteTag")
+        if (winner && window.location.hash === "#/remoteTag")
         {
             document.getElementById('overlay').style.visibility = 'visible';
             document.getElementById('overlay').style.textShadow = winner_color

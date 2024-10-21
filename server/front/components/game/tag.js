@@ -495,7 +495,6 @@ async function start_game()
 
     async function disconnect()
     {
-        console.log("socket disconnect")
         if (window.location.hash === "#/game")
         {
             pause_game()
@@ -512,7 +511,6 @@ async function start_game()
             winner = "unknown"
         await game_score(winner)
         winner = null
-        console.log("setTagGameInfo")
         setTagGameInfo(null)
         reload_data()
     }
