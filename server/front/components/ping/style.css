@@ -182,6 +182,14 @@ body {
   font-style: italic;
 }
 
+@font-face {
+  font-family: 'Hexen';
+  src: url('../assets/Hexenkoetel-qZRv1.ttf') format('truetype');
+  font-weight: bold;
+  font-style: italic;
+  
+}
+
 .ml_cover_logo {
   display: flex;
   height: 52px;
@@ -200,9 +208,21 @@ body {
 }
 .ml_body {
   display: flex;
+  height: calc(100vh - 60px);
 }
-
+.bg_top {
+  position: fixed;
+  top: 0;
+  left: 68px;
+  height: 57px;
+  width: -webkit-fill-available;
+  background: var(--body-color);
+  z-index: 2;
+}
 .ml_profile {
+  position: fixed;
+  top: 0;
+  left: 0;
   font-family: 'Volax', sans-serif;
   display: flex;
   height: fit-content;
@@ -210,6 +230,7 @@ body {
   justify-content: end;
   padding-right: 17px;
   margin-top: 4px;
+  z-index: 3;
 }
 
 .ml_notif {
@@ -239,8 +260,11 @@ body {
 /* ////// navbar ////// */
 .ml_navbar {
   display: flex;
+  position: fixed;
+  top: 0;
+  left: 0;
   flex-direction: column;
-  margin-top: -45px;
+  /* margin-top: -45px; */
 }
 
 .ml_cover_icon{
@@ -298,17 +322,27 @@ body {
   width: 100%;
   height: 100%;
   height: auto;
-  justify-content: space-evenly;
-  margin: 3px 0px 0px 0px;
+  justify-content: space-between;
+  margin: 60px 0px 0px 68px;;
 }
 
 .ml_bgcontent {
-  position: absolute;
+  position: fixed;
+  top: 54px;
   height: calc(100% - 55px - 25px - 6px);
   width: calc(100% - 68px - 8px);
-  object-fit: cover;
-  /* margin: 3px 0px 0px 0px; */
+  /* object-fit: cover; */
+  object-fit: fill;
+  margin: 3px 0px 0px 0px;
   z-index: 0;
+}
+
+.game_container {
+  z-index: 1;
+  display: flex;
+  justify-content: space-around;
+  flex-direction: column;
+  height: -webkit-fill-available;
 }
 
 .ml_rl_game {
@@ -338,8 +372,14 @@ body {
 
 .ml_local_game {
   font-family: 'Volax', sans-serif;
-  width: 290px;
-  height: fit-content;
+  /* width: 290px;
+  height: fit-content; */
+  height: calc((100vh - 175px) / 4);
+  width: calc((100vw - 70px) / 3.5);
+  max-width: 320px;
+  max-height: 250px;
+  min-height: 180px;
+  min-width: 225px;
   min-height: 150px;
   padding: 10px 15px 15px 15px;
   margin: 2px 2px 2px 2px;
@@ -355,7 +395,20 @@ body {
 }
 
 .ml_description_game {
+  /* width: 290px; */
+  height: fit-content;
+  /* min-height: 150px; */
+  padding: 10px 15px 15px 15px;
+  margin: 2px 22px 2px 22px;
   display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  background-color: rgba(25, 26, 29, 0.6);
+  color: #e8ebfb;
+  border-radius: 14px;
+  font-size: 20px;
+  font-family: "Hexen", sans-serif;
 }
 
 .ml_start_game {
@@ -432,8 +485,16 @@ display: none;
   cursor: pointer;
 }
 
+.ml_start_game:hover {
+  /* transform: rotate(15deg); */
+  /* transform: skew(10deg); */
+  /* transform: translate(0px , -10px); */
+  /* transform: rotate(15deg) translateْ(50px); */
+  transform: scale(1.1);
+}
+
 /* // =========================== here i will work with media =========================== */
-@media (min-width:518px) and (max-width: 623px) {
+/* @media (min-width:518px) and (max-width: 623px) {
   .ml_local_game {
     width: 219px;
   }
@@ -454,6 +515,15 @@ display: none;
   }
   .ml_local_game {
     width: 219px;
+  }
+} */
+
+@media screen and (max-width: 570px) {
+  .ml_rl_game {
+    flex-direction: column;
+  }
+  .ml_local_game {
+    width: calc((100vw - 70px) / 2);
   }
 }
 

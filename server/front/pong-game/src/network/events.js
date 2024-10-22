@@ -1,5 +1,5 @@
 
-import {canvas, click, TABLE_WIDTH, paddleHeight, height, box_result, first_player_goal, second_player_goal, counter, replay, popup_replay, pong_menu, loadDocument, sleep, back_counter, leftPaddle, paddle_way, first_player_name, second_player_name, p_second, p_first, loadReplayDocument, loadQuitDocument} from '../utils/globaleVariable.js';
+import {canvas, click, TABLE_WIDTH, paddleHeight, height, box_result, first_player_goal, second_player_goal, counter, replay, popup_replay, pong_menu, loadDocument, sleep, back_counter, leftPaddle, paddle_way, first_player_name, second_player_name, p_second, p_first, loadReplayDocument, loadQuitDocument, double_point} from '../utils/globaleVariable.js';
 // import { setPointerMouse, rotateTable, zoomCamera } from '../game/staduim.js'
 import { closeGameSocket, connectAI, connectLocalGameSocket, connectPaddleSocket, launchGame, startGame } from '../game/game.js';
 import {sendSocket} from '../game/game.js'
@@ -40,8 +40,9 @@ export function resizeCanvas(){
 	let padding_top =  canvas.clientWidth * 0.06;
 	let padding_left = canvas.clientWidth * 0.05;
 	p_first.style.paddingTop = padding_top + "px";
-	p_first.style.paddingLeft = padding_left + "px";
 	p_second.style.paddingTop = padding_top + "px";
+	double_point.style.paddingTop = padding_top + "px";
+	p_first.style.paddingLeft = padding_left + "px";
 	p_second.style.paddingRight = padding_left + "px";
 	console.log("--------- resize Canvas: ", canvas.style.height, " ", canvas.style.width);
 	moveCamera(statePongGame);
@@ -188,8 +189,8 @@ function initGame() {
 
 let replayGame = async () => {
 	await loadDocument();
-	resizeCanvas();
 	initGame();
+	resizeCanvas();
 	if (statePongGame == "remote"){
 		lancePongGame();
 		await connectPaddleSocket();
@@ -201,6 +202,7 @@ let replayGame = async () => {
 		await connectLocalGameSocket();
 		await descounter();
 	}
+	resizeCanvas();
 }
 
 let lanceGame = async () => {
