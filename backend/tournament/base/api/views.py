@@ -1,7 +1,7 @@
 from base.models import Tournament, TournamentParticipant, Match
 from base.serializers import TournamentSerializer, TournamentParticipantSerializer, MatchSrializer
 from rest_framework.decorators import api_view
-from .helpers import check_auth, get_user_info
+from .helpers import check_auth, get_user_info, get_user
 from rest_framework.response import Response
 import random
 import requests
@@ -97,7 +97,9 @@ def create_tournament(request):
             validator(participant)
         except ValidationError as e:
             return Response({'message': f"Invalid username {participant}: {e.message}"}, status=400)
+    owner_username = participants[0]
 
+    update_data_response = requests.put('https://server:9004/api/auth/update-user/', headers={'AUTHORIZATION': AUTH_HEADER, 'Session-ID': session_id}, json={'tournament_username': owner_username}, verify=False)
     random.shuffle(participants)
 
     create_tournament_tx_hash = contract.functions.createTournament(int(tournament_count), int(creator_id), participants).transact()
@@ -348,11 +350,50 @@ def get_tournament_history(request):
     return Response({'message': formatted_matches}, status=200)
 
 @api_view(['POST'])
+def get_tournament_history_bu_username(request):
+    w3 = request.w3
+    contract = request.contract
+
+    AUTH_HEADER = request.META.get('HTTP_AUTHORIZATION')
+    session_id = request.headers.get('Session-ID')
+    auth_check_response = check_auth(AUTH_HEADER, session_id)
+    if auth_check_response.status_code != 200:
+        return Response(data=auth_check_response.json(), status=auth_check_response.status_code)
+    
+    username = request.data.get('username')
+    if not username:
+        return Response({'message': 'username is required'}, status=400)
+    
+    user_response = get_user(username=username, auth_header=AUTH_HEADER, session_id=session_id)
+    if user_response.status_code != 200:
+        return Response(user_response.json(), user_response.status_code)
+    user_data = user_response.json()['user_data']
+    creator_id = user_data['id']
+
+    try:
+        matches = contract.functions.getTournamentHistory(creator_id).call()
+    except Exception as e:
+        return Response({'message': str(e)}, status=400)
+    
+    print('---- matches ----', matches, file=sys.stderr)
+
+    formatted_matches = [
+        {
+            'tournamentId': match[0],
+            'firstPlayerName': match[3] if match[8] == match[2] else match[5],
+            'secondPlayerName': match[3] if match[8] != match[2] else match[5],
+        }
+        for match in matches
+    ]
+    return Response({'message': formatted_matches}, status=200)
+
+@api_view(['POST'])
 def get_tournament_by_id(request):
     w3 = request.w3
     contract = request.contract
 
     AUTH_HEADER = request.META.get('HTTP_AUTHORIZATION')
+    print('------ auth token ------', AUTH_HEADER, file=sys.stderr)
     session_id = request.headers.get('Session-ID')
     auth_check_response = check_auth(AUTH_HEADER, session_id)
     if auth_check_response.status_code != 200:
@@ -385,3 +426,4 @@ def get_tournament_by_id(request):
         for match in matches
     ]
     return Response({'message': 'tournament found', 'matches': formatted_matches}, status=200)
+

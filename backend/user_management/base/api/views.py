@@ -118,7 +118,7 @@ def accept_friend_request(request, *args, **kwargs):
         f"friends_{from_user_id}",
         {
             "type": "accepted_friend_request",
-            "user_data": from_user_data.json()['user_data']
+            "user_data": response.json()['user_data']
         }
     )
     friend_request.delete()
@@ -146,6 +146,7 @@ def deny_friend_request(request, *args, **kwargs):
     friend_request.delete()
     return Response({'message': 'Friend request denied'}, status=200)
 
+import sys
 @api_view(['DELETE'])
 def delete_friend(request, *args, **kwargs):
     session_id = request.headers.get('Session-ID')
@@ -169,6 +170,14 @@ def delete_friend(request, *args, **kwargs):
         return Response({'message': 'User not found in friend list'}, status=404)
     
     user_profile.friends.remove(friend_profile)
+    channel_layer = get_channel_layer()
+    async_to_sync(channel_layer.group_send)(
+        f"friends_{friend_id}",
+        {
+            "type": "remove_friend_request",
+            "user_data": response.json()['user_data'],
+        }
+    )
     return Response({'message': 'Friend removed'}, status=200)
 
 @api_view(['GET'])

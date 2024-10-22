@@ -143,6 +143,13 @@ class FriendRequestConsumer(AsyncWebsocketConsumer):
             'type': 'friend_request_accepted',
             'user_data': user_data,
         }))
+
+    async def remove_friend_request(self, event):
+        user_data = event['user_data']
+        await self.send(text_data=json.dumps({
+            'type': 'remove_friend',
+            'user_data': user_data,
+        }))
     # async def send_data(self):
     #     scope_data = self.prepare_scope_data()
     #     await self.send(text_data=json.dumps({"scope": scope_data}))
