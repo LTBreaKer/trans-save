@@ -6,6 +6,22 @@
   box-sizing: border-box;
 }
 
+@font-face {
+  font-family: 'Hexen';
+  src: url('../assets/Hexenkoetel-qZRv1.ttf') format('truetype');
+  font-weight: bold;
+  font-style: italic;
+  
+}
+
+@font-face {
+  font-family: 'Volax';
+  src: url('../assets/Valorax-lg25V.otf') format('opentype');
+  font-weight: bold;
+  font-style: italic;
+  
+}
+
 body {
   height: 100vh;
   background: var(--body-color);
@@ -29,6 +45,7 @@ body {
 
 
 .container {
+  font-family: "Volax", sans-serif;
   margin: 0;
   padding: 0;
   width: 100%;

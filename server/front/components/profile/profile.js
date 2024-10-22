@@ -293,8 +293,8 @@ export async function set_pong_history(friendList) {
       gameDiv.innerHTML = `
         <img id="player1" src="${game.player1_avatar}" alt="Player 1 Avatar">
         <h2 class="player1">${game.player1_name}</h2>
-        <h2>${game.player1_score}</h2>
-        <h2>${game.player2_score}</h2>
+        <h2 style="color: black;">${game.player1_score}</h2>
+        <h2 style="color: black;">${game.player2_score}</h2>
         <h2 class="player2">${game.player2_name}</h2>
         <img id="player2" src="${game.player2_avatar}" alt="Player 2 Avatar">
         <h4 id="datofgame"> ${game.created_at.slice(0, 10)}</h4>
@@ -366,7 +366,7 @@ export async function set_tag_history(friendList) {
         gameDiv.innerHTML = `
         <img id="player1" src="${game.player1_avatar}" alt="">
         <h2 class="player1">${game.player1_name}</h2>
-        <h2>unknown</h2>
+        <h2 style="color: black;">unknown</h2>
         <h2 class="player2">${game.player2_name}</h2>
         <img id="player2" src="${game.player2_avatar}" alt="">
         <h4 id="datofgame"> ${game.created_at.slice(0, 10)}</h4>

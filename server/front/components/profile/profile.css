@@ -43,7 +43,7 @@ body {
 
 #hist {
   margin-top: 10px;
-  color: #ffffff;
+  color: #bdbdf6;
 }
 
 .send_friend_list {
@@ -57,6 +57,7 @@ body {
 }
 
 .container {
+  /* color: #9090f0; */
   font-family: "Hexen", sans-serif;
   margin: 0;
   padding: 0;
@@ -120,6 +121,7 @@ body {
 }
 
 .header .profile .text {
+  font-family: "Volax", sans-serif;
   color: #e8ebfb;
 }
 
@@ -369,11 +371,12 @@ body {
 
 .content .profile #profile_username  {
   /* justify-content: center; */
+  font-family: "Volax", sans-serif;
   display: flex;
   align-items: center;
   font-size: 25px;
   padding-left: 100px;
-  color: #cdc3f3;
+  color: #9090f0;
 }
 
 .content .profile #edit_profile  {
@@ -460,6 +463,10 @@ overflow-y: auto;
 border-radius: 25px;
 /* justify-content: center; */
 
+}
+
+.match_history {
+  color: #9090f0;
 }
 
 .match_history .tag_game_history {
