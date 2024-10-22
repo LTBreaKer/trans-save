@@ -52,19 +52,23 @@ export async function player_webSocket() {
     socket.onmessage = async function(event) {
       const newNotification = await JSON.parse(event.data);
       console.log(newNotification);
+      const loca = window.location.hash;
       if (newNotification.type === "friend_request_accepted"){
         console.log("hello we are hhhlsdflsdjfjsdfjkdlsj")
         console.log("hello we are => ", window.location.hash)
-        const loca = window.location.hash;
+        if (loca.startsWith('/user') || loca === '#/profile')
+          await get_friends_home();
+        return;
+      } else if (newNotification.type === "remove_friend") {
         if (loca.startsWith('/user') || loca === '#/profile')
           await get_friends_home();
         return;
       }
       else {
 
-        // const isDuplicate = accumulatedNotifications.some(notification => notification.friend_request.id === newNotification.friend_request.id
-        // );
-        // if (!isDuplicate)
+        const isDuplicate = accumulatedNotifications.some(notification => notification.friend_request.id === newNotification.friend_request.id
+        );
+        if (!isDuplicate)
           accumulatedNotifications.push(newNotification);
         
         await displayNotifications(accumulatedNotifications);

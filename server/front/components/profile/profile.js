@@ -157,7 +157,7 @@ async function get_tournament_history() {
 // here i will set function that i set the players and id of everyfunctio
 
 
-function set_tournament_data(data) {
+export function set_tournament_data(data) {
   const games_container = document.querySelector(".tur_game_history");
 
   data.forEach((index) => {

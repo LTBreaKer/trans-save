@@ -1,11 +1,12 @@
 import { loadHTML, loadCSS, player_webSocket } from '../../utils.js';
 import {log_out_func, logoutf, get_localstorage, getCookie, login, check_access_token } from '../../auth.js';
-import {get_friends_home, set_pong_history , send_freinds_request, changeAccess, set_tag_history} from '../profile/profile.js';
+import {get_friends_home, set_pong_history , send_freinds_request, changeAccess, set_tag_history, set_tournament_data} from '../profile/profile.js';
 
 
 const api = "https://127.0.0.1:9004/api/";
 const api_one = "https://127.0.0.1:9005/api/";
 const pong_game = "https://127.0.0.1:9006/api/gamedb/";
+const tourna_game = "https://127.0.0.1:9008/api/tournament/";
 let game_api = 'https://127.0.0.1:9007/api/tag-gamedb/';
 
 var friend_user_id = 0;
@@ -128,7 +129,36 @@ tourn_history.addEventListener('click', () => {
 // ====== ======== ========= ========= =========
 get_pong_history_by_name(friend_username);
 get_tag_history_by_name(friend_username);
+get_tournament_by_name(friend_username);
 }
+
+
+async function get_tournament_by_name(name) {
+  const data = {
+    username: name
+  }
+  const response = await fetch(tourna_game + 'get-tournament-history-by-username/', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + get_localstorage('token'),
+      'Session-ID': get_localstorage('session_id')
+    },
+    credentials: 'include',
+    body: JSON.stringify(data)
+  });
+  const jsonData = await response.json();
+
+  console.log("history of game of pong using user ==== name  ==> : ", jsonData);
+
+  if (!response.ok) {
+    console.log((`HTTP error! Status: ${response.status}`), Error);
+  }
+  set_tournament_data(jsonData);
+}
+
+
+
 
 async function get_tag_history_by_name(name) {
   const data = {
