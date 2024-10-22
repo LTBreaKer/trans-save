@@ -22,7 +22,6 @@ async function Game() {
       return new Promise((resolve, reject) => {
           const socket = new WebSocket(url);
           socket.onopen = () => {
-              console.log('WebSocket connection established');
               resolve(socket);
           };
           socket.onerror = (error) => {

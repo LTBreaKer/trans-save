@@ -66,7 +66,6 @@ async function start_game()
     
     async function game_score(winner)
     {
-        console.log("game score send")
         await check_access_token()
         const data = {
             game_id: tag_game_info.game_id,
@@ -189,8 +188,8 @@ async function start_game()
                 'esc': esc
             }))
         }
-
-        window.requestAnimationFrame(animation)
+        if (socket.readyState === WebSocket.OPEN)
+            window.requestAnimationFrame(animation)
         c.clearRect(0, 0, canvas.width, canvas.height)
         load_draw(background, 0, 0, canvas.width, canvas.height)    
 
@@ -461,7 +460,6 @@ async function start_game()
 
     function quitgame()
     {
-        console.log("quit button")
         reload_data()
         document.getElementById('overlay').style.visibility = 'hidden'
         esc = false
@@ -483,7 +481,6 @@ async function start_game()
 
     function handleRelodQuit(event)
     {
-        console.log("handleRelodQuit")
         if (socket.readyState === WebSocket.OPEN)
         {
             if (!winner)
@@ -517,7 +514,6 @@ async function start_game()
 
     function hashchange()
     {
-        console.log("change hash")
         if (window.location.hash !== "#/game")
             socket.close()
     }
@@ -537,7 +533,6 @@ async function start_game()
 
     function noAwaitScore(winner)
     {
-        console.log("game score send")
         check_access_token()
         const data = {
             game_id: tag_game_info.game_id,

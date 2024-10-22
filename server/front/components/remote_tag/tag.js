@@ -245,7 +245,8 @@ async function start_game()
             }))
         }
 
-        window.requestAnimationFrame(animation)
+        if (socket.readyState === WebSocket.OPEN)
+            window.requestAnimationFrame(animation)
         c.clearRect(0, 0, canvas.width, canvas.height)
         load_draw(background, 0, 0, canvas.width, canvas.height)
 
