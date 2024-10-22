@@ -13,6 +13,7 @@ let ping_win;
 let tourn_win;
 let tourn_los;
 
+
 const api = "https://127.0.0.1:9004/api/";
 const api_one = "https://127.0.0.1:9005/api/";
 const tourna_game = "https://127.0.0.1:9008/api/tournament/";
@@ -175,8 +176,7 @@ async function Friends() {
   get_tournament_history();
 }
 
-export {friendsocket, id_of_tournament};
-
+export {friendsocket, id_of_tournament, tag_win, tag_unk, tag_los, ping_los, ping_win, tourn_win, tourn_los};
 
 async function get_tournament_history() {
   const response = await fetch(tourna_game + 'get-tournament-history/', {
@@ -203,6 +203,8 @@ async function get_tournament_history() {
 
 
 export function set_tournament_data(data) {
+  if (data)
+    console.log(data);
   const games_container = document.querySelector(".tur_game_history");
   var win = 0;
   var los = 0;
@@ -413,32 +415,6 @@ export async function set_tag_history(friendList) {
 }
 
 
-
-
-// async function get_pong_history_by_name(name) {
-//   const data = {
-//     username: name
-//   }
-//   const response = await fetch(pong_game + 'get-game-history-by-username/', {
-//     method: 'POST',
-//     headers: {
-//       'Content-Type': 'application/json',
-//       'Authorization': 'Bearer ' + get_localstorage('token'),
-//     },
-//     credentials: 'include',
-//     body: JSON.stringify(data)
-//   });
-//   const jsonData = await response.json();
-
-//   console.log("history of game of pong using user ==== name  ==> : ", jsonData);
-
-//   if (!response.ok) {
-//     console.log((`HTTP error! Status: ${response.status}`), Error);
-//   }
-
-// }
-
-
 async function set_pong_score() {
   const data = {
     game_id:2,
@@ -467,53 +443,6 @@ async function set_pong_score() {
   }
 
 }
-
-
-
-async function set_tag_score() {
-  const data = {
-    game_id: 2,
-    winner_name: "gggg"
-
-  }
-  const response = await fetch(tag_game + 'add-game-score/', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer ' + get_localstorage('token'),
-      'Session-ID': get_localstorage('session_id')
-    },
-    credentials: 'include',
-    body: JSON.stringify(data)
-  });
-  const jsonData = await response.json();
-
-  console.log("score of tag game set it  -----==> : ", jsonData);
-
-  if (!response.ok) {
-    console.log((`HTTP error! Status: ${response.status}`), Error);
-  }
-
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 export async function get_friends_home() {

@@ -1,7 +1,6 @@
 import { loadHTML, loadCSS, player_webSocket, socket_friend_request } from '../../utils.js';
 import {log_out_func, logoutf, get_localstorage, getCookie, login, check_access_token } from '../../auth.js';
-import {get_friends_home, set_pong_history , send_freinds_request, changeAccess, set_tag_history, set_tournament_data} from '../profile/profile.js';
-
+import {get_friends_home, set_pong_history , send_freinds_request, changeAccess, set_tag_history, set_tournament_data, tag_win, tag_unk, tag_los, ping_los, ping_win, tourn_win, tourn_los} from '../profile/profile.js';
 
 const api = "https://127.0.0.1:9004/api/";
 const api_one = "https://127.0.0.1:9005/api/";
@@ -103,6 +102,10 @@ const tourn_history = document.querySelector('.tourn_game_click');
 const tag_game_history = document.querySelector('.tag_game_history');
 const tur_game_history = document.querySelector('.tur_game_history');
 const ping_game_history = document.querySelector('.ping_game_history');
+const nom = document.querySelectorAll('.nom');
+const mw = document.querySelectorAll('.mw');
+const ml = document.querySelectorAll('.ml');
+
 
 tag_history.addEventListener('click', () => {
   if (tag_game_history.style.display !== 'flex'){
@@ -110,6 +113,16 @@ tag_history.addEventListener('click', () => {
     tur_game_history.style.display = 'none';
     tag_game_history.style.display = 'flex';
   }
+  nom.forEach(element => {
+    element.textContent =  tag_los + tag_unk + tag_win;
+  });
+  mw.forEach(element => {
+    element.textContent = tag_win;
+  });
+  ml.forEach(element => {
+    element.textContent = tag_los;
+  });
+
 })
 pong_history.addEventListener('click', () => {
   if (ping_game_history.style.display !== 'flex'){
@@ -117,6 +130,16 @@ pong_history.addEventListener('click', () => {
     tur_game_history.style.display = 'none';
     tag_game_history.style.display = 'none';
   }
+  nom.forEach(element => {
+    element.textContent =  ping_los + ping_win;
+  });
+  mw.forEach(element => {
+    element.textContent = ping_los;
+  });
+  ml.forEach(element => {
+    element.textContent = ping_win;
+  });
+
   
 })
 tourn_history.addEventListener('click', () => {
@@ -125,6 +148,16 @@ tourn_history.addEventListener('click', () => {
     tur_game_history.style.display = 'flex';
     tag_game_history.style.display = 'none';
   }
+  nom.forEach(element => {
+    element.textContent =  tourn_los + tourn_win;
+  });
+  mw.forEach(element => {
+    element.textContent = tourn_los;
+  });
+  ml.forEach(element => {
+    element.textContent = tourn_win;
+  });
+
 })
 
 // ====== ======== ========= ========= =========
@@ -135,6 +168,7 @@ get_tournament_by_name(friend_username);
 
 
 async function get_tournament_by_name(name) {
+  console.log("here are name of ", name)
   const data = {
     username: name
   }
@@ -150,11 +184,13 @@ async function get_tournament_by_name(name) {
   });
   const jsonData = await response.json();
 
+
   console.log("history of game of pong using user ==== name  ==> : ", jsonData);
 
   if (!response.ok) {
     console.log((`HTTP error! Status: ${response.status}`), Error);
   }
+  console.log(jsonData)
   set_tournament_data(jsonData);
 }
 
