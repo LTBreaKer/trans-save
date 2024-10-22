@@ -9,7 +9,6 @@ function isAuthenticated() {
 }
   
   function login(token, refresh, session_id) {
-    console.log("------ ", session_id)
     localStorage.setItem('token', token);
     localStorage.setItem('refresh', refresh);
     localStorage.setItem('session_id', session_id);
@@ -131,8 +130,6 @@ function isAuthenticated() {
         body: JSON.stringify(bod)
     })
     .then(response => {
-        console.log(response);
-        console.log(response.data);
         // console.log(response.);
         if (!response.ok) {
             throw new Error('Network response was not ok');

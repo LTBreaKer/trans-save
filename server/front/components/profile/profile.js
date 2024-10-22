@@ -1,8 +1,18 @@
-import { loadHTML, loadCSS, player_webSocket } from '../../utils.js';
+import { loadHTML, loadCSS, player_webSocket, socket_friend_request } from '../../utils.js';
 import {log_out_func,  logoutf, get_localstorage, check_access_token, getCookie, login } from '../../auth.js';
 import {setHeaderContent, setNaveBarContent} from '../tournament/script.js';
 let friendsocket;
 let id_of_tournament;
+
+
+let tag_win;
+let tag_unk;
+let tag_los;
+let ping_los;
+let ping_win;
+let tourn_win;
+let tourn_los;
+
 
 const api = "https://127.0.0.1:9004/api/";
 const api_one = "https://127.0.0.1:9005/api/";
@@ -11,6 +21,7 @@ const pong_game = "https://127.0.0.1:9006/api/gamedb/";
 const tag_game = "https://127.0.0.1:9007/api/tag-gamedb/";
 var photo = null;
 let newNotification;
+let username_;
 async function Friends() {
   const html = await loadHTML('./components/profile/profile.html');
   loadCSS('./components/profile/profile.css');
@@ -19,9 +30,11 @@ async function Friends() {
   app.innerHTML = html;
   setHeaderContent();
   setNaveBarContent();
-  await check_friends_status();
+  if (!friendsocket)
+    await check_friends_status();
   await checkFirst();
-  player_webSocket();
+  if (!socket_friend_request)
+    player_webSocket();
 
   const editProfileButton = document.querySelector('.edit_profi');
   const updateProfile = document.querySelector('.update_data');
@@ -98,6 +111,9 @@ async function Friends() {
   const tag_game_history = document.querySelector('.tag_game_history');
   const ping_game_history = document.querySelector('.ping_game_history');
   const tur_game_history = document.querySelector('.tur_game_history');
+  const nom = document.querySelectorAll('.nom');
+  const mw = document.querySelectorAll('.mw');
+  const ml = document.querySelectorAll('.ml');
 
   tag_history.addEventListener('click', () => {
     if (tag_game_history.style.display !== 'flex'){
@@ -105,6 +121,16 @@ async function Friends() {
       tur_game_history.style.display = 'none';
       tag_game_history.style.display = 'flex';
     }
+    nom.forEach(element => {
+      element.textContent =  tag_los + tag_unk + tag_win;
+    });
+    mw.forEach(element => {
+      element.textContent = tag_win;
+    });
+    ml.forEach(element => {
+      element.textContent = tag_los;
+    });
+
   })
   pong_history.addEventListener('click', () => {
     if (ping_game_history.style.display !== 'flex'){
@@ -112,6 +138,16 @@ async function Friends() {
       tur_game_history.style.display = 'none';
       tag_game_history.style.display = 'none';
     }
+    nom.forEach(element => {
+      element.textContent =  ping_los + ping_win;
+    });
+    mw.forEach(element => {
+      element.textContent = ping_los;
+    });
+    ml.forEach(element => {
+      element.textContent = ping_win;
+    });
+
     
   })
   tourn_history.addEventListener('click', () => {
@@ -120,6 +156,16 @@ async function Friends() {
       tur_game_history.style.display = 'flex';
       tag_game_history.style.display = 'none';
     }
+    nom.forEach(element => {
+      element.textContent =  tourn_los + tourn_win;
+    });
+    mw.forEach(element => {
+      element.textContent = tourn_los;
+    });
+    ml.forEach(element => {
+      element.textContent = tourn_win;
+    });
+
   })
 
   get_pong_history();
@@ -130,8 +176,7 @@ async function Friends() {
   get_tournament_history();
 }
 
-export {friendsocket, id_of_tournament};
-
+export {friendsocket, id_of_tournament, tag_win, tag_unk, tag_los, ping_los, ping_win, tourn_win, tourn_los};
 
 async function get_tournament_history() {
   const response = await fetch(tourna_game + 'get-tournament-history/', {
@@ -157,10 +202,18 @@ async function get_tournament_history() {
 // here i will set function that i set the players and id of everyfunctio
 
 
-function set_tournament_data(data) {
+export function set_tournament_data(data) {
+  if (data)
+    console.log(data);
   const games_container = document.querySelector(".tur_game_history");
+  var win = 0;
+  var los = 0;
 
   data.forEach((index) => {
+    if (username_ === index.firstPlayerName)
+      win++;
+    else
+      los++;
     const gameDiv = document.createElement('div');
     gameDiv.classList.add('play');
     gameDiv.setAttribute('data-id', index.tournamentId); 
@@ -176,7 +229,6 @@ function set_tournament_data(data) {
         <img id="player2" src="/images/hello.png" alt="">
         <h2 class="player2">${index.secondPlayerName}</h2>
       </div>
-      <h4 id="datofgame"> ${game.created_at.slice(0, 10)}</h4>
     `;
 
     gameDiv.addEventListener('click', () => {
@@ -189,6 +241,9 @@ function set_tournament_data(data) {
     });
     games_container.appendChild(gameDiv);
   })
+    tourn_win = win;
+    tourn_los = los;
+
 }
 
 
@@ -216,7 +271,10 @@ async function get_pong_history() {
 
 
 export async function set_pong_history(friendList) {
-  
+  var win = 0;
+  var los = 0;
+  var name;
+
   if (!friendList) {
     console.error('Notification display container not found');
     return;
@@ -224,6 +282,12 @@ export async function set_pong_history(friendList) {
 
     const gamesContainer = document.querySelector('.ping_game_history');
     friendList.games.forEach((game, index) => {
+      name = game.player1_name;
+      if (game.player1_score > game.player2_score)
+          win++;
+      else
+        los++;
+
       const gameDiv = document.createElement('div');
       gameDiv.classList.add('play');
       gameDiv.innerHTML = `
@@ -238,6 +302,14 @@ export async function set_pong_history(friendList) {
       `;
       gamesContainer.appendChild(gameDiv);
     });
+    console.log("wammmmmmmmmmmmmmmiiiiiiiiiii", win, los );
+    if (username_ === name) {
+        ping_win = win;
+        ping_los = los;
+    } else {
+        ping_los = los;
+        ping_win = win;
+    }
 
 }
 
@@ -263,9 +335,15 @@ async function get_tag_history() {
 }
 
 
-async function set_tag_history(friendList) {
+export async function set_tag_history(friendList) {
   let user1;
   let user2;
+  var win = 0;
+  var los = 0;
+  var other = 0;
+  var name;
+
+
   if (!friendList) {
     console.error('Notification display container not found');
     return;
@@ -274,6 +352,15 @@ async function set_tag_history(friendList) {
     const gamesContainer = document.querySelector('.tag_game_history');
     friendList.games.forEach((game, index) => {
       const gameDiv = document.createElement('div');
+      if (game.winner_name === game.player1_name)
+        win++;
+      else if (game.winner_name === game.player2_name)
+        los++;
+      else 
+        other++;
+
+      name = game.player1_name;
+
       gameDiv.classList.add('play');
       if (game.winner_name === "unknown"){
         gameDiv.innerHTML = `
@@ -315,34 +402,17 @@ async function set_tag_history(friendList) {
       }
       gamesContainer.appendChild(gameDiv);
     });
+    if (username_ === name) {
+      tag_win = win;
+      tag_los = los;
+      tag_unk = other;
+    } else {
+      tag_los = los;
+      tag_win = win;
+      tag_unk = other;
+    }
 
 }
-
-
-
-
-// async function get_pong_history_by_name(name) {
-//   const data = {
-//     username: name
-//   }
-//   const response = await fetch(pong_game + 'get-game-history-by-username/', {
-//     method: 'POST',
-//     headers: {
-//       'Content-Type': 'application/json',
-//       'Authorization': 'Bearer ' + get_localstorage('token'),
-//     },
-//     credentials: 'include',
-//     body: JSON.stringify(data)
-//   });
-//   const jsonData = await response.json();
-
-//   console.log("history of game of pong using user ==== name  ==> : ", jsonData);
-
-//   if (!response.ok) {
-//     console.log((`HTTP error! Status: ${response.status}`), Error);
-//   }
-
-// }
 
 
 async function set_pong_score() {
@@ -375,54 +445,9 @@ async function set_pong_score() {
 }
 
 
-
-async function set_tag_score() {
-  const data = {
-    game_id: 2,
-    winner_name: "gggg"
-
-  }
-  const response = await fetch(tag_game + 'add-game-score/', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer ' + get_localstorage('token'),
-      'Session-ID': get_localstorage('session_id')
-    },
-    credentials: 'include',
-    body: JSON.stringify(data)
-  });
-  const jsonData = await response.json();
-
-  console.log("score of tag game set it  -----==> : ", jsonData);
-
-  if (!response.ok) {
-    console.log((`HTTP error! Status: ${response.status}`), Error);
-  }
-
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 export async function get_friends_home() {
+  await check_access_token();
+
   const response = await fetch(api_one + 'user/get-friend-list/', {
     method: 'GET',
     headers: {
@@ -477,7 +502,7 @@ const isValidEmail = signupemail => {
 }
 
 async function update_profile_fun() {
-  check_access_token()
+  await check_access_token()
   const update_Email = document.getElementById('update_Email');
   const update_UserName = document.getElementById('update_UserName');
   const new_password = document.getElementById('new_password');
@@ -524,6 +549,8 @@ async function update_backend(data) {
 }
 
 export async function send_freinds_request(userna) {
+  await check_access_token();
+
     const data = {
     username: userna
   };
@@ -606,6 +633,8 @@ function check_and_set_online(newNotification) {
 }
 
 export async function check_friends_status() {
+  await check_access_token();
+
   friendsocket = new WebSocket("wss://127.0.0.1:9005/ws/online-status/", ["token", get_localstorage('token'), "session_id", get_localstorage('session_id')]);
     
   friendsocket.onopen = function () {
@@ -684,7 +713,7 @@ async function fetchUserData() {
     const profile_username = document.getElementById('profile_username');
     const update_avatar = document.getElementById('update_avatar');
     const check_bo = document.getElementById('check_box');
-
+    username_ = userData.user_data.username;
     update_avatar.src = userData.user_data.avatar;
     avata.src = userData.user_data.avatar
     change_image.src = userData.user_data.avatar;

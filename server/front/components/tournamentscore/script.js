@@ -1,26 +1,29 @@
-import { loadHTML, loadCSS, player_webSocket} from '../../utils.js';
+import { loadHTML, loadCSS, player_webSocket, socket_friend_request} from '../../utils.js';
 import { log_out_func ,login , logoutf, get_localstorage, getCookie } from '../../auth.js';
  import {id_of_tournament} from '../profile/profile.js';
 let tournament = "https://127.0.0.1:9008/api/tournament/";
 
 var api = "https://127.0.0.1:9004/api/";
+let tournament_element_data;
 
 async function TournamentScore() {
-  const html = await loadHTML('./components/tournamentscore/index.html');
-  loadCSS('./components/tournamentscore/style.css');
-  const app = document.getElementById('app');
-  app.innerHTML = html;
-  console.log("******************************************** ")
   if (!id_of_tournament){
     console.log("ksdfjksjdkfjksdjfkldjslfkj")
     window.location.hash = "/profile";
     return;
   }
+  const html = await loadHTML('./components/tournamentscore/index.html');
+  loadCSS('./components/tournamentscore/style.css');
+  const app = document.getElementById('app');
+  app.innerHTML = html;
+  console.log("******************************************** ")
   setHeaderContent();
   setNaveBarContent();
   await checkFirst();
+  if (!socket_friend_request)
+    player_webSocket();
+  // updateContent();
 
-  player_webSocket();
   // set_players_sh();
 
 console.log("hello we are from morroc ;;o ", id_of_tournament);
@@ -29,10 +32,26 @@ console.log("hello we are from morroc ;;o ", id_of_tournament);
   logout.addEventListener('click', log_out_func);
 
   get_history_by_id();
+
+  window.addEventListener('resize', updateContent);
+
 }
 
 
 // add-match-score
+function updateContent() {
+  const contentDiv = document.getElementById('content');
+  const width = window.innerWidth;
+// 1235 1227
+  if (width < 1235) {
+    set_players_sh1(tournament_element_data);
+    // loadCSS('./components/tournament/style.css');
+  } else {
+    set_players_sh(tournament_element_data);
+    // loadCSS('./components/tournament/style.css');
+  }
+}
+
 
 
 async function get_history_by_id() {
@@ -42,6 +61,7 @@ async function get_history_by_id() {
   // const data = JSON.parse(participant);
   const urlEncodedData = new URLSearchParams(participant);
   try {
+    console.log('this is the token -------> ', get_localstorage('token'))
     const response = await fetch(tournament + 'get-tournament-by-id/', {
       method: 'POST',
       headers: {
@@ -55,8 +75,10 @@ async function get_history_by_id() {
     console.log(response);
     const jsonData = await response.json();
     console.log("here are tournament ========> ", jsonData);
-    if (jsonData.message === 'tournament found')
-      set_players_sh(jsonData.matches)
+    if (jsonData.message === 'tournament found'){
+      tournament_element_data = jsonData.matches;
+      updateContent();
+    }
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
@@ -76,35 +98,35 @@ function set_players_sh(tournament_data) {
 
                 <div class="first_match">
                     <div class="match_n1 string">
-                      <p id="player1_match1" class="player_name">${tournament_data[0].playerOneName} <span class="left_score">${tournament_data[0]?.playerOneScore ? tournament_data[0].playerOneScore : ''}</span></p>
+                      <p id="player1_match1" class="player_name">${tournament_data[0].playerOneName} <span class="left_score">${tournament_data[0]?.playerOneScore}</span></p>
                         <h2>Vs</h2>
-                        <p id="player2_match1" class="player_name"> ${tournament_data[0].playerTwoName}<span class="left_score">${tournament_data[0]?.playerTwoScore ? tournament_data[0].playerTwoScore : ''}</span></p>
+                        <p id="player2_match1" class="player_name"> ${tournament_data[0].playerTwoName}<span class="left_score">${tournament_data[0]?.playerTwoScore}</span></p>
                     </div>
                     <div class="match_n2 string">
-                        <p id="player1_match2" class="player_name"> ${tournament_data[1].playerOneName}<span class="left_score">${tournament_data[1]?.playerOneScore ? tournament_data[1].playerOneScore : ''}</span></p>
+                        <p id="player1_match2" class="player_name"> ${tournament_data[1].playerOneName}<span class="left_score">${tournament_data[1]?.playerOneScore}</span></p>
                         <h2>Vs</h2>
-                        <p id="player2_match2" class="player_name"> ${tournament_data[1].playerTwoName}<span class="left_score">${tournament_data[1]?.playerTwoScore ? tournament_data[1].playerTwoScore : ''}</span></p>
+                        <p id="player2_match2" class="player_name"> ${tournament_data[1].playerTwoName}<span class="left_score">${tournament_data[1]?.playerTwoScore}</span></p>
                     </div>
                 </div>
 
 
                 <div class="center_matches">
                     <fiv class="match_2">
-                        <p id="player1_match5" class="player_name topp"> ${tournament_data[4]?.playerOneName ? tournament_data[4].playerOneName : ''} <span class="left_score">${tournament_data[4]?.playerOneScore ? tournament_data[4].playerOneScore : ''}</span></p>
+                        <p id="player1_match5" class="player_name topp"> ${tournament_data[4]?.playerOneName} <span class="left_score">${tournament_data[4]?.playerOneScore}</span></p>
                         <h2>Vs</h2>
-                        <p id="player2_match5" class="player_name downn">  ${tournament_data[4]?.playerTwoName ? tournament_data[4].playerTwoName : ''}<span class="left_score">${tournament_data[4]?.playerTwoScore ? tournament_data[4].playerTwoScore : ''}</span></p>
+                        <p id="player2_match5" class="player_name downn">  ${tournament_data[4]?.playerTwoName}<span class="left_score">${tournament_data[4]?.playerTwoScore}</span></p>
 
                     </fiv>
                     <fiv class="match_final">
-                        <p id="player1_match7" class="player_name">${tournament_data[6]?.playerOneName ? tournament_data[6].playerOneName : ''}<span class="left_score">${tournament_data[6]?.playerOneScore ? tournament_data[6].playerOneScore : ''}</span></p>
+                        <p id="player1_match7" class="player_name">${tournament_data[6]?.playerOneName}<span class="left_score">${tournament_data[6]?.playerOneScore}</span></p>
                         <h2>Vs</h2>
-                        <p id="player2_match7" class="player_name ">${tournament_data[6]?.playerTwoName ? tournament_data[6].playerTwoName : ''}<span class="left_score">${tournament_data[6]?.playerTwoScore ? tournament_data[6].playerTwoScore : ''}</span></p>
+                        <p id="player2_match7" class="player_name ">${tournament_data[6]?.playerTwoName}<span class="left_score">${tournament_data[6]?.playerTwoScore}</span></p>
 
                     </fiv>
                     <fiv class="match_2">
-                        <p id="player1_match6"  class="player_name topp right_p"> <span class="right_score">${tournament_data[5]?.playerOneScore ? tournament_data[5].playerOneScore : ''}</span> ${tournament_data[5]?.playerOneName ? tournament_data[5].playerOneName : ''} </p>
+                        <p id="player1_match6"  class="player_name topp right_p"> <span class="right_score">${tournament_data[5]?.playerOneScore}</span> ${tournament_data[5]?.playerOneName} </p>
                         <h2>Vs</h2>
-                        <p id="player2_match6"  class="player_name downn right_p"><span class="right_score">${tournament_data[5]?.playerTwoScore ? tournament_data[5].playerTwoScore : ''}</span> ${tournament_data[5]?.playerTwoName ? tournament_data[5].playerTwoName : ''}</p>
+                        <p id="player2_match6"  class="player_name downn right_p"><span class="right_score">${tournament_data[5]?.playerTwoScore}</span> ${tournament_data[5]?.playerTwoName}</p>
 
                     </fiv>
                 </div>
@@ -112,14 +134,14 @@ function set_players_sh(tournament_data) {
 
                 <div class="first_match">
                     <div class="match_n1 string">
-                        <p id="player1_match3" class="player_name right_p"><span class="right_score" id="scoore">${tournament_data[2]?.playerOneScore ? tournament_data[2].playerOneScore : ''}</span> ${tournament_data[2].playerOneName}</p>
+                        <p id="player1_match3" class="player_name right_p"><span class="right_score" id="scoore">${tournament_data[2]?.playerOneScore}</span> ${tournament_data[2].playerOneName}</p>
                         <h2>Vs</h2>
-                        <p id="player2_match3" class="player_name right_p"><span class="right_score">${tournament_data[2]?.playerTwoScore ? tournament_data[2].playerTwoScore : ''}</span>${tournament_data[2].playerTwoName} </p>
+                        <p id="player2_match3" class="player_name right_p"><span class="right_score">${tournament_data[2]?.playerTwoScore}</span>${tournament_data[2].playerTwoName} </p>
                     </div>
                     <div class="match_n2 string">
-                        <p id="player1_match4" class="player_name right_p"><span class="right_score">${tournament_data[3]?.playerOneScore ? tournament_data[3].playerOneScore : ''}</span>${tournament_data[3].playerOneName} </p>
+                        <p id="player1_match4" class="player_name right_p"><span class="right_score">${tournament_data[3]?.playerOneScore}</span>${tournament_data[3].playerOneName} </p>
                         <h2>Vs</h2>
-                        <p id="player1_match4" class="player_name right_p"><span class="right_score">${tournament_data[3]?.playerTwoScore ? tournament_data[3].playerTwoScore : ''}</span>${tournament_data[3].playerTwoName} </p>
+                        <p id="player1_match4" class="player_name right_p"><span class="right_score">${tournament_data[3]?.playerTwoScore}</span>${tournament_data[3].playerTwoName} </p>
                     </div>
                 </div>
             </div>
@@ -135,6 +157,81 @@ function set_players_sh(tournament_data) {
 
   `
 }
+
+function set_players_sh1(tournament_data) {
+  // document.querySelector('.matches_hist').style.flexDirection = 'column';
+  const main_content  = document.getElementById('players_sh_content');
+  main_content.innerHTML = `
+   <div class="matches_hist"  style="flex-direction: column;">
+            <h3 id="text-final">hna ghadi ykon wach nisf ola roboaa ola final</h3>
+            <div class="first_8">
+            <div class="first_match">
+                <div class="match_n1 string">
+                    <p id="player1_match1" class="player_name">${tournament_data[0].playerOneName} <span class="left_score">${tournament_data[0]?.playerOneScore}</span></p>
+                    <h2>Vs</h2>
+                    <p id="player2_match1" class="player_name">${tournament_data[0]?.playerTwoName} <span class="left_score">${tournament_data[0]?.playerTwoScore}</span></p>
+                </div>
+                <div class="match_n2 string">
+                    <p id="player1_match2" class="player_name">${tournament_data[1]?.playerOneName}  <span class="left_score">${tournament_data[1]?.playerOneScore}</span></p>
+                    <h2>Vs</h2>
+                    <p id="player2_match2" class="player_name">${tournament_data[1]?.playerTwoName} <span class="left_score">${tournament_data[1]?.playerTwoScore}</span></p>
+                </div>
+            </div>
+            <div class="first_match">
+                <div class="match_n1 string">
+                    <p id="player1_match3" class="player_name right_p"><span class="right_score" id="scoore">${tournament_data[2]?.playerOneScore}</span> ${tournament_data[2].playerOneName}</p>
+                    <h2>Vs</h2>
+                    <p id="player2_match3" class="player_name right_p"><span class="right_score">${tournament_data[2]?.playerTwoScore}</span> ${tournament_data[2].playerTwoName}</p>
+                </div>
+                <div class="match_n2 string">
+                    <p id="player1_match4" class="player_name right_p"><span class="right_score">${tournament_data[3]?.playerOneScore}</span>${tournament_data[3].playerOneName}  </p>
+                    <h2>Vs</h2>
+                    <p id="player1_match4" class="player_name right_p"><span class="right_score">${tournament_data[3]?.playerTwoScore}</span>${tournament_data[3].playerTwoName} </p>
+                </div>
+            </div>
+
+
+            </div>
+            <h3 id="text-final">hna ghadi ykon wach nisf ola roboaa ola final</h3>
+
+            <div class="center_matches">
+                <fiv class="match_2">
+                    <p id="player1_match5" class="player_name topp"> ${tournament_data[4]?.playerOneName} <span class="left_score">${tournament_data[4]?.playerOneScore}</span></p>
+                    <h2>Vs</h2>
+                    <p id="player2_match5" class="player_name downn"> ${tournament_data[4]?.playerTwoName}<span class="left_score">${tournament_data[4]?.playerTwoScore}</span></p>
+
+                </fiv>
+                <fiv class="match_2">
+                    <p id="player1_match6"  class="player_name topp right_p"> <span class="right_score">${tournament_data[5]?.playerOneScore}</span> ${tournament_data[5]?.playerOneName} </p>
+                    <h2>Vs</h2>
+                    <p id="player2_match6"  class="player_name downn right_p"><span class="right_score">${tournament_data[5]?.playerTwoScore}</span> ${tournament_data[5]?.playerTwoName} </p>
+
+                </fiv>
+            </div>
+            <h3 id="text-final">hna ghadi ykon wach nisf ola roboaa ola final</h3>
+
+            <fiv class="match_final">
+                <p id="player1_match7" class="player_name">${tournament_data[6]?.playerOneName}<span class="left_score">${tournament_data[6]?.playerOneScore}</span></p>
+                <h2>Vs</h2>
+                <p id="player2_match7" class="player_name ">${tournament_data[6]?.playerTwoName}<span class="left_score">${tournament_data[6]?.playerTwoScore}</span></p>
+
+            </fiv>
+
+        </div>
+            <div class="winner_nextgame">
+                <div class="winneer">
+                    <h2 id="winn">Winner <i class="bi bi-trophy-fill"></i></h2>
+                    <h3><i class="bi bi-trophy "></i> ${tournament_data[6]?.playerOneScore > tournament_data[6]?.playerTwoScore ? tournament_data[6]?.playerOneName : tournament_data[6]?.playerTwoName}</h3>
+                    <hr id="line1">
+                    <hr id="line2">
+                    <hr id="line3">
+                </div>
+            </div>
+
+  `
+}
+
+
 
 export function setHeaderContent() {
     const header = document.querySelector('.header');
@@ -278,7 +375,8 @@ async function changeAccess() {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + get_localstorage('token')
+          'Authorization': 'Bearer ' + get_localstorage('token'),
+          'Session-ID': get_localstorage('session_id')
         },
         credentials: 'include',
       });

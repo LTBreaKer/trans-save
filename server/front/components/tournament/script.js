@@ -1,5 +1,6 @@
 import { loadHTML, loadCSS, player_webSocket} from '../../utils.js';
-import { log_out_func ,login , logoutf, get_localstorage, getCookie } from '../../auth.js';
+import { log_out_func ,login , logoutf, get_localstorage, getCookie, check_access_token } from '../../auth.js';
+import { assingDataToGameData, statePongGameToTournament } from '../ping/script.js';
 // import {tournament} from '../ping/script.js';
 let tournament = "https://127.0.0.1:9008/api/tournament/";
 
@@ -14,13 +15,16 @@ async function Tournament() {
   const html = await loadHTML('./components/tournament/index.html');
   loadCSS('./components/tournament/style.css');
 
+
+  console.log("here is data of me =:> ", tournament_data);
   const app = document.getElementById('app');
   app.innerHTML = html;
   setHeaderContent();
   await define_object_matches();
   setNaveBarContent();
   await checkFirst();
-  player_webSocket();
+  if (!socket_friend_request)
+    player_webSocket();
   updateContent();
 
 
@@ -38,7 +42,9 @@ async function Tournament() {
       if (tournament_data[i].status === "upcoming") {
         await start_tournament_match(tournament_data[i]);
         tournament_match_data = tournament_data[i];
-        window.location.hash = '/tournamentScore';
+        assingDataToGameData(tournament_match_data);
+        statePongGameToTournament();
+        window.location.hash = '/pingpong';
         return;
       }
       i++;
@@ -58,10 +64,10 @@ function updateContent() {
 // 1235 1227
   if (width < 1235) {
     set_players_sh1();
-    loadCSS('./components/tournament/style.css');
+    // loadCSS('./components/tournament/style.css');
   } else {
     set_players_sh();
-    loadCSS('./components/tournament/style.css');
+    // loadCSS('./components/tournament/style.css');
   }
 }
 
@@ -70,6 +76,7 @@ function updateContent() {
 
 async function start_tournament_match(params) {
   console.log("====>> ", params);
+  await check_access_token();
 
     const participant = {
       match_id: params.matchNumber,
@@ -144,6 +151,8 @@ async function add_tournament_match_score(params) {
 }
 
 async function define_object_matches() {
+  await check_access_token();
+
     try {
       const response = await fetch(tournament + 'check-tournament/', {
         method: 'POST',
@@ -419,6 +428,7 @@ document.addEventListener('click', (event) => {
 }
 
 async function changeAccess() {
+  
     const data = {
       refresh: get_localstorage('refresh')
     };

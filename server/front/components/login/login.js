@@ -1,4 +1,4 @@
-import { loadHTML, loadCSS, getQueryParams } from '../../utils.js';
+import { loadHTML, loadCSS, getQueryParams, player_webSocket} from '../../utils.js';
 import {get_localstorage, login } from '../../auth.js';
 
 let tokenn;
@@ -93,7 +93,9 @@ async function Login() {
             }
     
             if (data.message === 'Login successful') {
-                login(data.token.access, data.token.refresh, data.session_id);
+                console.log("+-------------------");
+                login(data.token.access, data.token.refresh, data.session_id);                
+                console.log("+-++++++++++++++++++++++==");
                 window.location.href = '/';
             }
         })
@@ -245,6 +247,7 @@ const sign_up_data = () => {
     .then(data => {
         if (data.message === "User created"){
             login(data.token.access, data.token.refresh, data.session_id)
+            player_webSocket();
             window.location.hash = '/'
         }
     })
@@ -291,6 +294,7 @@ const signindata = () => {
         }
         if (name === 1){
             login(data.access ,data.refresh, data.session_id)
+            player_webSocket();
             window.location.hash = '/';
         }
         if (data.message === 'user already logged in') {

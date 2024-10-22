@@ -1,6 +1,11 @@
+import { statePongGame } from "../../../components/ping/script.js";
+import { sendSocket, startGame } from "../game/game.js";
 import { lpaddle, paddle, rpaddle } from "../game/paddle.js";
 
-export function keyDownHandler(e) {
+export async function keyDownHandler(e) {
+	console.log("startGame: ", startGame, " ", e);
+	// if (!startGame && statePongGame != "remote")
+	// 	await sendSocket();
 	if (e.key === "Right" || e.key === "ArrowUp")
 		lpaddle.leftPressed = true;
 	else if (e.key === "Left" || e.key === "ArrowDown")

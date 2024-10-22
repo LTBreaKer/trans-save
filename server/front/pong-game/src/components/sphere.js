@@ -8,7 +8,8 @@ export function initSphere() {
     // const texture = loader.load('/images/pong/textures/silver_metal.jpg');
     // texture.colorSpace = THREE.SRGBColorSpace;
     // const sphere_material = new THREE.MeshPhongMaterial( {  map: texture } );
-    const sphere_material = new THREE.MeshPhongMaterial( {  color: 0xffffff } );
+    // const sphere_material = new THREE.MeshPhongMaterial( {  color: 0xffffff } );
+    const sphere_material = new THREE.MeshStandardMaterial( {  color: 0xffffff } );
     const sphere_geometry = new THREE.SphereGeometry( BALL_RADUIS, 32, 16 );
     // const sphere_geometry = new THREE.CylinderGeometry( BALL_RADUIS, BALL_RADUIS, PADDLE_HEIGHT, 32 ); 
     sphere = new THREE.Mesh( sphere_geometry, sphere_material);

@@ -2,6 +2,7 @@
 // import WebGL from 'three/addons/capabilities/WebGL.js';
 import { setupEventListeners} from './network/events.js';
 import { animate } from './game/game.js';
+import { game_data } from '../../components/ping/script.js';
 
 
 // export let startGame = false;
