@@ -63,6 +63,16 @@ body {
   display: none;
 }
 
+#datofgame {
+  display: flex;
+  position: absolute;
+ bottom: 0px;
+  justify-content: center;
+  width: 100%;
+ font-size: 10px;
+ color: white;
+}
+
 .header {
   position: relative; 
   display: flex;
@@ -501,6 +511,7 @@ object-fit: cover;
 .play {
 display: flex;        
 align-items: center; 
+position: relative;
 justify-content: space-between;
 margin-top: 15px;
 }

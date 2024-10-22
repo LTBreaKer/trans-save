@@ -15,13 +15,16 @@ async function Tournament() {
   const html = await loadHTML('./components/tournament/index.html');
   loadCSS('./components/tournament/style.css');
 
+
+  console.log("here is data of me =:> ", tournament_data);
   const app = document.getElementById('app');
   app.innerHTML = html;
   setHeaderContent();
   await define_object_matches();
   setNaveBarContent();
   await checkFirst();
-  player_webSocket();
+  if (!socket_friend_request)
+    player_webSocket();
   updateContent();
 
 

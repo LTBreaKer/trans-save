@@ -3,12 +3,14 @@ import { get_friends_home } from './components/profile/profile.js';
 
 let game_api = 'https://127.0.0.1:9007/api/tag-gamedb/';
 var api_game = "https://127.0.0.1:9006/api/gamedb/";
-
+let socket_friend_request;
 export function loadHTML(url) {
   console.log(url);
     return fetch(url).then(response => response.text());
   }
   
+export {socket_friend_request};
+
   export function loadCSS(url) {
     console.log()
     removeAllCSSLinks();
@@ -43,21 +45,26 @@ function removeAllCSSLinks() {
 export async function player_webSocket() {
   await check_access_token();
   return new Promise((resolve) => {
-    let socket = new WebSocket("wss://127.0.0.1:9005/ws/friend-requests/", ["token", get_localstorage('token'), "session_id", get_localstorage('session_id')]);
+    socket_friend_request = new WebSocket("wss://127.0.0.1:9005/ws/friend-requests/", ["token", get_localstorage('token'), "session_id", get_localstorage('session_id')]);
     
-    socket.onopen = function () {
-      console.log('WebSocket connection established.');
+    socket_friend_request.onopen = function () {
+      console.log('WebSocket connection =======================================================================.');
     };
     
-    socket.onmessage = async function(event) {
+    socket_friend_request.onmessage = async function(event) {
       const newNotification = await JSON.parse(event.data);
       console.log(newNotification);
+      const loca = window.location.hash;
       if (newNotification.type === "friend_request_accepted"){
         console.log("hello we are hhhlsdflsdjfjsdfjkdlsj")
         console.log("hello we are => ", window.location.hash)
-        const loca = window.location.hash;
         if (loca.startsWith('/user') || loca === '#/profile')
           await get_friends_home();
+        return;
+      } else if (newNotification.type === "remove_friend") {
+        if (loca.startsWith('/user') || loca === '#/profile'){
+          await get_friends_home();
+        }
         return;
       }
       else {
@@ -68,15 +75,16 @@ export async function player_webSocket() {
           accumulatedNotifications.push(newNotification);
         
         await displayNotifications(accumulatedNotifications);
+        accumulatedNotifications = [];
       }
     
     };
 
-    socket.onerror = function (error) {
+    socket_friend_request.onerror = function (error) {
       console.error('WebSocket error:', error);
     };
 
-    socket.onclose = function () {
+    socket_friend_request.onclose = function () {
       console.log('WebSocket connection closed.');
     };
   });
@@ -145,6 +153,10 @@ console.log(notificationId);
     console.log((`HTTP error! Status: ${response.status}`), Error);
   }
   const loca = window.location.hash;
+  for(let i = 0; i < accumulatedNotifications.length; i++) {
+    if (accumulatedNotifications[i].friend_request.id === notificationId) 
+      array.splice(i, 1);
+  }
   if (loca.startsWith('/user') || loca === '#/profile')
     await get_friends_home();
 }
