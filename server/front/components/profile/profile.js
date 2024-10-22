@@ -1,4 +1,4 @@
-import { loadHTML, loadCSS, player_webSocket } from '../../utils.js';
+import { loadHTML, loadCSS, player_webSocket, socket_friend_request } from '../../utils.js';
 import {log_out_func,  logoutf, get_localstorage, check_access_token, getCookie, login } from '../../auth.js';
 import {setHeaderContent, setNaveBarContent} from '../tournament/script.js';
 let friendsocket;
@@ -19,9 +19,11 @@ async function Friends() {
   app.innerHTML = html;
   setHeaderContent();
   setNaveBarContent();
-  await check_friends_status();
+  if (!friendsocket)
+    await check_friends_status();
   await checkFirst();
-  player_webSocket();
+  if (!socket_friend_request)
+    player_webSocket();
 
   const editProfileButton = document.querySelector('.edit_profi');
   const updateProfile = document.querySelector('.update_data');

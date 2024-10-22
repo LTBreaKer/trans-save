@@ -1,4 +1,4 @@
-import { loadHTML, loadCSS, player_webSocket } from '../../utils.js';
+import { loadHTML, loadCSS, player_webSocket, socket_friend_request } from '../../utils.js';
 import {log_out_func, logoutf, get_localstorage, getCookie, login, check_access_token } from '../../auth.js';
 import {get_friends_home, set_pong_history , send_freinds_request, changeAccess, set_tag_history, set_tournament_data} from '../profile/profile.js';
 
@@ -21,7 +21,8 @@ async function Friends() {
   const app = document.getElementById('app');
   app.innerHTML = html;
   await checkFirst();
-  player_webSocket();
+  if(!socket_friend_request)
+    player_webSocket();
 
   const logout = document.getElementById('logout')
   logout.addEventListener('click', log_out_func);

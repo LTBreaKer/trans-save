@@ -23,7 +23,8 @@ async function Tournament() {
   await define_object_matches();
   setNaveBarContent();
   await checkFirst();
-  player_webSocket();
+  if (!socket_friend_request)
+    player_webSocket();
   updateContent();
 
 
