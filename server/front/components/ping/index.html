@@ -11,6 +11,7 @@
 <body>
     
     <div class="ml_container">
+            <div class="bg_top"></div>
             <div class="ml_profile">
                 <div class="ml_notif">
                     <h3><i class="bi bi-bell"></i></h3>
@@ -63,32 +64,37 @@
         <!-- <div class="ml_main-content"> -->
             <!-- <div class="pong_mer_cont"> -->
             <div class="ml_main-content">
-                <img src="../../images/pong/pong_background.png" alt="" class="ml_bgcontent">
-                <div class="ml_rl_game">
-                    <div class="ml_local_game" id="remote_game">
-                        <h2>Remote</h2>
-                        <div class="spinner">
-                            <div class="spinner1"></div>
+                <!-- <img src="../../images/pong/pong_background.png" alt="" class="ml_bgcontent"> -->
+                <img src="../../images/pong/images/pong3.png" alt="" class="ml_bgcontent">
+                <dev style="background-color: rgb(0,0,0, 0.2); z-index: 1;" class="ml_bgcontent"></dev>
+                <div class="game_container">
+                    <div class="ml_rl_game">
+                        <div class="ml_local_game" id="remote_game">
+                            <h2>Remote</h2>
+                            <div class="spinner">
+                                <div class="spinner1"></div>
+                            </div>
+                            <h3 id="cancel_game">Cancel Game</h3>
+                            <h3 class="ml_start_game" id="butt_game">Start Game</h3>
                         </div>
-                        <h3 id="cancel_game">Cancel Game</h3>
-                        <h3 class="ml_start_game" id="butt_game">Start Game</h3>
+                        <div class="ml_local_game" id="local_game">
+                            <h2>Local</h2>
+                            <input placeholder="Player Name" id="input" class="input" name="text" type="text">
+                            <h3 class="ml_start_game" id="local_butt_game">Start Game</h3>
+                        </div>
                     </div>
-                    <div class="ml_local_game" id="local_game">
-                        <h2>Local</h2>
-                        <input placeholder="Player Name" id="input" class="input" name="text" type="text">
-                        <h3 class="ml_start_game" id="local_butt_game">Start Game</h3>
-                    </div>
-                </div>
-                <div class="ml_rl_game">
-                    <div class="ml_local_game">
-                        <h2>AI Bot</h2>
-                        <h3 class="ml_start_game" id="btn_ai">Start Game</h3>
-                    </div>
-                    <div class="ml_local_game">
-                        <h2>Tournament</h2>
-                        <h3 class="ml_start_game" id="btn_tournament">Start Game</h3>
+                    <div class="ml_rl_game">
+                        <div class="ml_local_game">
+                            <h2>AI Bot</h2>
+                            <h3 class="ml_start_game" id="btn_ai">Start Game</h3>
+                        </div>
+                        <div class="ml_local_game">
+                            <h2>Tournament</h2>
+                            <h3 class="ml_start_game" id="btn_tournament">Start Game</h3>
+                        </div>
                     </div>
                 </div>
+
                 <div class="ml_rl_game">
                     <div class="ml_description_game">
                         <div class="text">
