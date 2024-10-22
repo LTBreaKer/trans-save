@@ -1,4 +1,4 @@
-import { loadHTML, loadCSS, player_webSocket} from '../../utils.js';
+import { loadHTML, loadCSS, player_webSocket, socket_friend_request} from '../../utils.js';
 import { log_out_func ,login , logoutf, get_localstorage, getCookie, check_access_token } from '../../auth.js';
 import { assingDataToGameData, statePongGameToTournament } from '../ping/script.js';
 // import {tournament} from '../ping/script.js';
