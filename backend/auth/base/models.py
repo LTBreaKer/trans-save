@@ -25,6 +25,7 @@ class User(AbstractUser):
     tournament_username = models.CharField(
         max_length=10,
         validators=[username_validator],
+        default="",
     )
     email = models.EmailField(unique=True, blank=False, null=False)
     avatar = models.ImageField(default='avatars/avatar-default.webp', upload_to='avatars/')
