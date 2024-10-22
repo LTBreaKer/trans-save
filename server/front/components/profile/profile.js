@@ -4,6 +4,15 @@ import {setHeaderContent, setNaveBarContent} from '../tournament/script.js';
 let friendsocket;
 let id_of_tournament;
 
+
+let tag_win;
+let tag_unk;
+let tag_los;
+let ping_los;
+let ping_win;
+let tourn_win;
+let tourn_los;
+
 const api = "https://127.0.0.1:9004/api/";
 const api_one = "https://127.0.0.1:9005/api/";
 const tourna_game = "https://127.0.0.1:9008/api/tournament/";
@@ -11,6 +20,7 @@ const pong_game = "https://127.0.0.1:9006/api/gamedb/";
 const tag_game = "https://127.0.0.1:9007/api/tag-gamedb/";
 var photo = null;
 let newNotification;
+let username_;
 async function Friends() {
   const html = await loadHTML('./components/profile/profile.html');
   loadCSS('./components/profile/profile.css');
@@ -100,6 +110,9 @@ async function Friends() {
   const tag_game_history = document.querySelector('.tag_game_history');
   const ping_game_history = document.querySelector('.ping_game_history');
   const tur_game_history = document.querySelector('.tur_game_history');
+  const nom = document.querySelectorAll('.nom');
+  const mw = document.querySelectorAll('.mw');
+  const ml = document.querySelectorAll('.ml');
 
   tag_history.addEventListener('click', () => {
     if (tag_game_history.style.display !== 'flex'){
@@ -107,6 +120,16 @@ async function Friends() {
       tur_game_history.style.display = 'none';
       tag_game_history.style.display = 'flex';
     }
+    nom.forEach(element => {
+      element.textContent =  tag_los + tag_unk + tag_win;
+    });
+    mw.forEach(element => {
+      element.textContent = tag_win;
+    });
+    ml.forEach(element => {
+      element.textContent = tag_los;
+    });
+
   })
   pong_history.addEventListener('click', () => {
     if (ping_game_history.style.display !== 'flex'){
@@ -114,6 +137,16 @@ async function Friends() {
       tur_game_history.style.display = 'none';
       tag_game_history.style.display = 'none';
     }
+    nom.forEach(element => {
+      element.textContent =  ping_los + ping_win;
+    });
+    mw.forEach(element => {
+      element.textContent = ping_los;
+    });
+    ml.forEach(element => {
+      element.textContent = ping_win;
+    });
+
     
   })
   tourn_history.addEventListener('click', () => {
@@ -122,6 +155,16 @@ async function Friends() {
       tur_game_history.style.display = 'flex';
       tag_game_history.style.display = 'none';
     }
+    nom.forEach(element => {
+      element.textContent =  tourn_los + tourn_win;
+    });
+    mw.forEach(element => {
+      element.textContent = tourn_los;
+    });
+    ml.forEach(element => {
+      element.textContent = tourn_win;
+    });
+
   })
 
   get_pong_history();
@@ -161,8 +204,14 @@ async function get_tournament_history() {
 
 export function set_tournament_data(data) {
   const games_container = document.querySelector(".tur_game_history");
+  var win = 0;
+  var los = 0;
 
   data.forEach((index) => {
+    if (username_ === index.firstPlayerName)
+      win++;
+    else
+      los++;
     const gameDiv = document.createElement('div');
     gameDiv.classList.add('play');
     gameDiv.setAttribute('data-id', index.tournamentId); 
@@ -190,6 +239,9 @@ export function set_tournament_data(data) {
     });
     games_container.appendChild(gameDiv);
   })
+    tourn_win = win;
+    tourn_los = los;
+
 }
 
 
@@ -217,7 +269,10 @@ async function get_pong_history() {
 
 
 export async function set_pong_history(friendList) {
-  
+  var win = 0;
+  var los = 0;
+  var name;
+
   if (!friendList) {
     console.error('Notification display container not found');
     return;
@@ -225,6 +280,12 @@ export async function set_pong_history(friendList) {
 
     const gamesContainer = document.querySelector('.ping_game_history');
     friendList.games.forEach((game, index) => {
+      name = game.player1_name;
+      if (game.player1_score > game.player2_score)
+          win++;
+      else
+        los++;
+
       const gameDiv = document.createElement('div');
       gameDiv.classList.add('play');
       gameDiv.innerHTML = `
@@ -239,6 +300,14 @@ export async function set_pong_history(friendList) {
       `;
       gamesContainer.appendChild(gameDiv);
     });
+    console.log("wammmmmmmmmmmmmmmiiiiiiiiiii", win, los );
+    if (username_ === name) {
+        ping_win = win;
+        ping_los = los;
+    } else {
+        ping_los = los;
+        ping_win = win;
+    }
 
 }
 
@@ -267,6 +336,12 @@ async function get_tag_history() {
 export async function set_tag_history(friendList) {
   let user1;
   let user2;
+  var win = 0;
+  var los = 0;
+  var other = 0;
+  var name;
+
+
   if (!friendList) {
     console.error('Notification display container not found');
     return;
@@ -275,6 +350,15 @@ export async function set_tag_history(friendList) {
     const gamesContainer = document.querySelector('.tag_game_history');
     friendList.games.forEach((game, index) => {
       const gameDiv = document.createElement('div');
+      if (game.winner_name === game.player1_name)
+        win++;
+      else if (game.winner_name === game.player2_name)
+        los++;
+      else 
+        other++;
+
+      name = game.player1_name;
+
       gameDiv.classList.add('play');
       if (game.winner_name === "unknown"){
         gameDiv.innerHTML = `
@@ -316,6 +400,15 @@ export async function set_tag_history(friendList) {
       }
       gamesContainer.appendChild(gameDiv);
     });
+    if (username_ === name) {
+      tag_win = win;
+      tag_los = los;
+      tag_unk = other;
+    } else {
+      tag_los = los;
+      tag_win = win;
+      tag_unk = other;
+    }
 
 }
 
@@ -691,7 +784,7 @@ async function fetchUserData() {
     const profile_username = document.getElementById('profile_username');
     const update_avatar = document.getElementById('update_avatar');
     const check_bo = document.getElementById('check_box');
-
+    username_ = userData.user_data.username;
     update_avatar.src = userData.user_data.avatar;
     avata.src = userData.user_data.avatar
     change_image.src = userData.user_data.avatar;

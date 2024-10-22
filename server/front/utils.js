@@ -75,6 +75,7 @@ export async function player_webSocket() {
           accumulatedNotifications.push(newNotification);
         
         await displayNotifications(accumulatedNotifications);
+        accumulatedNotifications = [];
       }
     
     };
