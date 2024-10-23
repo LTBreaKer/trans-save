@@ -43,10 +43,12 @@ class Paddle {
 	}
 }
 
+export let paddle;
+export let lpaddle;
+export let rpaddle;
 
-
-//remote
-export const paddle = new Paddle();
-//local
-export const lpaddle = new Paddle(0);
-export const rpaddle = new Paddle(width - 10);
+export function initPaddleInstance() {
+	paddle = new Paddle();
+	lpaddle = new Paddle(0);
+	rpaddle = new Paddle(width - 10);
+}

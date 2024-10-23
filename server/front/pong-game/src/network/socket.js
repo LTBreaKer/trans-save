@@ -24,14 +24,11 @@ window.env = {
 	DJANGO_HOSTNAME : "c3r4p5.1337.ma"
 };
 
-export async function sendScore(left_paddle_score = lpaddle.nb_goal, right_paddle_score = rpaddle.nb_goal) {
-	// const url = "http://"+ window.env.DJANGO_HOSTNAME +":8080/server/auth/users/me/";
-	let data;
-	data = game_data;
-	data.player1_score = left_paddle_score ;
-	data.player2_score = right_paddle_score ;
-	// const urlEncodedData = new URLSearchParams(data);
-	// console.log("data: ", data);
+export function sendScore(left_paddle_score = lpaddle.nb_goal, right_paddle_score = rpaddle.nb_goal) {
+	if (!game_data)
+		return ;
+	game_data.player1_score = left_paddle_score ;
+	game_data.player2_score = right_paddle_score ;
 	const req = fetch(url, {
 		method: 'POST',
 		headers: {
@@ -40,7 +37,27 @@ export async function sendScore(left_paddle_score = lpaddle.nb_goal, right_paddl
 			'Session-ID': get_localstorage('session_id')
 		},
 		credentials: 'include',
-		body: JSON.stringify(data)
+		body: JSON.stringify(game_data)
+	});
+	req.then((res) => {
+		if (!res.ok)
+			throw new Error(`HTTP error: ${res.status}`);
+		return res.json();
+	})
+	.catch(error => console.error(`${error}`));
+}
+
+export function sendScoreWhenRefreshingPage() {
+	const req = fetch(url, {
+		method: 'POST',
+		headers: {
+			'Authorization': `Bearer ${localStorage.getItem("token")}`,
+			'Content-Type': 'application/json',
+			'Session-ID': get_localstorage('session_id')
+		},
+		credentials: 'include',
+		body: JSON.stringify(game_data),
+		keepalive: true
 	});
 	req.then((res) => {
 		if (!res.ok)
@@ -52,10 +69,15 @@ export async function sendScore(left_paddle_score = lpaddle.nb_goal, right_paddl
 }
 
 async function draw_info(data) {
+	if (!game_data)
+		return;
+	console.log("game_data: ", game_data);
 	launchGame();
 	const data_ball = JSON.parse(data.ball);
 	const data_right_paddle = JSON.parse(data.right_paddle);
 	const data_left_paddle = JSON.parse(data.left_paddle);
+	game_data.player1_score = data_left_paddle.nb_goal;
+	game_data.player2_score = data_right_paddle.nb_goal;
 	lpaddle.nb_goal = data_left_paddle.nb_goal;
 	rpaddle.nb_goal = data_right_paddle.nb_goal;
 	if (data_ball.ballOut > 10 && data_ball.ballOut != 59){
@@ -137,8 +159,8 @@ export async function localGameSocket(group_name) {
 				}
 			}
 		}
-		ws.onclose = async (e) => {
-			sendScore();
+		ws.onclose = (e) => {
+			sendScoreWhenRefreshingPage();
 		}
 		return (ws);
 	} catch (error) {
