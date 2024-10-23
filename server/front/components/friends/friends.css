@@ -5,6 +5,21 @@
   padding: 0;
   box-sizing: border-box;
 }
+@font-face {
+  font-family: 'Hexen';
+  src: url('../assets/Hexenkoetel-qZRv1.ttf') format('truetype');
+  font-weight: bold;
+  font-style: italic;
+  
+}
+
+@font-face {
+  font-family: 'Volax';
+  src: url('../assets/Valorax-lg25V.otf') format('opentype');
+  font-weight: bold;
+  font-style: italic;
+  
+}
 
 body {
   height: 100vh;
@@ -101,6 +116,7 @@ body {
 }
 
 .header .profile .text {
+  font-family: "Volax", sans-serif;
   color: #e8ebfb;
 }
 
@@ -357,6 +373,7 @@ body {
 
 .content .profile #profile_username  {
   /* justify-content: center; */
+  font-family: "Volax", sans-serif;
   display: flex;
   align-items: center;
   font-size: 25px;

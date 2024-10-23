@@ -15,8 +15,8 @@ body {
 
 :root {
   /* ===== Colors ===== */
-  --body-color: #262b36;
-  --sidebar-color: #e8ebfb;
+  --body-color: #1e1e2f;
+  --sidebar-color: #2f304a;
   --primary-color: #695cfe;
   --primary-color-light: #f6f5ff;
   --toggle-color: #DDD;
@@ -971,7 +971,7 @@ display: none;
 
   .ml_container .success_update {
     /* display: flex; */
-    position: absolute;
+    position: fixed;
     width: 330px;
     height: 55px;
     background-color: white;

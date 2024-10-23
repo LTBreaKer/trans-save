@@ -328,6 +328,7 @@ display: none;
     justify-content: center;
     /* margin-right: 11%; */
     color: white;
+    z-index: -1;
   }
   
   .mer_cont .re_local {
@@ -479,7 +480,7 @@ display: none;
 
    .container .success_update {
     /* display: flex; */
-    position: absolute;
+    position: fixed;
     width: 330px;
     height: 55px;
     background-color: white;
@@ -550,9 +551,16 @@ display: none;
     }
   
     .sidebar.active {
-        height: 100vh;
-        padding: 10px 14px;
-        background-color: var(--sidebar-color);
+      position: relative;
+      top: 0;
+      margin-top: 130px;
+      left: 0;
+      height: calc(100vh - 160px);
+      border-radius: 25px;
+      width: 88px;
+      padding: 10px 14px;
+      background-color: var(--sidebar-color);
+      transition: var(--tran-05);
     }
   
     #butt {
@@ -601,10 +609,17 @@ display: none;
   }
 
   .sidebar.active {
-      height: 100vh;
-      padding: 10px 14px;
-      background-color: var(--sidebar-color);
-  }
+    position: relative;
+    top: 0;
+    margin-top: 130px;
+    left: 0;
+    height: calc(100vh - 160px);
+    border-radius: 25px;
+    width: 88px;
+    padding: 10px 14px;
+    background-color: var(--sidebar-color);
+    transition: var(--tran-05);
+}
 
   #butt {
       display: flex;
