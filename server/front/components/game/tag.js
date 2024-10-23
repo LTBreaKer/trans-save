@@ -488,7 +488,7 @@ function start_game()
     {
         if (socket.readyState === WebSocket.OPEN)
             socket.close()
-        event.preventDefault() // This triggers the alert
+        event.preventDefault()
     }
 
     function disconnect()
