@@ -43,11 +43,11 @@ async function Friends() {
 
   update_btn.addEventListener('click', async () => {
     await update_profile_fun();
-    updateProfile.classList.remove('active');
-    document.querySelector('.success_update').style.display = "flex";
-    setTimeout(function() {
-      document.querySelector('.success_update').style.display = 'none';
-  }, 2000);
+    // updateProfile.classList.remove('active');
+  //   document.querySelector('.success_update').style.display = "flex";
+  //   setTimeout(function() {
+  //     document.querySelector('.success_update').style.display = 'none';
+  // }, 2000);
     
   })
   editProfileButton.addEventListener('click', () => {
@@ -510,10 +510,10 @@ async function update_profile_fun() {
   const check_box = document.getElementById('check_box');
 
   var boll = true;
-  if (update_Email.value !== '') 
-    if (!isValidEmail(update_Email.value)){
-      boll = false;
-    }
+  // if (update_Email.value !== '') 
+  //   if (!isValidEmail(update_Email.value)){
+  //     boll = false;
+  //   }
   if (new_password.value !== '')
       if (new_password.length < 8){
         boll = false;
@@ -533,6 +533,14 @@ async function update_profile_fun() {
 }
 
 async function update_backend(data) {
+
+  const update_email_err = document.getElementById('update_email_err');
+  const update_user_err = document.getElementById('update_user_err');
+  const update_new_err = document.getElementById('update_new_err');
+  const update_ava_err = document.getElementById('update_ava_err');
+  const update_old_err = document.getElementById('update_old_err');
+
+
   const response = await fetch(api + 'auth/update-user/', {
     method: 'PUT',
     headers: {
@@ -543,9 +551,25 @@ async function update_backend(data) {
     body: data
   });
   const jsonData = await response.json();
-  if (!response.ok) {
-    throw new Error(`HTTP error! Status: ${response.status}`);
+  if (response.status !== 200) {
+    let message = jsonData.message
+    if (message.email) {
+      update_email_err.innerHTML = message.email[0]
+    } if (message.username) {
+      update_user_err.innerHTML = "invalid username"
+
+    } if (message.old_password) {
+      update_old_err.innerHTML = message.old_password[0]
+
+    } if (message.password) {
+      update_new_err.innerHTML = message.password[0]
+
+    }if (message.avatar) {
+      update_ava_err.innerHTML = "invalid image"
+
+    }
   }
+
 }
 
 export async function send_freinds_request(userna) {

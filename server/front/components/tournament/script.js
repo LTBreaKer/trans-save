@@ -40,11 +40,14 @@ async function Tournament() {
     console.log(tournament_data.tournament_matches);
     while (tournament_data[i]) {
       if (tournament_data[i].status === "upcoming") {
-        await start_tournament_match(tournament_data[i]);
-        tournament_match_data = tournament_data[i];
-        assingDataToGameData(tournament_match_data);
-        statePongGameToTournament();
-        window.location.hash = '/pingpong';
+         const status = await start_tournament_match(tournament_data[i]);
+         if (status === 200) {
+
+           tournament_match_data = tournament_data[i];
+           assingDataToGameData(tournament_match_data);
+           statePongGameToTournament();
+           window.location.hash = '/pingpong';
+          }
         return;
       }
       i++;
@@ -71,7 +74,17 @@ function updateContent() {
   }
 }
 
+function errors_fun(message) {
+  const game_tag_err = document.getElementById('game_tag_err');
+  game_tag_err.innerHTML = `<i class="bi bi-check2-circle"></i> ${message}`;
 
+  document.querySelector('.success_update').style.display = "flex";
+  setTimeout(function() {
+    document.querySelector('.success_update').style.display = 'none';
+}, 2000);
+
+
+}
 
 
 async function start_tournament_match(params) {
@@ -86,31 +99,28 @@ async function start_tournament_match(params) {
     const urlEncodedData = new URLSearchParams(participant);
     console.log("djskfjksdjfksjd fsdfkjdsj =====? ", participant)
     console.log("hello we are from morocco ")
-    try {
-      const response = await fetch(tournament + 'start-match/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-          'Authorization': 'Bearer ' + get_localstorage('token'),
-          'Session-ID': get_localstorage('session_id')
-        },
-        credentials: 'include',
-        body: urlEncodedData
-      });
-      console.log(response);
-      const jsonData = await response.json();
-      console.log(jsonData);
+    const response = await fetch(tournament + 'start-match/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Authorization': 'Bearer ' + get_localstorage('token'),
+        'Session-ID': get_localstorage('session_id')
+      },
+      credentials: 'include',
+      body: urlEncodedData
+    });
+
+    console.log(response);
+    const jsonData = await response.json();
+    if (response.status !== 200) {
+      errors_fun(jsonData.message)
+    }
+    console.log(jsonData);
   
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
       // await login(jsonData.access, jsonData.refresh);
       
-    } catch (error) {
-      console.error('There was a problem with the fetch e here operation:', error);
-    }
     // await add_tournament_match_scire(params);
-
+    return response.status;
 
 }
 // add-match-score

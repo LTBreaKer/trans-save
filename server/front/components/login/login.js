@@ -62,9 +62,9 @@ async function Login() {
     
     const params = getQueryParams();
     const code = params.code;
-    const intra_errors = querySelectorAll('.intra_errors');
+    const intra_errors = document.querySelectorAll('.intra_errors');
     if (code) {
-        fetch(api + 'auth/callback-42/', {
+        let response = await fetch(api + 'auth/callback-42/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -74,26 +74,16 @@ async function Login() {
             credentials: 'include',
             body: JSON.stringify({code})
         })
-        .then(response => {
-            // intra_errors.forEach(element=> {
-            //     element.innerHTML = res===;
-            // })
-            console.log(response);
-            return response.json();
-        })
-         .then(data => {
-            console.log(data);
+        let data = await response.json()
+        console.log(data)
+        if (response.status === 200) {
             if (data.message === 'Waiting for otp verification'){
                 console.log(data.token);
                 console.log(data.token.access);
                 tokenn = data.token.access;
                 refrech = data.token.refresh;
-                 handle_otp();
+                    handle_otp();
                 console.log('hello we are here waiting for verification give me the code ');
-            }
-            if (data.message === 'user already logged in') {
-                const ama = document.querySelector('#backerror');
-                ama.innerText = data.message;
             }
     
             if (data.message === 'Login successful') {
@@ -102,10 +92,53 @@ async function Login() {
                 console.log("+-++++++++++++++++++++++==");
                 window.location.href = '/';
             }
-        })
-        .catch(error => {
-            console.error('There was a problem with the fetch operation:', error);
-        });
+        }
+        else {
+            if (data.message !== 'Failed to get access token') {
+
+                intra_errors.forEach(element=> {
+                    element.innerHTML = "username or email already exists";
+                })
+                console.log(response.message);
+            }
+        }
+        // .then(response => {
+        //     if (response.message !== 'Failed to get access token') {
+
+        //         intra_errors.forEach(element=> {
+        //             element.innerHTML = "username or email already exists";
+        //         })
+        //         console.log(response.message);
+        //     } else {
+        //         element.innerHTML = "";
+        //     }
+        //     return response.json();
+        // })
+        //  .then(data => {
+        //     console.log(data);
+        //     if (data.message === 'Waiting for otp verification'){
+        //         console.log(data.token);
+        //         console.log(data.token.access);
+        //         tokenn = data.token.access;
+        //         refrech = data.token.refresh;
+        //          handle_otp();
+        //         console.log('hello we are here waiting for verification give me the code ');
+        //     }
+        //     if (data.message === 'user already logged in') {
+        //         const ama = document.querySelector('#backerror');
+        //         ama.innerText = data.message;
+        //     }
+    
+        //     if (data.message === 'Login successful') {
+        //         console.log("+-------------------");
+        //         login(data.token.access, data.token.refresh, data.session_id);                
+        //         console.log("+-++++++++++++++++++++++==");
+        //         window.location.href = '/';
+        //     }
+        // })
+        // .catch(error => {
+        //     console.error('There was a problem with the fetch operation:', error);
+        // });
     }
 
         document.querySelectorAll('.intra-login').forEach(intraLogin => {
@@ -313,26 +346,33 @@ const signindata = () => {
         console.log(data.message)
         console.log(data)
         // console.log(data.detail)
-        if (data.message === 'Waiting for otp verification')
+        
+        if (data.message && data.message === 'Waiting for otp verification')
         {
             tokenn = data.token.access;
             refrech = data.token.refresh;
             handle_otp();
         }
-        if (data.message === "user logged in"){
+        else if (data.message && data.message === "user logged in"){
             login(data.access ,data.refresh, data.session_id)
             player_webSocket();
             window.location.hash = '/';
         }
-        if (data.message === 'user already logged in') {
+        else if (data.message && data.message === 'user already logged in') {
             console.log("hello we ae hhhdfjdkjfkd djfkdjkf =======> ")
             const ama = document.querySelector('#backerror');
             ama.innerText = data.message;
         }
+        else if (data.message.startsWith('try again')) {
+            const ama = document.querySelectorAll('.intra_errors');
+            ama.forEach(element => {
 
-        if (data.detail){
+                element.innerText = data.message;
+            })
+        }
+        else if (data.detail){
             const ama = document.querySelector('#backerror');
-            ama.innerText = data.detail;
+            ama.innerText = "username or password invalid";
         }
     })
     .catch(error => {

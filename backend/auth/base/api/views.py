@@ -478,14 +478,20 @@ def update_user(request, *args, **kwargs):
     if 'password' in request.data:
         old_password = request.data.get('old_password')
         if not old_password:
-            return Response(data={'message': 'old_password is required'}, status=400)
+            error = {
+                'old_password': ['old_password is required'],
+            }
+            return Response(data={'message': error}, status=400)
         if not user.check_password(old_password):
-            return Response(data={'message': 'Invalid old password'}, status=400)
+            error = {
+                'old_password': ['Invalid old password']
+            }
+            return Response(data={'message': error}, status=400)
         new_password = request.data.get('password')
         try:
             validate_password(new_password)
         except Exception as e:
-            return Response(data={'message': str(e)}, status=400)
+            return Response(data={'message': {'password': e}}, status=400)
         user.password = make_password(new_password)
 
     user.save()
