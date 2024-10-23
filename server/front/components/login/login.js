@@ -76,7 +76,7 @@ async function Login() {
         })
         let data = await response.json()
         console.log(data)
-        if (response.status === 200) {
+        // if (response.status === 200) {
             if (data.message === 'Waiting for otp verification'){
                 console.log(data.token);
                 console.log(data.token.access);
@@ -92,7 +92,7 @@ async function Login() {
                 console.log("+-++++++++++++++++++++++==");
                 window.location.href = '/';
             }
-        }
+        // }
         else {
             if (data.message !== 'Failed to get access token') {
 
