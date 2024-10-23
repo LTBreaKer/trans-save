@@ -119,6 +119,7 @@ def create_tournament(request):
             'playerOneName': match[3],
             'playerTwoId': match[4],
             'playerTwoName': match[5],
+            'status': match[9],
             'stage': match[10],
         }
         for match in matches

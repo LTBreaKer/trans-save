@@ -62,6 +62,7 @@ async function Login() {
     
     const params = getQueryParams();
     const code = params.code;
+    const intra_errors = querySelectorAll('.intra_errors');
     if (code) {
         fetch(api + 'auth/callback-42/', {
             method: 'POST',
@@ -74,6 +75,9 @@ async function Login() {
             body: JSON.stringify({code})
         })
         .then(response => {
+            // intra_errors.forEach(element=> {
+            //     element.innerHTML = res===;
+            // })
             console.log(response);
             return response.json();
         })
@@ -221,7 +225,7 @@ function getCookie(name) {
     return cookieValue;
 }
 
-const sign_up_data = () => {
+const sign_up_data = async () => {
     console.log("ana hna ana hna ana hna ana hna ana hna hhhhh");
     const data = {
         username: sup_username.value,
@@ -229,7 +233,7 @@ const sign_up_data = () => {
         email: sup_email.value
     };
     const jsonData = JSON.stringify(data);
-    fetch(api + 'auth/register/', {
+    let response = await fetch(api + 'auth/register/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -238,22 +242,47 @@ const sign_up_data = () => {
         credentials: 'include',
         body: jsonData
     })
-    .then(response=> {
-        if (!response.ok) 
-            throw new Error('Network response was not ok');
-        console.log(response);
-        return response.json();
-    })
-    .then(data => {
-        if (data.message === "User created"){
-            login(data.token.access, data.token.refresh, data.session_id)
+    let response_data = await response.json()
+    console.log(response_data)
+    if (response.status === 201){
+        if (response_data.message === "User created"){
+            login(response_data.token.access, response_data.token.refresh, response_data.session_id)
             player_webSocket();
             window.location.hash = '/'
         }
-    })
-    .catch(error => {
-        console.error('there is error from here');
-    });
+    }
+    else {
+        if (response_data.message.username || response_data.message.email) {
+            if (response_data.message.username)
+                setError(sup_username, response_data.message.username[0]);
+            if (response_data.message.email)
+                setError(sup_email, response_data.message.email[0]);
+        } else {
+            setError(sup_password, response_data.message[0]);
+
+        }
+        // if (response_data.message.username)
+        //     setError(sup_username, response_data.message.username[0]);
+
+    }
+    // .then(response=>{
+    //     data = await response.json()
+    //     console.log(response.json());
+    //     if (!response.ok) 
+    //         throw new Error('Network response was not ok');
+    //     return response.json();
+    // })
+
+    // .then(data => {
+    //     if (data.message === "User created"){
+    //         login(data.token.access, data.token.refresh, data.session_id)
+    //         player_webSocket();
+    //         window.location.hash = '/'
+    //     }
+    // })
+    // .catch(error => {
+    //     console.error('there is error from here');
+    // });
 }
 
 const signindata = () => {
@@ -277,8 +306,6 @@ const signindata = () => {
         if (!response.ok){
             console.log("Eroor");
         }
-        else if (response.status === 200)
-            name = 1;
 
         return response.json();
     })
@@ -292,7 +319,7 @@ const signindata = () => {
             refrech = data.token.refresh;
             handle_otp();
         }
-        if (name === 1){
+        if (data.message === "user logged in"){
             login(data.access ,data.refresh, data.session_id)
             player_webSocket();
             window.location.hash = '/';
@@ -303,7 +330,7 @@ const signindata = () => {
             ama.innerText = data.message;
         }
 
-        if (data.detail === 'User matching query does not exist.'){
+        if (data.detail){
             const ama = document.querySelector('#backerror');
             ama.innerText = data.detail;
         }
@@ -353,10 +380,14 @@ const signindata = () => {
             return response.json();
         })
         .then(data => {
+            const otp_error = document.getElementById('otp_error');
             console.log('========= ',data);
             if (data.message === "otp verified successfully"){
                 login(tokenn, refrech, data.session_id);
                 window.location.hash = '/'
+            }
+            else {
+                otp_error.innerHTML = data.message; 
             }
         })
         .catch(error => {

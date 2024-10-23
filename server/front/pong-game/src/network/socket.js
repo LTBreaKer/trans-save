@@ -138,8 +138,8 @@ export async function localGameSocket(group_name) {
 			}
 		}
 		ws.onclose = async (e) => {
-			// sendScore();
-			removeEventsListener("beforeunload", unload)
+			sendScore();
+			// removeEventsListener("beforeunload", unload)
 		}
 		return (ws);
 	} catch (error) {
@@ -147,13 +147,13 @@ export async function localGameSocket(group_name) {
 	}
 }
 
-function unload(event)
-{
-	sendScore()
-	event.preventDefault()
-}
+// function unload(event)
+// {
+// 	sendScore()
+// 	event.preventDefault()
+// }
 
-window.addEventListener("beforeunload", unload)
+// window.addEventListener("beforeunload", unload)
 
 
 
@@ -218,9 +218,9 @@ async function connectBallSocket() {
 			else if (message.type_msg === "play")
 				descounterRemoteGame();
 		}
-		ws.onclose = async (e) => {
-			removeEventsListener("beforeunload", unload)
-		}
+		// ws.onclose = async (e) => {
+		// 	removeEventsListener("beforeunload", unload)
+		// }
 		return (ws);
 	} catch (error) {
 		console.error('error: ', error)
