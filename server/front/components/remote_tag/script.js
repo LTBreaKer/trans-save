@@ -10,8 +10,6 @@ async function RemoteTag() {
   const app = document.getElementById('app');
   app.innerHTML = html;
 
-  console.log("here object=: ", tag_game_info);
-  
   if (!tag_game_info)
   {
         console.error("invalid players")
@@ -24,7 +22,6 @@ async function RemoteTag() {
         const socket = new WebSocket(url);
 
         socket.onopen = () => {
-            console.log('WebSocket connection established');
             resolve(socket);
         };
 
@@ -34,7 +31,6 @@ async function RemoteTag() {
         };
 
         socket.onclose = (event) => {
-            console.log('WebSocket connection closed', event);
             reject(new Error('WebSocket connection closed'));
         };
     });

@@ -15,8 +15,8 @@ body {
 
 :root {
   /* ===== Colors ===== */
-  --body-color: #262b36;
-  --sidebar-color: #e8ebfb;
+  --body-color: #1e1e2f;
+  --sidebar-color: #2f304a;
   --primary-color: #695cfe;
   --primary-color-light: #f6f5ff;
   --toggle-color: #DDD;
@@ -715,7 +715,7 @@ display: none;
     width: 100%;
     display: flex;
     padding: 15px;
-    justify-content: center;
+    justify-content: center; */
   }
   
   .pong_mer_cont .discription_game .text {
@@ -967,4 +967,22 @@ display: none;
     background-color: black;
     border-radius: 15px;
     cursor: pointer;
+  }
+
+
+  .ml_container .success_update {
+    /* display: flex; */
+    position: fixed;
+    width: 330px;
+    height: 55px;
+    background-color: white;
+    color: red;
+    align-items: center;
+    padding: 15px;
+    right: 0;
+    margin: 15px;
+    bottom: 0;
+    z-index: 1;
+    justify-content: center;
+    display: none;
   }
