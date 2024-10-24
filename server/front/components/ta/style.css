@@ -60,6 +60,9 @@ body {
   padding-left: 7.2em;
   height: 100px;
   width: 100%;
+  right: 15px;
+  top: -1px;
+  z-index: 1;
 }
 
 .container .navbar {
