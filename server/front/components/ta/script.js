@@ -8,10 +8,10 @@ let game_api = 'https://127.0.0.1:9007/api/tag-gamedb/';
 const ta_socket = 'wss://127.0.0.1:9007/ws/tag-game-db/';
 let tag_game_info;
 async function Ta() {
+  await remove_game_tag_f_database();
   window.onload = async function() {
 
     await remove_tag_remote_game();
-    await remove_game_tag_f_database();
     // document.querySelector('#cancel_game').style.display = 'none';
     // document.querySelector('#butt_game').style.display = 'flex';
     // document.querySelector('.spinner').style.display = 'none';

@@ -85,11 +85,11 @@ async function create_tournament_function(participants) {
 
 
 }
+await remove_game_pong_f_database();
 
 async function Ping() {
   window.onload = async function() {
     await remove_ping_remote_game();
-    await remove_game_pong_f_database();
   };
 
   if (!html)

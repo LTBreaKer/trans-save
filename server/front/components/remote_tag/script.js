@@ -3,6 +3,31 @@ import {tag_game_info} from '../ta/script.js';
 import {start_game} from './tag.js'
 let socket
 
+async function connect_game()
+{
+  try{
+    const response = await fetch(api + 'connect-game/', {
+        method: 'POST',
+        headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + get_localstorage('token'),
+        'Session-ID': get_localstorage('session_id')
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+            game_id: tag_game_info.game_id
+        })
+    });
+    const jsonData = await response.json()
+    if (!response.ok) {
+      console.error(`Status: ${response.status}, Message: ${jsonData.message || 'Unknown error'}`)
+    }
+  }
+  catch(error){
+      console.error('Request failed', error)
+  }
+}
+
 async function RemoteTag() {
   const html = await loadHTML('./components/remote_tag/index.html');
   loadCSS('./components/remote_tag/style.css');
@@ -63,7 +88,10 @@ async function RemoteTag() {
       message = socket_data.content
 
       if (socket.readyState === WebSocket.OPEN && message === "start game")
+      {
+        connect_game();
         start_game();
+      }
 
   })
 }

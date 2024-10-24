@@ -489,9 +489,10 @@ async function start_game()
             stop_animation = true
             if (!winner)
                 winner = "unknown"
-            noAwaitScore(winner)
+            // noAwaitScore(winner)
+            game_score(winner)
         }
-        event.preventDefault() // This triggers the alert
+        // event.preventDefault() // This triggers the alert
     }
 
     async function disconnect()

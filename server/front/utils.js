@@ -133,7 +133,7 @@ async function displayNotifications(notifications) {
 
 export async function remove_game_pong_f_database(params) {
   try {
-    const response = await fetch(game_api + 'delete-zombie-games/', {
+    const response = await fetch(api_game + 'delete-zombie-games/', {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
@@ -159,10 +159,9 @@ export async function remove_game_pong_f_database(params) {
 
 export async function remove_game_tag_f_database(params) {
   try {
-    const response = await fetch(api_game + 'delete-zombie-games/', {
+    const response = await fetch(game_api + 'delete-zombie-games/', {
       method: 'DELETE',
       headers: {
-        'Content-Type': 'application/json',
         'AUTHORIZATION': 'Bearer ' + get_localstorage('token'),
         'Session-ID': get_localstorage('session_id')
       },

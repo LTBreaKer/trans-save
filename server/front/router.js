@@ -44,12 +44,10 @@ async function Router() {
     if (path && path === '/ta' || path === '/ping') {
       if (path === '/ta') {
         await remove_tag_remote_game();
-        await remove_game_tag_f_database();
       }
 
       else if (path === '/ping') {    
         await remove_ping_remote_game();
-        await remove_game_pong_f_database();
       }
 
     }
