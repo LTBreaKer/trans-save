@@ -17,7 +17,7 @@ import {  } from '../game/paddle.js';
 import { lancePongGame } from '../main3d.js';
 import { setMousePosition, setMousePositionHelper } from '../events/mouseEvent.js';
 import { initGameComponents } from '../components/renderer.js';
-import { fnGameOver, sendScore } from './socket.js';
+import { fnGameOver, sendLoserScore, sendScore } from './socket.js';
 import { loadHTML } from '../../../utils.js';
 
 let html_popup_replay;
@@ -118,15 +118,17 @@ export async function replayLocalGame() {
 
 async function handleRelodQuit(event) {
 	(statePongGame != "remote") ?
-	sendScore() :
-	(paddle_way == 1 ? sendScore(0, 3) : sendScore(3, 0));
+	await sendScore() :
+	await sendLoserScore();
+	// closeGameSocket();
 	event.preventDefault();
 }
 
 async function handleHashChange() {
 	(statePongGame != "remote") ?
-	sendScore() :
-	(paddle_way == 1 ? sendScore(0, 3) : sendScore(3, 0));
+	await sendScore() :
+	await sendLoserScore();
+	// console.log("handleHashChange game_data: ", game_data);
 	await closeGameSocket();
 	await fnGameOver();
 }
@@ -165,6 +167,7 @@ export async function descounter() {
 	back_counter.style.display = 'flex';
 	let n = 0;
 	while (!startGame) {
+		console.log("descounter startGame: ", startGame);
 		if (n%2 == 0)
 			counter.textContent = "Loading.." + n / 2;
 		await sleep(0.5);
@@ -178,9 +181,9 @@ export async function loadPongGame() {
 	back_counter.style.display = 'flex';
 	let n = 0;
 	while (!startGame) {
-		if (n%2 == 0)
+		if (n%4 == 0)
 			counter.textContent = "Loading.." + n / 2;
-		await sleep(0.5);
+		await sleep(0.25);
 		n++;
 	}
 	back_counter.style.display = 'none';

@@ -404,11 +404,12 @@ body {
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  background-color: rgba(25, 26, 29, 0.6);
+  background-color: rgba(25, 26, 29, 0.7);
   color: #e8ebfb;
-  border-radius: 14px;
+  border-radius: 6px;
   font-size: 20px;
   font-family: "Hexen", sans-serif;
+  text-transform: capitalize;
 }
 
 .ml_start_game {

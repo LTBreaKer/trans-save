@@ -15,6 +15,7 @@ import { endTournamentMatchScore } from '../../../components/tournamentscore/mat
 import { loadHTML } from '../../../utils.js';
 import { tournament_match_data } from '../../../components/tournament/script.js';
 import { get_localstorage } from '../../../auth.js';
+import { loser_score } from '../game/paddle.js';
 // import { game_data,  sendPlayerPaddleCreated } from '../../../components/ping/script.js';
 // console.log("game API: ", gameApi);
 let gameSocket;
@@ -24,11 +25,11 @@ window.env = {
 	DJANGO_HOSTNAME : "c3r4p5.1337.ma"
 };
 
-export function sendScore(left_paddle_score = lpaddle.nb_goal, right_paddle_score = rpaddle.nb_goal) {
+export async function sendScore(left_paddle_score = lpaddle.nb_goal, right_paddle_score = rpaddle.nb_goal) {
 	if (!game_data)
 		return ;
-	game_data.player1_score = left_paddle_score ;
-	game_data.player2_score = right_paddle_score ;
+	left_paddle_score && (game_data.player1_score = left_paddle_score) ;
+	right_paddle_score && (game_data.player2_score = right_paddle_score) ;
 	const req = fetch(url, {
 		method: 'POST',
 		headers: {
@@ -37,7 +38,9 @@ export function sendScore(left_paddle_score = lpaddle.nb_goal, right_paddle_scor
 			'Session-ID': get_localstorage('session_id')
 		},
 		credentials: 'include',
-		body: JSON.stringify(game_data)
+		body: JSON.stringify(game_data),
+		keepalive: true
+
 	});
 	req.then((res) => {
 		if (!res.ok)
@@ -57,6 +60,28 @@ export function sendScoreWhenRefreshingPage() {
 		},
 		credentials: 'include',
 		body: JSON.stringify(game_data),
+		keepalive: true
+	});
+	req.then((res) => {
+		if (!res.ok)
+			throw new Error(`HTTP error: ${res.status}`);
+		return res.json();
+	})
+	.then(data => console.log(data))
+	.catch(error => console.error(`${error}`));
+}
+
+export async function sendLoserScore () {
+	console.log("loser_score: ", loser_score);
+	const req = fetch(url, {
+		method: 'POST',
+		headers: {
+			'Authorization': `Bearer ${localStorage.getItem("token")}`,
+			'Content-Type': 'application/json',
+			'Session-ID': get_localstorage('session_id')
+		},
+		credentials: 'include',
+		body: loser_score,
 		keepalive: true
 	});
 	req.then((res) => {
@@ -127,11 +152,6 @@ export async function fnGameOver(state = "rtn_menu") {
 	}
 }
 
-// export function fnLocalGameOver() {
-
-// }
-
-
 
 export async function localGameSocket(group_name) {
 	console.log("group name: ", group_name);
@@ -195,14 +215,17 @@ export async function paddleSocket(group_name) {
 			if (message.type_msg === "draw_info")
 				draw_info(message);
 			else if (message.type_msg === "game_over") {
-				console.log("message: ", message);
-				game_data.player1_score = message.left_paddle_score;
-				game_data.player2_score = message.right_paddle_score;
+			// 	console.log("message: ", message);
+			// 	game_data.player1_score = message.left_paddle_score;
+			// 	game_data.player2_score = message.right_paddle_score;
 				fnGameOver("show winner");
 			}
 			else
 				console.log("else message: ", message);
 		}
+		// ws.onclose = (e) => {
+		// 	sendScoreWhenRefreshingPage();
+		// }
 		return (ws);
 	} catch (error) {
 		console.error('error: ', error)
