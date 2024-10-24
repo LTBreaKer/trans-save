@@ -15,6 +15,7 @@ let tournament_data;
 export function assingGameApiToNULL() {
   game_data = null;
 }
+
 export function assingDataToGameData(data) {
   data.player1_id = data.playerOneId;
   data.player2_id = data.playerTwoId;
@@ -231,8 +232,10 @@ async function connectPlayerSocket() {
             player1_name: data.game.player1_name,
             player2_name: data.game.player2_name,
             player1_id: data.game.player1_id,
-            player2_id: data.game.player2_id
+            player2_id: data.game.player2_id,
           }
+          game_data.player1_score = 0;
+          game_data.player2_score = 0;
           // console.log("data are here => ", game_data)
           statePongGame = "remote";
           // window.location.hash = '/remote_pong';

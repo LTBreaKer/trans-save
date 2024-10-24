@@ -24,6 +24,7 @@ export function launchGame() {
 export function stopGame() {
 	gameOver = true;
 	startGame = false;
+	console.log("stopGame startGame: ", startGame);
 }
 
 async function movePaddle() {
@@ -154,12 +155,7 @@ async function updatePaddles(){
 	}
 }
 
-function playerChoicePaddle({name_current_user, player1_name}) {
-	(name_current_user === player1_name) ? paddle.left() : paddle.right();
-}
 
-if (statePongGame == "remote")
-	playerChoicePaddle(game_data);
 // if ( WebGL.isWebGLAvailable() )
 // 	animate();
 // else {
