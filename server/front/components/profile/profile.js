@@ -160,10 +160,10 @@ async function Friends() {
       element.textContent =  tourn_los + tourn_win;
     });
     mw.forEach(element => {
-      element.textContent = tourn_los;
+      element.textContent = tourn_win;
     });
     ml.forEach(element => {
-      element.textContent = tourn_win;
+      element.textContent = tourn_los;
     });
 
   })
@@ -243,6 +243,20 @@ export function set_tournament_data(data) {
   })
     tourn_win = win;
     tourn_los = los;
+    const nom = document.querySelectorAll('.nom');
+    const mw = document.querySelectorAll('.mw');
+    const ml = document.querySelectorAll('.ml');
+  
+  
+    nom.forEach(element => {
+      element.textContent =  tourn_los + tourn_win;
+    });
+    mw.forEach(element => {
+      element.textContent = tourn_win;
+    });
+    ml.forEach(element => {
+      element.textContent = tourn_los;
+    });
 
 }
 
