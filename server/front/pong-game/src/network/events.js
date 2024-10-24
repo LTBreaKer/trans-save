@@ -19,7 +19,7 @@ import { setMousePosition, setMousePositionHelper } from '../events/mouseEvent.j
 import { initGameComponents } from '../components/renderer.js';
 import { fnGameOver, sendLoserScore, sendScore } from './socket.js';
 import { loadHTML } from '../../../utils.js';
-
+const url = "https://127.0.0.1:9008/api/tournament/cancel-match/";
 let html_popup_replay;
 let html_popup_game_over;
 let html_pong_loader;
@@ -128,7 +128,39 @@ async function handleHashChange() {
 	(statePongGame != "remote") ?
 	await sendScore() :
 	await sendLoserScore();
-	// console.log("handleHashChange game_data: ", game_data);
+	await closeGameSocket();
+	await fnGameOver();
+}
+
+async function cancelTournamentMatch() {
+	const req = fetch(url, {
+		method: 'POST',
+		headers: {
+			'Authorization': `Bearer ${localStorage.getItem("token")}`,
+			'Content-Type': 'application/json',
+			'Session-ID': get_localstorage('session_id')
+		},
+		credentials: 'include',
+		body: JSON.stringify(game_data),
+		keepalive: true
+	});
+	req.then((res) => {
+		if (!res.ok)
+			throw new Error(`HTTP error: ${res.status}`);
+		return res.json();
+	})
+	.then(data => console.log(data))
+	.catch(error => console.error(`${error}`));
+}
+
+async function handleTournamentRelodQuit(event) {
+	await cancelTournamentMatch();
+	// closeGameSocket();
+	event.preventDefault();
+}
+
+async function handleTournamentHashChange() {
+	await cancelTournamentMatch();
 	await closeGameSocket();
 	await fnGameOver();
 }
@@ -137,8 +169,12 @@ export function setupEventListeners() {
 	window.addEventListener('resize', resizeCanvas);
 	document.addEventListener("keydown", keyDownHandler, false);
 	document.addEventListener("keyup", keyUpHandler, false);
-	window.addEventListener("beforeunload", handleRelodQuit)
-	window.addEventListener("hashchange", handleHashChange)
+	(statePongGame != "tournament") ?
+	(window.addEventListener("beforeunload", handleRelodQuit),
+	window.addEventListener("hashchange", handleHashChange)) :
+	(window.addEventListener("beforeunload", handleTournamentRelodQuit),
+	window.addEventListener("hashchange", handleTournamentHashChange))
+	
 	// if (statePongGame == "local" || statePongGame == "ai_bot") {
 	// 	replay.addEventListener("click", replayLocalGame);
 	// 	pong_menu.addEventListener("click", fnGameOver);
@@ -158,7 +194,9 @@ export function removeEventsListener() {
 	document.removeEventListener("keyup", keyUpHandler);
 	window.removeEventListener('mousemove', setMousePosition);
 	window.removeEventListener('beforeunload', handleRelodQuit);
-	window.removeEventListener("hashchange", handleHashChange)
+	window.removeEventListener("hashchange", handleHashChange);
+	window.removeEventListener('beforeunload', handleTournamentRelodQuit);
+	window.removeEventListener("hashchange", handleTournamentHashChange);
 
 }
 

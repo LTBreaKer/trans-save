@@ -71,6 +71,27 @@ export function sendScoreWhenRefreshingPage() {
 	.catch(error => console.error(`${error}`));
 }
 
+async function connectGame() {
+	const req = fetch("https://127.0.0.1:9006/api/gamedb/connect-game/", {
+		method: 'POST',
+		headers: {
+			'Authorization': `Bearer ${localStorage.getItem("token")}`,
+			'Content-Type': 'application/json',
+			'Session-ID': get_localstorage('session_id')
+		},
+		credentials: 'include',
+		body: JSON.stringify(game_data),
+		keepalive: true
+	});
+	req.then((res) => {
+		if (!res.ok)
+			throw new Error(`HTTP error: ${res.status}`);
+		return res.json();
+	})
+	.then(data => console.log(data))
+	.catch(error => console.error(`${error}`));
+}
+
 export async function sendLoserScore () {
 	console.log("loser_score: ", loser_score);
 	const req = fetch(url, {
