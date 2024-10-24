@@ -71,7 +71,8 @@ export function sendScoreWhenRefreshingPage() {
 	.catch(error => console.error(`${error}`));
 }
 
-async function connectGame() {
+export async function connectGame() {
+	console.log("=====connect Game: ");
 	const req = fetch("https://127.0.0.1:9006/api/gamedb/connect-game/", {
 		method: 'POST',
 		headers: {
@@ -117,7 +118,7 @@ export async function sendLoserScore () {
 async function draw_info(data) {
 	if (!game_data)
 		return;
-	console.log("game_data: ", game_data);
+	// console.log("game_data: ", game_data);
 	launchGame();
 	const data_ball = JSON.parse(data.ball);
 	const data_right_paddle = JSON.parse(data.right_paddle);

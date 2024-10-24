@@ -5,7 +5,7 @@ import { camera } from '../components/camera.js'
 import { first_player_goal, second_player_goal, box_result, canvas, back_counter } from '../utils/globaleVariable.js'
 import { scene } from '../components/scene.js'
 import { renderer } from '../components/renderer.js'
-import { localGameSocket, paddleSocket } from '../network/socket.js';
+import { connectGame, localGameSocket, paddleSocket } from '../network/socket.js';
 import { game_data, statePongGame } from '../../../components/ping/script.js';
 import { mousePosition, mousePositionHelper } from '../events/mouseEvent.js';
 import { resizeCanvas } from '../network/events.js';
@@ -70,6 +70,7 @@ export async function sendSocket(){
 		await ws.send(JSON.stringify({'type_msg': 'play'}));
 		back_counter.style.display = "none";
 		launchGame();
+		await connectGame();
 	}
 }
 
