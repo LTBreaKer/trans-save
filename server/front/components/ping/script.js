@@ -1,4 +1,4 @@
-import { loadHTML, loadCSS, remove_ping_remote_game } from '../../utils.js';
+import { loadHTML, loadCSS, remove_ping_remote_game, remove_game_pong_f_database } from '../../utils.js';
 import { login ,log_out_func, logoutf, get_localstorage, getCookie, check_access_token } from '../../auth.js';
 var api = "https://127.0.0.1:9004/api/";
 var api_game = "https://127.0.0.1:9006/api/gamedb/";
@@ -89,15 +89,17 @@ async function create_tournament_function(participants) {
 }
 
 async function Ping() {
+  
+  if (!html)
+    html = await loadHTML('./components/ping/index.html');
+  
+  const app = document.getElementById('app');
+  app.innerHTML = html;
   window.onload = async function() {
     await remove_ping_remote_game();
   };
+  await remove_game_pong_f_database();
 
-  if (!html)
-    html = await loadHTML('./components/ping/index.html');
-
-  const app = document.getElementById('app');
-  app.innerHTML = html;
   await checkFirst();
 
 
@@ -390,7 +392,7 @@ async function changeAccess() {
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
-      await login(jsonData.access, jsonData.refresh);
+      login(jsonData.access, jsonData.refresh, get_localstorage('session_id'));
       
     } catch (error) {
       console.error('There was a problem with the fetch operation:', error);

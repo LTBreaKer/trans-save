@@ -180,6 +180,7 @@ async function start_game()
     let GO = false
     let time = 1
     let winner, winner_color
+    let stop_animation = false
 
     canvas.width = 0;
     if (socket.readyState === WebSocket.OPEN)
@@ -245,7 +246,7 @@ async function start_game()
             }))
         }
 
-        if (socket.readyState === WebSocket.OPEN)
+        if (stop_animation === false)
             window.requestAnimationFrame(animation)
         c.clearRect(0, 0, canvas.width, canvas.height)
         load_draw(background, 0, 0, canvas.width, canvas.height)
@@ -447,6 +448,7 @@ async function start_game()
 
     function quitgame()
     {
+        stop_animation = true
         reload_data()
         document.getElementById('overlay').style.visibility = 'hidden'
         window.location.hash = '#/ta'
@@ -469,8 +471,11 @@ async function start_game()
     function handleRelodQuit(event)
     {
         if (socket.readyState === WebSocket.OPEN)
+        {
+            stop_animation = true
             socket.close()
-        event.preventDefault() // This triggers the alert
+        }
+        // event.preventDefault() // This triggers the alert
     }
 
     async function disconnect()
@@ -493,7 +498,10 @@ async function start_game()
     function hashchange()
     {
         if (window.location.hash !== "#/remoteTag")
+        {
+            stop_animation = true
             socket.close()
+        }
     }
 
     function reload_data()

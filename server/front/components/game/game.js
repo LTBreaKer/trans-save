@@ -2,6 +2,7 @@ import { loadHTML, loadCSS } from '../../utils.js';
 import {start_game} from './tag.js';
 import {tag_game_info} from '../ta/script.js'
 let socket;
+let api = "https://127.0.0.1:9007/api/tag-gamedb/"
 
 async function Game() {
 
@@ -46,8 +47,31 @@ async function Game() {
   }
 
   socket = await(initializeApp());
-  if (socket.readyState === WebSocket.OPEN) 
+  if (socket.readyState === WebSocket.OPEN)
+  {
+    try{
+        const response = await fetch(api + 'connect-game/', {
+            method: 'POST',
+            headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + get_localstorage('token'),
+            'Session-ID': get_localstorage('session_id')
+            },
+            credentials: 'include',
+            body: JSON.stringify({
+                game_id: tag_game_info.game_id
+            })
+        });
+        const jsonData = await response.json()
+        if (!response.ok) {
+          console.error(`Status: ${response.status}, Message: ${jsonData.message || 'Unknown error'}`)
+        }
+    }
+    catch(error){
+        console.error('Request failed', error)
+    }
     await start_game();
+  }
 }
 
 export{socket}

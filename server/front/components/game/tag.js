@@ -138,6 +138,7 @@ async function start_game()
     let time = 1
     let winner
     let esc = false
+    let stop_animation = false
 
     canvas.width = 0
     resizeWindow()
@@ -170,6 +171,7 @@ async function start_game()
 
     async function animation()
     {
+        console.log("+++++++++++++++++animation")
         if (socket.readyState === WebSocket.OPEN)
         {
             socket.send(JSON.stringify({
@@ -188,7 +190,7 @@ async function start_game()
                 'esc': esc
             }))
         }
-        if (socket.readyState === WebSocket.OPEN)
+        if (stop_animation === false)
             window.requestAnimationFrame(animation)
         c.clearRect(0, 0, canvas.width, canvas.height)
         load_draw(background, 0, 0, canvas.width, canvas.height)    
@@ -460,6 +462,7 @@ async function start_game()
 
     function quitgame()
     {
+        stop_animation = true
         reload_data()
         document.getElementById('overlay').style.visibility = 'hidden'
         esc = false
@@ -482,8 +485,14 @@ async function start_game()
     function handleRelodQuit(event)
     {
         if (socket.readyState === WebSocket.OPEN)
-            socket.close()
-        event.preventDefault()
+        {
+            stop_animation = true
+            if (!winner)
+                winner = "unknown"
+            // noAwaitScore(winner)
+            game_score(winner)
+        }
+        // event.preventDefault() // This triggers the alert
     }
 
     async function disconnect()
@@ -511,7 +520,10 @@ async function start_game()
     function hashchange()
     {
         if (window.location.hash !== "#/game")
+        {
+            stop_animation = true
             socket.close()
+        }
     }
 
     function reload_data()

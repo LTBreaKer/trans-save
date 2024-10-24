@@ -56,10 +56,8 @@ function playerChoicePaddle({name_current_user, player1_name}) {
 function loserScore() {
 	let data = game_data;
 	console.log("loserScore game_data: ", game_data);
-	data.player1_score = (paddle.x == 0) ? 1 : 1;
-	data.player2_score = (data.player1_score == 0) ? 1 : 1;
-	// data.player1_score = (paddle.x == 0) ? 0 : 3;
-	// data.player2_score = (data.player1_score == 0) ? 3 : 0;
+	data.player1_score = (paddle.x == 0) ? 0 : 3;
+	data.player2_score = (data.player1_score == 0) ? 3 : 0;
 	loser_score = JSON.stringify(data);
 	console.log("loserScore : ", loser_score);
 }

@@ -127,6 +127,63 @@ async function displayNotifications(notifications) {
 }
 
 
+// https://{{ip}}:9006/api/gamedb/delete-zombie-games/ : Method: DELETE | Header : AUTHORIZATION Bearer {access token}, Session-ID: {session_id}
+// https://{{ip}}:9007/api/tag-gamedb/delete-zombie-games/ : Method: DELETE | Header : AUTHORIZATION Bearer {access token}, Session-ID: {session_id}
+
+
+export async function remove_game_pong_f_database(params) {
+  try {
+    const response = await fetch(api_game + 'delete-zombie-games/', {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'AUTHORIZATION': 'Bearer ' + get_localstorage('token'),
+        'Session-ID': get_localstorage('session_id')
+      },
+      credentials: 'include',
+    });
+    console.log(response);
+    const jsonData = await response.json();
+    console.log("data delete from database=>  : ", jsonData);
+   
+      
+    if (!response.ok) 
+      throw new Error(`HTTP error! Status: ${response.status}`);
+  } catch (error) {
+    console.error('There was a problem with the fetch operation:', error);
+  }
+
+
+}
+
+
+export async function remove_game_tag_f_database(params) {
+  try {
+    const response = await fetch(game_api + 'delete-zombie-games/', {
+      method: 'DELETE',
+      headers: {
+        'AUTHORIZATION': 'Bearer ' + get_localstorage('token'),
+        'Session-ID': get_localstorage('session_id')
+      },
+      credentials: 'include',
+    });
+    console.log(response);
+    const jsonData = await response.json();
+    console.log("data delete from database tag game =>  : ", jsonData);
+   
+      
+    if (!response.ok) 
+      throw new Error(`HTTP error! Status: ${response.status}`);
+  } catch (error) {
+    console.error('There was a problem with the fetch operation:', error);
+  }
+
+}
+
+
+
+
+
 async function handleAccept(event) {
   await check_access_token();
   const notificationDiv = event.target.closest('.send_request');

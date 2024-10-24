@@ -202,7 +202,7 @@ export async function localGameSocket(group_name) {
 			}
 		}
 		ws.onclose = (e) => {
-			sendScoreWhenRefreshingPage();
+			(statePongGame !== "tournament") && sendScoreWhenRefreshingPage();
 		}
 		return (ws);
 	} catch (error) {
@@ -228,9 +228,10 @@ export async function paddleSocket(group_name) {
 		let ws = new WebSocket(wssUrl);
 		ws.onopen = async (event) => {
 			console.log('paddle game WebSocket conection established.');
-			await ws.send(JSON.stringify({'type_msg': 'add_group', 'group_name': game_data.game_id}));
-			await ws.send(JSON.stringify({'type_msg': 'assigning_paddle', 'paddle': choicePaddle(game_data)}));
+			ws.send(JSON.stringify({'type_msg': 'add_group', 'group_name': game_data.game_id}));
+			ws.send(JSON.stringify({'type_msg': 'assigning_paddle', 'paddle': choicePaddle(game_data)}));
 			await sendPlayerPaddleCreated();
+			await connectGame();
 		}
 		ws.onmessage = (event) => {
 			const message = JSON.parse(event.data);

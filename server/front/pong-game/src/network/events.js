@@ -19,6 +19,7 @@ import { setMousePosition, setMousePositionHelper } from '../events/mouseEvent.j
 import { initGameComponents } from '../components/renderer.js';
 import { fnGameOver, sendLoserScore, sendScore } from './socket.js';
 import { loadHTML } from '../../../utils.js';
+import { get_localstorage } from '../../../auth.js';
 const url = "https://127.0.0.1:9008/api/tournament/cancel-match/";
 let html_popup_replay;
 let html_popup_game_over;
@@ -121,7 +122,7 @@ async function handleRelodQuit(event) {
 	await sendScore() :
 	await sendLoserScore();
 	// closeGameSocket();
-	event.preventDefault();
+	// event.preventDefault();
 }
 
 async function handleHashChange() {
@@ -133,6 +134,7 @@ async function handleHashChange() {
 }
 
 async function cancelTournamentMatch() {
+	console.log("cancelTournamentMatch--------------> ",game_data);
 	const req = fetch(url, {
 		method: 'POST',
 		headers: {
@@ -154,12 +156,14 @@ async function cancelTournamentMatch() {
 }
 
 async function handleTournamentRelodQuit(event) {
+	// event.preventDefault();
+	console.log("-------------------handleTournamentRelodQuit ---------------");
 	await cancelTournamentMatch();
 	// closeGameSocket();
-	event.preventDefault();
 }
 
 async function handleTournamentHashChange() {
+	console.log("-------------------handleTournamentHashChange ---------------");
 	await cancelTournamentMatch();
 	await closeGameSocket();
 	await fnGameOver();
@@ -169,11 +173,16 @@ export function setupEventListeners() {
 	window.addEventListener('resize', resizeCanvas);
 	document.addEventListener("keydown", keyDownHandler, false);
 	document.addEventListener("keyup", keyUpHandler, false);
-	(statePongGame != "tournament") ?
-	(window.addEventListener("beforeunload", handleRelodQuit),
-	window.addEventListener("hashchange", handleHashChange)) :
-	(window.addEventListener("beforeunload", handleTournamentRelodQuit),
-	window.addEventListener("hashchange", handleTournamentHashChange))
+	console.log("statepong: ", statePongGame);
+	if (statePongGame !== "tournament") {
+		window.addEventListener("beforeunload", handleRelodQuit);
+		window.addEventListener("hashchange", handleHashChange);
+	}
+	else {
+		window.addEventListener("beforeunload", handleTournamentRelodQuit);
+		window.addEventListener("hashchange", handleTournamentHashChange);
+	}
+
 	
 	// if (statePongGame == "local" || statePongGame == "ai_bot") {
 	// 	replay.addEventListener("click", replayLocalGame);
@@ -257,7 +266,7 @@ let replayGame = async () => {
 let lanceGame = async () => {
 	console.log("------ lanceGame ==>>>", statePongGame);
 	await replayGame();
-	setupEventListeners();
+	// setupEventListeners();
 }
 
 initPlayGame(lanceGame);

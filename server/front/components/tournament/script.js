@@ -176,6 +176,8 @@ async function define_object_matches() {
       console.log(response);
   
       const jsonData = await response.json();
+      if (jsonData.message === 'there is no unfinished tournament')
+          window.location.hash = '/ping';
       tournament_data = jsonData.tournament_matches;
       console.log("last what happened==> ", jsonData);
       console.log("here is messae: ", tournament_data[0])
