@@ -15,6 +15,7 @@ let tournament_data;
 export function assingGameApiToNULL() {
   game_data = null;
 }
+
 export function assingDataToGameData(data) {
   data.player1_id = data.playerOneId;
   data.player2_id = data.playerTwoId;
@@ -66,17 +67,18 @@ async function create_tournament_function(participants) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
     tournament_data = jsonData;
-    if (jsonData.message === "tournament created")
-      window.location.hash = "/tournament";
-    if (response.status !== 200){
+    window.location.hash = "/tournament";
+    // if (jsonData.message === "tournament created")
+    //   window.location.hash = "/tournament";
+    // if (response.status !== 200){
 
-      if (jsonData.message.startsWith('Invalid username')){
-        errorhere('invalid username');
-      }
-      else if (jsonData.message) {
-        errorhere(jsonData.message);
-      }
-    }
+    //   if (jsonData.message.startsWith('Invalid username')){
+    //     errorhere('invalid username');
+    //   }
+    //   else if (jsonData.message) {
+    //     errorhere(jsonData.message);
+    //   }
+    // }
     // await login(jsonData.access, jsonData.refresh);
     
   } catch (error) {
@@ -173,7 +175,6 @@ async function check_tournament_finish() {
         'Session-ID': get_localstorage('session_id')
       },
       credentials: 'include',
-      // body: JSON.stringify(participants)
     });
     console.log(response);
 
@@ -242,8 +243,10 @@ async function connectPlayerSocket() {
             player1_name: data.game.player1_name,
             player2_name: data.game.player2_name,
             player1_id: data.game.player1_id,
-            player2_id: data.game.player2_id
+            player2_id: data.game.player2_id,
           }
+          game_data.player1_score = 0;
+          game_data.player2_score = 0;
           // console.log("data are here => ", game_data)
           statePongGame = "remote";
           // window.location.hash = '/remote_pong';
@@ -282,9 +285,9 @@ try {
         document.querySelector('#butt_game').style.display = 'none';
         document.querySelector('.spinner').style.display = 'flex';
       }
-      else if (jsonData.message) {
-        errorhere(jsonData.message);
-      }
+      // else if (jsonData.message) {
+      //   errorhere(jsonData.message);
+      // }
 
       console.log(jsonData);
   
@@ -346,14 +349,13 @@ async function lanceLocalGame() {
     console.log("###  pingpong: ", window.location.hash);
     game_data = jsonData;
     changePlayerPosition();
+    // if (jsonData.message) {
+    //   errorhere(jsonData.message);
+    // }
+    // else if (jsonData.message.player2_name) {
+    //   errorhere('invalid player name');
 
-    if (jsonData.message) {
-      errorhere(jsonData.message);
-    }
-    else if (jsonData.message.player2_name) {
-      errorhere('invalid player name');
-
-    }
+    // }
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response}`);
     }
@@ -453,15 +455,13 @@ async function changeAccess() {
     }
   }
   
-function errorhere(string) {
-  const game_tag_err = document.getElementById('game_tag_err');
-  game_tag_err.innerHTML = `<i class="bi bi-check2-circle"></i> ${string}`;
-
-  document.querySelector('.success_update').style.display = "flex";
-  setTimeout(function() {
-    document.querySelector('.success_update').style.display = 'none';
-}, 2000);
-
-}
-
+//   function errorhere(string) {
+//     const game_tag_err = document.getElementById('game_tag_err');
+//     game_tag_err.innerHTML = `<i class="bi bi-check2-circle"></i> ${string}`;
+  
+//     document.querySelector('.success_update').style.display = "flex";
+//     setTimeout(function() {
+//       document.querySelector('.success_update').style.display = 'none';
+//   }, 2000);
+// }
 export default Ping;
