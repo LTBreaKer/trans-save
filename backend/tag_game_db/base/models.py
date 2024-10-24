@@ -19,6 +19,7 @@ class TagGameDb(models.Model):
     winner_id = models.IntegerField(blank=True, null=True)
     winner_name = models.CharField(max_length=150, blank=True, null=True)
     is_active = models.BooleanField(default=True)
+    is_connected = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
     
