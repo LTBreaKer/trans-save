@@ -113,7 +113,7 @@ function isAuthenticated() {
 
   async function log_out_func() {
     console.log("---------------------------------- hello ")
-    check_access_token();
+    await check_access_token();
     console.log("---------------------------------- hello ")
     const bod = {
       refresh: get_localstorage('refresh')

@@ -714,7 +714,7 @@ display: none;
     width: 100%;
     display: flex;
     padding: 15px;
-    justify-content: center; */
+    justify-content: center;
   }
   
   .pong_mer_cont .discription_game .text {
@@ -984,4 +984,6 @@ display: none;
     z-index: 1;
     justify-content: center;
     display: none;
+    font-family: "Hexen", sans-serif;
+
   }

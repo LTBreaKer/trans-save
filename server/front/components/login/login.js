@@ -363,7 +363,7 @@ const signindata = () => {
             const ama = document.querySelector('#backerror');
             ama.innerText = data.message;
         }
-        else if (data.message.startsWith('try again')) {
+        else if (data.message && data.message.startsWith('try again')) {
             const ama = document.querySelectorAll('.intra_errors');
             ama.forEach(element => {
 

@@ -813,6 +813,8 @@ transition: all 0.2s ease-in-out;
   margin: 15px;
   bottom: 0;
   display: none;
+  font-family: "Hexen", sans-serif;
+
 }
 
 .container .send_friend_message {
