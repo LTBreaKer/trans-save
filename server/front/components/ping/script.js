@@ -67,17 +67,7 @@ async function create_tournament_function(participants) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
     tournament_data = jsonData;
-    if (response.status !== 200){
-
-      if (jsonData.message.startsWith('Invalid username')){
-        errorhere('invalid username');
-      }
-      else if (jsonData.message) {
-        errorhere(jsonData.message);
-      }
-    }
-    else if (jsonData.message === "tournament created")
-      window.location.hash = "/tournament";
+    window.location.hash = "/tournament";
     // await login(jsonData.access, jsonData.refresh);
     
   } catch (error) {
@@ -174,7 +164,6 @@ async function check_tournament_finish() {
         'Session-ID': get_localstorage('session_id')
       },
       credentials: 'include',
-      // body: JSON.stringify(participants)
     });
     console.log(response);
 
@@ -285,9 +274,6 @@ try {
         document.querySelector('#butt_game').style.display = 'none';
         document.querySelector('.spinner').style.display = 'flex';
       }
-      else if (jsonData.message) {
-        errorhere(jsonData.message);
-      }
 
       console.log(jsonData);
   
@@ -349,14 +335,6 @@ async function lanceLocalGame() {
     console.log("###  pingpong: ", window.location.hash);
     game_data = jsonData;
     changePlayerPosition();
-
-    if (jsonData.message) {
-      errorhere(jsonData.message);
-    }
-    else if (jsonData.message.player2_name) {
-      errorhere('invalid player name');
-
-    }
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response}`);
     }
@@ -456,15 +434,5 @@ async function changeAccess() {
     }
   }
   
-function errorhere(string) {
-  const game_tag_err = document.getElementById('game_tag_err');
-  game_tag_err.innerHTML = `<i class="bi bi-check2-circle"></i> ${string}`;
-
-  document.querySelector('.success_update').style.display = "flex";
-  setTimeout(function() {
-    document.querySelector('.success_update').style.display = 'none';
-}, 2000);
-
-}
 
 export default Ping;
