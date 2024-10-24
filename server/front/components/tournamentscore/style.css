@@ -11,11 +11,25 @@ body {
   background: var(--body-color);
 }
 
+@font-face {
+  font-family: 'Hexen';
+  src: url('../assets/Hexenkoetel-qZRv1.ttf') format('truetype');
+  font-weight: bold;
+  font-style: italic;
+  
+}
 
+@font-face {
+  font-family: 'Volax';
+  src: url('../assets/Valorax-lg25V.otf') format('opentype');
+  font-weight: bold;
+  font-style: italic;
+  
+}
 :root {
   /* ===== Colors ===== */
-  --body-color: #262b36;
-  --sidebar-color: #e8ebfb;
+  --body-color: #1e1e2f;
+  --sidebar-color: #2f304a;
   --primary-color: #695cfe;
   --primary-color-light: #f6f5ff;
   --toggle-color: #DDD;
@@ -29,6 +43,7 @@ body {
 
 
 .container {
+  font-family: "Hexen", sans-serif;
   margin: 0;
   padding: 0;
   width: 100%;
@@ -87,6 +102,7 @@ body {
 }
 
 .header .profile .text {
+  font-family: "Volax", sans-serif;
   color: #e8ebfb;
 }
 
@@ -102,9 +118,9 @@ body {
 .sidebar {
   position: relative;
   top: 0;
-  margin-top: 80px;
+  margin-top: 130px;
   left: 0;
-  height: calc(100vh - 80px);
+  height: calc(100vh - 160px);
   border-radius: 25px;
   width: 88px;
   padding: 10px 14px;
@@ -281,7 +297,7 @@ display: none;
     padding: 11px;
     height: 45px;
     width: 150px;
-    background-color: black;
+    background-color: #343650;
     font-size: 21px;
     margin: 12px;
     border-radius: 15px;
@@ -359,7 +375,7 @@ display: none;
 
   .winneer #winn {
     padding: 11px 25px;
-    background-color: black;
+    background-color: #343650;
     border-radius: 15px;
     margin: 25px;
   }
@@ -468,24 +484,32 @@ display: none;
 @media (max-width: 565px) {
 
   .sidebar {
-      margin-top: 80px;
-      position: relative;
-      top: 0;
-      left: 0;
-      border-radius: 25px;
-      height: 1px;
-      width: 88px;
-      padding: 3px 14px;
-      background-color: var(--body-color);
-      transition: var(--tran-05);
-      overflow: hidden;
+    margin-top: 80px;
+  
+        position: relative;
+        top: 0;
+        left: 0;
+        border-radius: 25px;
+        height: 1px;
+        width: 88px;
+        padding: 3px 14px;
+        background-color: var(--body-color);
+        transition: var(--tran-05);
+        overflow: hidden;
   }
 
   .sidebar.active {
-      height: 92vh;
-      padding: 10px 14px;
-      background-color: var(--sidebar-color);
-  }
+    position: relative;
+    top: 0;
+    margin-top: 130px;
+    left: 0;
+    height: calc(100vh - 160px);
+    border-radius: 25px;
+    width: 88px;
+    padding: 10px 14px;
+    background-color: var(--sidebar-color);
+    transition: var(--tran-05);
+}
 
   #butt {
       display: flex;

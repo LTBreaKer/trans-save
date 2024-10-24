@@ -88,11 +88,11 @@ class LocalGameConsumer(AsyncWebsocketConsumer):
                     time = time,
                     pos_hit = -1,
                     collision = False)
-                # if (self.bot):
-                input_values = [self.ball.x / 10, self.ball.y / 10, self.ball.velX, self.ball.velY]
-                input_array = np.array(input_values).reshape(1, -1)
-                predictions = model.predict(input_array)
-                random_number = random.choice(numbers)
+                if (self.bot or time == 0.0):
+                    input_values = [self.ball.x / 10, self.ball.y / 10, self.ball.velX, self.ball.velY]
+                    input_array = np.array(input_values).reshape(1, -1)
+                    predictions = model.predict(input_array)
+                    random_number = random.choice(numbers)
             if (self.bot):
                 self.rpaddle.ai_update(predictions * 10 - random_number)
             self.ball.update(self.rpaddle, self.lpaddle)

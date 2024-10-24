@@ -191,7 +191,7 @@ async function get_tournament_by_name(name) {
     console.log((`HTTP error! Status: ${response.status}`), Error);
   }
   console.log(jsonData)
-  set_tournament_data(jsonData);
+  set_tournament_data(jsonData.message);
 }
 
 

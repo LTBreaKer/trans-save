@@ -6,7 +6,7 @@ import { TABLE_DEPTH, TABLE_WIDTH, PADDLE_LONG, height, width, first_player_goal
 import  {statePongGame } from '../../../../components/ping/script.js'
 import { descounter, loadPongGame, loadPopupGameOver, loadPopupReply, removeEventsListener, replayLocalGame } from './events.js';
 import { assingGameApiToNULL, game_data, initPlayRemoteGame, sendPlayerPaddleCreated } from '../../../components/ping/script.js';
-import { animationFrameId, launchGame, playRemotePongGame, sendSocket, stopGame } from '../game/game.js';
+import { animationFrameId, closeGameSocket, launchGame, playRemotePongGame, sendSocket, stopGame } from '../game/game.js';
 import { moveCamera } from '../components/camera.js';
 import { renderer } from '../components/renderer.js';
 import { scene } from '../components/scene.js';
@@ -19,26 +19,28 @@ import { get_localstorage } from '../../../auth.js';
 // console.log("game API: ", gameApi);
 let gameSocket;
 let html_popup_replay;
+const url = "https://127.0.0.1:9006/api/gamedb/add-game-score/";
 window.env = {
 	DJANGO_HOSTNAME : "c3r4p5.1337.ma"
 };
 
-export function sendScore(left_paddle_score = lpaddle.nb_goal, right_paddle_score = rpaddle.nb_goal) {
-	const url = "https://127.0.0.1:9006/api/gamedb/add-game-score/";
+export async function sendScore(left_paddle_score = lpaddle.nb_goal, right_paddle_score = rpaddle.nb_goal) {
 	// const url = "http://"+ window.env.DJANGO_HOSTNAME +":8080/server/auth/users/me/";
 	let data;
 	data = game_data;
-	data.player1_score = left_paddle_score;
-	data.player2_score = right_paddle_score;
-	const urlEncodedData = new URLSearchParams(data);
+	data.player1_score = left_paddle_score ;
+	data.player2_score = right_paddle_score ;
+	// const urlEncodedData = new URLSearchParams(data);
+	// console.log("data: ", data);
 	const req = fetch(url, {
 		method: 'POST',
 		headers: {
 			'Authorization': `Bearer ${localStorage.getItem("token")}`,
-			'Content-Type': 'application/x-www-form-urlencoded',
+			'Content-Type': 'application/json',
 			'Session-ID': get_localstorage('session_id')
 		},
-		body: urlEncodedData
+		credentials: 'include',
+		body: JSON.stringify(data)
 	});
 	req.then((res) => {
 		if (!res.ok)
@@ -135,11 +137,26 @@ export async function localGameSocket(group_name) {
 				}
 			}
 		}
+		ws.onclose = async (e) => {
+			sendScore();
+			// removeEventsListener("beforeunload", unload)
+		}
 		return (ws);
 	} catch (error) {
 		console.error('error: ', error)
 	}
 }
+
+// function unload(event)
+// {
+// 	sendScore()
+// 	event.preventDefault()
+// }
+
+// window.addEventListener("beforeunload", unload)
+
+
+
 
 function choicePaddle({name_current_user, player1_name}) {
 	(name_current_user === player1_name) ? leftPaddle() : rightPaddle();
@@ -201,6 +218,9 @@ async function connectBallSocket() {
 			else if (message.type_msg === "play")
 				descounterRemoteGame();
 		}
+		// ws.onclose = async (e) => {
+		// 	removeEventsListener("beforeunload", unload)
+		// }
 		return (ws);
 	} catch (error) {
 		console.error('error: ', error)

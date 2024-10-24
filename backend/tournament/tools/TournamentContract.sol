@@ -192,6 +192,19 @@ contract TournamentContract {
         require(matchFound == true, "no match found with the provided match_number and tournament_id");
     }
 
+    function cancelMatch(uint256 _matchNumber, uint256 _tournamentId) public {
+        bool matchFound = false;
+
+        for (uint256 i = 0; i < matches.length; i++) {
+            if (matches[i].tournamentId == _tournamentId && matches[i].matchNumber == _matchNumber) {
+                matches[i].status = "upcoming";
+                matchFound = true;
+                break;
+            }
+        }
+        require(matchFound == true, "no match found with the provided match_number and tournament_id");
+    }
+
     function addMatchScore(uint256 _matchNumber, uint256 _tournamentId, uint256 _playerOneScore, uint256 _playerTwoScore) public {
         bool matchFound = false;
 

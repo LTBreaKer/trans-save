@@ -96,7 +96,10 @@ cancel_game_func.addEventListener('click', await remove_tag_remote_game);
         document.querySelector('.spinner').style.display = 'flex';
       }
 
-      else if (jsonData.message === "player is already in a game") {
+      else if (jsonData.message) {
+        const game_tag_err = document.getElementById('game_tag_err');
+        game_tag_err.innerHTML = `<i class="bi bi-check2-circle"></i> ${jsonData.message}`;
+  
         document.querySelector('.success_update').style.display = "flex";
         setTimeout(function() {
           document.querySelector('.success_update').style.display = 'none';
@@ -191,10 +194,29 @@ async function localgame_tag() {
       },
       credentials: 'include',
       body: JSON.stringify(data)
+
     });
+
+
+    
     console.log(response);
     const jsonData = await response.json();
-    if (jsonData.message === "player is already in a game") {
+    if (jsonData.message.player2_name) {
+      const game_tag_err = document.getElementById('game_tag_err');
+      game_tag_err.innerHTML = `<i class="bi bi-check2-circle"></i> invalid player name`;
+
+      console.log('hdsklfjsldkjflsdjk    => :', jsonData.message);
+      document.querySelector('.success_update').style.display = "flex";
+      setTimeout(function() {
+        document.querySelector('.success_update').style.display = 'none';
+    }, 2000);
+
+    }
+
+    else if (jsonData.message) {
+      const game_tag_err = document.getElementById('game_tag_err');
+      game_tag_err.innerHTML = `<i class="bi bi-check2-circle"></i> ${jsonData.message}`;
+
       console.log('hdsklfjsldkjflsdjk    => :', jsonData.message);
       document.querySelector('.success_update').style.display = "flex";
       setTimeout(function() {

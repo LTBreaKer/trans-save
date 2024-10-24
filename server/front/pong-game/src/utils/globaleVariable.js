@@ -20,6 +20,7 @@ export let first_player_goal;
 export let second_player_goal;
 export let p_first;
 export let p_second;
+export let double_point;
 export let first_player_name;
 export let second_player_name;
 export let replay;
@@ -44,6 +45,7 @@ export async function loadDocument() {
 	second_player_goal = document.querySelector("#second_player");
 	p_first = document.querySelector(".p_first");
 	p_second = document.querySelector(".p_second");
+	double_point = document.querySelector(".double_point");
 	first_player_name = document.querySelector("#first_player_name");
 	second_player_name = document.querySelector("#second_player_name");
 	// replay = document.querySelector('#replay');

@@ -182,7 +182,7 @@ def add_game_score(request):
         player2_name = request.data.get('player2_name')
         player1_score = request.data.get('player1_score')
         player2_score = request.data.get('player2_score')
-        if not player1_name or not player2_name or not player1_score or not player2_score:
+        if not player1_name or not player2_name or (not player1_score and player1_score != 0) or (not player2_score and player2_score != 0):
             return Response({'message': 'player1_name , player2_name, player1_score and player2_score are required'}, status=400)
         player_names = [game.player1_name, game.player2_name]
         if player1_name not in player_names or player2_name not in player_names:

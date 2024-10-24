@@ -81,6 +81,7 @@ class CustomTokenObtainPairView(TokenObtainPairView):
                 user_session.is_authentication_completed = True
                 user_session.save()
                 response.data['session_id'] = session_id
+                response.data['message'] = 'user logged in'
                 return response
         except Exception as e:
             raise InvalidToken(str(e))
@@ -113,19 +114,12 @@ class LogoutView(TokenBlacklistView):
 @permission_classes([IsAuthenticated])
 def verifyOtpView(request, *args, **kwargs):
     user = request.user
-    session_id = request.headers.get('Session-ID')
 
-    try:
-        user_session = UserSession.objects.get(user=user, session_id=session_id)
-    except UserSession.DoesNotExist:
-        return Response({'message': 'user_session does not exist'}, status=404)
     # if user.is_logged_out:
     #     return Response({'message': 'user logged out'}, status=403)
     otp = request.data.get('otp')
     if not otp:
         return Response({'message': 'otp is required'}, statu=400)
-    if user_session.is_authentication_completed == True:
-        return Response({'message': 'user already authenticated'})
     if user.otp_expiry <= timezone.now():
         return Response({'message': 'otp expired'})
     if otp != user.otp:
@@ -136,13 +130,14 @@ def verifyOtpView(request, *args, **kwargs):
         user.max_otp_try = 3
         user.otp_max_out = None
 
-        user_session.is_authentication_completed = True
         user.is_online = True
-
-        user.save()
+        session_id = uuid.uuid4()
+        user_session = UserSession.objects.create(user=user, session_id=session_id)
+        user_session.is_authentication_completed = True
         user_session.save()
+        user.save()
 
-    return Response({'message': 'otp verified successfully'}, status=200)
+    return Response({'message': 'otp verified successfully', 'session_id': session_id}, status=200)
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
@@ -184,7 +179,7 @@ def registerView(request, *args, **kwargs):
             validate_password(password=request.data.get('password'))
         except Exception as e:
             user.delete()
-            data = {'message': str(e)}
+            data = {'message': e}
             return Response(data=data, content_type='application/json', status=400)
         user.set_password(request.data.get('password'))
         user.is_online = True
@@ -305,7 +300,7 @@ def callback_42(request):
             # user = User.objects.create_user(username=username, email=email,
             #                             first_name=first_name, last_name=last_name)
         except Exception as e:
-            return Response({'message': serializer.errors}, status=403)
+            return Response({'message': serializer.errors}, status=400)
         user = User.objects.get(username=username)
         user.avatar = f"avatars/{username}_avatar.jpg"
         user.set_unusable_password()
@@ -483,14 +478,20 @@ def update_user(request, *args, **kwargs):
     if 'password' in request.data:
         old_password = request.data.get('old_password')
         if not old_password:
-            return Response(data={'message': 'old_password is required'}, status=400)
+            error = {
+                'old_password': ['old_password is required'],
+            }
+            return Response(data={'message': error}, status=400)
         if not user.check_password(old_password):
-            return Response(data={'message': 'Invalid old password'}, status=400)
+            error = {
+                'old_password': ['Invalid old password']
+            }
+            return Response(data={'message': error}, status=400)
         new_password = request.data.get('password')
         try:
             validate_password(new_password)
         except Exception as e:
-            return Response(data={'message': str(e)}, status=400)
+            return Response(data={'message': {'password': e}}, status=400)
         user.password = make_password(new_password)
 
     user.save()

@@ -545,6 +545,7 @@ position: relative;
 align-items: center; 
 justify-content: space-between;
 margin-top: 15px;
+width: 95%;
 }
 
 .play h2 {
@@ -667,9 +668,10 @@ justify-content: flex-end;
 }
 
 .update_data .profile {
+  position: relative;
 width: 530px;
-height: 70vh;
-background-color: #262b36;
+height: 48vh;
+background-color: #343650;
 display: flex;
 flex-direction: column;
 justify-content: space-between;
@@ -679,13 +681,13 @@ border-radius: 10px;
 }
 
 
-.update_data .profile #update_img_profile {
+/* .update_data .profile #update_img_profile {
 width: 98%;
 margin: 5px;
 height: 25vh;
 display: flex;
 cursor: pointer;
-}
+} */
 
 .update_data .profile .update_avatar {
 cursor: pointer;
@@ -702,7 +704,7 @@ width: 100px;
 height: 100px;
 border-radius: 50%;
 display: flex;
-top: 310px;
+top: -18px;
 }
 
 .update_data .profile .form {
@@ -710,6 +712,7 @@ display: flex;
 width: 100%;
 align-items: center;
 flex-direction: column;
+padding-bottom: 15px;
 }
 
 .update_data .profile .form .input {
@@ -798,7 +801,7 @@ transition: all 0.2s ease-in-out;
 
 .container .success_update {
   /* display: flex; */
-  position: absolute;
+  position: fixed;
   width: 320px;
   height: 55px;
   background-color: white;
@@ -1163,7 +1166,7 @@ display: none;
 
   /* here i will work with media off all page lol */
 
-  @media (max-width: 1110px) {
+  @media (max-width: 1128px) {
 
     .content .profile .matt  {
       display: flex;
@@ -1248,10 +1251,17 @@ display: none;
   
     .sidebar.active {
         
-        height: 91vh;
-        padding: 10px 14px;
-        background-color: var(--sidebar-color);
-    }
+      position: relative;
+      top: 0;
+      margin-top: 130px;
+      left: 0;
+      height: calc(100vh - 160px);
+      border-radius: 25px;
+      width: 88px;
+      padding: 10px 14px;
+      background-color: var(--sidebar-color);
+      transition: var(--tran-05);
+        }
   
     #butt {
         display: flex;
@@ -1302,7 +1312,18 @@ display: none;
       /* justify-content: center; */
       
       }
-      
+      .play {
+        display: flex;        
+        position: relative;
+        align-items: center; 
+        justify-content: space-between;
+        margin-top: 15px;
+        width: 90%;
+        }
+        .play h2 {
+          margin: 0 5px; 
+          }
+  
   
   }
   
@@ -1374,7 +1395,7 @@ display: none;
         display: flex;
         flex-direction: column;
         height: 40vh;
-        background-color: #474554;
+        background-color: #343650;
         align-items: center;
         overflow-y: auto;
         border-radius: 25px;
@@ -1408,6 +1429,7 @@ display: none;
   @media (max-width: 426px) {
       .play h2 {
         margin: 0 5px; 
+        font-size: 15px;
         }
         
         .content .matches .match_history {
@@ -1415,7 +1437,7 @@ display: none;
           display: flex;
           flex-direction: column;
           height: 40vh;
-          background-color: #474554;
+          background-color: #343650;
           align-items: center;
           overflow-y: auto;
           border-radius: 25px;
@@ -1426,7 +1448,7 @@ display: none;
           .content .profile #edit_profile  {
             /* border: 5px #e8ebfb; */
             padding: 4px 12px;
-            background-color: #e8ebfb;
+            background-color: #ff5e57;
             border-radius: 25px;
             cursor: pointer;
             font-size: 12px;
@@ -1455,7 +1477,7 @@ display: none;
             /* justify-content: center; */
             display: flex;
             align-items: center;
-            font-size: 25px;
+            font-size: 15px;
             padding-left: 110px;
             color: #e8ebfb;
           }
