@@ -66,6 +66,8 @@ async function create_tournament_function(participants) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
     tournament_data = jsonData;
+    if (jsonData.message === "tournament created")
+      window.location.hash = "/tournament";
     if (response.status !== 200){
 
       if (jsonData.message.startsWith('Invalid username')){
@@ -75,8 +77,6 @@ async function create_tournament_function(participants) {
         errorhere(jsonData.message);
       }
     }
-    else if (jsonData.message === "tournament created")
-      window.location.hash = "/tournament";
     // await login(jsonData.access, jsonData.refresh);
     
   } catch (error) {
