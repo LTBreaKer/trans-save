@@ -227,3 +227,38 @@ def get_game_history_by_username(request):
     )
     serializer = TagGameDbSerialiser(games, many=True)
     return Response({'games': serializer.data}, status=200)
+
+@api_view(['POST'])
+def connect_game(request):
+    AUTH_HEADER = request.META.get('HTTP_AUTHORIZATION')
+    session_id = request.headers.get('Session-ID')
+    auth_check_response = check_auth(AUTH_HEADER, session_id)
+    if auth_check_response.status_code != 200:
+        return Response(data=auth_check_response.json(), status=auth_check_response.status_code)
+    
+    game_id = request.data.get('game_id')
+    if not game_id:
+        return Response({'message': 'game_id is required'}, status=400)
+
+    try:
+        game = TagGameDb.objects.get(id=game_id, is_active=True, is_connected=False)
+    except TagGameDb.DoesNotExist:
+        return Response({'message': 'Can\'t connect game'}, status=400)
+
+    game.is_connected = True
+    game.save()
+    return Response({'message': 'game connected'}, status=200)
+
+@api_view(['DELETE'])
+def remove_zombie_games(request):
+    AUTH_HEADER = request.META.get('HTTP_AUTHORIZATION')
+    session_id = request.headers.get('Session-ID')
+    auth_check_response = check_auth(AUTH_HEADER, session_id)
+    if auth_check_response.status_code != 200:
+        return Response(data=auth_check_response.json(), status=auth_check_response.status_code)
+    
+    user_id = auth_check_response.json()['user_data']['id']
+
+    games = TagGameDb.objects.filter(Q(player1_id=user_id) | Q(player2_id=user_id), is_active=True, is_connected=False)
+    deleted_count, _ = games.delete()
+    return Response({'message': f'deleted {deleted_count} zombie games'}, status=200)

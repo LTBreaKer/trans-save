@@ -174,7 +174,7 @@ def add_game_score(request):
     if not game_id:
         return Response({'message': 'game_id required'}, status=400)
     try:
-        game = GameDb.objects.get(id=game_id, is_active=True)
+        game = GameDb.objects.get(id=game_id, is_active=True, is_connected=True)
     except GameDb.DoesNotExist:
         return Response({'message': 'no active game found between the two provided players'}, status=404)
     if not game.is_remote:
@@ -194,7 +194,7 @@ def add_game_score(request):
         player2_id = request.data.get('player2_id')
         player1_score = request.data.get('player1_score')
         player2_score = request.data.get('player2_score')
-        if not player1_id or not player2_id or not player1_score or not player2_score:
+        if not player1_id or not player2_id or (not player1_score and player1_score != 0) or (not player2_score and player2_score != 0):
             return Response({'message': 'player1_id , player2_id, player1_score and player2_score are required'}, status=400)
         player1_id = int(player1_id)
         player2_id = int(player2_id)
@@ -262,3 +262,38 @@ def is_available(request):
             'res': Response({'message': 'player already in queue'}, status=400)
             }
     return Response({'message': 'user is available'}, status=200)
+
+@api_view(['POST'])
+def connect_game(request):
+    AUTH_HEADER = request.META.get('HTTP_AUTHORIZATION')
+    session_id = request.headers.get('Session-ID')
+    auth_check_response = check_auth(AUTH_HEADER, session_id)
+    if auth_check_response.status_code != 200:
+        return Response(data=auth_check_response.json(), status=auth_check_response.status_code)
+    
+    game_id = request.data.get('game_id')
+    if not game_id:
+        return Response({'message': 'game_id is required'}, status=400)
+
+    try:
+        game = GameDb.objects.get(id=game_id, is_active=True, is_connected=False)
+    except GameDb.DoesNotExist:
+        return Response({'message': 'Can\'t connect game'}, status=400)
+
+    game.is_connected = True
+    game.save()
+    return Response({'message': 'game connected'}, status=200)
+
+@api_view(['DELETE'])
+def remove_zombie_games(request):
+    AUTH_HEADER = request.META.get('HTTP_AUTHORIZATION')
+    session_id = request.headers.get('Session-ID')
+    auth_check_response = check_auth(AUTH_HEADER, session_id)
+    if auth_check_response.status_code != 200:
+        return Response(data=auth_check_response.json(), status=auth_check_response.status_code)
+    
+    user_id = auth_check_response.json()['user_data']['id']
+
+    games = GameDb.objects.filter(Q(player1_id=user_id) | Q(player2_id=user_id), is_active=True, is_connected=False)
+    deleted_count, _ = games.delete()
+    return Response({'message': f'deleted {deleted_count} zombie games'}, status=200)
