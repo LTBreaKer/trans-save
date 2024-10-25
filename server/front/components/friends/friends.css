@@ -316,6 +316,7 @@ body {
 }
 
 .content .profile #img_profile  {
+  object-fit: cover;
   width: 100%;
   border-bottom-left-radius: 15px;
   border-bottom-right-radius: 15px;

@@ -11,6 +11,7 @@ export let game_data;
 export let statePongGame;
 export let _player_webSocket;
 let tournament_data;
+let tournament_name;
 
 export function assingGameApiToNULL() {
   game_data = null;
@@ -135,6 +136,7 @@ async function Ping() {
     console.log("hello wa9ila khasoo yji hnaaa");
     await check_tournament_finish();
     tournament_players.style.display = 'flex';
+    document.getElementById("player1").value = tournament_name;
   })
 
   tournament_close.addEventListener('click', () => {
@@ -446,6 +448,8 @@ async function changeAccess() {
         throw new Error('Network response was not ok');
       }
       const userData = await userResponse.json();
+      tournament_name = userData.user_data.tournament_username;
+      console.log("here iwill print user fata to check user for ===:", userData)
       
       const change_user = document.getElementById('UserName');
       const change_imge = document.getElementById('image_user');
