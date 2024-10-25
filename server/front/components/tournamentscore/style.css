@@ -119,7 +119,7 @@ body {
   position: relative;
   top: 0;
   margin-top: 130px;
-  left: 0;
+  left: 15px;
   height: calc(100vh - 160px);
   border-radius: 25px;
   width: 88px;
@@ -488,7 +488,7 @@ display: none;
   
         position: relative;
         top: 0;
-        left: 0;
+        left: 15px;
         border-radius: 25px;
         height: 1px;
         width: 88px;
@@ -502,7 +502,7 @@ display: none;
     position: relative;
     top: 0;
     margin-top: 130px;
-    left: 0;
+    left: 15px;
     height: calc(100vh - 160px);
     border-radius: 25px;
     width: 88px;

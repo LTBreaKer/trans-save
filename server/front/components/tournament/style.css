@@ -104,7 +104,7 @@ body {
   position: relative;
   top: 0;
   margin-top: 80px;
-  left: 0;
+  left: 15px;
   height: calc(100vh - 80px);
   border-radius: 25px;
   width: 88px;
@@ -470,7 +470,7 @@ display: none;
       margin-top: 80px;
       position: relative;
       top: 0;
-      left: 0;
+      left: 15px;
       border-radius: 25px;
       height: 1px;
       width: 88px;
@@ -481,9 +481,16 @@ display: none;
   }
 
   .sidebar.active {
-      height: 92vh;
-      padding: 10px 14px;
-      background-color: var(--sidebar-color);
+    position: relative;
+    top: 0;
+    margin-top: 130px;
+    left: 15px;
+    height: calc(100vh - 160px);
+    border-radius: 25px;
+    width: 88px;
+    padding: 10px 14px;
+    background-color: var(--sidebar-color);
+    transition: var(--tran-05);
   }
 
   #butt {

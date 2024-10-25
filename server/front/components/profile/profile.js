@@ -547,7 +547,7 @@ async function update_profile_fun() {
 }
 
 async function update_backend(data) {
-
+let error_check = false;
   const update_email_err = document.getElementById('update_email_err');
   const update_user_err = document.getElementById('update_user_err');
   const update_new_err = document.getElementById('update_new_err');
@@ -568,20 +568,29 @@ async function update_backend(data) {
   if (response.status !== 200) {
     let message = jsonData.message
     if (message.email) {
+      error_check = true;
       update_email_err.innerHTML = message.email[0]
     } if (message.username) {
+      error_check = true;
       update_user_err.innerHTML = "invalid username"
-
     } if (message.old_password) {
+      error_check = true;
       update_old_err.innerHTML = message.old_password[0]
-
     } if (message.password) {
+      error_check = true;
       update_new_err.innerHTML = message.password[0]
-
     }if (message.avatar) {
+      error_check = true;
       update_ava_err.innerHTML = "invalid image"
-
     }
+  } else if (error_check === false){
+    const updateProfile = document.querySelector('.update_data');
+    updateProfile.classList.remove('active');
+    document.querySelector('.success_update').style.display = "flex";
+    setTimeout(function() {
+    document.querySelector('.success_update').style.display = 'none';
+    }, 2000);
+
   }
 
 }
