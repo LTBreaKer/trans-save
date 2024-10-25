@@ -46,6 +46,7 @@ class PlayerConsumer(AsyncWebsocketConsumer):
 		# await self.channel_layer.send(
 		# 	self.ball_channel_name, 
 		# 	{ 'type': 'deconnect_ball' })
+		await self.close_game_consumers()
 		await self.channel_layer.group_discard(
 			self.room_group_name,
 			self.channel_name

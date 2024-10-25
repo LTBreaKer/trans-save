@@ -40,7 +40,13 @@ async function Router() {
   if (isAuthenticated()){
     await check_access_token();
   }
+
   window.addEventListener('hashchange', async () => {
+
+    if (path && path === '/pingpong') {
+      
+    }
+
     if (path && path === '/ta' || path === '/ping') {
       if (path === '/ta') {
         await remove_tag_remote_game();

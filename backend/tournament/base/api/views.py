@@ -54,7 +54,8 @@ def check_tournament(request):
     response = check_unfinished_tournament(w3, contract, creator_id)
     return response
 
-    
+
+
 
 @api_view(['POST'])
 def create_tournament(request):
@@ -204,11 +205,11 @@ def cancel_match(request):
     if auth_check_response.status_code != 200:
         return Response(data=auth_check_response.json(), status=auth_check_response.status_code)
     
-    match_number = request.data.get('match_id')
-    tournament_id = request.data.get('tournament_id')
+    match_number = request.data.get('matchNumber')
+    tournament_id = request.data.get('tournamentId')
 
-    if not match_number or not tournament_id:
-        return Response({'message': 'match_id and tournament_id required'}, status=400)
+    if not match_number or (not tournament_id and tournament_id != 0):
+        return Response({'message': 'matchNumber and tournamentId required'}, status=400)
     
 
     match_number = int(match_number)

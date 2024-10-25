@@ -15,6 +15,7 @@ import { endTournamentMatchScore } from '../../../components/tournamentscore/mat
 import { loadHTML } from '../../../utils.js';
 import { tournament_match_data } from '../../../components/tournament/script.js';
 import { get_localstorage } from '../../../auth.js';
+import { loser_score } from '../game/paddle.js';
 // import { game_data,  sendPlayerPaddleCreated } from '../../../components/ping/script.js';
 // console.log("game API: ", gameApi);
 let gameSocket;
@@ -25,13 +26,10 @@ window.env = {
 };
 
 export async function sendScore(left_paddle_score = lpaddle.nb_goal, right_paddle_score = rpaddle.nb_goal) {
-	// const url = "http://"+ window.env.DJANGO_HOSTNAME +":8080/server/auth/users/me/";
-	let data;
-	data = game_data;
-	data.player1_score = left_paddle_score ;
-	data.player2_score = right_paddle_score ;
-	// const urlEncodedData = new URLSearchParams(data);
-	// console.log("data: ", data);
+	if (!game_data)
+		return ;
+	left_paddle_score && (game_data.player1_score = left_paddle_score) ;
+	right_paddle_score && (game_data.player2_score = right_paddle_score) ;
 	const req = fetch(url, {
 		method: 'POST',
 		headers: {
@@ -40,7 +38,73 @@ export async function sendScore(left_paddle_score = lpaddle.nb_goal, right_paddl
 			'Session-ID': get_localstorage('session_id')
 		},
 		credentials: 'include',
-		body: JSON.stringify(data)
+		body: JSON.stringify(game_data),
+		keepalive: true
+
+	});
+	req.then((res) => {
+		if (!res.ok)
+			throw new Error(`HTTP error: ${res.status}`);
+		return res.json();
+	})
+	.catch(error => console.error(`${error}`));
+}
+
+export function sendScoreWhenRefreshingPage() {
+	const req = fetch(url, {
+		method: 'POST',
+		headers: {
+			'Authorization': `Bearer ${localStorage.getItem("token")}`,
+			'Content-Type': 'application/json',
+			'Session-ID': get_localstorage('session_id')
+		},
+		credentials: 'include',
+		body: JSON.stringify(game_data),
+		keepalive: true
+	});
+	req.then((res) => {
+		if (!res.ok)
+			throw new Error(`HTTP error: ${res.status}`);
+		return res.json();
+	})
+	.then(data => console.log(data))
+	.catch(error => console.error(`${error}`));
+}
+
+export async function connectGame() {
+	console.log("=====connect Game: ");
+	const req = fetch("https://127.0.0.1:9006/api/gamedb/connect-game/", {
+		method: 'POST',
+		headers: {
+			'Authorization': `Bearer ${localStorage.getItem("token")}`,
+			'Content-Type': 'application/json',
+			'Session-ID': get_localstorage('session_id')
+		},
+		credentials: 'include',
+		body: JSON.stringify(game_data),
+		keepalive: true
+	});
+	req.then((res) => {
+		if (!res.ok)
+			throw new Error(`HTTP error: ${res.status}`);
+		return res.json();
+	})
+	.then(data => console.log(data))
+	.catch(error => console.error(`${error}`));
+}
+
+export async function sendLoserScore () {
+	console.log("loser_score: ", loser_score);
+	const req = fetch(url, {
+		method: 'POST',
+		headers: {
+			'Authorization': `Bearer ${localStorage.getItem("token")}`,
+			'Content-Type': 'application/json',
+			'Session-ID': get_localstorage('session_id')
+		},
+		credentials: 'include',
+		body: loser_score,
+		keepalive: true
 	});
 	req.then((res) => {
 		if (!res.ok)
@@ -52,10 +116,15 @@ export async function sendScore(left_paddle_score = lpaddle.nb_goal, right_paddl
 }
 
 async function draw_info(data) {
+	if (!game_data)
+		return;
+	// console.log("game_data: ", game_data);
 	launchGame();
 	const data_ball = JSON.parse(data.ball);
 	const data_right_paddle = JSON.parse(data.right_paddle);
 	const data_left_paddle = JSON.parse(data.left_paddle);
+	game_data.player1_score = data_left_paddle.nb_goal;
+	game_data.player2_score = data_right_paddle.nb_goal;
 	lpaddle.nb_goal = data_left_paddle.nb_goal;
 	rpaddle.nb_goal = data_right_paddle.nb_goal;
 	if (data_ball.ballOut > 10 && data_ball.ballOut != 59){
@@ -105,11 +174,6 @@ export async function fnGameOver(state = "rtn_menu") {
 	}
 }
 
-// export function fnLocalGameOver() {
-
-// }
-
-
 
 export async function localGameSocket(group_name) {
 	console.log("group name: ", group_name);
@@ -137,26 +201,14 @@ export async function localGameSocket(group_name) {
 				}
 			}
 		}
-		ws.onclose = async (e) => {
-			sendScore();
-			// removeEventsListener("beforeunload", unload)
+		ws.onclose = (e) => {
+			(statePongGame !== "tournament") && sendScoreWhenRefreshingPage();
 		}
 		return (ws);
 	} catch (error) {
 		console.error('error: ', error)
 	}
 }
-
-// function unload(event)
-// {
-// 	sendScore()
-// 	event.preventDefault()
-// }
-
-// window.addEventListener("beforeunload", unload)
-
-
-
 
 function choicePaddle({name_current_user, player1_name}) {
 	(name_current_user === player1_name) ? leftPaddle() : rightPaddle();
@@ -176,23 +228,27 @@ export async function paddleSocket(group_name) {
 		let ws = new WebSocket(wssUrl);
 		ws.onopen = async (event) => {
 			console.log('paddle game WebSocket conection established.');
-			await ws.send(JSON.stringify({'type_msg': 'add_group', 'group_name': game_data.game_id}));
-			await ws.send(JSON.stringify({'type_msg': 'assigning_paddle', 'paddle': choicePaddle(game_data)}));
+			ws.send(JSON.stringify({'type_msg': 'add_group', 'group_name': game_data.game_id}));
+			ws.send(JSON.stringify({'type_msg': 'assigning_paddle', 'paddle': choicePaddle(game_data)}));
 			await sendPlayerPaddleCreated();
+			await connectGame();
 		}
 		ws.onmessage = (event) => {
 			const message = JSON.parse(event.data);
 			if (message.type_msg === "draw_info")
 				draw_info(message);
 			else if (message.type_msg === "game_over") {
-				console.log("message: ", message);
-				game_data.player1_score = message.left_paddle_score;
-				game_data.player2_score = message.right_paddle_score;
+			// 	console.log("message: ", message);
+			// 	game_data.player1_score = message.left_paddle_score;
+			// 	game_data.player2_score = message.right_paddle_score;
 				fnGameOver("show winner");
 			}
 			else
 				console.log("else message: ", message);
 		}
+		// ws.onclose = (e) => {
+		// 	sendScoreWhenRefreshingPage();
+		// }
 		return (ws);
 	} catch (error) {
 		console.error('error: ', error)
@@ -218,9 +274,6 @@ async function connectBallSocket() {
 			else if (message.type_msg === "play")
 				descounterRemoteGame();
 		}
-		// ws.onclose = async (e) => {
-		// 	removeEventsListener("beforeunload", unload)
-		// }
 		return (ws);
 	} catch (error) {
 		console.error('error: ', error)
