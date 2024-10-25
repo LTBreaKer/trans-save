@@ -11,7 +11,8 @@ import { mousePosition, mousePositionHelper } from '../events/mouseEvent.js';
 import { resizeCanvas } from '../network/events.js';
 
 export let startGame = false;
-export let gameOver = false;
+// export let game_over = false;
+export let game_connected = false;
 
 let local_game_socket;
 let paddle_socket;
@@ -19,13 +20,20 @@ export let animationFrameId;
 
 export function launchGame() {
 	startGame = true;
+	game_connected = true;
 }
 
 export function stopGame() {
-	gameOver = true;
+	// game_over = true;
 	startGame = false;
 	console.log("stopGame startGame: ", startGame);
 }
+
+export function endGameConnection() {
+	game_connected = false;
+	startGame = false;
+}
+
 
 async function movePaddle() {
 	const ws = await local_game_socket;
@@ -69,8 +77,8 @@ export async function sendSocket(){
 	if (ws && ws.readyState == 1 && !startGame) {
 		await ws.send(JSON.stringify({'type_msg': 'play'}));
 		back_counter.style.display = "none";
+		(!game_connected) && await connectGame();
 		launchGame();
-		await connectGame();
 	}
 }
 

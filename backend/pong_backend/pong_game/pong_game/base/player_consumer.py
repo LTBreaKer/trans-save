@@ -74,9 +74,13 @@ class PlayerConsumer(AsyncWebsocketConsumer):
 			await self.close_game_consumers()
 	
 	async def close_game_consumers(self):
+		left_paddle_score = 0 if (self.paddle.x == 0) else 3
+		right_paddle_score = 0 if (left_paddle_score == 3) else 3
 		await self.channel_layer.group_send(
 			self.room_group_name, {
 				'type': 'desconnect_consumer',
+				'left_paddle_score': left_paddle_score,
+				'right_paddle_score': right_paddle_score
 			})
 
 	async def update_paddle(self, e):
@@ -91,12 +95,15 @@ class PlayerConsumer(AsyncWebsocketConsumer):
 		})
 
 	async def draw_info(self, event):
-		await self.send(text_data=json.dumps({
-			'type_msg': 'draw_info',
-			'ball': event['ball'],
-			'left_paddle': event['left_paddle'],
-			'right_paddle': event['right_paddle']
-		}))
+		try:
+			await self.send(text_data=json.dumps({
+				'type_msg': 'draw_info',
+				'ball': event['ball'],
+				'left_paddle': event['left_paddle'],
+				'right_paddle': event['right_paddle']
+			}))
+		except Disconnected:
+			print("Attempted to send on a closed WebSocket connection.", file=sys.stderr)
 
 	async def set_ball_channel_name(self, event):
 		self.ball_channel_name = event['ball_channel_name']
@@ -105,5 +112,7 @@ class PlayerConsumer(AsyncWebsocketConsumer):
 	async def desconnect_consumer(self, e):
 		await self.send(text_data=json.dumps({
 			'type_msg': 'game_over',
+			'left_paddle_score': e['left_paddle_score'],
+			'right_paddle_score': e['right_paddle_score']
 		}))
 		await self.close(code=1000)

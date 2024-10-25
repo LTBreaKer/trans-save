@@ -57,7 +57,6 @@ export async function loadDocument() {
 	popup_replay = document.querySelector('.p_popup_replay');
 }
 loadDocument();
-// export const connectGame = document.querySelector('#connect');
 // export const connect_ai = document.querySelector('#connect_ai');
 export const loader = new THREE.TextureLoader();
 

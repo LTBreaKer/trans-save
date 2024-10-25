@@ -120,6 +120,8 @@ class GameConsumer(AsyncWebsocketConsumer):
 			self.room_group_name,
 			{
 				'type': 'desconnect_consumer',
+				'left_paddle_score': self.lpaddle.nb_goal,
+				'right_paddle_score': self.rpaddle.nb_goal,
 			})
 		
 	async def desconnect_consumer(self, e):

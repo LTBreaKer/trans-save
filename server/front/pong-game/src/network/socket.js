@@ -2,24 +2,18 @@ import { lpaddle, rpaddle } from '../components/paddle.js'
 import { sphere } from '../components/sphere.js'
 import { leftPaddle, rightPaddle, paddle_way, TABLE_HEIGHT, BALL_RADUIS, popup_replay, sleep, back_counter, replay, pong_menu, loadReplayDocument } from '../utils/globaleVariable.js';
 import { TABLE_DEPTH, TABLE_WIDTH, PADDLE_LONG, height, width, first_player_goal, second_player_goal} from '../utils/globaleVariable.js';
-// import {gameSocket} from '../main3d.js';
 import  {statePongGame } from '../../../../components/ping/script.js'
-import { descounter, loadPongGame, loadPopupGameOver, loadPopupReply, removeEventsListener, replayLocalGame } from './events.js';
+import {  loadPongGame, loadPopupGameOver, loadPopupReply, removeEventsListener, replayLocalGame } from './events.js';
 import { assingGameApiToNULL, game_data, initPlayRemoteGame, sendPlayerPaddleCreated } from '../../../components/ping/script.js';
-import { animationFrameId, closeGameSocket, launchGame, playRemotePongGame, sendSocket, stopGame } from '../game/game.js';
+import { animationFrameId, closeGameSocket, endGameConnection, launchGame, playRemotePongGame, sendSocket, stopGame } from '../game/game.js';
 import { moveCamera } from '../components/camera.js';
 import { renderer } from '../components/renderer.js';
 import { scene } from '../components/scene.js';
 import { disposeScene } from '../components/disposeComponent.js';
 import { endTournamentMatchScore } from '../../../components/tournamentscore/match_tournament.js';
-import { loadHTML } from '../../../utils.js';
 import { tournament_match_data } from '../../../components/tournament/script.js';
-import { get_localstorage } from '../../../auth.js';
 import { loser_score } from '../game/paddle.js';
-// import { game_data,  sendPlayerPaddleCreated } from '../../../components/ping/script.js';
-// console.log("game API: ", gameApi);
-let gameSocket;
-let html_popup_replay;
+import { postRequest } from '../utils/request.js';
 const url = "https://127.0.0.1:9006/api/gamedb/add-game-score/";
 window.env = {
 	DJANGO_HOSTNAME : "c3r4p5.1337.ma"
@@ -30,89 +24,21 @@ export async function sendScore(left_paddle_score = lpaddle.nb_goal, right_paddl
 		return ;
 	left_paddle_score && (game_data.player1_score = left_paddle_score) ;
 	right_paddle_score && (game_data.player2_score = right_paddle_score) ;
-	const req = fetch(url, {
-		method: 'POST',
-		headers: {
-			'Authorization': `Bearer ${localStorage.getItem("token")}`,
-			'Content-Type': 'application/json',
-			'Session-ID': get_localstorage('session_id')
-		},
-		credentials: 'include',
-		body: JSON.stringify(game_data),
-		keepalive: true
-
-	});
-	req.then((res) => {
-		if (!res.ok)
-			throw new Error(`HTTP error: ${res.status}`);
-		return res.json();
-	})
-	.catch(error => console.error(`${error}`));
+    postRequest(url, JSON.stringify(game_data));
 }
 
-export function sendScoreWhenRefreshingPage() {
-	const req = fetch(url, {
-		method: 'POST',
-		headers: {
-			'Authorization': `Bearer ${localStorage.getItem("token")}`,
-			'Content-Type': 'application/json',
-			'Session-ID': get_localstorage('session_id')
-		},
-		credentials: 'include',
-		body: JSON.stringify(game_data),
-		keepalive: true
-	});
-	req.then((res) => {
-		if (!res.ok)
-			throw new Error(`HTTP error: ${res.status}`);
-		return res.json();
-	})
-	.then(data => console.log(data))
-	.catch(error => console.error(`${error}`));
+function sendScoreWhenRefreshingPage() {
+	postRequest(url, JSON.stringify(game_data));
 }
 
 export async function connectGame() {
 	console.log("=====connect Game: ");
-	const req = fetch("https://127.0.0.1:9006/api/gamedb/connect-game/", {
-		method: 'POST',
-		headers: {
-			'Authorization': `Bearer ${localStorage.getItem("token")}`,
-			'Content-Type': 'application/json',
-			'Session-ID': get_localstorage('session_id')
-		},
-		credentials: 'include',
-		body: JSON.stringify(game_data),
-		keepalive: true
-	});
-	req.then((res) => {
-		if (!res.ok)
-			throw new Error(`HTTP error: ${res.status}`);
-		return res.json();
-	})
-	.then(data => console.log(data))
-	.catch(error => console.error(`${error}`));
+	postRequest("https://127.0.0.1:9006/api/gamedb/connect-game/", JSON.stringify(game_data));
 }
 
 export async function sendLoserScore () {
 	console.log("loser_score: ", loser_score);
-	const req = fetch(url, {
-		method: 'POST',
-		headers: {
-			'Authorization': `Bearer ${localStorage.getItem("token")}`,
-			'Content-Type': 'application/json',
-			'Session-ID': get_localstorage('session_id')
-		},
-		credentials: 'include',
-		body: loser_score,
-		keepalive: true
-	});
-	req.then((res) => {
-		if (!res.ok)
-			throw new Error(`HTTP error: ${res.status}`);
-		return res.json();
-	})
-	.then(data => console.log(data))
-	.catch(error => console.error(`${error}`));
+	postRequest(url, loser_score);
 }
 
 async function draw_info(data) {
@@ -141,7 +67,6 @@ async function draw_info(data) {
 		loadPongGame();
 		await sendSocket();
 	}
-		// descounter();
 	else {
 		sphere.position.x = ((data_ball.y - (height / 2)) * (TABLE_WIDTH / 2)) / (height / 2);
 		sphere.position.y = ((data_ball.x - (width / 2)) * (TABLE_DEPTH / 2)) / (width / 2);
@@ -153,25 +78,27 @@ async function draw_info(data) {
 	second_player_goal.innerHTML = lpaddle.nb_goal;
 }
 
+async function showWinner() {
+	// stopGame();
+	endGameConnection();
+	await loadPopupGameOver();
+}
+
 export async function fnGameOver(state = "rtn_menu") {
-	stopGame();
-	console.log("state: ", state);
-	if (state === "show winner")
-		await loadPopupGameOver();
+	// stopGame();
+	endGameConnection();
+	removeEventsListener();
+	cancelAnimationFrame(animationFrameId);
+	(renderer) && renderer.dispose();
+	(scene) && disposeScene();
+	if (statePongGame !== "tournament")
+		window.location.hash = "/ping"
 	else {
-		removeEventsListener();
-		cancelAnimationFrame(animationFrameId);
-		if (renderer) renderer.dispose();
-		if (scene) disposeScene();
-		if (statePongGame !== "tournament")
-			window.location.hash = "/ping"
-		else {
-			(tournament_match_data.matchNumber === 7) ?
-			window.location.hash = "/ping" :
-			window.location.hash = "/tournament";
-		}
-		assingGameApiToNULL();
+		(tournament_match_data.matchNumber === 7) ?
+		window.location.hash = "/ping" :
+		window.location.hash = "/tournament";
 	}
+	assingGameApiToNULL();
 }
 
 
@@ -192,10 +119,11 @@ export async function localGameSocket(group_name) {
 					endTournamentMatchScore(message.left_paddle_score, message.right_paddle_score);
 					game_data.player1_score = message.left_paddle_score;
 					game_data.player2_score = message.right_paddle_score;
-					fnGameOver("show winner");
+					showWinner();
 				} else {
 					sendScore(message.left_paddle_score, message.right_paddle_score);
-					stopGame();
+					// stopGame();
+					endGameConnection();
 					// popup_replay.style.display = 'flex';
 					loadPopupReply();
 				}
@@ -231,17 +159,19 @@ export async function paddleSocket(group_name) {
 			ws.send(JSON.stringify({'type_msg': 'add_group', 'group_name': game_data.game_id}));
 			ws.send(JSON.stringify({'type_msg': 'assigning_paddle', 'paddle': choicePaddle(game_data)}));
 			await sendPlayerPaddleCreated();
-			await connectGame();
 		}
 		ws.onmessage = (event) => {
 			const message = JSON.parse(event.data);
 			if (message.type_msg === "draw_info")
 				draw_info(message);
 			else if (message.type_msg === "game_over") {
-			// 	console.log("message: ", message);
-			// 	game_data.player1_score = message.left_paddle_score;
-			// 	game_data.player2_score = message.right_paddle_score;
-				fnGameOver("show winner");
+				console.log("---------------------------------------message: ", message);
+				game_data.player1_score = message.left_paddle_score;
+				game_data.player2_score = message.right_paddle_score;
+				console.log("message.left_paddle_score: ", message.left_paddle_score);
+				console.log("game_data.player1_score: ", game_data.player1_score);
+				console.log("game_data: ", game_data);
+				showWinner();
 			}
 			else
 				console.log("else message: ", message);

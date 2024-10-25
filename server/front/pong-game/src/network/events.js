@@ -1,9 +1,8 @@
 
 import {canvas, click, TABLE_WIDTH, paddleHeight, height, box_result, first_player_goal, second_player_goal, counter, replay, popup_replay, pong_menu, loadDocument, sleep, back_counter, leftPaddle, paddle_way, first_player_name, second_player_name, p_second, p_first, loadReplayDocument, loadQuitDocument, double_point} from '../utils/globaleVariable.js';
 // import { setPointerMouse, rotateTable, zoomCamera } from '../game/staduim.js'
-import { closeGameSocket, connectAI, connectLocalGameSocket, connectPaddleSocket, launchGame, startGame } from '../game/game.js';
+import { closeGameSocket, connectAI, connectLocalGameSocket, connectPaddleSocket, startGame } from '../game/game.js';
 import {sendSocket} from '../game/game.js'
-// import { connectGame , connect_ai} from '../utils/globaleVariable.js';
 import { moveCamera } from '../components/camera.js';
 
 ////////       ------ LOCAL -----        //////////
@@ -20,6 +19,7 @@ import { initGameComponents } from '../components/renderer.js';
 import { fnGameOver, sendLoserScore, sendScore } from './socket.js';
 import { loadHTML } from '../../../utils.js';
 import { get_localstorage } from '../../../auth.js';
+import { cancelTournamentMatch } from '../utils/request.js';
 const url = "https://127.0.0.1:9008/api/tournament/cancel-match/";
 let html_popup_replay;
 let html_popup_game_over;
@@ -133,32 +133,11 @@ async function handleHashChange() {
 	await fnGameOver();
 }
 
-async function cancelTournamentMatch() {
-	console.log("cancelTournamentMatch--------------> ",game_data);
-	const req = fetch(url, {
-		method: 'POST',
-		headers: {
-			'Authorization': `Bearer ${localStorage.getItem("token")}`,
-			'Content-Type': 'application/json',
-			'Session-ID': get_localstorage('session_id')
-		},
-		credentials: 'include',
-		body: JSON.stringify(game_data),
-		keepalive: true
-	});
-	req.then((res) => {
-		if (!res.ok)
-			throw new Error(`HTTP error: ${res.status}`);
-		return res.json();
-	})
-	.then(data => console.log(data))
-	.catch(error => console.error(`${error}`));
-}
 
 async function handleTournamentRelodQuit(event) {
-	// event.preventDefault();
 	console.log("-------------------handleTournamentRelodQuit ---------------");
 	await cancelTournamentMatch();
+	// event.preventDefault();
 	// closeGameSocket();
 }
 
@@ -173,7 +152,6 @@ export function setupEventListeners() {
 	window.addEventListener('resize', resizeCanvas);
 	document.addEventListener("keydown", keyDownHandler, false);
 	document.addEventListener("keyup", keyUpHandler, false);
-	console.log("statepong: ", statePongGame);
 	if (statePongGame !== "tournament") {
 		window.addEventListener("beforeunload", handleRelodQuit);
 		window.addEventListener("hashchange", handleHashChange);
@@ -214,10 +192,9 @@ export async function descounter() {
 	back_counter.style.display = 'flex';
 	let n = 0;
 	while (!startGame) {
-		console.log("descounter startGame: ", startGame);
-		if (n%2 == 0)
-			counter.textContent = "Loading.." + n / 2;
-		await sleep(0.5);
+		if (n%4 == 0)
+			counter.textContent = "Loading.." + n / 4;
+		await sleep(0.25);
 		sendSocket();
 		n++;
 	}
@@ -229,7 +206,7 @@ export async function loadPongGame() {
 	let n = 0;
 	while (!startGame) {
 		if (n%4 == 0)
-			counter.textContent = "Loading.." + n / 2;
+			counter.textContent = "Loading.." + n / 4;
 		await sleep(0.25);
 		n++;
 	}
@@ -237,8 +214,6 @@ export async function loadPongGame() {
 }
 
 function initGame() {
-	// back_counter.style.display = 'none';
-	// popup_replay.style.display = 'none';
 	removePopupReplay();
 	(statePongGame === "remote") ? assignPlayers(game_data) : assignPlayers(game_data); 
 	initGameComponents();
@@ -249,13 +224,12 @@ let replayGame = async () => {
 	initPaddleInstance();
 	initGame();
 	resizeCanvas();
+	lancePongGame();
 	if (statePongGame == "remote"){
-		lancePongGame();
 		await connectPaddleSocket();
 		loadPongGame();
 	}
 	else {
-		lancePongGame();
 		leftPaddle();
 		await connectLocalGameSocket();
 		await descounter();
@@ -266,14 +240,7 @@ let replayGame = async () => {
 let lanceGame = async () => {
 	console.log("------ lanceGame ==>>>", statePongGame);
 	await replayGame();
-	// setupEventListeners();
 }
 
 initPlayGame(lanceGame);
 replayGame();
-
-
-// window.addEventListener("blur", handleblur)
-// window.addEventListener("hashchange", hashchange)
-// socket.addEventListener("close", disconnect)
-// window.addEventListener("beforeunload", handleRelodQuit)

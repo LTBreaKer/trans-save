@@ -344,6 +344,7 @@ body {
   justify-content: space-around;
   flex-direction: column;
   height: 100vh;
+  min-height: fit-content;
 }
 
 .rl_game {
