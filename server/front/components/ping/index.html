@@ -10,45 +10,51 @@
 </head>
 <body>
     
-    <div class="ml_container">
-            <div class="bg_top"></div>
-            <div class="ml_profile">
-                <div class="ml_notif">
-                    <h3><i class="bi bi-bell"></i></h3>
-                </div>
-                <div class="ml_txt">
-                    <h3 id="UserName">afanti</h3>
-                </div>
-                <div class="ml_img">
-                    <img class="ml_img" id="image_user" src="" alt="profile photo">
-                </div>
+    <div class="gm_container">
+        <div  class="success_update">
+            <h2 id="game_tag_err"> </h2>
+        </div>
+        <div class="bg_top"></div>
+        <div class="gm_profile">
+            <!-- <div class="gm_notif"> -->
+            <i id="butt" class="bi bi-justify"></i>
+            <div class="notification">
+                <h3><i class="bi bi-bell"></i></h3>
             </div>
+            <div class="gm_txt">
+                <h3 id="UserName">afanti</h3>
+            </div>
+            <div class="gm_img">
+                <img class="gm_img" id="image_user" src="" alt="profile photo">
+            </div>
+            <div class="notifi_btn"></div>
+        </div>
 
-        <div class="ml_body">
-            <div class="ml_navbar">
-                <div class="ml_cover_logo">
-                    <img class="ml_logo" src="../../images/login/logo.webp" alt="logo">
+        <div class="gm_body">
+            <div class="gm_navbar">
+                <div class="gm_cover_logo">
+                    <img class="gm_logo" src="../../images/login/logo.webp" alt="logo">
                 </div>
-            <nav class="pong_sidebar close">
-                <div class="ml_menubar">
-                    <div class="ml_menu">
-                        <ul class="ml_menu-links">
-                            <li class="ml_nav-link"  id="homepage">
-                                <a class="ml_cover_icon" href="#/">
+            <nav class="gm_sidebar close">
+                <div class="gm_menubar">
+                    <div class="gm_menu">
+                        <ul class="gm_menu-links">
+                            <li class="gm_nav-link"  id="homepage">
+                                <a class="gm_cover_icon" href="#/">
                                     <i class='bx bx-home  icon' ></i>
                                 </a>
                             </li>
-                            <li class="ml_nav-link"  id="profilepage">
-                                <a class="ml_cover_icon" href="#/profile">
+                            <li class="gm_nav-link"  id="profilepage">
+                                <a class="gm_cover_icon" href="#/profile">
                                     <i class="bi bi-person icon"></i>
                                 </a>
                             </li>
     
                         </ul>
                     </div>
-                    <div class="ml_btn_content">
-                        <li class="ml_nav-link" id="logout">
-                            <a class="ml_cover_icon" href="#">
+                    <div class="gm_btn_content">
+                        <li class="gm_nav-link" id="logout">
+                            <a class="gm_cover_icon" href="#">
                                 <i class='bx bx-log-out  icon' ></i>
                             </a>
                         </li>
@@ -61,48 +67,48 @@
 
 
 
-        <!-- <div class="ml_main-content"> -->
+        <!-- <div class="gm_main-content"> -->
             <!-- <div class="pong_mer_cont"> -->
-            <div class="ml_main-content">
-                <!-- <img src="../../images/pong/pong_background.png" alt="" class="ml_bgcontent"> -->
-                <img src="../../images/pong/images/pong3.png" alt="" class="ml_bgcontent">
-                <dev style="background-color: rgb(0,0,0, 0.2); z-index: 1;" class="ml_bgcontent"></dev>
+            <div class="gm_main-content">
+                <!-- <img src="../../images/pong/pong_background.png" alt="" class="gm_bgcontent"> -->
+                <img src="../../images/pong/images/pong3.png" alt="" class="gm_bgcontent">
+                <dev style="background-color: rgb(0,0,0, 0.2); z-index: 1;" class="gm_bgcontent"></dev>
                 <div class="game_container">
                     <div class="rl_game">
-                        <div class="ml_local_game" id="remote_game">
+                        <div class="gm_local_game" id="remote_game">
                             <h2>Remote</h2>
                             <div class="spinner">
                                 <div class="spinner1"></div>
                             </div>
                             <h3 id="cancel_game">Cancel Game</h3>
-                            <h3 class="ml_start_game" id="butt_game">Start Game</h3>
+                            <h3 class="gm_start_game" id="butt_game">Start Game</h3>
                         </div>
-                        <div class="ml_local_game" id="local_game">
+                        <div class="gm_local_game" id="local_game">
                             <h2>Local</h2>
                             <input placeholder="Player Name" id="input" class="input" name="text" type="text">
-                            <h3 class="ml_start_game" id="local_butt_game">Start Game</h3>
+                            <h3 class="gm_start_game" id="local_butt_game">Start Game</h3>
                         </div>
                     </div>
                     <div class="rl_game">
-                        <div class="ml_local_game">
+                        <div class="gm_local_game">
                             <h2>AI Bot</h2>
-                            <h3 class="ml_start_game" id="btn_ai">Start Game</h3>
+                            <h3 class="gm_start_game" id="btn_ai">Start Game</h3>
                         </div>
-                        <div class="ml_local_game">
+                        <div class="gm_local_game">
                             <h2>Tournament</h2>
-                            <h3 class="ml_start_game" id="btn_tournament">Start Game</h3>
+                            <h3 class="gm_start_game" id="btn_tournament">Start Game</h3>
                         </div>
                     </div>
                 </div>
 
                 <div class="rl_game">
-                    <div class="ml_description_game">
+                    <div class="gm_description_game">
                         <div class="text">
                             <h4>Get ready to dive into an endless rally of excitement with our modern twist on the classic Pong game! Challenge yourself or a friend as you battle it out in a fast-paced duel, where quick reflexes and sharp focus are your best allies. With vibrant visuals, smooth controls, and infinite gameplay, this is Pong like you've never seen it before. Can you keep up with the speed and claim victory? Let the games begin!</h4>
                         </div>
                     </div>
                 </div>
-                <!-- <div class="ml_discription_game">
+                <!-- <div class="gm_discription_game">
                     <div class="text">
                         <h3>mli tsali n9ad lik chi page 3tini gha design hhhhhhhh .</h3>
                     </div>

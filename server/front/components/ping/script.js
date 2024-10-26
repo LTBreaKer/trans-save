@@ -68,18 +68,18 @@ async function create_tournament_function(participants) {
     }
     tournament_data = jsonData;
     window.location.hash = "/tournament";
-    // if (jsonData.message === "tournament created")
-    //   window.location.hash = "/tournament";
-    // if (response.status !== 200){
+    if (jsonData.message === "tournament created")
+      window.location.hash = "/tournament";
+    if (response.status !== 200){
 
-    //   if (jsonData.message.startsWith('Invalid username')){
-    //     errorhere('invalid username');
-    //   }
-    //   else if (jsonData.message) {
-    //     errorhere(jsonData.message);
-    //   }
-    // }
-    // await login(jsonData.access, jsonData.refresh);
+      if (jsonData.message.startsWith('Invalid username')){
+        errorhere('invalid username');
+      }
+      else if (jsonData.message) {
+        errorhere(jsonData.message);
+      }
+    }
+    await login(jsonData.access, jsonData.refresh);
     
   } catch (error) {
     console.error('There was a problem with the fetch operation:', error);
@@ -102,7 +102,19 @@ async function Ping() {
 
   await checkFirst();
 
+  setNotification();
+  const butt = document.querySelector('#butt');
+  const side = document.querySelector('.gm_sidebar');
 
+  butt.addEventListener('click', function() {
+    side.classList.toggle('active');
+  });
+
+  document.addEventListener('click', (event) => {
+    if (!side.contains(event.target) && !butt.contains(event.target)) {
+      side.classList.remove('active');
+    }
+  });
   const local_butt_game = document.getElementById('local_butt_game');
   const btn_ai = document.getElementById('btn_ai');
   const remote_butt_game = document.getElementById('butt_game');
@@ -287,9 +299,9 @@ try {
         document.querySelector('#butt_game').style.display = 'none';
         document.querySelector('.spinner').style.display = 'flex';
       }
-      // else if (jsonData.message) {
-      //   errorhere(jsonData.message);
-      // }
+      else if (jsonData.message) {
+        errorhere(jsonData.message);
+      }
 
       console.log(jsonData);
   
@@ -351,13 +363,11 @@ async function lanceLocalGame() {
     console.log("###  pingpong: ", window.location.hash);
     game_data = jsonData;
     changePlayerPosition();
-    // if (jsonData.message) {
-    //   errorhere(jsonData.message);
-    // }
-    // else if (jsonData.message.player2_name) {
-    //   errorhere('invalid player name');
-
-    // }
+    if (jsonData.message)
+      errorhere(jsonData.message);
+    else if (jsonData.message.player2_name)
+      errorhere('invalid player name');
+    
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response}`);
     }
@@ -457,13 +467,24 @@ async function changeAccess() {
     }
   }
   
-//   function errorhere(string) {
-//     const game_tag_err = document.getElementById('game_tag_err');
-//     game_tag_err.innerHTML = `<i class="bi bi-check2-circle"></i> ${string}`;
+  function errorhere(string) {
+    const game_tag_err = document.getElementById('game_tag_err');
+    game_tag_err.innerHTML = `<i class="bi bi-check2-circle"></i> ${string}`;
   
-//     document.querySelector('.success_update').style.display = "flex";
-//     setTimeout(function() {
-//       document.querySelector('.success_update').style.display = 'none';
-//   }, 2000);
-// }
+    document.querySelector('.success_update').style.display = "flex";
+    setTimeout(function() {
+      document.querySelector('.success_update').style.display = 'none';
+  }, 2000);
+}
+
+function setNotification() {
+  const notific = document.querySelector('.notification');
+  const notifi_display = document.querySelector('.notifi_btn');
+
+  notific.addEventListener('click', function() {
+    notifi_display.classList.toggle('active');
+  })
+
+}
+
 export default Ping;

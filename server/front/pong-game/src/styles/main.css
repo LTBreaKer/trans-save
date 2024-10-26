@@ -133,11 +133,13 @@
     margin-top: 13px;
     color: rgb(164 255 37);
     background-color: rgba(0, 0, 0, 0.2);
+	cursor: pointer;
 	/* cursor: pointer; */
 }
 
 .p_ptn_menu {
 	color: rgb(255 0 12);
+	cursor: pointer;
 	/* cursor: auto; */
 }
 
