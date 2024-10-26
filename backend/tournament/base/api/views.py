@@ -54,7 +54,8 @@ def check_tournament(request):
     response = check_unfinished_tournament(w3, contract, creator_id)
     return response
 
-    
+
+
 
 @api_view(['POST'])
 def create_tournament(request):
@@ -119,6 +120,7 @@ def create_tournament(request):
             'playerOneName': match[3],
             'playerTwoId': match[4],
             'playerTwoName': match[5],
+            'status': match[9],
             'stage': match[10],
         }
         for match in matches
@@ -189,21 +191,68 @@ def start_match(request):
         }
         for match in matchess
     ]
-    # try:
-    #     tournament = Tournament.objects.get(id=tournament_id)
-    # except Exception:
-    #     return Response({'message': 'tournament not found'}, status=404)
-    
-    # try:
-    #     match = tournament.matches.get(match_number=match_number)
-    # except Exception:
-    #     return Response({'message': 'match not found'}, status=404)
-
-    # match.status = 'ongoing'
-    # match.save()
 
     return Response({'message': 'match ongoing', 'matches': formatted_matches}, status=200)
 
+@api_view(['POST'])
+def cancel_match(request):
+    w3 = request.w3
+    contract = request.contract
+
+    AUTH_HEADER = request.META.get('HTTP_AUTHORIZATION')
+    session_id = request.headers.get('Session-ID')
+    auth_check_response = check_auth(AUTH_HEADER, session_id)
+    if auth_check_response.status_code != 200:
+        return Response(data=auth_check_response.json(), status=auth_check_response.status_code)
+    
+    match_number = request.data.get('matchNumber')
+    tournament_id = request.data.get('tournamentId')
+
+    if not match_number or (not tournament_id and tournament_id != 0):
+        return Response({'message': 'matchNumber and tournamentId required'}, status=400)
+    
+
+    match_number = int(match_number)
+    tournament_id = int(tournament_id)
+    if match_number < 0 or tournament_id < 0:
+        return Response({'message': 'match_number and tournament can\'t be negative'}, status=400)
+
+
+    try:
+        matches = contract.functions.getTournamentMatches(tournament_id).call()
+    except Exception as e:
+        return Response({'message': str(e)}, status=400)
+    for match in matches:
+        if match[1] == match_number and match[9] != 'ongoing':
+            return Response({'message': 'can\'t cancel match'}, status=400)
+    
+    try:
+        cancel_match_tx = contract.functions.cancelMatch(match_number, tournament_id).transact()
+        w3.eth.wait_for_transaction_receipt(cancel_match_tx)
+    except Exception as e:
+        return Response({'message': str(e)}, status=400)
+    
+    try:
+        matchess = contract.functions.getTournamentMatches(tournament_id).call()
+    except Exception as e:
+        return Response({'message': str(e)}, status=400)
+ 
+    print(matchess)
+    formatted_matches = [
+        {
+            'tournamentId': match[0],
+            'matchNumber': match[1],
+            'playerOneId': match[2],
+            'playerOneName': match[3],
+            'playerTwoId': match[4],
+            'playerTwoName': match[5],
+            'status': match[9],
+            'stage': match[10],
+        }
+        for match in matchess
+    ]
+
+    return Response({'message': 'match canceled', 'matches': formatted_matches}, status=200)
 
 @api_view(['POST'])
 def add_match_score(request):

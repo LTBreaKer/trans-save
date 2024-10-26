@@ -15,7 +15,7 @@ export function moveCamera(stateGame = "local") {
         // camera.position.z = 5.8;
         camera.position.z = 6.2;
         camera.lookAt(0, 0, 0 );
-        camera.rotation.z += 3 * Math.PI / 2;
+        camera.rotation.z = Math.PI / 2;
     }
 }
 

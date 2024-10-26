@@ -16,6 +16,7 @@ class GameDb(models.Model):
     player1_score = models.IntegerField(default=0)
     player2_score = models.IntegerField(default=0)
     is_active = models.BooleanField(default=True)
+    is_connected = models.BooleanField(default=False)
     is_remote = models.BooleanField(default=True)
     player2_name = models.CharField(max_length=150, validators=[username_validator], blank=True, null=True)
     player1_name = models.CharField(max_length=150, validators=[username_validator], blank=True, null=True)

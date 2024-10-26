@@ -11,7 +11,7 @@ import Ping from './components/ping/script.js';
 import Tournament from './components/tournament/script.js';
 import RemoteTag from './components/remote_tag/script.js';
 import TournamentScore from './components/tournamentscore/script.js';
-import {remove_tag_remote_game, remove_ping_remote_game} from './utils.js';
+import {remove_tag_remote_game, remove_ping_remote_game, remove_game_pong_f_database, remove_game_tag_f_database} from './utils.js';
 
 var api_game = "https://127.0.0.1:9006/api/gamedb/";
 let game_api = 'https://127.0.0.1:9007/api/tag-gamedb/';
@@ -40,7 +40,13 @@ async function Router() {
   if (isAuthenticated()){
     await check_access_token();
   }
+
   window.addEventListener('hashchange', async () => {
+
+    if (path && path === '/pingpong') {
+      
+    }
+
     if (path && path === '/ta' || path === '/ping') {
       if (path === '/ta') {
         await remove_tag_remote_game();

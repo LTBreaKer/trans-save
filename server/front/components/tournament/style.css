@@ -542,4 +542,22 @@ display: none;
 }
 
 
+.success_update {
+  /* display: flex; */
+  position: fixed;
+  width: 330px;
+  height: 55px;
+  background-color: white;
+  color: red;
+  align-items: center;
+  padding: 15px;
+  right: 0;
+  margin: 15px;
+  bottom: 0;
+  z-index: 1;
+  justify-content: center;
+  display: none;
+}
+
+
 

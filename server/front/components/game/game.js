@@ -1,6 +1,8 @@
 import { loadHTML, loadCSS } from '../../utils.js';
 import {start_game} from './tag.js';
+import {tag_game_info} from '../ta/script.js'
 let socket;
+let api = "https://127.0.0.1:9007/api/tag-gamedb/"
 
 async function Game() {
 
@@ -9,13 +11,18 @@ async function Game() {
 
   const app = document.getElementById('app');
   app.innerHTML = html;
+  if (!tag_game_info)
+  {
+    console.error("invalid players")
+    window.location.hash = '#/ta'
+    return
+  }
 
   function connectWebSocket(url)
   {
       return new Promise((resolve, reject) => {
           const socket = new WebSocket(url);
           socket.onopen = () => {
-              console.log('WebSocket connection established');
               resolve(socket);
           };
           socket.onerror = (error) => {
@@ -38,10 +45,33 @@ async function Game() {
         console.error('Failed to connect WebSocket:', error);
     }
   }
-  socket = await(initializeApp());
 
-  if (socket.readyState === WebSocket.OPEN) 
-    start_game();
+  socket = await(initializeApp());
+  if (socket.readyState === WebSocket.OPEN)
+  {
+    try{
+        const response = await fetch(api + 'connect-game/', {
+            method: 'POST',
+            headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + get_localstorage('token'),
+            'Session-ID': get_localstorage('session_id')
+            },
+            credentials: 'include',
+            body: JSON.stringify({
+                game_id: tag_game_info.game_id
+            })
+        });
+        const jsonData = await response.json()
+        if (!response.ok) {
+          console.error(`Status: ${response.status}, Message: ${jsonData.message || 'Unknown error'}`)
+        }
+    }
+    catch(error){
+        console.error('Request failed', error)
+    }
+    await start_game();
+  }
 }
 
 export{socket}

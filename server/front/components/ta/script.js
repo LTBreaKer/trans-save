@@ -1,5 +1,5 @@
-import { loadHTML, loadCSS,  remove_tag_remote_game} from '../../utils.js';
-import { login ,log_out_func, logoutf, get_localstorage, check_access_token, getCookie } from '../../auth.js';
+import { loadHTML, loadCSS,  remove_tag_remote_game, remove_game_tag_f_database} from '../../utils.js';
+import { login ,log_out_func, logoutf, get_localstorage, getCookie, check_access_token } from '../../auth.js';
 import {setHeaderContent, setNaveBarContent} from '../tournament/script.js';
 
 // https://{{ip}}:9007:ws/tag-game-db/
@@ -8,7 +8,9 @@ let game_api = 'https://127.0.0.1:9007/api/tag-gamedb/';
 const ta_socket = 'wss://127.0.0.1:9007/ws/tag-game-db/';
 let tag_game_info;
 async function Ta() {
+  await remove_game_tag_f_database();
   window.onload = async function() {
+
     await remove_tag_remote_game();
     // document.querySelector('#cancel_game').style.display = 'none';
     // document.querySelector('#butt_game').style.display = 'flex';
@@ -96,7 +98,10 @@ cancel_game_func.addEventListener('click', await remove_tag_remote_game);
         document.querySelector('.spinner').style.display = 'flex';
       }
 
-      else if (jsonData.message === "player is already in a game") {
+      else if (jsonData.message) {
+        const game_tag_err = document.getElementById('game_tag_err');
+        game_tag_err.innerHTML = `<i class="bi bi-check2-circle"></i> ${jsonData.message}`;
+  
         document.querySelector('.success_update').style.display = "flex";
         setTimeout(function() {
           document.querySelector('.success_update').style.display = 'none';
@@ -191,10 +196,29 @@ async function localgame_tag() {
       },
       credentials: 'include',
       body: JSON.stringify(data)
+
     });
+
+
+    
     console.log(response);
     const jsonData = await response.json();
-    if (jsonData.message === "player is already in a game") {
+    if (jsonData.message.player2_name) {
+      const game_tag_err = document.getElementById('game_tag_err');
+      game_tag_err.innerHTML = `<i class="bi bi-check2-circle"></i> invalid player name`;
+
+      console.log('hdsklfjsldkjflsdjk    => :', jsonData.message);
+      document.querySelector('.success_update').style.display = "flex";
+      setTimeout(function() {
+        document.querySelector('.success_update').style.display = 'none';
+    }, 2000);
+
+    }
+
+    else if (jsonData.message) {
+      const game_tag_err = document.getElementById('game_tag_err');
+      game_tag_err.innerHTML = `<i class="bi bi-check2-circle"></i> ${jsonData.message}`;
+
       console.log('hdsklfjsldkjflsdjk    => :', jsonData.message);
       document.querySelector('.success_update').style.display = "flex";
       setTimeout(function() {

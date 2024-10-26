@@ -2,19 +2,11 @@
 import { socket } from './game.js'
 import {imageR1, imageL1, imageIR1, imageIL1, imageR2, imageL2, imageIR2, imageIL2, arrow, go_arrow, numbers, background, platform} from './image_src.js'
 import {tag_game_info, setTagGameInfo} from '../ta/script.js'
-import {get_localstorage} from '../../auth.js'
+import {get_localstorage, check_access_token} from '../../auth.js'
 
 var api = "https://127.0.0.1:9007/api/tag-gamedb/"
-function start_game()
+async function start_game()
 {
-    if (!tag_game_info)
-    {
-        console.error("invalid players")
-        window.location.hash = '#/ta'
-        socket.close()
-        return
-    }
-
     class Player{
         constructor({imgR, imgL, imgIR, imgIL, ply_name}) {
             this.name = ply_name
@@ -74,6 +66,7 @@ function start_game()
     
     async function game_score(winner)
     {
+        await check_access_token()
         const data = {
             game_id: tag_game_info.game_id,
             winner_name: winner
@@ -145,10 +138,11 @@ function start_game()
     let time = 1
     let winner
     let esc = false
+    let stop_animation = false
 
     canvas.width = 0
     resizeWindow()
-    animation()
+    await animation()
 
     function delay(ms) {
         return new Promise(resolve => setTimeout(resolve, ms))
@@ -163,7 +157,7 @@ function start_game()
 
                 if (player.imageIdlR.includes(player.image))
                     player.image = player.imageIdlR[i]
-                else 
+                else if (player.imageIdlL.includes(player.image))
                     player.image = player.imageIdlL[i]
 
                 c.clearRect(0, 0, canvas.width, canvas.height)
@@ -172,9 +166,12 @@ function start_game()
             await delay(100)
         }
     }
+    
     const blinK = setInterval(blink, 2000)
-    function animation()
+
+    async function animation()
     {
+        console.log("+++++++++++++++++animation")
         if (socket.readyState === WebSocket.OPEN)
         {
             socket.send(JSON.stringify({
@@ -193,8 +190,8 @@ function start_game()
                 'esc': esc
             }))
         }
-
-        window.requestAnimationFrame(animation)
+        if (stop_animation === false)
+            window.requestAnimationFrame(animation)
         c.clearRect(0, 0, canvas.width, canvas.height)
         load_draw(background, 0, 0, canvas.width, canvas.height)    
 
@@ -213,7 +210,7 @@ function start_game()
                     load_draw(arrow, player.position.x + player.width/4, player.position.y - player.height, player.width/2, player.height/2)
             }
         })
-        rain()
+        await rain()
 
         draw_timer(time, players[0])
         if (time === 0 && socket.readyState === WebSocket.OPEN)
@@ -465,6 +462,7 @@ function start_game()
 
     function quitgame()
     {
+        stop_animation = true
         reload_data()
         document.getElementById('overlay').style.visibility = 'hidden'
         esc = false
@@ -487,11 +485,17 @@ function start_game()
     function handleRelodQuit(event)
     {
         if (socket.readyState === WebSocket.OPEN)
-            socket.close()
-        event.preventDefault()
+        {
+            stop_animation = true
+            if (!winner)
+                winner = "unknown"
+            // noAwaitScore(winner)
+            game_score(winner)
+        }
+        // event.preventDefault() // This triggers the alert
     }
 
-    function disconnect()
+    async function disconnect()
     {
         if (window.location.hash === "#/game")
         {
@@ -507,7 +511,7 @@ function start_game()
         }
         if (winner === null)
             winner = "unknown"
-        game_score(winner)
+        await game_score(winner)
         winner = null
         setTagGameInfo(null)
         reload_data()
@@ -516,7 +520,10 @@ function start_game()
     function hashchange()
     {
         if (window.location.hash !== "#/game")
+        {
+            stop_animation = true
             socket.close()
+        }
     }
 
     function reload_data()

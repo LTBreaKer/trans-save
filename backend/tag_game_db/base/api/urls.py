@@ -10,4 +10,6 @@ urlpatterns = [
     path('add-game-score/', views.add_game_score, name='add-game-score'),
     path('get-game-history/', views.get_game_history, name='get-game-history'),
     path('get-game-history-by-username/', views.get_game_history_by_username, name='get-game-history-by-username'),
+    path('connect-game/', views.connect_game, name='connect-game'),
+    path('delete-zombie-games/', views.remove_zombie_games, name='delete-zombie-games/'),
 ]
