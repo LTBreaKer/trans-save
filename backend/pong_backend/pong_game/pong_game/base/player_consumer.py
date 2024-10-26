@@ -19,7 +19,6 @@ class PlayerConsumer(AsyncWebsocketConsumer):
 
 	async def connect(self):
 		await self.accept()
-		await self.sendCunsumerPaddleCreated()
 
 	async def add_group(self, e):
 		self.room_name = e["group_name"]
@@ -28,6 +27,7 @@ class PlayerConsumer(AsyncWebsocketConsumer):
 			self.room_group_name,
 			self.channel_name
 		)
+		await self.sendCunsumerPaddleCreated()
 
 	async def assigning_paddle(self, e):
 		if (e['paddle'] == "left_paddle"):

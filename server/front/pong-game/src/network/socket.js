@@ -12,7 +12,7 @@ import { scene } from '../components/scene.js';
 import { disposeScene } from '../components/disposeComponent.js';
 import { endTournamentMatchScore } from '../../../components/tournamentscore/match_tournament.js';
 import { tournament_match_data } from '../../../components/tournament/script.js';
-import { loser_score } from '../game/paddle.js';
+import { loser_score, winner_score } from '../game/paddle.js';
 import { postRequest } from '../utils/request.js';
 const url = "https://127.0.0.1:9006/api/gamedb/add-game-score/";
 window.env = {
@@ -42,6 +42,11 @@ export async function connectGame() {
 export async function sendLoserScore () {
 	console.log("loser_score: ", loser_score);
 	postRequest(url, loser_score);
+}
+
+export async function sendWinnerScore () {
+	console.log("loser_score: ", winner_score);
+	postRequest(url, winner_score);
 }
 
 async function draw_info(data) {
@@ -161,9 +166,9 @@ export async function paddleSocket(group_name) {
 			console.log('paddle game WebSocket conection established.');
 			ws.send(JSON.stringify({'type_msg': 'add_group', 'group_name': game_data.game_id}));
 			ws.send(JSON.stringify({'type_msg': 'assigning_paddle', 'paddle': choicePaddle(game_data)}));
-			await sendPlayerPaddleCreated();
+			// await sendPlayerPaddleCreated();
 		}
-		ws.onmessage = (event) => {
+		ws.onmessage = async (event) => {
 			const message = JSON.parse(event.data);
 			if (message.type_msg === "draw_info")
 				draw_info(message);
@@ -176,6 +181,8 @@ export async function paddleSocket(group_name) {
 				console.log("game_data: ", game_data);
 				showWinner();
 			}
+			else if (message.type_msg === "consumer_paddle_created")
+				await sendPlayerPaddleCreated();
 			else
 				console.log("else message: ", message);
 		}

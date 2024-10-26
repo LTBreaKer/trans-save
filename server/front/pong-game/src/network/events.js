@@ -16,7 +16,7 @@ import {  } from '../game/paddle.js';
 import { lancePongGame } from '../main3d.js';
 import { setMousePosition, setMousePositionHelper } from '../events/mouseEvent.js';
 import { initGameComponents } from '../components/renderer.js';
-import { fnGameOver, sendLoserScore, sendScore } from './socket.js';
+import { fnGameOver, sendLoserScore, sendScore, sendWinnerScore } from './socket.js';
 import { loadHTML } from '../../../utils.js';
 import { get_localstorage } from '../../../auth.js';
 import { cancelTournamentMatch } from '../utils/request.js';
@@ -207,6 +207,10 @@ export async function loadPongGame() {
 	while (!startGame) {
 		if (n%4 == 0)
 			counter.textContent = "Loading.." + n / 4;
+		// if (n >= 120) {
+		// 	sendWinnerScore();
+		// 	break;
+		// }
 		await sleep(0.25);
 		n++;
 	}
