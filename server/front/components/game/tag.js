@@ -5,7 +5,7 @@ import {tag_game_info, setTagGameInfo} from '../ta/script.js'
 import {get_localstorage, check_access_token} from '../../auth.js'
 
 var api = "https://127.0.0.1:9007/api/tag-gamedb/"
-async function start_game()
+function start_game()
 {
     class Player{
         constructor({imgR, imgL, imgIR, imgIL, ply_name}) {
@@ -114,7 +114,7 @@ async function start_game()
 
     }
     
-    async function rain()
+    function rain()
     {
         let raindrops = []
         let count = canvas.width * 60 / 1697
@@ -156,7 +156,7 @@ async function start_game()
 
     canvas.width = 0
     resizeWindow()
-    await animation()
+    animation()
 
     function delay(ms) {
         return new Promise(resolve => setTimeout(resolve, ms))
@@ -183,7 +183,7 @@ async function start_game()
     
     const blinK = setInterval(blink, 2000)
 
-    async function animation()
+    function animation()
     {
         if (socket.readyState === WebSocket.OPEN)
         {
@@ -223,14 +223,11 @@ async function start_game()
                     load_draw(arrow, player.position.x + player.width/4, player.position.y - player.height, player.width/2, player.height/2)
             }
         })
-        await rain()
-
-        draw_timer(time, players[0])
+        rain()
+        if (!winner)
+            draw_timer(time, players[0])
         if (time === 0 && socket.readyState === WebSocket.OPEN)
-        {
             socket.close()
-            time = 1
-        }
     }
     
     function load_draw(image, x, y, width, height)
@@ -525,7 +522,6 @@ async function start_game()
         if (winner === null)
             winner = "unknown"
         await game_score(winner)
-        winner = null
         setTagGameInfo(null)
         reload_data()
     }
