@@ -1,3 +1,4 @@
+import { get_localstorage } from '../../auth.js';
 import { loadHTML, loadCSS } from '../../utils.js';
 import {tag_game_info} from '../ta/script.js';
 import {start_game} from './tag.js'

@@ -98,6 +98,20 @@ async function start_game()
         let uni = time%10
         load_draw(numbers[dec], canvas.width/2, player.height, player.width, player.height)
         load_draw(numbers[uni], canvas.width/2 + player.width, player.height, player.width, player.height)
+        
+        let size = player.height*75/100
+        c.font = `${size}px Volax`
+        c.fillStyle = 'rgba(207, 62, 90, 0.8)'
+        
+        c.direction = "ltr";
+        c.textBaseline = 'top';
+        c.fillText(tag_game_info.player1_name, canvas.width/10, player.height)
+
+
+        c.fillStyle = 'rgba(32, 174, 221, 0.8)'
+        c.direction = "rtl"
+        c.fillText(tag_game_info.player2_name, canvas.width - canvas.width/10, player.height)
+
     }
     
     async function rain()
@@ -171,7 +185,6 @@ async function start_game()
 
     async function animation()
     {
-        console.log("+++++++++++++++++animation")
         if (socket.readyState === WebSocket.OPEN)
         {
             socket.send(JSON.stringify({
