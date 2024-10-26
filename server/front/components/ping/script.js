@@ -70,15 +70,14 @@ async function create_tournament_function(participants) {
     window.location.hash = "/tournament";
     if (jsonData.message === "tournament created")
       window.location.hash = "/tournament";
-    if (response.status !== 200){
-
-      if (jsonData.message.startsWith('Invalid username')){
-        errorhere('invalid username');
-      }
-      else if (jsonData.message) {
-        errorhere(jsonData.message);
-      }
-    }
+    // if (response.status !== 200){
+    //   if (jsonData.message.startsWith('Invalid username')){
+    //     errorhere('invalid username');
+    //   }
+    //   else if (jsonData.message) {
+    //     errorhere(jsonData.message);
+    //   }
+    // }
     await login(jsonData.access, jsonData.refresh);
     
   } catch (error) {
@@ -299,9 +298,9 @@ try {
         document.querySelector('#butt_game').style.display = 'none';
         document.querySelector('.spinner').style.display = 'flex';
       }
-      else if (jsonData.message) {
-        errorhere(jsonData.message);
-      }
+      // else if (!response.ok && jsonData.message) {
+      //   errorhere(jsonData.message);
+      // }
 
       console.log(jsonData);
   
@@ -363,10 +362,10 @@ async function lanceLocalGame() {
     console.log("###  pingpong: ", window.location.hash);
     game_data = jsonData;
     changePlayerPosition();
-    if (jsonData.message)
-      errorhere(jsonData.message);
-    else if (jsonData.message.player2_name)
-      errorhere('invalid player name');
+    // if (!response.ok && jsonData.message)
+    //   errorhere(jsonData.message);
+    // else if (!response.ok && jsonData.message.player2_name)
+    //   errorhere('invalid player name');
     
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response}`);

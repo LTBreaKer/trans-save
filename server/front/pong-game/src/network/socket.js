@@ -22,9 +22,12 @@ window.env = {
 export async function sendScore(left_paddle_score = lpaddle.nb_goal, right_paddle_score = rpaddle.nb_goal) {
 	if (!game_data)
 		return ;
+	console.log("game_data.player1_score", game_data.player1_score);
+	console.log("left_paddle_score", left_paddle_score);
 	left_paddle_score && (game_data.player1_score = left_paddle_score) ;
 	right_paddle_score && (game_data.player2_score = right_paddle_score) ;
     postRequest(url, JSON.stringify(game_data));
+	console.log("send game data: ", game_data);
 }
 
 function sendScoreWhenRefreshingPage() {
@@ -74,8 +77,8 @@ async function draw_info(data) {
 	}
 	lpaddle.position.x = ((data_left_paddle.y - (height / 2)) * (TABLE_WIDTH / 2)) / (height / 2) + PADDLE_LONG / 2;
 	rpaddle.position.x = ((data_right_paddle.y - (height / 2)) * (TABLE_WIDTH / 2)) / (height / 2) + PADDLE_LONG / 2;
-	first_player_goal.innerHTML = rpaddle.nb_goal;
-	second_player_goal.innerHTML = lpaddle.nb_goal;
+	first_player_goal.innerHTML = lpaddle.nb_goal;
+	second_player_goal.innerHTML = rpaddle.nb_goal;
 }
 
 async function showWinner() {

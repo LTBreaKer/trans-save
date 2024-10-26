@@ -54,9 +54,9 @@ class LocalGameConsumer(AsyncWebsocketConsumer):
         if (type == "update_paddle"):
             self.lpaddle.update(text_data_json['lpaddle']['ps'])
             self.rpaddle.update(text_data_json['rpaddle']['ps'])
-        elif (type == "update_lpaddle"):
+        elif (type == "update_rpaddle"):
             self.bot = True
-            self.lpaddle.update(text_data_json['lpaddle']['ps'])
+            self.rpaddle.update(text_data_json['rpaddle']['ps'])
         elif (type == 'play'):
             self.ball.gameOver = False
             asyncio.create_task(self.update_ball(type))
@@ -94,7 +94,7 @@ class LocalGameConsumer(AsyncWebsocketConsumer):
                     predictions = model.predict(input_array)
                     random_number = random.choice(numbers)
             if (self.bot):
-                self.rpaddle.ai_update(predictions * 10 - random_number)
+                self.lpaddle.ai_update(predictions * 10 - random_number)
             self.ball.update(self.rpaddle, self.lpaddle)
             if ((self.ball.velX * tmp < 0)):
                 tmp = self.ball.velX

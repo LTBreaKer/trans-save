@@ -1068,5 +1068,6 @@ display: none;
     color: #e8ebfb;
     align-items: center;
     width: -webkit-fill-available;
+    margin-left: 2px;
   }
 }

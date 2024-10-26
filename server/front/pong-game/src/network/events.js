@@ -55,7 +55,7 @@ export async function loadPopupReply() {
 		html_popup_replay.innerHTML = await loadHTML('./pong-game/public/popup_replay.html')
 	}
 	const data = game_data;
-	let winner = (data.player1_score <= data.player2_score) ? data.player1_name : data.player2_name;
+	let winner = (data.player1_score <= data.player2_score) ? data.player2_name : data.player1_name;
 	html_popup_replay.querySelector('.overlay-text').textContent =  winner + " win";
 	const container = document.querySelector('.p_container');
 	container.appendChild(html_popup_replay);
@@ -86,7 +86,7 @@ export async function loadPopupGameOver() {
 	}
 	const data = game_data ;
 	console.log("----data-----: ", data);
-	let winner = (data.player1_score <= data.player2_score) ? data.player1_name : data.player2_name;
+	let winner = (data.player1_score <= data.player2_score) ? data.player2_name : data.player1_name;
 	html_popup_game_over.querySelector('.overlay-text').textContent =  winner + " win";
 	const container = document.querySelector('.p_container');
 	container.appendChild(html_popup_game_over);
@@ -96,7 +96,7 @@ export async function loadPopupGameOver() {
 
 async function removePopupReplay() {
 	const container = document.querySelector('.p_container');
-	container && container.removeChild(html_popup_replay);
+	html_popup_replay && container.removeChild(html_popup_replay);
 }
 
 async function assignPlayers({player1_name, player2_name}) {

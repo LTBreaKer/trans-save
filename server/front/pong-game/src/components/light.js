@@ -7,16 +7,6 @@ let light1, light2, light3, light4;
 
 let light, light_1, light_2;
 
-function makeXYZGUI( gui, vector3, name, onChangeFn ) {
-
-    const folder = gui.addFolder( name );
-    folder.add( vector3, 'x', - 10, 10 ).onChange( onChangeFn );
-    folder.add( vector3, 'y', 0, 10 ).onChange( onChangeFn );
-    folder.add( vector3, 'z', - 10, 10 ).onChange( onChangeFn );
-    folder.open();
-
-}
-
 export function initLight() {
     light1 = new THREE.DirectionalLight( 0x80c0d2, 0.4);
     light1.position.set( TABLE_WIDTH/4, TABLE_WIDTH/4, 5);

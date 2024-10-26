@@ -1,5 +1,6 @@
 import { get_localstorage } from "../../../auth.js";
 import { game_data } from "../../../components/ping/script.js";
+import { lpaddle, rpaddle } from "../game/paddle.js";
 
 
 export function postRequest(url, body) {
@@ -28,14 +29,14 @@ export async function cancelTournamentMatch() {
     postRequest("https://127.0.0.1:9008/api/tournament/cancel-match/", JSON.stringify(game_data))
 }
 
-export async function sendScore(left_paddle_score = lpaddle.nb_goal, right_paddle_score = rpaddle.nb_goal) {
-	if (!game_data)
-		return ;
-	left_paddle_score && (game_data.player1_score = left_paddle_score) ;
-	right_paddle_score && (game_data.player2_score = right_paddle_score) ;
-    postRequest(url, JSON.stringify(game_data));
+// export async function sendScore(left_paddle_score = lpaddle.nb_goal, right_paddle_score = rpaddle.nb_goal) {
+// 	if (!game_data)
+// 		return ;
+// 	left_paddle_score && (game_data.player1_score = left_paddle_score) ;
+// 	right_paddle_score && (game_data.player2_score = right_paddle_score) ;
+//     postRequest(url, JSON.stringify(game_data));
 
-}
+// }
 
 // async function cancelTournamentMatch() {
 // 	console.log("cancelTournamentMatch--------------> ",game_data);
