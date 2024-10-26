@@ -67,18 +67,18 @@ async function create_tournament_function(participants) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
     tournament_data = jsonData;
-    window.location.hash = "/tournament";
+    // window.location.hash = "/tournament";
     if (jsonData.message === "tournament created")
       window.location.hash = "/tournament";
-    // if (response.status !== 200){
-    //   if (jsonData.message.startsWith('Invalid username')){
-    //     errorhere('invalid username');
-    //   }
-    //   else if (jsonData.message) {
-    //     errorhere(jsonData.message);
-    //   }
-    // }
-    await login(jsonData.access, jsonData.refresh);
+    if (response.status !== 200){
+      if (jsonData.message.startsWith('Invalid username')){
+        errorhere('invalid username');
+      }
+      else if (jsonData.message) {
+        errorhere(jsonData.message);
+      }
+    }
+
     
   } catch (error) {
     console.error('There was a problem with the fetch operation:', error);
@@ -298,9 +298,9 @@ try {
         document.querySelector('#butt_game').style.display = 'none';
         document.querySelector('.spinner').style.display = 'flex';
       }
-      // else if (!response.ok && jsonData.message) {
-      //   errorhere(jsonData.message);
-      // }
+      else if (jsonData.message) {
+        errorhere(jsonData.message);
+      }
 
       console.log(jsonData);
   
@@ -359,24 +359,27 @@ async function lanceLocalGame() {
     const jsonData = await response.json();
     // console.log("jsonData: ", jsonData);
     // console.log("jsonData.stringify(): ", JSON.stringify(jsonData));
-    console.log("###  pingpong: ", window.location.hash);
-    game_data = jsonData;
-    changePlayerPosition();
-    // if (!response.ok && jsonData.message)
-    //   errorhere(jsonData.message);
-    // else if (!response.ok && jsonData.message.player2_name)
-    //   errorhere('invalid player name');
-    
+    if (jsonData.message === 'game created') {
+      game_data = jsonData;
+      changePlayerPosition();
+      if (window.location.hash == "#/pingpong") {
+        console.log("### pingpong");
+      }
+      else {
+        console.log("$$$ pingpong");
+        window.location.hash = "/pingpong";
+      }
+    }
+    else if (jsonData.message.player2_name) {
+      errorhere('invalid player name');
+    }
+    else if (jsonData.message) {
+      errorhere(jsonData.message);
+    }
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response}`);
     }
-    else if (window.location.hash == "#/pingpong") {
-      console.log("### pingpong");
-    }
-    else {
-      console.log("$$$ pingpong");
-      window.location.hash = "/pingpong";
-    }
+
   } catch (error) {
     console.error('There was a problem with the fetch operation:', error);
   }

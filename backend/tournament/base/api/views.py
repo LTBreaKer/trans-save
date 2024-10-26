@@ -70,6 +70,8 @@ def create_tournament(request):
     
     # check if user is not in a game
     response = requests.get('https://server:9006/api/gamedb/is-available/', headers={'AUTHORIZATION': AUTH_HEADER, 'Session-ID': session_id}, verify=False)
+    import sys
+    print('response ---------------- ', response, file=sys.stderr)
     if response.status_code != 200:
         return Response({'message': 'user not available to create tournament'}, status=400)
 
