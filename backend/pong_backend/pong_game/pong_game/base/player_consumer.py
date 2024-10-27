@@ -15,6 +15,7 @@ class PlayerConsumer(AsyncWebsocketConsumer):
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
 		self.ball_channel_name = ''
+		self.room_group_name = 0
 		self.paddle = Paddle()
 
 	async def connect(self):
@@ -46,6 +47,8 @@ class PlayerConsumer(AsyncWebsocketConsumer):
 		# await self.channel_layer.send(
 		# 	self.ball_channel_name, 
 		# 	{ 'type': 'deconnect_ball' })
+		if (not self.room_group_name):
+			return
 		await self.close_game_consumers()
 		await self.channel_layer.group_discard(
 			self.room_group_name,
@@ -74,6 +77,8 @@ class PlayerConsumer(AsyncWebsocketConsumer):
 			await self.close_game_consumers()
 	
 	async def close_game_consumers(self):
+		if (not self.room_group_name):
+			return
 		left_paddle_score = 0 if (self.paddle.x == 0) else 3
 		right_paddle_score = 0 if (left_paddle_score == 3) else 3
 		await self.channel_layer.group_send(

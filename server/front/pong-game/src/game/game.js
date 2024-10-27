@@ -13,10 +13,18 @@ import { resizeCanvas } from '../network/events.js';
 export let startGame = false;
 // export let game_over = false;
 export let game_connected = false;
+export let end_game = false;
 
 let local_game_socket;
 let paddle_socket;
 export let animationFrameId;
+
+export function initGameVariable() {
+	startGame = false;
+	// game_over = false;
+	game_connected = false;
+	end_game = false;
+}
 
 export function launchGame() {
 	startGame = true;
@@ -32,6 +40,7 @@ export function stopGame() {
 export function endGameConnection() {
 	game_connected = false;
 	startGame = false;
+	end_game = true;
 }
 
 

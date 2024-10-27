@@ -8,7 +8,7 @@
 
 body {
   height: 100vh;
-  min-width: 280px;
+  min-width: 270px;
   background: var(--body-color);
 }
 
@@ -129,13 +129,13 @@ body {
   align-items: center;
 }
 
-.gm_sidebar li {
+/* .gm_sidebar li {
   height: 50px;
   margin-top: 10px;
   list-style: none;
   display: flex;
   align-items: center;
-}
+} */
 
 .gm_sidebar li .icon {
   /* display: flex; */

@@ -1,7 +1,7 @@
 
 import {canvas, click, TABLE_WIDTH, paddleHeight, height, box_result, first_player_goal, second_player_goal, counter, replay, popup_replay, pong_menu, loadDocument, sleep, back_counter, leftPaddle, paddle_way, first_player_name, second_player_name, p_second, p_first, loadReplayDocument, loadQuitDocument, double_point} from '../utils/globaleVariable.js';
 // import { setPointerMouse, rotateTable, zoomCamera } from '../game/staduim.js'
-import { closeGameSocket, connectAI, connectLocalGameSocket, connectPaddleSocket, startGame } from '../game/game.js';
+import { closeGameSocket, connectAI, connectLocalGameSocket, connectPaddleSocket, end_game, initGameVariable, startGame } from '../game/game.js';
 import {sendSocket} from '../game/game.js'
 import { moveCamera } from '../components/camera.js';
 
@@ -16,7 +16,7 @@ import {  } from '../game/paddle.js';
 import { lancePongGame } from '../main3d.js';
 import { setMousePosition, setMousePositionHelper } from '../events/mouseEvent.js';
 import { initGameComponents } from '../components/renderer.js';
-import { fnGameOver, sendLoserScore, sendScore, sendWinnerScore } from './socket.js';
+import { fnGameOver, sendLoserScore, sendScore, sendWinnerScore, showWinner } from './socket.js';
 import { loadHTML } from '../../../utils.js';
 import { get_localstorage } from '../../../auth.js';
 import { cancelTournamentMatch } from '../utils/request.js';
@@ -96,6 +96,7 @@ export async function loadPopupGameOver() {
 
 async function removePopupReplay() {
 	const container = document.querySelector('.p_container');
+	console.log("html_popup_replay: ", html_popup_replay);
 	html_popup_replay && container.removeChild(html_popup_replay);
 }
 
@@ -107,6 +108,7 @@ async function assignPlayers({player1_name, player2_name}) {
 export async function replayLocalGame() {
 	(statePongGame == "local") ? await localgame() : await aiGame();
 	await loadDocument();
+	initGameVariable();
 	initPaddleInstance();
 	resizeCanvas();
 	// back_counter.style.display = 'none';
@@ -191,26 +193,29 @@ export function removeEventsListener() {
 export async function descounter() {
 	back_counter.style.display = 'flex';
 	let n = 0;
-	while (!startGame) {
+	while (!startGame && !end_game) {
 		if (n%4 == 0)
-			counter.textContent = "Loading.." + n / 4;
+			counter.textContent = "Loading.." + (n / 4).toString();
 		await sleep(0.25);
-		sendSocket();
+		if (n / 4 >= 3)
+			await sendSocket();
 		n++;
 	}
 	back_counter.style.display = 'none';
 }
 
 export async function loadPongGame() {
+	console.log("------------loadPongGame-------");
 	back_counter.style.display = 'flex';
 	let n = 0;
-	while (!startGame) {
+	while (!startGame && !end_game) {
 		if (n%4 == 0)
-			counter.textContent = "Loading.." + n / 4;
-		// if (n >= 120) {
-		// 	sendWinnerScore();
-		// 	break;
-		// }
+			counter.textContent = "Loading.." + (n / 4).toString();
+		if (n >= 120) {
+			await sendWinnerScore();
+			await showWinner();
+			break;
+		}
 		await sleep(0.25);
 		n++;
 	}
@@ -225,6 +230,7 @@ function initGame() {
 
 let replayGame = async () => {
 	await loadDocument();
+	initGameVariable();
 	initPaddleInstance();
 	initGame();
 	resizeCanvas();

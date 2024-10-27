@@ -3,7 +3,7 @@ import { sphere } from '../components/sphere.js'
 import { leftPaddle, rightPaddle, paddle_way, TABLE_HEIGHT, BALL_RADUIS, popup_replay, sleep, back_counter, replay, pong_menu, loadReplayDocument } from '../utils/globaleVariable.js';
 import { TABLE_DEPTH, TABLE_WIDTH, PADDLE_LONG, height, width, first_player_goal, second_player_goal} from '../utils/globaleVariable.js';
 import  {statePongGame } from '../../../../components/ping/script.js'
-import {  loadPongGame, loadPopupGameOver, loadPopupReply, removeEventsListener, replayLocalGame } from './events.js';
+import {  descounter, loadPongGame, loadPopupGameOver, loadPopupReply, removeEventsListener, replayLocalGame } from './events.js';
 import { assingGameApiToNULL, game_data, initPlayRemoteGame, sendPlayerPaddleCreated } from '../../../components/ping/script.js';
 import { animationFrameId, closeGameSocket, endGameConnection, launchGame, playRemotePongGame, sendSocket, stopGame } from '../game/game.js';
 import { moveCamera } from '../components/camera.js';
@@ -72,8 +72,9 @@ async function draw_info(data) {
 	else if (data_ball.endTurn && rpaddle.nb_goal < 3 && lpaddle.nb_goal < 3) {
 		console.log("data_ball.ballOut: ", data_ball.ballOut);
 		stopGame();
-		loadPongGame();
-		await sendSocket();
+		descounter();
+		// loadPongGame();
+		// await sendSocket();
 	}
 	else {
 		sphere.position.x = ((data_ball.y - (height / 2)) * (TABLE_WIDTH / 2)) / (height / 2);
@@ -86,7 +87,7 @@ async function draw_info(data) {
 	second_player_goal.innerHTML = rpaddle.nb_goal;
 }
 
-async function showWinner() {
+export async function showWinner() {
 	// stopGame();
 	endGameConnection();
 	await loadPopupGameOver();
