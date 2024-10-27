@@ -227,6 +227,9 @@ initPlayRemoteGame(connectBallSocket);
 async function descounterRemoteGame() {
 	await sleep(3);
 	await playRemotePongGame();
+	console.log("-----descounterRemoteGame: ", game_connected);
+	(!game_connected) && await connectGame();
+	knkjbygyu
 	launchGame();
 }
 
