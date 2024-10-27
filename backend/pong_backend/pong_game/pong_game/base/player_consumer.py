@@ -65,10 +65,11 @@ class PlayerConsumer(AsyncWebsocketConsumer):
 				await self.update_paddle(text_data_json['paddle']['ps'])
 		elif (type == "move"):
 			print("self.ball_channel_name: ", self.ball_channel_name)
-			if (self.ball_channel_name != ''):
-				await self.channel_layer.send(
-				self.ball_channel_name,
-				{ 'type': 'move'})
+			await self.launsh_game()
+			# if (self.ball_channel_name != ''):
+			# 	await self.channel_layer.send(
+			# 	self.ball_channel_name,
+			# 	{ 'type': 'move'})
 		elif (type == "add_group"):
 			await self.add_group(text_data_json)
 		elif (type == "assigning_paddle"):
@@ -76,6 +77,23 @@ class PlayerConsumer(AsyncWebsocketConsumer):
 		elif (type == "close"):
 			await self.close_game_consumers()
 	
+	async def launsh_game(self):
+		print("----------launsh_game----------------", file=sys.stderr)
+		await self.channel_layer.group_send(
+			self.room_group_name, {
+				'type': 'launsh',
+				'channel_name': self.channel_name 
+			})
+
+	async def launsh(self, e):
+		print("----------launsh----------------", file=sys.stderr)
+		print("self.channel_name: ", self.channel_name, file=sys.stderr)
+		print("e['channel_name']: ", e['channel_name'], file=sys.stderr)
+		if (self.channel_name != e['channel_name'] and self.ball_channel_name != ''):
+			await self.channel_layer.send(
+				self.ball_channel_name,
+				{'type': 'move'})
+
 	async def close_game_consumers(self):
 		if (not self.room_group_name):
 			return

@@ -223,14 +223,21 @@ async function connectBallSocket() {
 
 initPlayRemoteGame(connectBallSocket);
 
+
 async function descounterRemoteGame() {
-	// back_counter.style.display = 'flex';
-	// for(let c=3; c > 0; c--) {
-	// 	back_counter.textContent = c;
-	// 	await sleep(1);
-	// }
-	// back_counter.style.display = 'none';
 	await sleep(3);
 	await playRemotePongGame();
 	launchGame();
 }
+
+// async function descounterRemoteGame() {
+// 	// back_counter.style.display = 'flex';
+// 	// for(let c=3; c > 0; c--) {
+// 	// 	back_counter.textContent = c;
+// 	// 	await sleep(1);
+// 	// }
+// 	// back_counter.style.display = 'none';
+// 	await sleep(3);
+// 	await playRemotePongGame();
+// 	launchGame();
+// }

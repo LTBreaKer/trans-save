@@ -229,8 +229,8 @@ function initGame() {
 }
 
 let replayGame = async () => {
-	await loadDocument();
 	initGameVariable();
+	await loadDocument();
 	initPaddleInstance();
 	initGame();
 	resizeCanvas();
