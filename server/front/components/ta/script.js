@@ -27,6 +27,8 @@ async function Ta() {
   setNaveBarContent();
 
   await checkFirst();
+  if (localStorage.getItem("winner") && localStorage.getItem("game_id") )
+    await add_game_score();
   const remote_butt_game = document.getElementById('butt_game');
   const local_butt_game = document.getElementById('local_butt_game_tag');
 
@@ -333,6 +335,38 @@ async function changeAccess() {
     } catch(error)  {
       console.error('There was a problem with the fetch operation:', error);
     }
+  }
+
+  async function add_game_score()
+  {
+      await check_access_token()
+      const data = {
+          game_id: localStorage.getItem("game_id"),
+          winner_name: localStorage.getItem('winner'),
+      }
+      try{
+          const response = await fetch(game_api + 'add-game-score/', {
+              method: 'POST',
+              headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer ' + get_localstorage('token'),
+              'Session-ID': get_localstorage('session_id')
+              },
+              credentials: 'include',
+              body: JSON.stringify(data)
+          });
+          const jsonData = await response.json()
+          if (jsonData.message === 'game score added') {
+            localStorage.removeItem("game_id")
+            localStorage.removeItem("winner")
+          }
+          if (!response.ok) {
+            console.error(`Status: ${response.status}, Message: ${jsonData.message || 'Unknown error'}`)
+          }
+      }
+      catch(error){
+          console.error('Request failed', error)
+      }
   }
 
 export default Ta;
