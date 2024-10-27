@@ -170,6 +170,8 @@ def add_game_score(request):
     auth_check_response = check_auth(AUTH_HEADER, session_id)
     if auth_check_response.status_code != 200:
         return Response(data=auth_check_response.json(), status=auth_check_response.status_code)
+    if not request.data:
+        return Response({'message': 'no data sent'}, status=400)
     game_id = request.data.get('game_id')
     if not game_id:
         return Response({'message': 'game_id required'}, status=400)
@@ -247,20 +249,15 @@ def is_available(request):
     if auth_check_response.status_code != 200:
         return Response(data=auth_check_response.json(), status=auth_check_response.status_code)
     
-    id = request.data.get('id')
+    id = auth_check_response.json()['user_data']['id']
     if GameDb.objects.filter(
         Q(player1_id=id) | Q(player2_id=id),
         is_active=True
     ).exists():
-        return {
-            'is_available': False,
-            'res': Response({'message': 'player is already in a game'}, status=400)
-            }
+        return Response({'message': 'player is already in a game'}, status=400)
+
     if id in game_queue:
-        return {
-            'is_available': False,
-            'res': Response({'message': 'player already in queue'}, status=400)
-            }
+        return Response({'message': 'player already in queue'}, status=400)
     return Response({'message': 'user is available'}, status=200)
 
 @api_view(['POST'])

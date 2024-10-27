@@ -43,6 +43,9 @@ class GameConsumer(AsyncWebsocketConsumer):
 			'type_msg': 'play',
 		}))
 
+	async def launsh(self, e):
+		pass
+		
 	async def disconnect(self, close_code):
 		await self.channel_layer.group_discard(
 			self.room_group_name,
@@ -120,6 +123,8 @@ class GameConsumer(AsyncWebsocketConsumer):
 			self.room_group_name,
 			{
 				'type': 'desconnect_consumer',
+				'left_paddle_score': self.lpaddle.nb_goal,
+				'right_paddle_score': self.rpaddle.nb_goal,
 			})
 		
 	async def desconnect_consumer(self, e):
