@@ -64,9 +64,6 @@ async function create_tournament_function(participants) {
     console.log(response);
     const jsonData = await response.json();
     console.log(jsonData);
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
-    }
     tournament_data = jsonData;
     // window.location.hash = "/tournament";
     if (jsonData.message === "tournament created")
@@ -79,7 +76,10 @@ async function create_tournament_function(participants) {
         errorhere(jsonData.message);
       }
     }
-
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    
     
   } catch (error) {
     console.error('There was a problem with the fetch operation:', error);
