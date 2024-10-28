@@ -138,11 +138,25 @@ async function start_game()
     {
         let dec = Math.floor(time/10)
         let uni = time%10
-        load_draw(numbers[dec], canvas.width/2, player.height, player.width, player.height)
-        load_draw(numbers[uni], canvas.width/2 + player.width, player.height, player.width, player.height)
+        load_draw(numbers[dec], canvas.width/2, player[0].height, player[0].width, player[0].height)
+        load_draw(numbers[uni], canvas.width/2 + player[0].width, player[0].height, player[0].width, player[0].height)
+        
+        let size = player[0].height*75/100
+        c.font = `${size}px Volax`
+        c.fillStyle = 'rgba(207, 62, 90, 0.8)'
+        
+        c.direction = "ltr";
+        c.textBaseline = 'top';
+        c.fillText(tag_game_info.player1name, canvas.width/10, player[0].height)
+
+
+        c.fillStyle = 'rgba(32, 174, 221, 0.8)'
+        c.direction = "rtl"
+        c.fillText(tag_game_info.player2name, canvas.width - canvas.width/10, player[1].height)
+
     }
 
-    async function rain()
+    function rain()
     {
         let raindrops = []
         let count = canvas.width * 60 / 1697
@@ -207,7 +221,7 @@ async function start_game()
     }
 
     resizeWindow()
-    await animation()
+    animation()
 
     function delay(ms) {
         return new Promise(resolve => setTimeout(resolve, ms));
@@ -234,7 +248,7 @@ async function start_game()
 
     const blinK = setInterval(blink, 2000)
 
-    async function animation()
+    function animation()
     {
         if (socket.readyState === WebSocket.OPEN)
         {
@@ -264,8 +278,9 @@ async function start_game()
                     load_draw(arrow, player.position.x + player.width/4, player.position.y - player.height, player.width/2, player.height/2)
             }
         })
-        await rain();
-        draw_timer(time, players[0])
+        rain();
+        if (!winner)
+            draw_timer(time, players)
         if (time === 0 && socket.readyState === WebSocket.OPEN)
         {
             socket.close()
@@ -475,7 +490,6 @@ async function start_game()
             stop_animation = true
             socket.close()
         }
-        // event.preventDefault() // This triggers the alert
     }
 
     async function disconnect()
@@ -490,7 +504,7 @@ async function start_game()
         }
         if (winner)
             await game_score(winner)
-        winner = null
+        // winner = null
         setTagGameInfo(null)
         reload_data()
     }
