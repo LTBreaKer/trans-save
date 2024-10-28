@@ -4,8 +4,8 @@ import { lpaddle, rpaddle } from "../game/paddle.js";
 
 
 export async  function postRequest(url, body) {
-	await check_access_token()
-    const req = fetch(url, {
+	await check_access_token();
+    const req = await fetch(url, {
 		method: 'POST',
 		headers: {
 			'Authorization': `Bearer ${localStorage.getItem("token")}`,
