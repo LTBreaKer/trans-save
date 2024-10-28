@@ -227,12 +227,17 @@ contract TournamentContract {
     function setNextStage(uint256 _tournamentId) public  {
         uint256 completedMatchesNumber = 0;
         bool correct = false;
+        bool check = true;
 
         for (uint256 i = 0; i < matches.length; i++) {
-            if (matches[i].tournamentId == _tournamentId) {
+            if (matches[i].tournamentId == _tournamentId && keccak256(abi.encodePacked(matches[i].status)) == keccak256(abi.encodePacked('complete'))) {
                 completedMatchesNumber++;
             }
         }
+        if (completedMatchesNumber != 4 && completedMatchesNumber != 6) {
+            check = false;
+        }
+        require(check == true, 'cannot set next stage');
         Match[] memory completedMatches = new Match[](completedMatchesNumber);
         uint index = 0;
         for (uint256 i = 0; i < matches.length; i++) {

@@ -5,29 +5,31 @@ import { lpaddle, rpaddle } from "../game/paddle.js";
 
 export async  function postRequest(url, body) {
 	await check_access_token();
-    const req = await fetch(url, {
-		method: 'POST',
-		headers: {
-			'Authorization': `Bearer ${localStorage.getItem("token")}`,
-			'Content-Type': 'application/json',
-			'Session-ID': get_localstorage('session_id')
-		},
-		credentials: 'include',
-		body: body,
-		keepalive: true
-	});
-	req.then((res) => {
-		if (!res.ok)
-			throw new Error(`HTTP error: ${res.status}`);
-		return res.json();
-	})
-	.then(data => console.log(data))
-	.catch(error => console.error(`${error}`));
+	try {
+		const req = await fetch(url, {
+				method: 'POST',
+				headers: {
+					'Authorization': `Bearer ${localStorage.getItem("token")}`,
+					'Content-Type': 'application/json',
+					'Session-ID': get_localstorage('session_id')
+				},
+				credentials: 'include',
+				body: body,
+				keepalive: true
+			});
+			if (!res.ok)
+				throw new Error(`HTTP error: ${res.status}`);
+			return res.json();
+	}
+    
+	catch {
+		(error => console.error(`${error}`));
+	}
 }
 
 export async function cancelTournamentMatch() {
 	console.log("cancelTournamentMatch--------------> ",game_data);
-    postRequest("https://127.0.0.1:9008/api/tournament/cancel-match/", JSON.stringify(game_data))
+    await postRequest("https://127.0.0.1:9008/api/tournament/cancel-match/", JSON.stringify(game_data))
 }
 
 // export async function sendScore(left_paddle_score = lpaddle.nb_goal, right_paddle_score = rpaddle.nb_goal) {

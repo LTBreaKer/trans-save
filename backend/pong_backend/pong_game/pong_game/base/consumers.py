@@ -13,7 +13,7 @@ from tensorflow.keras.models import load_model
 import numpy as np
 from .models import TrainingData, Turn
 
-goals_to_win = 5
+goals_to_win = 2
 @database_sync_to_async
 def output_pos_hit(pos_hit):
 	try:

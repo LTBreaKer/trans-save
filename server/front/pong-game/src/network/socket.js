@@ -103,8 +103,9 @@ export async function fnGameOver(state = "rtn_menu") {
 	if (statePongGame !== "tournament")
 		window.location.hash = "/ping"
 	else {
-		(tournament_match_data.matchNumber === 7) ?
-		window.location.hash = "/ping" :
+		// (tournament_match_data.matchNumber === 7) ?
+		// window.location.hash = "/ping" :
+		// window.location.hash = "/tournament";
 		window.location.hash = "/tournament";
 	}
 	assingGameApiToNULL();

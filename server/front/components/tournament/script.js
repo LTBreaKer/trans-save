@@ -15,17 +15,21 @@ async function Tournament() {
   const html = await loadHTML('./components/tournament/index.html');
   loadCSS('./components/tournament/style.css');
 
-
+  localStorage.removeItem('statePongGame')
   console.log("here is data of me =:> ", tournament_data);
   const app = document.getElementById('app');
   app.innerHTML = html;
   setHeaderContent();
   await define_object_matches();
+  console.log("==== ===== ===== ===== ====== =========");
   setNaveBarContent();
   await checkFirst();
+  console.log("==== ===== ===== ===== ====== =========");
   if (!socket_friend_request)
     player_webSocket();
+  console.log("==== ===== ===== ===== ====== =========");
   updateContent();
+  console.log("==== ===== ===== ===== ====== =========");
 
 
 
@@ -33,26 +37,6 @@ async function Tournament() {
   
   logout.addEventListener('click', log_out_func);
 
-  const next_match = document.getElementById('next_match');
-  
-  next_match.addEventListener('click', async () => {
-    let i = 0;
-    console.log(tournament_data.tournament_matches);
-    while (tournament_data[i]) {
-      if (tournament_data[i].status === "upcoming") {
-         const status = await start_tournament_match(tournament_data[i]);
-         if (status === 200) {
-
-           tournament_match_data = tournament_data[i];
-           assingDataToGameData(tournament_match_data);
-           statePongGameToTournament();
-           window.location.hash = '/pingpong';
-          }
-        return;
-      }
-      i++;
-    }  
-  })
 
   window.addEventListener('resize', updateContent);
 
@@ -289,6 +273,30 @@ function set_players_sh() {
             </div>
 
   `
+  const next_match = document.getElementById('next_match');
+  console.log("****** nect_match ******", next_match);
+  next_match.addEventListener('click', async () => {
+    let i = 0;
+    console.log("tournament_data.tournament_matches");
+    await define_object_matches();
+    console.log(tournament_data.tournament_matches);
+    console.log("tournament_data.tournament_matches");
+    while (tournament_data[i]) {
+      if (tournament_data[i].status === "upcoming") {
+         const status = await start_tournament_match(tournament_data[i]);
+         if (status === 200) {
+          localStorage.setItem("statePongGame", "tournament")
+
+           tournament_match_data = tournament_data[i];
+           assingDataToGameData(tournament_match_data);
+           statePongGameToTournament();
+           window.location.hash = '/pingpong';
+          }
+      }
+      i++;
+    }  
+  })
+
 }
 
 function set_players_sh1() {
@@ -357,6 +365,29 @@ function set_players_sh1() {
             </div>
 
   `
+  const next_match = document.getElementById('next_match');
+  console.log("****** nect_match ******", next_match);
+  next_match.addEventListener('click', async () => {
+    let i = 0;
+    console.log("tournament_data.tournament_matches");
+    await define_object_matches();
+    console.log(tournament_data.tournament_matches);
+    console.log("tournament_data.tournament_matches");
+    while (tournament_data[i]) {
+      if (tournament_data[i].status === "upcoming") {
+         const status = await start_tournament_match(tournament_data[i]);
+         if (status === 200) {
+
+           tournament_match_data = tournament_data[i];
+           assingDataToGameData(tournament_match_data);
+           statePongGameToTournament();
+           window.location.hash = '/pingpong';
+          }
+      }
+      i++;
+    }  
+  })
+
 }
 
 

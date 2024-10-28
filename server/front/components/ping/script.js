@@ -8,7 +8,7 @@ let name = "";
 let html = "";
 export let game_data;
 // export let gameApi;
-export let statePongGame;
+export let statePongGame = '';
 export let _player_webSocket;
 let tournament_data;
 let tournament_name;
