@@ -29,13 +29,13 @@ export function initScene() {
 }
 
 export function removeLights() {
-    scene.remove(light);
-    scene.remove(light_1);
-    scene.remove(light_2);
-    scene.remove(light1);
-    scene.remove(light2);
-    scene.remove(light3);
-    scene.remove(light4);
+    light && scene.remove(light);
+    light_1 && scene.remove(light_1);
+    light_2 && scene.remove(light_2);
+    light1 && scene.remove(light1);
+    light2 && scene.remove(light2);
+    light3 && scene.remove(light3);
+    light4 && scene.remove(light4);
 }
 
 export function clearScene() {

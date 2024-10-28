@@ -16,7 +16,7 @@ import {  } from '../game/paddle.js';
 import { lancePongGame } from '../main3d.js';
 import { setMousePosition, setMousePositionHelper } from '../events/mouseEvent.js';
 import { initGameComponents } from '../components/renderer.js';
-import { fnGameOver, sendLoserScore, sendScore, sendWinnerScore, showWinner } from './socket.js';
+import { fnGameOver, sendLoserScore, sendReloadScore, sendScore, sendWinnerScore, showWinner } from './socket.js';
 import { loadHTML } from '../../../utils.js';
 import { get_localstorage } from '../../../auth.js';
 import { cancelTournamentMatch } from '../utils/request.js';
@@ -79,7 +79,7 @@ async function removePongLoader() {
 	container.removeChild(html_pong_loader);
 }
 
-export async function loadPopupGameOver() {
+export async function loadPopupGameOver(disconnected = false) {
 	if (!html_popup_game_over) {
 		html_popup_game_over = document.createElement('div');
 		html_popup_game_over.innerHTML = await loadHTML('./pong-game/public/popup_game_over.html');
@@ -87,7 +87,8 @@ export async function loadPopupGameOver() {
 	const data = game_data ;
 	console.log("----data-----: ", data);
 	let winner = (data.player1_score <= data.player2_score) ? data.player2_name : data.player1_name;
-	html_popup_game_over.querySelector('.overlay-text').textContent =  winner + " win";
+	html_popup_game_over.querySelector('.overlay-text').textContent = (data.player1_score === data.player2_score) ? "Draw":  winner + " win";
+	if (disconnected) html_popup_game_over.querySelector('.overlay-text').textContent =  "Game Disconnected";
 	const container = document.querySelector('.p_container');
 	container.appendChild(html_popup_game_over);
 	await loadQuitDocument();
@@ -121,7 +122,7 @@ export async function replayLocalGame() {
 
 async function handleRelodQuit(event) {
 	(statePongGame != "remote") ?
-	await sendScore() :
+	await sendReloadScore() :
 	await sendLoserScore();
 	// closeGameSocket();
 	// event.preventDefault();
@@ -212,8 +213,8 @@ export async function loadPongGame() {
 		if (n%4 == 0)
 			counter.textContent = "Loading.." + (n / 4).toString();
 		if (n >= 120) {
-			await sendWinnerScore();
-			await showWinner();
+			const res = await sendWinnerScore();
+			(res.status === 404) ? await showWinner(true): await showWinner();
 			break;
 		}
 		await sleep(0.25);

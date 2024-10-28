@@ -8,6 +8,8 @@ from .helpers import check_auth, get_user, is_user_authenticated
 import base.global_vars as global_vars
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
+from base.validators import CustomUsernameValidator
+from django.core.exceptions import ValidationError
 
 game_queue = global_vars.game_queue
 
@@ -55,6 +57,14 @@ def create_local_game(request):
     player2_name = request.data.get('player2_name')
     if not player2_name:
         return Response({'message': 'player2_name required'}, status=400)
+    validator = CustomUsernameValidator()
+    try:
+        validator(player2_name)
+    except ValidationError:
+        return Response({'message': 'Invalid player name'}, status=400)
+    if len(player2_name) > 9:
+        return Response({'message': 'Invalid player name'}, status=400)
+
     print(user_availablity['avatar'])
     serializer = GameDbSerialiser(data={
             'player1_id': user_availablity['player_id'],

@@ -95,7 +95,7 @@ export async function playRemotePongGame(){
 	const ws = await paddle_socket;
 	if (ws && ws.readyState == 1) {
 		await ws.send(JSON.stringify({'type_msg': 'move'}));
-		(!game_connected) && await connectGame();
+		// (!game_connected) && await connectGame();
 	}
 }
 

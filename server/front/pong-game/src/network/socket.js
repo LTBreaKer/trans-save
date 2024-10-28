@@ -5,7 +5,7 @@ import { TABLE_DEPTH, TABLE_WIDTH, PADDLE_LONG, height, width, first_player_goal
 import  {statePongGame } from '../../../../components/ping/script.js'
 import {  descounter, loadPongGame, loadPopupGameOver, loadPopupReply, removeEventsListener, replayLocalGame } from './events.js';
 import { assingGameApiToNULL, game_data, initPlayRemoteGame, sendPlayerPaddleCreated } from '../../../components/ping/script.js';
-import { animationFrameId, closeGameSocket, endGameConnection, launchGame, playRemotePongGame, sendSocket, stopGame } from '../game/game.js';
+import { animationFrameId, closeGameSocket, endGameConnection, game_connected, launchGame, playRemotePongGame, sendSocket, stopGame } from '../game/game.js';
 import { moveCamera } from '../components/camera.js';
 import { renderer } from '../components/renderer.js';
 import { scene } from '../components/scene.js';
@@ -26,27 +26,40 @@ export async function sendScore(left_paddle_score = lpaddle.nb_goal, right_paddl
 	console.log("left_paddle_score", left_paddle_score);
 	left_paddle_score && (game_data.player1_score = left_paddle_score) ;
 	right_paddle_score && (game_data.player2_score = right_paddle_score) ;
+    const res = await postRequest(url, JSON.stringify(game_data));
+	console.log("send game data: ", game_data);
+	return (res);
+}
+
+export async function sendReloadScore(left_paddle_score = lpaddle.nb_goal, right_paddle_score = rpaddle.nb_goal) {
+	if (!game_data)
+		return ;
+	console.log("game_data.player1_score", game_data.player1_score);
+	console.log("left_paddle_score", left_paddle_score);
+	left_paddle_score && (game_data.player1_score = left_paddle_score) ;
+	right_paddle_score && (game_data.player2_score = right_paddle_score) ;
     postRequest(url, JSON.stringify(game_data));
 	console.log("send game data: ", game_data);
 }
 
-function sendScoreWhenRefreshingPage() {
-	postRequest(url, JSON.stringify(game_data));
+async function sendScoreWhenRefreshingPage() {
+	await postRequest(url, JSON.stringify(game_data));
 }
 
 export async function connectGame() {
 	console.log("=====connect Game: ");
-	postRequest("https://127.0.0.1:9006/api/gamedb/connect-game/", JSON.stringify(game_data));
+	await postRequest("https://127.0.0.1:9006/api/gamedb/connect-game/", JSON.stringify(game_data));
 }
 
 export async function sendLoserScore () {
 	console.log("loser_score: ", loser_score);
-	postRequest(url, loser_score);
+	await postRequest(url, loser_score);
 }
 
 export async function sendWinnerScore () {
 	console.log("loser_score: ", winner_score);
-	postRequest(url, winner_score);
+	const res = await postRequest(url, winner_score);
+	return res;
 }
 
 async function draw_info(data) {
@@ -87,10 +100,10 @@ async function draw_info(data) {
 	second_player_goal.innerHTML = rpaddle.nb_goal;
 }
 
-export async function showWinner() {
+export async function showWinner(disconnected = false) {
 	// stopGame();
 	endGameConnection();
-	await loadPopupGameOver();
+	await loadPopupGameOver(disconnected);
 }
 
 export async function fnGameOver(state = "rtn_menu") {
@@ -181,8 +194,9 @@ export async function paddleSocket(group_name) {
 				console.log("message.left_paddle_score: ", message.left_paddle_score);
 				console.log("game_data.player1_score: ", game_data.player1_score);
 				console.log("game_data: ", game_data);
-				await  sendScore(message.left_paddle_score, message.right_paddle_score);
-				showWinner();
+				(!game_connected) && await connectGame();
+				const res = await  sendScore(message.left_paddle_score, message.right_paddle_score);
+				(res.status === 404) ? await showWinner(true): await showWinner();
 			}
 			else if (message.type_msg === "consumer_paddle_created")
 				await sendPlayerPaddleCreated();
@@ -227,11 +241,10 @@ initPlayRemoteGame(connectBallSocket);
 
 
 async function descounterRemoteGame() {
+	(!game_connected) && await connectGame();
 	await sleep(3);
 	await playRemotePongGame();
 	console.log("-----descounterRemoteGame: ", game_connected);
-	(!game_connected) && await connectGame();
-	knkjbygyu
 	launchGame();
 }
 

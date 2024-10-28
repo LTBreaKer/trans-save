@@ -50,11 +50,11 @@ export function initTable() {
 }
 
 export function disposeTable() {
-    disposeMesh(table);
-    disposeMesh(table_milieu);
-    disposeMesh(Ring_mesh);
-    disposeMesh(left_side);
-    disposeMesh(right_side);
+    table && disposeMesh(table);
+    table_milieu && disposeMesh(table_milieu);
+    Ring_mesh && disposeMesh(Ring_mesh);
+    left_side && disposeMesh(left_side);
+    right_side && disposeMesh(right_side);
 }
 
 export {table}

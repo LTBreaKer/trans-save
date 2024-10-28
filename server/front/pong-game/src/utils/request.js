@@ -17,9 +17,9 @@ export async  function postRequest(url, body) {
 				body: body,
 				keepalive: true
 			});
-			if (!res.ok)
-				throw new Error(`HTTP error: ${res.status}`);
-			return res.json();
+			// if (!req.ok)
+			// 	throw new Error(`HTTP error: ${req.status}`);
+			return req;
 	}
     
 	catch {
