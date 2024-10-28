@@ -1071,3 +1071,8 @@ display: none;
     margin-left: 2px;
   }
 }
+
+/* white-space: nowrap;
+    width: 204px;
+    overflow: hidden;
+    text-overflow: ellipsis; */

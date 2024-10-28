@@ -10,6 +10,8 @@ from django.contrib.auth.models import AnonymousUser
 from .paddle_class import Paddle
 from .ball_class import width, height, ballRaduis, paddleHeight, paddleWidth
 
+goals_to_win = 5
+
 ########################## PlayerConsumer #########################
 class PlayerConsumer(AsyncWebsocketConsumer):
 	def __init__(self, *args, **kwargs):
@@ -97,8 +99,8 @@ class PlayerConsumer(AsyncWebsocketConsumer):
 	async def close_game_consumers(self):
 		if (not self.room_group_name):
 			return
-		left_paddle_score = 0 if (self.paddle.x == 0) else 3
-		right_paddle_score = 0 if (left_paddle_score == 3) else 3
+		left_paddle_score = 0 if (self.paddle.x == 0) else goals_to_win
+		right_paddle_score = 0 if (left_paddle_score == goals_to_win) else goals_to_win
 		await self.channel_layer.group_send(
 			self.room_group_name, {
 				'type': 'desconnect_consumer',
