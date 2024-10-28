@@ -180,6 +180,7 @@ export async function paddleSocket(group_name) {
 				console.log("message.left_paddle_score: ", message.left_paddle_score);
 				console.log("game_data.player1_score: ", game_data.player1_score);
 				console.log("game_data: ", game_data);
+				await  sendScore(message.left_paddle_score, message.right_paddle_score);
 				showWinner();
 			}
 			else if (message.type_msg === "consumer_paddle_created")
@@ -227,6 +228,9 @@ initPlayRemoteGame(connectBallSocket);
 async function descounterRemoteGame() {
 	await sleep(3);
 	await playRemotePongGame();
+	console.log("-----descounterRemoteGame: ", game_connected);
+	(!game_connected) && await connectGame();
+	knkjbygyu
 	launchGame();
 }
 

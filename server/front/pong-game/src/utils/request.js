@@ -1,9 +1,10 @@
-import { get_localstorage } from "../../../auth.js";
+import { check_access_token, get_localstorage } from "../../../auth.js";
 import { game_data } from "../../../components/ping/script.js";
 import { lpaddle, rpaddle } from "../game/paddle.js";
 
 
-export function postRequest(url, body) {
+export async  function postRequest(url, body) {
+	await check_access_token()
     const req = fetch(url, {
 		method: 'POST',
 		headers: {
