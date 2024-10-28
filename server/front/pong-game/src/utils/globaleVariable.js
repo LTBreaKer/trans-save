@@ -30,6 +30,7 @@ export let canvas;
 export let back_counter;
 export let counter;
 export let popup_replay;
+export let goals_to_win = 5;
 
 export async function loadReplayDocument() {
 	replay = document.querySelector('#replay');
