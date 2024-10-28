@@ -5,7 +5,7 @@ import {tag_game_info, setTagGameInfo} from '../ta/script.js'
 import {get_localstorage, check_access_token} from '../../auth.js'
 
 var api = "https://127.0.0.1:9007/api/tag-gamedb/"
-async function start_game()
+function start_game()
 {
     class Player{
         constructor({imgR, imgL, imgIR, imgIL, ply_name}) {
@@ -98,9 +98,23 @@ async function start_game()
         let uni = time%10
         load_draw(numbers[dec], canvas.width/2, player.height, player.width, player.height)
         load_draw(numbers[uni], canvas.width/2 + player.width, player.height, player.width, player.height)
+        
+        let size = player.height*75/100
+        c.font = `${size}px Volax`
+        c.fillStyle = 'rgba(207, 62, 90, 0.8)'
+        
+        c.direction = "ltr";
+        c.textBaseline = 'top';
+        c.fillText(tag_game_info.player1_name, canvas.width/10, player.height)
+
+
+        c.fillStyle = 'rgba(32, 174, 221, 0.8)'
+        c.direction = "rtl"
+        c.fillText(tag_game_info.player2_name, canvas.width - canvas.width/10, player.height)
+
     }
     
-    async function rain()
+    function rain()
     {
         let raindrops = []
         let count = canvas.width * 60 / 1697
@@ -142,7 +156,7 @@ async function start_game()
 
     canvas.width = 0
     resizeWindow()
-    await animation()
+    animation()
 
     function delay(ms) {
         return new Promise(resolve => setTimeout(resolve, ms))
@@ -169,9 +183,8 @@ async function start_game()
     
     const blinK = setInterval(blink, 2000)
 
-    async function animation()
+    function animation()
     {
-        console.log("+++++++++++++++++animation")
         if (socket.readyState === WebSocket.OPEN)
         {
             socket.send(JSON.stringify({
@@ -210,14 +223,11 @@ async function start_game()
                     load_draw(arrow, player.position.x + player.width/4, player.position.y - player.height, player.width/2, player.height/2)
             }
         })
-        await rain()
-
-        draw_timer(time, players[0])
+        rain()
+        if (!winner)
+            draw_timer(time, players[0])
         if (time === 0 && socket.readyState === WebSocket.OPEN)
-        {
             socket.close()
-            time = 1
-        }
     }
     
     function load_draw(image, x, y, width, height)
@@ -482,16 +492,20 @@ async function start_game()
     socket.addEventListener("close", disconnect)
     window.addEventListener("beforeunload", handleRelodQuit)
 
-    function handleRelodQuit(event)
+    async function handleRelodQuit(event)
     {
         if (socket.readyState === WebSocket.OPEN)
         {
             stop_animation = true
             if (!winner)
                 winner = "unknown"
-            // noAwaitScore(winner)
-            game_score(winner)
+
+            localStorage.setItem("winner", winner)
+            localStorage.setItem("game_id", tag_game_info.game_id)
+            // game_score(winner)
+            // await noAwaitScore(winner)
         }
+    
         // event.preventDefault() // This triggers the alert
     }
 
@@ -512,7 +526,6 @@ async function start_game()
         if (winner === null)
             winner = "unknown"
         await game_score(winner)
-        winner = null
         setTagGameInfo(null)
         reload_data()
     }
@@ -538,6 +551,35 @@ async function start_game()
         window.removeEventListener("beforeunload", handleRelodQuit)
         clearInterval(blinK)
     }
+    async function noAwaitScore(winner)
+    {
+        await check_access_token()
+        const data = {
+            game_id: tag_game_info.game_id,
+            winner_name: winner
+        }
+        try{
+            const response = fetch(api + 'add-game-score/', {
+                method: 'POST',
+                headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + get_localstorage('token'),
+                'Session-ID': get_localstorage('session_id')
+                },
+                credentials: 'include',
+                body: JSON.stringify(data)
+            });
+            const jsonData = response.json()
+            if (!response.ok) {
+              console.error(`Status: ${response.status}, Message: ${jsonData.message || 'Unknown error'}`)
+            }
+        }
+        catch(error){
+            console.error('Request failed', error)
+        }
+    }
+       
+
 }
 
 export {start_game}

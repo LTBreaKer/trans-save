@@ -19,6 +19,7 @@ async function Game() {
     return
   }
 
+  console.log("***********************")
   function connectWebSocket(url)
   {
       return new Promise((resolve, reject) => {
@@ -72,7 +73,7 @@ async function Game() {
     catch(error){
         console.error('Request failed', error)
     }
-    await start_game();
+    start_game();
   }
 }
 

@@ -20,6 +20,9 @@ function isAuthenticated() {
     localStorage.removeItem('token'); 
     localStorage.removeItem('refresh'); 
     localStorage.removeItem('session_id');
+    localStorage.removeItem("winner");
+    localStorage.removeItem("game_id");
+
   }
 
   function get_localstorage(string) {
