@@ -4,6 +4,8 @@ var api = "https://127.0.0.1:9004/api/";
 var api_game = "https://127.0.0.1:9006/api/gamedb/";
 let game_socket = "wss://127.0.0.1:9006/ws/game-db/";
 let tournament = "https://127.0.0.1:9008/api/tournament/"
+const url = "https://127.0.0.1:9006/api/gamedb/add-game-score/";
+
 let name = "";
 let html = "";
 export let game_data;
@@ -95,6 +97,11 @@ async function Ping() {
   
   const app = document.getElementById('app');
   app.innerHTML = html;
+
+
+  if (localStorage.getItem("dataPongMatch"))
+    await pong_game_score();
+
   window.onload = async function() {
     await remove_ping_remote_game();
   };
@@ -493,4 +500,32 @@ function setNotification() {
 
 }
 
+async function pong_game_score()
+{
+    await check_access_token()
+    try{
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + get_localstorage('token'),
+            'Session-ID': get_localstorage('session_id')
+            },
+            credentials: 'include',
+            body: localStorage.getItem("dataPongMatch")
+        });
+        const jsonData = await response.json()
+        if (jsonData.message === 'game score added') {
+          localStorage.removeItem("dataPongMatch")
+        }
+        if (!response.ok) {
+          console.error(`Status: ${response.status}, Message: ${jsonData.message || 'Unknown error'}`)
+        }
+    }
+    catch(error){
+        console.error('Request failed', error)
+    }
+}
+
 export default Ping;
+export {pong_game_score}

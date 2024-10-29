@@ -95,12 +95,15 @@ class LocalGameConsumer(AsyncWebsocketConsumer):
                 await output_pos_hit(pos_hit)
             await asyncio.sleep(0.015625)
             time += 0.015625
-            await self.send(text_data=json.dumps({
-                'type': 'draw_info',
-                'ball': self.ball.fn_str(),
-                'left_paddle': self.lpaddle.fn_str(),	
-                'right_paddle': self.rpaddle.fn_str()
-            }))
+            try:
+                await self.send(text_data=json.dumps({
+                    'type': 'draw_info',
+                    'ball': self.ball.fn_str(),
+                    'left_paddle': self.lpaddle.fn_str(),	
+                    'right_paddle': self.rpaddle.fn_str()
+                }))
+            except Exception as e:
+                print("Exception: ", e, file=sys.stderr)
             if (self.ball.gameOver and (self.lpaddle.nb_goal == goals_to_win or self.rpaddle.nb_goal == goals_to_win)):
                 await self.send_scores()
                 await self.close(code=1000)
@@ -109,11 +112,14 @@ class LocalGameConsumer(AsyncWebsocketConsumer):
 
     async def send_scores(self):
         print("--------------send score------------", file=sys.stderr)
-        await self.send(text_data=json.dumps({
-            'type': 'game_over',
-            'left_paddle_score': self.lpaddle.nb_goal,
-            'right_paddle_score': self.rpaddle.nb_goal,
-        }))
+        try:
+            await self.send(text_data=json.dumps({
+                'type': 'game_over',
+                'left_paddle_score': self.lpaddle.nb_goal,
+                'right_paddle_score': self.rpaddle.nb_goal,
+            }))
+        except Exception as e:
+            print("-----------------------------------------Exception: ", e, file=sys.stderr)
         # endpoint = "https://127.0.0.1:9006/api/gamedb/add-game-score/"
         # headers = {
         #     'Authorization': auth_header,

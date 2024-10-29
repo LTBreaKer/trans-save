@@ -24,26 +24,32 @@ class GameConsumer(AsyncWebsocketConsumer):
 		await self.accept()
 		
 	async def add_group(self, e):
-		self.room_name = e["group_name"]
-		self.room_group_name = 'game_%s' % self.room_name
-		await self.channel_layer.group_add(
-			self.room_group_name,
-			self.channel_name
-		)
-		print("game consumer : ", e["group_name"], file=sys.stderr)
-		await self.send_ball_channel_name()
+		try:
+			self.room_name = e["group_name"]
+			self.room_group_name = 'game_%s' % self.room_name
+			await self.channel_layer.group_add(
+				self.room_group_name,
+				self.channel_name
+			)
+			print("game consumer : ", e["group_name"], file=sys.stderr)
+			await self.send_ball_channel_name()
+		except Exception as e:
+			print("Exception: ", e, file=sys.stderr)
 
 	async def send_ball_channel_name(self):
-		await self.channel_layer.group_send(
-			self.room_group_name,
-			{
-				'type': 'set_ball_channel_name',
-				'ball_channel_name': self.channel_name
-			}
-		)
-		await self.send(text_data=json.dumps({
-			'type_msg': 'play',
-		}))
+		try:
+			await self.channel_layer.group_send(
+				self.room_group_name,
+				{
+					'type': 'set_ball_channel_name',
+					'ball_channel_name': self.channel_name
+				}
+			)
+			await self.send(text_data=json.dumps({
+				'type_msg': 'play',
+			}))
+		except Exception as e:
+			print("Exception: ", e, file=sys.stderr)
 
 	async def launsh(self, e):
 		pass
@@ -85,21 +91,24 @@ class GameConsumer(AsyncWebsocketConsumer):
 			self.ball.update(self.rpaddle, self.lpaddle)
 			await asyncio.sleep(0.015625)
 			time += 0.015625
-			await self.channel_layer.group_send(
-				self.room_group_name,
-				{
-					'type': 'draw_info',
-					'ball': self.ball.fn_str(),
-					'left_paddle': self.lpaddle.fn_str(),	
-					'right_paddle': self.rpaddle.fn_str()
-				}
-			)
-		if (self.ball.gameOver and (self.lpaddle.nb_goal == goals_to_win or self.rpaddle.nb_goal == goals_to_win)):
-			await self.end_game()
-		else:
-			await self.send(text_data=json.dumps({
-				'type_msg': 'play',
-			}))
+			try:
+				await self.channel_layer.group_send(
+					self.room_group_name,
+					{
+						'type': 'draw_info',
+						'ball': self.ball.fn_str(),
+						'left_paddle': self.lpaddle.fn_str(),	
+						'right_paddle': self.rpaddle.fn_str()
+					}
+				)
+				if (self.ball.gameOver and (self.lpaddle.nb_goal == goals_to_win or self.rpaddle.nb_goal == goals_to_win)):
+					await self.end_game()
+				else:
+					await self.send(text_data=json.dumps({
+						'type_msg': 'play',
+					}))
+			except Exception as e:
+				print("Exception: ", e, file=sys.stderr)
 
 	async def draw_info(self, event):
 		pass
@@ -113,21 +122,27 @@ class GameConsumer(AsyncWebsocketConsumer):
 		self.rpaddle.update(event['paddle'])
 
 	async def send_scores(self):
-		await self.send(text_data=json.dumps({
-			'type': 'game_over',
-			'left_paddle_score': self.lpaddle.nb_goal,
-			'right_paddle_score': self.rpaddle.nb_goal,
-		}))
+		try:
+			await self.send(text_data=json.dumps({
+				'type': 'game_over',
+				'left_paddle_score': self.lpaddle.nb_goal,
+				'right_paddle_score': self.rpaddle.nb_goal,
+			}))
+		except Exception as e:
+			print("Exception: ", e, file=sys.stderr)
 
 	async def end_game(self):
 		await self.send_scores()
-		await self.channel_layer.group_send(
-			self.room_group_name,
-			{
-				'type': 'desconnect_consumer',
-				'left_paddle_score': self.lpaddle.nb_goal,
-				'right_paddle_score': self.rpaddle.nb_goal,
-			})
+		try:
+			await self.channel_layer.group_send(
+				self.room_group_name,
+				{
+					'type': 'desconnect_consumer',
+					'left_paddle_score': self.lpaddle.nb_goal,
+					'right_paddle_score': self.rpaddle.nb_goal,
+				})
+		except Exception as e:
+			print("Exception: ", e, file=sys.stderr)
 		
 	async def desconnect_consumer(self, e):
 		await self.close(code=1000)

@@ -9,7 +9,7 @@ import { initPlayGame } from '../../../components/pingpong/ping.js';
 import { lancePongGame } from '../main3d.js';
 import { setMousePosition, setMousePositionHelper } from '../events/mouseEvent.js';
 import { initGameComponents } from '../components/renderer.js';
-import { fnGameOver, sendLoserScore, sendReloadScore, sendScore, sendWinnerScore, showWinner } from './socket.js';
+import { fnGameOver, fullGameData, sendLoserScore, sendReloadScore, sendScore, sendWinnerScore, showWinner } from './socket.js';
 import { loadHTML } from '../../../utils.js';
 import { cancelTournamentMatch } from '../utils/request.js';
 const url = "https://127.0.0.1:9008/api/tournament/cancel-match/";
@@ -94,11 +94,16 @@ export async function replayLocalGame() {
 }
 
 async function handleRelodQuit(event) {
-	(statePongGame != "remote") ?
-	await sendReloadScore() :
-	await sendLoserScore();
+	let data = fullGameData();
+	console.log("data: ==>", data)
+	localStorage.setItem("dataPongMatch", data);
+	// (statePongGame != "remote") ?
+	// await sendReloadScore() :
+	// await sendLoserScore();
 	// closeGameSocket();
 	// event.preventDefault();
+	if (statePongGame == "remote")
+		await sendLoserScore();
 }
 
 async function handleHashChange() {
@@ -112,6 +117,7 @@ async function handleHashChange() {
 
 async function handleTournamentRelodQuit(event) {
 	console.log("-------------------handleTournamentRelodQuit ---------------");
+	// ctrl W
 	await cancelTournamentMatch();
 }
 

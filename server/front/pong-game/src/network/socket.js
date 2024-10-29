@@ -42,6 +42,15 @@ export async function sendReloadScore(left_paddle_score = lpaddle.nb_goal, right
 	console.log("send game data: ", game_data);
 }
 
+export function fullGameData(left_paddle_score = lpaddle.nb_goal, right_paddle_score = rpaddle.nb_goal) {
+	let data = game_data;
+	if (!game_data)
+		return ;
+	left_paddle_score && (data.player1_score = left_paddle_score) ;
+	right_paddle_score && (data.player2_score = right_paddle_score) ;
+    return JSON.stringify(data);
+}
+
 async function sendScoreWhenRefreshingPage() {
 	await postRequest(url, JSON.stringify(game_data));
 }
