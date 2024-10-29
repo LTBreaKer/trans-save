@@ -129,7 +129,7 @@ class GameConsumer(AsyncWebsocketConsumer):
 			print("Exception: ", e, file=sys.stderr)
 
 	async def end_game(self):
-		await self.send_scores()
+		# await self.send_scores()
 		try:
 			await self.channel_layer.group_send(
 				self.room_group_name,
