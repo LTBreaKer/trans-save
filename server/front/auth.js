@@ -3,6 +3,7 @@ const csrftoken = getCookie('csrftoken');
 const token  = localStorage.getItem('token');
 const refresh  = localStorage.getItem('refresh');
 import { friendsocket, changeAccess } from "./components/profile/profile.js"
+import { add_game_score } from "./components/ta/script.js";
 
 function isAuthenticated() {
     return !!localStorage.getItem('token');
@@ -119,6 +120,8 @@ function isAuthenticated() {
     console.log("---------------------------------- hello ")
     await check_access_token();
     console.log("---------------------------------- hello ")
+    if (localStorage.getItem("winner") && localStorage.getItem("game_id") )
+      await add_game_score();
     const bod = {
       refresh: get_localstorage('refresh')
     }
