@@ -1,6 +1,7 @@
 import { loadHTML, loadCSS,  remove_tag_remote_game, remove_game_tag_f_database} from '../../utils.js';
 import { login ,log_out_func, logoutf, get_localstorage, getCookie, check_access_token } from '../../auth.js';
 import {setHeaderContent, setNaveBarContent} from '../tournament/script.js';
+import { fetchUserName } from '../remote_tag/tag.js';
 
 // https://{{ip}}:9007:ws/tag-game-db/
 var api = "https://127.0.0.1:9004/api/";
@@ -25,6 +26,9 @@ async function Ta() {
   app.innerHTML = html;
   setHeaderContent();
   setNaveBarContent();
+
+  let user_name = await fetchUserName()
+  document.getElementById("description").textContent = `${user_name.toUpperCase()} moves using the keys W, A and D, while the opponent uses the arrow keys (Up, Right, Left).`
 
   await checkFirst();
   if (localStorage.getItem("winner") && localStorage.getItem("game_id") )

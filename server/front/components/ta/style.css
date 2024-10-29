@@ -453,7 +453,7 @@ display: none;
 
 
 
-  .mer_cont .discription_game .text {
+  .mer_cont .discription_game .text{
     background-color: rgba(25, 26, 29, 0.9);
     padding: 15px;
     width: 55%;
@@ -479,6 +479,11 @@ display: none;
       /* text-rendering: auto; */
   }
   
+  #description {
+    font-size: 25px;
+    color: #6db771
+
+  }
 
    /*  ======= ====== ====== ======= ======= ====== ======= ======= */
 
