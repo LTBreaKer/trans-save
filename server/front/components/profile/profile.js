@@ -478,6 +478,36 @@ export async function get_friends_home() {
   displayFriendList_home(jsonData.friend_list)
 }
 
+// async function displayFriendList_home(friendList) {
+//   friendList =  await Object.values(friendList);
+//   if (!friendList) {
+//     console.error('Notification display container not found');
+//     return;
+//   }
+//     const send_friend = document.querySelector('.send_friend_list');
+//   if (send_friend) {
+    
+//     const friend_div = document.createElement('div');
+//     friend_div.classList.add('friends');
+//     // <div class="friends"  data-id="${friend.id}">
+
+//     friend_div.innerHTML = friendList.map( friend => ` 
+//       <div class="friend" id="user_id" data-id="${friend.id}">
+//       <div >  
+//       <img  id="player1" style="border-radius: 50%;" class="click_friend" data-name="${friend.username}" data-id="${friend.id}"  class="proimage" src="${friend.avatar}" alt="">
+//       </div>
+//       <div class="onlinen" data-id="${friend.id}"> </div>
+//       <h2 class="player1" class="click_friend" >${friend.username}</h2>
+      
+//       `)
+//       send_friend.appendChild(friend_div)
+//       send_friend.querySelectorAll('.click_friend').forEach(link => {
+//         link.addEventListener('click', readit);
+//       });
+//     }
+//     set_onlines(friendList);
+// }
+
 async function displayFriendList_home(friendList) {
   friendList =  await Object.values(friendList);
   if (!friendList) {
@@ -486,28 +516,28 @@ async function displayFriendList_home(friendList) {
   }
     const send_friend = document.querySelector('.send_friend_list');
   if (send_friend) {
-    
-    const friend_div = document.createElement('div');
-    friend_div.classList.add('friends');
-    // <div class="friends"  data-id="${friend.id}">
 
-    friend_div.innerHTML = friendList.map( friend => ` 
+    friendList.map((friend) => {
+
+      const div_friend = document.createElement('div');
+      div_friend.classList.add('friends');
+      div_friend.setAttribute('data-id', `${friend.id}`); 
+      // <div class="friends"  data-id="${friend.id}">
+      div_friend.innerHTML = ` 
       <div class="friend" id="user_id" data-id="${friend.id}">
       <div >  
       <img  id="player1" style="border-radius: 50%;" class="click_friend" data-name="${friend.username}" data-id="${friend.id}"  class="proimage" src="${friend.avatar}" alt="">
       </div>
       <div class="onlinen" data-id="${friend.id}"> </div>
-      <h2 class="player1" class="click_friend" >${friend.username}</h2>
-      
-      `)
-      send_friend.appendChild(friend_div)
-      send_friend.querySelectorAll('.click_friend').forEach(link => {
+      <h2 class="player1" class="click_friend" >${friend.username}</h2>      
+      `;})
+      send_friend.appendChild(div_friend);
+        send_friend.querySelectorAll('.click_friend').forEach(link => {
         link.addEventListener('click', readit);
       });
     }
     set_onlines(friendList);
 }
-
 
 
 
