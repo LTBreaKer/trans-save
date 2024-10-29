@@ -264,6 +264,10 @@ async function changeAccess() {
         credentials: 'include',
         body: JSON.stringify(data)
       });
+      if (response.status === 401) {
+        logoutf();  
+        window.location.hash = '/login';
+      } 
       const jsonData = await response.json();
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
