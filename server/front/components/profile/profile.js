@@ -102,10 +102,10 @@ async function Friends() {
       perso_list.style.display = 'flex';
   });
 
-  // if (newNotification){
-  //   console.log("=====notification ======================", newNotification)
-  //   check_and_set_online(newNotification);
-  // }
+  if (newNotification){
+    console.log("=====notification ======================", newNotification)
+    check_and_set_online(newNotification);
+  }
 
   const tag_history = document.querySelector('.tag_game_click');
   const pong_history = document.querySelector('.pong_game_click');
@@ -691,7 +691,7 @@ for(let i = 0; i < users_list.length; i++) {
     else if (!users_list[i].is_online) {
       onlineDiv.style.backgroundColor = 'gray'; 
     }
-  }
+    }
 }
 
 function check_and_set_online(newNotification) {
