@@ -36,17 +36,7 @@ class LocalGameConsumer(AsyncWebsocketConsumer):
     
     async def disconnect(self, close_code):
         pass
-    
-    async def send_ball_data(self):
-        while True:
-            self.ball.update()
-            await self.send(text_data=json.dumps({
-                    'type': 'chat.message',
-                    'message': self.ball.fn_str()
-                }))
-            await asyncio.sleep(0.4)
-
-
+        
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)
         type = text_data_json['type_msg']
@@ -60,13 +50,13 @@ class LocalGameConsumer(AsyncWebsocketConsumer):
             self.rpaddle.update(text_data_json['rpaddle']['ps'])
         elif (type == 'play'):
             self.ball.gameOver = False
-            asyncio.create_task(self.update_ball(type))
+            asyncio.create_task(self.update_ball())
         elif (type == 'stop'):
             self.ball.gameOver = True
         elif (type == "close"):
             await self.close(code=1000)
 
-    async def update_ball(self, event):
+    async def update_ball(self):
         print("game_over: ", self.ball.gameOver, file=sys.stderr)
         turn = await Turn.objects.acreate()
         time = 0.0
