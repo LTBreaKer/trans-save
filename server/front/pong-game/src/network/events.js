@@ -1,30 +1,20 @@
 
-import {canvas, click, TABLE_WIDTH, paddleHeight, height, box_result, first_player_goal, second_player_goal, counter, replay, popup_replay, pong_menu, loadDocument, sleep, back_counter, leftPaddle, paddle_way, first_player_name, second_player_name, p_second, p_first, loadReplayDocument, loadQuitDocument, double_point} from '../utils/globaleVariable.js';
-// import { setPointerMouse, rotateTable, zoomCamera } from '../game/staduim.js'
-import { closeGameSocket, connectAI, connectLocalGameSocket, connectPaddleSocket, end_game, initGameVariable, startGame } from '../game/game.js';
-import {sendSocket} from '../game/game.js'
+import {canvas, box_result, counter, replay, pong_menu, loadDocument, sleep, back_counter, leftPaddle, first_player_name, second_player_name, p_second, p_first, loadReplayDocument, loadQuitDocument, double_point} from '../utils/globaleVariable.js';
+import { closeGameSocket, connectLocalGameSocket, connectPaddleSocket, end_game, initGameVariable, startGame, sendSocket } from '../game/game.js';
 import { moveCamera } from '../components/camera.js';
-
-////////       ------ LOCAL -----        //////////
 import { initPaddleInstance } from '../game/paddle.js';
 import { keyDownHandler, keyUpHandler } from '../events/keyboardEvent.js';
 import { aiGame, game_data, localgame, statePongGame } from '../../../components/ping/script.js';
 import { initPlayGame } from '../../../components/pingpong/ping.js';
-
-////////       ------ REMOTE ----------        //////////
-import {  } from '../game/paddle.js';
 import { lancePongGame } from '../main3d.js';
 import { setMousePosition, setMousePositionHelper } from '../events/mouseEvent.js';
 import { initGameComponents } from '../components/renderer.js';
-import { fnGameOver, sendLoserScore, sendReloadScore, sendScore, sendWinnerScore, showWinner } from './socket.js';
+import { fnGameOver, fullGameData, sendLoserScore, sendReloadScore, sendScore, sendWinnerScore, showWinner } from './socket.js';
 import { loadHTML } from '../../../utils.js';
-import { get_localstorage } from '../../../auth.js';
 import { cancelTournamentMatch } from '../utils/request.js';
 const url = "https://127.0.0.1:9008/api/tournament/cancel-match/";
 let html_popup_replay;
 let html_popup_game_over;
-let html_pong_loader;
-console.log("0 statePongGame: ", statePongGame);
 
 export function resizeCanvas(){
 	let minHW = Math.min(window.innerWidth*0.99, window.innerHeight*0.99);
@@ -45,7 +35,6 @@ export function resizeCanvas(){
 	double_point.style.paddingTop = padding_top + "px";
 	p_first.style.paddingLeft = padding_left + "px";
 	p_second.style.paddingRight = padding_left + "px";
-	console.log("--------- resize Canvas: ", canvas.style.height, " ", canvas.style.width);
 	moveCamera(statePongGame);
 }
 
@@ -62,21 +51,6 @@ export async function loadPopupReply() {
 	await loadReplayDocument();
 	replay.addEventListener("click", replayLocalGame);
 	pong_menu.addEventListener("click", fnGameOver);
-}
-
-export async function pongLoader() {
-	if (!html_pong_loader) {
-		html_pong_loader = document.createElement('div');
-		html_pong_loader.innerHTML = await loadHTML('./pong-game/public/pong_loader.html');
-	}
-	const container = document.querySelector('.p_container');
-	container.appendChild(html_pong_loader);
-
-}
-
-async function removePongLoader() {
-	const container = document.querySelector('.p_container');
-	container.removeChild(html_pong_loader);
 }
 
 export async function loadPopupGameOver(disconnected = false) {
@@ -98,7 +72,8 @@ export async function loadPopupGameOver(disconnected = false) {
 async function removePopupReplay() {
 	const container = document.querySelector('.p_container');
 	console.log("html_popup_replay: ", html_popup_replay);
-	html_popup_replay && container.removeChild(html_popup_replay);
+	if (html_popup_replay && container.contains(html_popup_replay))
+		container.removeChild(html_popup_replay);
 }
 
 async function assignPlayers({player1_name, player2_name}) {
@@ -112,8 +87,6 @@ export async function replayLocalGame() {
 	initGameVariable();
 	initPaddleInstance();
 	resizeCanvas();
-	// back_counter.style.display = 'none';
-	// popup_replay.style.display = 'none';
 	removePopupReplay();
 	leftPaddle();
 	await connectLocalGameSocket();
@@ -121,11 +94,16 @@ export async function replayLocalGame() {
 }
 
 async function handleRelodQuit(event) {
-	(statePongGame != "remote") ?
-	await sendReloadScore() :
-	await sendLoserScore();
+	let data = fullGameData();
+	console.log("data: ==>", data)
+	localStorage.setItem("dataPongMatch", data);
+	// (statePongGame != "remote") ?
+	// await sendReloadScore() :
+	// await sendLoserScore();
 	// closeGameSocket();
 	// event.preventDefault();
+	if (statePongGame == "remote")
+		await sendLoserScore();
 }
 
 async function handleHashChange() {
@@ -139,9 +117,8 @@ async function handleHashChange() {
 
 async function handleTournamentRelodQuit(event) {
 	console.log("-------------------handleTournamentRelodQuit ---------------");
+	// ctrl W
 	await cancelTournamentMatch();
-	// event.preventDefault();
-	// closeGameSocket();
 }
 
 async function handleTournamentHashChange() {
@@ -163,12 +140,6 @@ export function setupEventListeners() {
 		window.addEventListener("beforeunload", handleTournamentRelodQuit);
 		window.addEventListener("hashchange", handleTournamentHashChange);
 	}
-
-	
-	// if (statePongGame == "local" || statePongGame == "ai_bot") {
-	// 	replay.addEventListener("click", replayLocalGame);
-	// 	pong_menu.addEventListener("click", fnGameOver);
-	// }
 	if (statePongGame == "remote") {
 		setMousePositionHelper();
 		window.addEventListener('mousemove', setMousePosition);
@@ -187,7 +158,6 @@ export function removeEventsListener() {
 	window.removeEventListener("hashchange", handleHashChange);
 	window.removeEventListener('beforeunload', handleTournamentRelodQuit);
 	window.removeEventListener("hashchange", handleTournamentHashChange);
-
 }
 
 

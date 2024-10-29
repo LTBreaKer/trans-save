@@ -12,14 +12,16 @@ from django.conf import settings
 from tensorflow.keras.models import load_model
 import numpy as np
 from .models import TrainingData, Turn
+import requests
+
 
 goals_to_win = 2
 @database_sync_to_async
 def output_pos_hit(pos_hit):
-	try:
-		TrainingData.objects.filter(pos_hit=-1).update(pos_hit=pos_hit)
-	except:
-		None
+    try:
+        TrainingData.objects.filter(pos_hit=-1).update(pos_hit=pos_hit)
+    except:
+        None
 
 class LocalGameConsumer(AsyncWebsocketConsumer):
     def __init__(self, *args, **kwargs):
@@ -29,6 +31,7 @@ class LocalGameConsumer(AsyncWebsocketConsumer):
         self.rpaddle = Paddle(width - 10, height/2)
         self.gameOver = False
         self.bot = False
+        self.data = {}
 
     async def connect(self):
         print("aaaaaaaaaaaaaaaaaaaaaaa", file=sys.stderr)
@@ -36,17 +39,7 @@ class LocalGameConsumer(AsyncWebsocketConsumer):
     
     async def disconnect(self, close_code):
         pass
-    
-    async def send_ball_data(self):
-        while True:
-            self.ball.update()
-            await self.send(text_data=json.dumps({
-                    'type': 'chat.message',
-                    'message': self.ball.fn_str()
-                }))
-            await asyncio.sleep(0.4)
-
-
+        
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)
         type = text_data_json['type_msg']
@@ -60,13 +53,24 @@ class LocalGameConsumer(AsyncWebsocketConsumer):
             self.rpaddle.update(text_data_json['rpaddle']['ps'])
         elif (type == 'play'):
             self.ball.gameOver = False
-            asyncio.create_task(self.update_ball(type))
+            asyncio.create_task(self.update_ball())
         elif (type == 'stop'):
             self.ball.gameOver = True
         elif (type == "close"):
             await self.close(code=1000)
+        elif (type == "add_user_data"):
+            await self.add_user_data(text_data_json)
+        elif (type == "update_token"):
+            await self.update_token(text_data_json)
 
-    async def update_ball(self, event):
+    async def add_user_data(self, e):
+        self.data = e
+        self.token = self.data["token"]
+    
+    async def update_token(self, e):
+        self.token = e["token"]
+
+    async def update_ball(self):
         print("game_over: ", self.ball.gameOver, file=sys.stderr)
         turn = await Turn.objects.acreate()
         time = 0.0
@@ -105,12 +109,15 @@ class LocalGameConsumer(AsyncWebsocketConsumer):
                 await output_pos_hit(pos_hit)
             await asyncio.sleep(0.015625)
             time += 0.015625
-            await self.send(text_data=json.dumps({
-                'type': 'draw_info',
-                'ball': self.ball.fn_str(),
-                'left_paddle': self.lpaddle.fn_str(),	
-                'right_paddle': self.rpaddle.fn_str()
-            }))
+            try:
+                await self.send(text_data=json.dumps({
+                    'type': 'draw_info',
+                    'ball': self.ball.fn_str(),
+                    'left_paddle': self.lpaddle.fn_str(),   
+                    'right_paddle': self.rpaddle.fn_str()
+                }))
+            except Exception as e:
+                print("Exception: ", e, file=sys.stderr)
             if (self.ball.gameOver and (self.lpaddle.nb_goal == goals_to_win or self.rpaddle.nb_goal == goals_to_win)):
                 await self.send_scores()
                 await self.close(code=1000)
@@ -119,11 +126,15 @@ class LocalGameConsumer(AsyncWebsocketConsumer):
 
     async def send_scores(self):
         print("--------------send score------------", file=sys.stderr)
-        await self.send(text_data=json.dumps({
-            'type': 'game_over',
-            'left_paddle_score': self.lpaddle.nb_goal,
-            'right_paddle_score': self.rpaddle.nb_goal,
-        }))
+        await self.finish_game()
+        try:
+            await self.send(text_data=json.dumps({
+                'type': 'game_over',
+                'left_paddle_score': self.lpaddle.nb_goal,
+                'right_paddle_score': self.rpaddle.nb_goal,
+            }))
+        except Exception as e:
+            print("-----------------------------------------Exception: ", e, file=sys.stderr)
         # endpoint = "https://127.0.0.1:9006/api/gamedb/add-game-score/"
         # headers = {
         #     'Authorization': auth_header,
@@ -132,3 +143,26 @@ class LocalGameConsumer(AsyncWebsocketConsumer):
         #     'player1_name': ...
         # }
         # response = requests.post(url=endpoint, headers=headers, data=data, verify=False)
+
+    async def finish_game(self):
+        endpoint = "https://server:9006/api/gamedb/add-game-score/"
+        # token = self.data["token"]
+        session_id = self.data["session_id"]
+        auth_header = f"Bearer {self.token}"
+        headers = {
+            'Authorization': auth_header,
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Session-ID': session_id
+        }
+        self.data["player1_score"] = self.lpaddle.nb_goal
+        self.data["player2_score"] = self.rpaddle.nb_goal
+        response = requests.post(url=endpoint, headers=headers, data=self.data, verify=False)
+        print("----------------------------response: ", response, file=sys.stderr)
+        if response.status_code == 200:
+            # Print the response content
+            print("Response Content:", response.content, file=sys.stderr)  # For raw bytes
+            # or
+            print("Response Text:", response.text, file=sys.stderr)        # For a decoded string
+        else:
+            print("Request failed with status code:", response.status_code, file=sys.stderr)
+            print("Response Content:", response.content, file=sys.stderr) 

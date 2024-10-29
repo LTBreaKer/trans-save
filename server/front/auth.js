@@ -2,6 +2,7 @@ const api = "https://127.0.0.1:9004/api/";
 const csrftoken = getCookie('csrftoken');
 const token  = localStorage.getItem('token');
 const refresh  = localStorage.getItem('refresh');
+import { pong_game_score } from "./components/ping/script.js";
 import { friendsocket, changeAccess } from "./components/profile/profile.js"
 import { add_game_score } from "./components/ta/script.js";
 
@@ -34,6 +35,7 @@ function isAuthenticated() {
     localStorage.removeItem('session_id');
     localStorage.removeItem("winner");
     localStorage.removeItem("game_id");
+    localStorage.removeItem("dataPongMatch");
 
   }
 
@@ -134,6 +136,8 @@ function isAuthenticated() {
     console.log("---------------------------------- hello ")
     if (localStorage.getItem("winner") && localStorage.getItem("game_id") )
       await add_game_score();
+    if (localStorage.getItem("dataPongMatch"))
+      await pong_game_score();
     const bod = {
       refresh: get_localstorage('refresh')
     }
