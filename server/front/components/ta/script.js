@@ -370,3 +370,4 @@ async function changeAccess() {
   }
 
 export default Ta;
+export {add_game_score}
