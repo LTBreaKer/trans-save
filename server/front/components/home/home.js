@@ -19,7 +19,8 @@ async function Home() {
   
   setHeaderContent();
   setNaveBarContent();
-  if (!friendsocket)
+  console.log("online status --------------- > ", friendsocket)
+  if (!friendsocket || friendsocket.readyState === WebSocket.CLOSED)
     check_friends_status();
   await checkFirst();
   if (!socket_friend_request)
@@ -95,6 +96,10 @@ async function changeAccess() {
       body: JSON.stringify(data)
     });
     const jsonData = await response.json();
+    if (response.status === 401) {
+      logoutf();  
+      window.location.hash = '/login';
+    }
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
@@ -107,6 +112,7 @@ async function changeAccess() {
 
 async function checkFirst() {
   const token = get_localstorage('token');
+  console.log("token from check token : ", token);
   try {
     const response = await fetch(api + 'auth/verify-token/', {
       method: 'POST',

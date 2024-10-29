@@ -15,8 +15,9 @@ function isAuthenticated() {
   }
   
   function logoutf() {
-    if (friendsocket)
+    if (friendsocket && friendsocket.readyState === WebSocket.OPEN)
       friendsocket.close();
+    // friendsocket = null
     localStorage.removeItem('token'); 
     localStorage.removeItem('refresh'); 
     localStorage.removeItem('session_id');
@@ -51,6 +52,7 @@ function isAuthenticated() {
 
 
   export async function check_access_token() {
+    const token = get_localstorage('token');
     try {
       const response = await fetch(api + 'auth/verify-token/', {
         method: 'POST',

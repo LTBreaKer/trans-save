@@ -43,7 +43,8 @@ function removeAllCSSLinks() {
   let accumulatedNotifications = [];
 
 export async function player_webSocket() {
-  await check_access_token();
+  // console.log("utils ----------------> ", localStorage.getItem('token'))
+  // await check_access_token();
   return new Promise((resolve) => {
     socket_friend_request = new WebSocket("wss://127.0.0.1:9005/ws/friend-requests/", ["token", get_localstorage('token'), "session_id", get_localstorage('session_id')]);
     

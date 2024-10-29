@@ -30,7 +30,7 @@ async function Friends() {
   app.innerHTML = html;
   setHeaderContent();
   setNaveBarContent();
-  if (!friendsocket)
+  if (!friendsocket || friendsocket.readyState === WebSocket.CLOSED)
     await check_friends_status();
   await checkFirst();
   if (!socket_friend_request)
@@ -486,24 +486,32 @@ async function displayFriendList_home(friendList) {
   }
     const send_friend = document.querySelector('.send_friend_list');
   if (send_friend) {
+    
+    const friend_div = document.createElement('div');
+    friend_div.classList.add('friends');
+    // <div class="friends"  data-id="${friend.id}">
 
-    send_friend.innerHTML = friendList.map( friend => ` 
-      <div class="friends"  data-id="${friend.id}">
+    friend_div.innerHTML = friendList.map( friend => ` 
       <div class="friend" id="user_id" data-id="${friend.id}">
       <div >  
       <img  id="player1" style="border-radius: 50%;" class="click_friend" data-name="${friend.username}" data-id="${friend.id}"  class="proimage" src="${friend.avatar}" alt="">
       </div>
       <div class="onlinen" data-id="${friend.id}"> </div>
       <h2 class="player1" class="click_friend" >${friend.username}</h2>
-      </div>
       
-      `).join('');
+      `)
+      send_friend.appendChild(friend_div)
       send_friend.querySelectorAll('.click_friend').forEach(link => {
         link.addEventListener('click', readit);
       });
     }
     set_onlines(friendList);
 }
+
+
+
+
+
 
 function readit(event) {
   const name_of_friends = event.target.getAttribute('data-name');
@@ -651,6 +659,10 @@ export async function changeAccess() {
       credentials: 'include',
       body: JSON.stringify(data)
     });
+    if (response.status === 401) {
+      logoutf();  
+      window.location.hash = '/login';
+    }
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
@@ -664,11 +676,26 @@ export async function changeAccess() {
 }
 
 export function set_onlines(users_list) {
+
+console.log("here is set online sttatus : ", users_list);
+
   users_list.map(users => {
+    console.log("user========= ", users.is_online);
     const send_friend = document.querySelector('.friends');
+    console.log("user========= ", send_friend);
+    console.log("user========= ", send_friend.querySelector(`.onlinen[data-id="${users.id}"]`));
     const onlineDiv = send_friend.querySelector(`.onlinen[data-id="${users.id}"]`);
-    if (users.is_online)
+    console.log("user========= ", onlineDiv);
+    onlineDiv.style.backgroundColor = 'gray'; 
+    console.log("user========= ", onlineDiv);
+    if (users.is_online) {
+      console.log("user_green =================")
       onlineDiv.style.backgroundColor = 'green'; 
+    }
+    else if (!users.is_online)
+      onlineDiv.style.backgroundColor = 'gray'; 
+
+    
   })
 }
 
@@ -692,6 +719,7 @@ export async function check_friends_status() {
   
   friendsocket.onmessage = async function(event) {
     newNotification = await JSON.parse(event.data);
+    console.log('online status --------------- > ', newNotification)
     check_and_set_online(newNotification);
   };
   friendsocket.onerror = function (error) {
