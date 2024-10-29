@@ -35,10 +35,8 @@ export function disposeScene(){
     disposeSphere();
     removeLights();
     // scene.dispose();
-    renderer.dispose();
-    scene.clear();
-    clearScene();
-    canvas.parentNode.removeChild(canvas);
+    scene && scene.clear() && clearScene();
+    canvas && canvas.parentNode.removeChild(canvas);
     // scene = null;
 }
   

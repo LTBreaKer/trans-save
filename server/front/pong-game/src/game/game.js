@@ -11,21 +11,38 @@ import { mousePosition, mousePositionHelper } from '../events/mouseEvent.js';
 import { resizeCanvas } from '../network/events.js';
 
 export let startGame = false;
-export let gameOver = false;
+// export let game_over = false;
+export let game_connected = false;
+export let end_game = false;
 
 let local_game_socket;
 let paddle_socket;
 export let animationFrameId;
 
+export function initGameVariable() {
+	startGame = false;
+	// game_over = false;
+	game_connected = false;
+	end_game = false;
+}
+
 export function launchGame() {
 	startGame = true;
+	game_connected = true;
 }
 
 export function stopGame() {
-	gameOver = true;
+	// game_over = true;
 	startGame = false;
 	console.log("stopGame startGame: ", startGame);
 }
+
+export function endGameConnection() {
+	game_connected = false;
+	startGame = false;
+	end_game = true;
+}
+
 
 async function movePaddle() {
 	const ws = await local_game_socket;
@@ -36,7 +53,7 @@ async function movePaddle() {
 async function moveAiPaddle() {
 	const ws = await local_game_socket;
 	if (ws && ws.readyState == 1)
-		await ws.send(JSON.stringify(({"type_msg": "update_lpaddle", "lpaddle": lpaddle.coordonate()})));
+		await ws.send(JSON.stringify(({"type_msg": "update_rpaddle", "rpaddle": rpaddle.coordonate()})));
 }
 
 
@@ -69,8 +86,8 @@ export async function sendSocket(){
 	if (ws && ws.readyState == 1 && !startGame) {
 		await ws.send(JSON.stringify({'type_msg': 'play'}));
 		back_counter.style.display = "none";
+		(!game_connected) && await connectGame();
 		launchGame();
-		await connectGame();
 	}
 }
 
@@ -78,6 +95,7 @@ export async function playRemotePongGame(){
 	const ws = await paddle_socket;
 	if (ws && ws.readyState == 1) {
 		await ws.send(JSON.stringify({'type_msg': 'move'}));
+		// (!game_connected) && await connectGame();
 	}
 }
 
@@ -140,9 +158,9 @@ async function updatePaddles(){
 		}
 	}
 	else if (statePongGame == "ai_bot") {
-		lpaddle.update()
-		if (lpaddle.y != lpaddle.lastY) {
-			lpaddle.lastY = lpaddle.y;
+		rpaddle.update()
+		if (rpaddle.y != rpaddle.lastY) {
+			rpaddle.lastY = rpaddle.y;
 			moveAiPaddle();
 		}
 	}

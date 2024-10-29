@@ -142,10 +142,10 @@ async function Friends() {
       element.textContent =  ping_los + ping_win;
     });
     mw.forEach(element => {
-      element.textContent = ping_los;
+      element.textContent = ping_win ;
     });
     ml.forEach(element => {
-      element.textContent = ping_win;
+      element.textContent = ping_los;
     });
 
     

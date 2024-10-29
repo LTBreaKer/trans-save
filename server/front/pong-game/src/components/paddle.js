@@ -32,10 +32,10 @@ export function initPaddles() {
 }
 
 export function disposePaddles() {
-    disposeMesh(lpaddle);
-    disposeMesh(rpaddle);
-    disposeMesh(lcenter_paddle);
-    disposeMesh(rcenter_paddle);
+    lpaddle && disposeMesh(lpaddle);
+    rpaddle && disposeMesh(rpaddle);
+    lcenter_paddle && disposeMesh(lcenter_paddle);
+    rcenter_paddle && disposeMesh(rcenter_paddle);
 }
 
 export {lpaddle, rpaddle}

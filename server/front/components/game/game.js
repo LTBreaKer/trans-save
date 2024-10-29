@@ -51,6 +51,7 @@ async function Game() {
   socket = await(initializeApp());
   if (socket.readyState === WebSocket.OPEN)
   {
+    console.log('##########################################################')
     try{
         const response = await fetch(api + 'connect-game/', {
             method: 'POST',

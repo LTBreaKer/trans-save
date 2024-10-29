@@ -20,7 +20,7 @@ export function initSphere() {
 }
 
 export function disposeSphere() {
-    disposeMesh(sphere);
+    sphere && disposeMesh(sphere);
 }
 
 export {sphere}

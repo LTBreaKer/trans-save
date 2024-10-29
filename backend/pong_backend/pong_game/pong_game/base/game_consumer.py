@@ -10,6 +10,8 @@ from .ball_class import Ball
 from .paddle_class import Paddle
 from .ball_class import width, height
 
+goals_to_win = 5
+
 class GameConsumer(AsyncWebsocketConsumer):
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
@@ -43,6 +45,9 @@ class GameConsumer(AsyncWebsocketConsumer):
 			'type_msg': 'play',
 		}))
 
+	async def launsh(self, e):
+		pass
+		
 	async def disconnect(self, close_code):
 		await self.channel_layer.group_discard(
 			self.room_group_name,
@@ -89,7 +94,7 @@ class GameConsumer(AsyncWebsocketConsumer):
 					'right_paddle': self.rpaddle.fn_str()
 				}
 			)
-		if (self.ball.gameOver and (self.lpaddle.nb_goal == 3 or self.rpaddle.nb_goal == 3)):
+		if (self.ball.gameOver and (self.lpaddle.nb_goal == goals_to_win or self.rpaddle.nb_goal == goals_to_win)):
 			await self.end_game()
 		else:
 			await self.send(text_data=json.dumps({
@@ -120,6 +125,8 @@ class GameConsumer(AsyncWebsocketConsumer):
 			self.room_group_name,
 			{
 				'type': 'desconnect_consumer',
+				'left_paddle_score': self.lpaddle.nb_goal,
+				'right_paddle_score': self.rpaddle.nb_goal,
 			})
 		
 	async def desconnect_consumer(self, e):

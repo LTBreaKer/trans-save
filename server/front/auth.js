@@ -15,7 +15,8 @@ function isAuthenticated() {
   }
   
   function logoutf() {
-    friendsocket.close();
+    if (friendsocket)
+      friendsocket.close();
     localStorage.removeItem('token'); 
     localStorage.removeItem('refresh'); 
     localStorage.removeItem('session_id');

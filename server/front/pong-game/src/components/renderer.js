@@ -16,6 +16,8 @@ function initRenderer() {
     document.body.appendChild( renderer.domElement );
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap; // default THREE.PCFShadowMap
+    // renderer.outputEncoding = THREE.sRGBEncoding;
+    // renderer.physicallyCorrectLights = true;
 }
 
 export function initGameComponents() {

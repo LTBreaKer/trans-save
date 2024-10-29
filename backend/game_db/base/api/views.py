@@ -8,6 +8,8 @@ from .helpers import check_auth, get_user, is_user_authenticated
 import base.global_vars as global_vars
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
+from base.validators import CustomUsernameValidator
+from django.core.exceptions import ValidationError
 
 game_queue = global_vars.game_queue
 
@@ -55,6 +57,14 @@ def create_local_game(request):
     player2_name = request.data.get('player2_name')
     if not player2_name:
         return Response({'message': 'player2_name required'}, status=400)
+    validator = CustomUsernameValidator()
+    try:
+        validator(player2_name)
+    except ValidationError:
+        return Response({'message': 'Invalid player name'}, status=400)
+    if len(player2_name) > 9:
+        return Response({'message': 'Invalid player name'}, status=400)
+
     print(user_availablity['avatar'])
     serializer = GameDbSerialiser(data={
             'player1_id': user_availablity['player_id'],
@@ -170,6 +180,8 @@ def add_game_score(request):
     auth_check_response = check_auth(AUTH_HEADER, session_id)
     if auth_check_response.status_code != 200:
         return Response(data=auth_check_response.json(), status=auth_check_response.status_code)
+    if not request.data:
+        return Response({'message': 'no data sent'}, status=400)
     game_id = request.data.get('game_id')
     if not game_id:
         return Response({'message': 'game_id required'}, status=400)
@@ -247,20 +259,15 @@ def is_available(request):
     if auth_check_response.status_code != 200:
         return Response(data=auth_check_response.json(), status=auth_check_response.status_code)
     
-    id = request.data.get('id')
+    id = auth_check_response.json()['user_data']['id']
     if GameDb.objects.filter(
         Q(player1_id=id) | Q(player2_id=id),
         is_active=True
     ).exists():
-        return {
-            'is_available': False,
-            'res': Response({'message': 'player is already in a game'}, status=400)
-            }
+        return Response({'message': 'player is already in a game'}, status=400)
+
     if id in game_queue:
-        return {
-            'is_available': False,
-            'res': Response({'message': 'player already in queue'}, status=400)
-            }
+        return Response({'message': 'player already in queue'}, status=400)
     return Response({'message': 'user is available'}, status=200)
 
 @api_view(['POST'])

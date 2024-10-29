@@ -1,5 +1,5 @@
 import { game_data, statePongGame } from '../../../components/ping/script.js';
-import {height, paddleHeight, paddle_way, width} from '../utils/globaleVariable.js'
+import {goals_to_win, height, paddleHeight, paddle_way, width} from '../utils/globaleVariable.js'
 
 class Paddle {
 	constructor(x = 0) {
@@ -48,6 +48,7 @@ export let paddle;
 export let lpaddle;
 export let rpaddle;
 export let loser_score;
+export let winner_score;
 
 function playerChoicePaddle({name_current_user, player1_name}) {
 	(name_current_user === player1_name) ? paddle.left() : paddle.right();
@@ -56,10 +57,19 @@ function playerChoicePaddle({name_current_user, player1_name}) {
 function loserScore() {
 	let data = game_data;
 	console.log("loserScore game_data: ", game_data);
-	data.player1_score = (paddle.x == 0) ? 0 : 3;
-	data.player2_score = (data.player1_score == 0) ? 3 : 0;
+	data.player1_score = (paddle.x == 0) ? 0 : goals_to_win;
+	data.player2_score = (data.player1_score == 0) ? goals_to_win : 0;
 	loser_score = JSON.stringify(data);
 	console.log("loserScore : ", loser_score);
+}
+
+function winnerScore() {
+	let data = game_data;
+	console.log("loserScore game_data: ", game_data);
+	data.player1_score = (paddle.x == 0) ? goals_to_win : 0;
+	data.player2_score = (data.player1_score == 0) ? goals_to_win : 0;
+	winner_score = JSON.stringify(data);
+	console.log("loserScore : ", winner_score);
 }
 
 export function initPaddleInstance() {
@@ -67,6 +77,7 @@ export function initPaddleInstance() {
 	if (statePongGame == "remote") {
 		playerChoicePaddle(game_data);
 		loserScore();
+		winnerScore();
 	}
 
 	lpaddle = new Paddle(0);

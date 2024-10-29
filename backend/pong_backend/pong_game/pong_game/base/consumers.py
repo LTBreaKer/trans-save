@@ -13,6 +13,7 @@ from tensorflow.keras.models import load_model
 import numpy as np
 from .models import TrainingData, Turn
 
+goals_to_win = 2
 @database_sync_to_async
 def output_pos_hit(pos_hit):
 	try:
@@ -54,9 +55,9 @@ class LocalGameConsumer(AsyncWebsocketConsumer):
         if (type == "update_paddle"):
             self.lpaddle.update(text_data_json['lpaddle']['ps'])
             self.rpaddle.update(text_data_json['rpaddle']['ps'])
-        elif (type == "update_lpaddle"):
+        elif (type == "update_rpaddle"):
             self.bot = True
-            self.lpaddle.update(text_data_json['lpaddle']['ps'])
+            self.rpaddle.update(text_data_json['rpaddle']['ps'])
         elif (type == 'play'):
             self.ball.gameOver = False
             asyncio.create_task(self.update_ball(type))
@@ -69,7 +70,8 @@ class LocalGameConsumer(AsyncWebsocketConsumer):
         print("game_over: ", self.ball.gameOver, file=sys.stderr)
         turn = await Turn.objects.acreate()
         time = 0.0
-        model_path = os.path.join(settings.BASE_DIR, 'base/agent_model/model4700_300.h5')
+        model_path = os.path.join(settings.BASE_DIR, 'base/agent_model/test_model.h5')
+        # model_path = os.path.join(settings.BASE_DIR, 'base/agent_model/model4700_300.h5')
         model = load_model(model_path)
         numbers = [20, 20, 20, 50, 50, 50]
         while (not self.ball.gameOver):
@@ -94,7 +96,7 @@ class LocalGameConsumer(AsyncWebsocketConsumer):
                     predictions = model.predict(input_array)
                     random_number = random.choice(numbers)
             if (self.bot):
-                self.rpaddle.ai_update(predictions * 10 - random_number)
+                self.lpaddle.ai_update(predictions * 10 - random_number)
             self.ball.update(self.rpaddle, self.lpaddle)
             if ((self.ball.velX * tmp < 0)):
                 tmp = self.ball.velX
@@ -109,7 +111,7 @@ class LocalGameConsumer(AsyncWebsocketConsumer):
                 'left_paddle': self.lpaddle.fn_str(),	
                 'right_paddle': self.rpaddle.fn_str()
             }))
-            if (self.ball.gameOver and (self.lpaddle.nb_goal == 2 or self.rpaddle.nb_goal == 2)):
+            if (self.ball.gameOver and (self.lpaddle.nb_goal == goals_to_win or self.rpaddle.nb_goal == goals_to_win)):
                 await self.send_scores()
                 await self.close(code=1000)
             #     self.gameOver = True

@@ -1,5 +1,5 @@
 import { loadHTML, loadCSS } from '../../utils.js';
-import { game_data } from '../ping/script.js';
+import { game_data, statePongGame } from '../ping/script.js';
 export let playGame = async () => {
 	console.log("  playGame  playGame  playGame  playGame");
 
@@ -22,7 +22,9 @@ export async function isGameDataFull()
 }
 
 async function PingPong() {
-  if (await isGameDataFull()) {
+  if (statePongGame === '' && localStorage.getItem('statePongGame'))
+    window.location.hash = "/tournament";	
+  else if (await isGameDataFull()) {
     await loadHtmlWidthModuleScript();
     await playGame();
   }

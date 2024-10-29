@@ -37,11 +37,11 @@
 	text-align: left;
 	/* color: white; */
 	/* color: rgb(45, 204, 45); */
-	color: #A4FF25;
+	color: #FF000C;
 	text-shadow: 1px 1px rgb(255, 255, 255, 0.8);
 	padding-top: 60px;
 	padding-left: 50px;
-	font-size: 30px;
+	font-size: min(30px, 6.5vw);
     padding-right: 10px;
 	display: flex;
     flex-direction: row;
@@ -53,7 +53,7 @@
 	color: #11698C;
 	display: flex;
 	padding-top: 51.06px;
-	font-size: 30px;
+	font-size: min(30px, 6.5vw);
 }
 
 .p_second {
@@ -62,11 +62,11 @@
 	text-align: right;
 	/* color: white; */
 	/* color: rgb(204, 45, 45); */
-	color: #FF000C;
+	color: #A4FF25;
 	text-shadow: 1px 1px rgb(255, 255, 255, 0.8);
 	padding-top: 60px;
 	padding-right: 50px;
-	font-size: 30px;
+	font-size: min(30px, 6.5vw);
     padding-left: 10px;
 	display: flex;
     flex-direction: row;
@@ -133,11 +133,13 @@
     margin-top: 13px;
     color: rgb(164 255 37);
     background-color: rgba(0, 0, 0, 0.2);
+	cursor: pointer;
 	/* cursor: pointer; */
 }
 
 .p_ptn_menu {
 	color: rgb(255 0 12);
+	cursor: pointer;
 	/* cursor: auto; */
 }
 

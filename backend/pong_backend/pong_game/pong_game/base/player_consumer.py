@@ -10,16 +10,18 @@ from django.contrib.auth.models import AnonymousUser
 from .paddle_class import Paddle
 from .ball_class import width, height, ballRaduis, paddleHeight, paddleWidth
 
+goals_to_win = 5
+
 ########################## PlayerConsumer #########################
 class PlayerConsumer(AsyncWebsocketConsumer):
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
 		self.ball_channel_name = ''
+		self.room_group_name = 0
 		self.paddle = Paddle()
 
 	async def connect(self):
 		await self.accept()
-		await self.sendCunsumerPaddleCreated()
 
 	async def add_group(self, e):
 		self.room_name = e["group_name"]
@@ -28,6 +30,7 @@ class PlayerConsumer(AsyncWebsocketConsumer):
 			self.room_group_name,
 			self.channel_name
 		)
+		await self.sendCunsumerPaddleCreated()
 
 	async def assigning_paddle(self, e):
 		if (e['paddle'] == "left_paddle"):
@@ -46,6 +49,8 @@ class PlayerConsumer(AsyncWebsocketConsumer):
 		# await self.channel_layer.send(
 		# 	self.ball_channel_name, 
 		# 	{ 'type': 'deconnect_ball' })
+		if (not self.room_group_name):
+			return
 		await self.close_game_consumers()
 		await self.channel_layer.group_discard(
 			self.room_group_name,
@@ -62,10 +67,11 @@ class PlayerConsumer(AsyncWebsocketConsumer):
 				await self.update_paddle(text_data_json['paddle']['ps'])
 		elif (type == "move"):
 			print("self.ball_channel_name: ", self.ball_channel_name)
-			if (self.ball_channel_name != ''):
-				await self.channel_layer.send(
-				self.ball_channel_name,
-				{ 'type': 'move'})
+			await self.launsh_game()
+			# if (self.ball_channel_name != ''):
+			# 	await self.channel_layer.send(
+			# 	self.ball_channel_name,
+			# 	{ 'type': 'move'})
 		elif (type == "add_group"):
 			await self.add_group(text_data_json)
 		elif (type == "assigning_paddle"):
@@ -73,10 +79,33 @@ class PlayerConsumer(AsyncWebsocketConsumer):
 		elif (type == "close"):
 			await self.close_game_consumers()
 	
+	async def launsh_game(self):
+		print("----------launsh_game----------------", file=sys.stderr)
+		await self.channel_layer.group_send(
+			self.room_group_name, {
+				'type': 'launsh',
+				'channel_name': self.channel_name 
+			})
+
+	async def launsh(self, e):
+		print("----------launsh----------------", file=sys.stderr)
+		print("self.channel_name: ", self.channel_name, file=sys.stderr)
+		print("e['channel_name']: ", e['channel_name'], file=sys.stderr)
+		if (self.channel_name != e['channel_name'] and self.ball_channel_name != ''):
+			await self.channel_layer.send(
+				self.ball_channel_name,
+				{'type': 'move'})
+
 	async def close_game_consumers(self):
+		if (not self.room_group_name):
+			return
+		left_paddle_score = 0 if (self.paddle.x == 0) else goals_to_win
+		right_paddle_score = 0 if (left_paddle_score == goals_to_win) else goals_to_win
 		await self.channel_layer.group_send(
 			self.room_group_name, {
 				'type': 'desconnect_consumer',
+				'left_paddle_score': left_paddle_score,
+				'right_paddle_score': right_paddle_score
 			})
 
 	async def update_paddle(self, e):
@@ -91,12 +120,15 @@ class PlayerConsumer(AsyncWebsocketConsumer):
 		})
 
 	async def draw_info(self, event):
-		await self.send(text_data=json.dumps({
-			'type_msg': 'draw_info',
-			'ball': event['ball'],
-			'left_paddle': event['left_paddle'],
-			'right_paddle': event['right_paddle']
-		}))
+		try:
+			await self.send(text_data=json.dumps({
+				'type_msg': 'draw_info',
+				'ball': event['ball'],
+				'left_paddle': event['left_paddle'],
+				'right_paddle': event['right_paddle']
+			}))
+		except Disconnected:
+			print("Attempted to send on a closed WebSocket connection.", file=sys.stderr)
 
 	async def set_ball_channel_name(self, event):
 		self.ball_channel_name = event['ball_channel_name']
@@ -105,5 +137,7 @@ class PlayerConsumer(AsyncWebsocketConsumer):
 	async def desconnect_consumer(self, e):
 		await self.send(text_data=json.dumps({
 			'type_msg': 'game_over',
+			'left_paddle_score': e['left_paddle_score'],
+			'right_paddle_score': e['right_paddle_score']
 		}))
 		await self.close(code=1000)

@@ -174,7 +174,7 @@ def add_game_score(request):
     if not game_id:
         return Response({'message': 'game_id required'}, status=400)
     try:
-        game = TagGameDb.objects.get(id=game_id, is_active=True)
+        game = TagGameDb.objects.get(id=game_id, is_active=True, is_connected=True)
     except TagGameDb.DoesNotExist:
         return Response({'message': 'no active game found with the provided game_id'}, status=404)
     if game.is_remote:
