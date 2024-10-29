@@ -20,7 +20,6 @@ const tourna_game = "https://127.0.0.1:9008/api/tournament/";
 const pong_game = "https://127.0.0.1:9006/api/gamedb/";
 const tag_game = "https://127.0.0.1:9007/api/tag-gamedb/";
 var photo = null;
-let newNotification;
 let username_;
 async function Friends() {
   const html = await loadHTML('./components/profile/profile.html');
@@ -102,10 +101,10 @@ async function Friends() {
       perso_list.style.display = 'flex';
   });
 
-  if (newNotification){
-    console.log("=====notification ======================", newNotification)
-    check_and_set_online(newNotification);
-  }
+  // if (newNotification){
+  //   console.log("=====notification ======================", newNotification)
+  //   check_and_set_online(newNotification);
+  // }
 
   const tag_history = document.querySelector('.tag_game_click');
   const pong_history = document.querySelector('.pong_game_click');
@@ -474,20 +473,24 @@ export async function get_friends_home() {
     credentials: 'include',
   });
   const jsonData = await response.json();
+  console.log("frinds req here ===== >   ", jsonData);
+  console.log("frinds req her await   e ===== >   ", await Object.values(jsonData.friend_list));
   if (!response.ok) {
     console.log((`HTTP error! Status: ${response.status}`), Error);
   }
-  displayFriendList_home(Object.values(jsonData.friend_list))
+  displayFriendList_home(await Object.values(jsonData.friend_list))
 }
 
 
 function displayFriendList_home(friendList) {
+
   if (!friendList) {
     console.error('Friend list not provided');
     return;
   }
   
   const send_friend = document.querySelector('.send_friend_list');
+   send_friend.innerHTML = '';
   if (send_friend) {
     friendList.forEach((friend) => {
       let div_friend = document.createElement('div');
@@ -500,10 +503,10 @@ function displayFriendList_home(friendList) {
             <img id="player1" style="border-radius: 50%;" class="click_friend" data-name="${friend.username}" data-id="${friend.id}" src="${friend.avatar}" alt="">
           </div>
           <div class="onlinen" data-id="${friend.id}" style="background-color: gray;"></div>
-          <h2 class="player1 click_friend">${friend.username}</h2>      
+          <h2 class="player1 click_friend" data-name="${friend.username}" >${friend.username}</h2>      
         </div>
       `;
-      
+
       send_friend.appendChild(div_friend);
     });
     send_friend.querySelectorAll('.click_friend').forEach(link => {
@@ -512,9 +515,6 @@ function displayFriendList_home(friendList) {
     set_onlines(friendList);
   }
 }
-
-
-
 
 function readit(event) {
   const name_of_friends = event.target.getAttribute('data-name');
@@ -535,10 +535,6 @@ async function update_profile_fun() {
   const check_box = document.getElementById('check_box');
 
   var boll = true;
-  // if (update_Email.value !== '') 
-  //   if (!isValidEmail(update_Email.value)){
-  //     boll = false;
-  //   }
   if (new_password.value !== '')
       if (new_password.length < 8){
         boll = false;
@@ -706,7 +702,6 @@ function check_and_set_online(newNotification) {
 
 export async function check_friends_status() {
   await check_access_token();
-
   friendsocket = new WebSocket("wss://127.0.0.1:9005/ws/online-status/", ["token", get_localstorage('token'), "session_id", get_localstorage('session_id')]);
     
   friendsocket.onopen = function () {
@@ -714,7 +709,7 @@ export async function check_friends_status() {
   };
   
   friendsocket.onmessage = async function(event) {
-    newNotification = await JSON.parse(event.data);
+    let newNotification = await JSON.parse(event.data);
     console.log('online status --------------- > ', newNotification)
     check_and_set_online(newNotification);
   };

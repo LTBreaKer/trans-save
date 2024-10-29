@@ -32,28 +32,6 @@ async function Home() {
 
 // =========================== here i will work with media ===========================
 
-// i will work with #butt
-
-  // const butt = document.querySelector('#butt');
-  // const side = document.querySelector('.sidebar');
-
-  // butt.addEventListener('click', function() {
-    
-  //   side.classList.toggle('active');
-  // });
-
-  // document.addEventListener('click', (event) => {
-  //   if (!side.contains(event.target) && !butt.contains(event.target)) {
-  //     side.classList.remove('active');
-  //   }
-  // });
-
-  // const notific = document.querySelector('.notification');
-  // const notifi_display = document.querySelector('.notifi_btn');
-
-  // notific.addEventListener('click', function() {
-  //   notifi_display.classList.toggle('active');
-  // })
 
 // ===== ===== ===== ====== ===== ====== ======
 
