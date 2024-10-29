@@ -475,40 +475,40 @@ export async function get_friends_home() {
   if (!response.ok) {
     console.log((`HTTP error! Status: ${response.status}`), Error);
   }
-  displayFriendList_home(jsonData.friend_list)
+  displayFriendList_home(Object.values(jsonData.friend_list))
 }
 
-async function displayFriendList_home(friendList) {
-  friendList =  await Object.values(friendList);
+ function displayFriendList_home(friendList) {
+  // friendList =  await Object.values(friendList);
   if (!friendList) {
     console.error('Notification display container not found');
     return;
   }
     const send_friend = document.querySelector('.send_friend_list');
   if (send_friend) {
-    
-    const friend_div = document.createElement('div');
-    friend_div.classList.add('friends');
-    // <div class="friends"  data-id="${friend.id}">
 
-    friend_div.innerHTML = friendList.map( friend => ` 
+    friendList.map((friend) => {
+
+      let div_friend = document.createElement('div');
+      div_friend.classList.add('friends');
+      div_friend.setAttribute('data-id', `${friend.id}`); 
+      // <div class="friends"  data-id="${friend.id}">
+      div_friend.innerHTML = ` 
       <div class="friend" id="user_id" data-id="${friend.id}">
       <div >  
       <img  id="player1" style="border-radius: 50%;" class="click_friend" data-name="${friend.username}" data-id="${friend.id}"  class="proimage" src="${friend.avatar}" alt="">
       </div>
-      <div class="onlinen" data-id="${friend.id}"> </div>
-      <h2 class="player1" class="click_friend" >${friend.username}</h2>
-      
-      `)
-      send_friend.appendChild(friend_div)
-      send_friend.querySelectorAll('.click_friend').forEach(link => {
+      <div class="onlinen" "data-id="${friend.id}" > </div>
+      <h2 class="player1" class="click_friend" >${friend.username}</h2>      
+      `
+      send_friend.appendChild(div_friend);
+    })
+        send_friend.querySelectorAll('.click_friend').forEach(link => {
         link.addEventListener('click', readit);
       });
     }
     set_onlines(friendList);
 }
-
-
 
 
 
@@ -679,28 +679,39 @@ export function set_onlines(users_list) {
 
 console.log("here is set online sttatus : ", users_list);
 
-  users_list.map(users => {
-    console.log("user========= ", users.is_online);
-    const send_friend = document.querySelector('.friends');
-    console.log("user========= ", send_friend);
-    console.log("user========= ", send_friend.querySelector(`.onlinen[data-id="${users.id}"]`));
-    const onlineDiv = send_friend.querySelector(`.onlinen[data-id="${users.id}"]`);
+for(let i = 0; i < users_list.length; i++) {
+  const send_friend = document.querySelector(`.friends[data-id="${users_list[i].id}"]`);
+  console.log("here is ========= : ", users_list[i]);
+  
+      console.log("user========= ", send_friend);
+    const onlineDiv = send_friend.querySelector(`.onlinen[data-id="${users_list[i].id}"]`);
     console.log("user========= ", onlineDiv);
-    onlineDiv.style.backgroundColor = 'gray'; 
+    if (onlineDiv.style.backgroundColor === 'green' ||  !onlineDiv.style.backgroundColor) {
+      console.log('hello --------------')
+      onlineDiv.style.backgroundColor = 'gray'; 
+    }
     console.log("user========= ", onlineDiv);
-    if (users.is_online) {
+    if (users_list[i].is_online && onlineDiv.style.backgroundColor === 'gray') {
       console.log("user_green =================")
       onlineDiv.style.backgroundColor = 'green'; 
     }
-    else if (!users.is_online)
+    else if (!users_list[i].is_online && onlineDiv.style.backgroundColor == 'green') {
+      console.log("user_gray ===================")
       onlineDiv.style.backgroundColor = 'gray'; 
+    }
 
+
+}
+
+//   users_list.map(users => {
+//     console.log("user========= ", users.is_online);
+//     console.log("user========= ", send_friend);
     
-  })
+//   })
 }
 
 function check_and_set_online(newNotification) {
-    const send_friend = document.querySelector('.friends');
+  const send_friend = document.querySelector(`.friends[data-id="${newNotification.user_id}"]`);
     const onlineDiv = send_friend.querySelector(`.onlinen[data-id="${newNotification.user_id}"]`);
     if (onlineDiv) {
       onlineDiv.style.backgroundColor = 'green'; 
