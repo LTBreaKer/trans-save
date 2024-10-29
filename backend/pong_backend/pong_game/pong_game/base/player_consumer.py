@@ -10,7 +10,7 @@ from django.contrib.auth.models import AnonymousUser
 from .paddle_class import Paddle
 from .ball_class import width, height, ballRaduis, paddleHeight, paddleWidth
 
-goals_to_win = 5
+goals_to_win = 2
 
 ########################## PlayerConsumer #########################
 class PlayerConsumer(AsyncWebsocketConsumer):
@@ -142,7 +142,7 @@ class PlayerConsumer(AsyncWebsocketConsumer):
 				'left_paddle': event['left_paddle'],
 				'right_paddle': event['right_paddle']
 			}))
-		except Exception as e:
+		except Disconnected:
 			print("Attempted to send on a closed WebSocket connection.", file=sys.stderr)
 
 	async def set_ball_channel_name(self, event):
@@ -158,5 +158,5 @@ class PlayerConsumer(AsyncWebsocketConsumer):
 			}))
 		except Exception as e:
 			print("Exception: ", e, file=sys.stderr)
-		await self.close(code=1000)
+			await self.close(code=1000)
 		
