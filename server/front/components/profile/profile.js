@@ -102,8 +102,10 @@ async function Friends() {
       perso_list.style.display = 'flex';
   });
 
-  if (newNotification)
-    check_and_set_online(newNotification);
+  // if (newNotification){
+  //   console.log("=====notification ======================", newNotification)
+  //   check_and_set_online(newNotification);
+  // }
 
   const tag_history = document.querySelector('.tag_game_click');
   const pong_history = document.querySelector('.pong_game_click');
@@ -478,36 +480,37 @@ export async function get_friends_home() {
   displayFriendList_home(Object.values(jsonData.friend_list))
 }
 
- function displayFriendList_home(friendList) {
-  // friendList =  await Object.values(friendList);
+
+function displayFriendList_home(friendList) {
   if (!friendList) {
-    console.error('Notification display container not found');
+    console.error('Friend list not provided');
     return;
   }
-    const send_friend = document.querySelector('.send_friend_list');
+  
+  const send_friend = document.querySelector('.send_friend_list');
   if (send_friend) {
-
-    friendList.map((friend) => {
-
+    friendList.forEach((friend) => {
       let div_friend = document.createElement('div');
       div_friend.classList.add('friends');
       div_friend.setAttribute('data-id', `${friend.id}`); 
-      // <div class="friends"  data-id="${friend.id}">
+      
       div_friend.innerHTML = ` 
-      <div class="friend" id="user_id" data-id="${friend.id}">
-      <div >  
-      <img  id="player1" style="border-radius: 50%;" class="click_friend" data-name="${friend.username}" data-id="${friend.id}"  class="proimage" src="${friend.avatar}" alt="">
-      </div>
-      <div class="onlinen" "data-id="${friend.id}" > </div>
-      <h2 class="player1" class="click_friend" >${friend.username}</h2>      
-      `
+        <div class="friend" id="user_id" data-id="${friend.id}">
+          <div>  
+            <img id="player1" style="border-radius: 50%;" class="click_friend" data-name="${friend.username}" data-id="${friend.id}" src="${friend.avatar}" alt="">
+          </div>
+          <div class="onlinen" data-id="${friend.id}" style="background-color: gray;"></div>
+          <h2 class="player1 click_friend">${friend.username}</h2>      
+        </div>
+      `;
+      
       send_friend.appendChild(div_friend);
-    })
-        send_friend.querySelectorAll('.click_friend').forEach(link => {
-        link.addEventListener('click', readit);
-      });
-    }
+    });
+    send_friend.querySelectorAll('.click_friend').forEach(link => {
+      link.addEventListener('click', readit);
+    });
     set_onlines(friendList);
+  }
 }
 
 
@@ -681,38 +684,20 @@ console.log("here is set online sttatus : ", users_list);
 
 for(let i = 0; i < users_list.length; i++) {
   const send_friend = document.querySelector(`.friends[data-id="${users_list[i].id}"]`);
-  console.log("here is ========= : ", users_list[i]);
-  
-      console.log("user========= ", send_friend);
     const onlineDiv = send_friend.querySelector(`.onlinen[data-id="${users_list[i].id}"]`);
-    console.log("user========= ", onlineDiv);
-    if (onlineDiv.style.backgroundColor === 'green' ||  !onlineDiv.style.backgroundColor) {
-      console.log('hello --------------')
-      onlineDiv.style.backgroundColor = 'gray'; 
-    }
-    console.log("user========= ", onlineDiv);
-    if (users_list[i].is_online && onlineDiv.style.backgroundColor === 'gray') {
-      console.log("user_green =================")
+    if (users_list[i].is_online) {
       onlineDiv.style.backgroundColor = 'green'; 
     }
-    else if (!users_list[i].is_online && onlineDiv.style.backgroundColor == 'green') {
-      console.log("user_gray ===================")
+    else if (!users_list[i].is_online) {
       onlineDiv.style.backgroundColor = 'gray'; 
     }
-
-
-}
-
-//   users_list.map(users => {
-//     console.log("user========= ", users.is_online);
-//     console.log("user========= ", send_friend);
-    
-//   })
+  }
 }
 
 function check_and_set_online(newNotification) {
   const send_friend = document.querySelector(`.friends[data-id="${newNotification.user_id}"]`);
     const onlineDiv = send_friend.querySelector(`.onlinen[data-id="${newNotification.user_id}"]`);
+
     if (onlineDiv) {
       onlineDiv.style.backgroundColor = 'green'; 
     } if (!newNotification.is_online)
@@ -735,6 +720,7 @@ export async function check_friends_status() {
   };
   friendsocket.onerror = function (error) {
     console.error('Websocket error:', error);
+    setTimeout(check_and_set_online, 5000);
   };
   friendsocket.onclose = function () {
     console.log('Websocket connection closed.');

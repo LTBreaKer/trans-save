@@ -16,6 +16,16 @@ function isAuthenticated() {
   }
   
   function logoutf() {
+    function clearOnlineStatuses() {
+      const allFriends = document.querySelectorAll('.friends');
+      allFriends.forEach(friend => {
+        const onlineDiv = friend.querySelector('.onlinen');
+        if (onlineDiv) {
+          onlineDiv.style.backgroundColor = 'gray';
+        }
+      });
+    }
+    
     if (friendsocket && friendsocket.readyState === WebSocket.OPEN)
       friendsocket.close();
     // friendsocket = null

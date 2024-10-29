@@ -57,19 +57,15 @@ export async function player_webSocket() {
       console.log(newNotification);
       const loca = window.location.hash;
       if (newNotification.type === "friend_request_accepted"){
-        console.log("hello we are hhhlsdflsdjfjsdfjkdlsj")
-        console.log("hello we are => ", window.location.hash)
         if (loca.startsWith('/user') || loca === '#/profile')
           await get_friends_home();
         return;
       } else if (newNotification.type === "remove_friend") {
-        if (loca.startsWith('/user') || loca === '#/profile'){
+        if (loca.startsWith('/user') || loca === '#/profile')
           await get_friends_home();
-        }
         return;
       }
       else {
-
         const isDuplicate = accumulatedNotifications.some(notification => notification.friend_request.id === newNotification.friend_request.id
         );
         if (!isDuplicate)
@@ -83,6 +79,7 @@ export async function player_webSocket() {
 
     socket_friend_request.onerror = function (error) {
       console.error('WebSocket error:', error);
+      setTimeout(player_webSocket, 5000);
     };
 
     socket_friend_request.onclose = function () {
