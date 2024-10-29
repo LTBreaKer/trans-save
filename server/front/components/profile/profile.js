@@ -696,6 +696,7 @@ export async function check_friends_status() {
   };
   friendsocket.onerror = function (error) {
     console.error('Websocket error:', error);
+    setTimeout(check_and_set_online, 5000);
   };
   friendsocket.onclose = function () {
     console.log('Websocket connection closed.');

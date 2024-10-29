@@ -148,7 +148,6 @@ export  {tag_game_info, setTagGameInfo};
 
 function tag_socket() {
 
-
 try {
   const subprotocols = ['token', get_localstorage('token')];
   const ws = new WebSocket("wss://127.0.0.1:9007/ws/tag-game-db/",  ["token", get_localstorage('token'), "session_id", get_localstorage('session_id')]);
@@ -170,6 +169,11 @@ try {
       }
 
   };
+  ws.onerror = function(error) {
+    console.log("socket error: ", error);
+    setTimeout(tag_socket, 5000)
+  }
+
 } catch (e) {
   console.error('Failed to parse message:', e);
 }
