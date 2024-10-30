@@ -142,19 +142,18 @@ export function animate() {
 }
 
 
-// async function sendToken() {
-// 	k = false;
-// 	// await sleep(60 * 4);
-// 	await sleep(240);
-// 	// await changeAccess();
-// 	const ws = await local_game_socket;
-// 	if (ws && ws.readyState == 1)
-// 		await ws.send(JSON.stringify({
-// 			'type_msg': 'update_token',
-// 			'token': localStorage.getItem("token")
-// 		}))
-// 	k = true;
-// }
+async function sendToken() {
+	k = false;
+	await sleep(60 * 4);
+	await changeAccess();
+	const ws = (statePongGame == "remote")? await paddle_socket :await local_game_socket;
+	if (ws && ws.readyState == 1)
+		await ws.send(JSON.stringify({
+			'type_msg': 'update_token',
+			'token': localStorage.getItem("token")
+		}))
+	k = true;
+}
 
 
 async function updatePaddles(){
@@ -175,15 +174,15 @@ async function updatePaddles(){
 		}
 	}
 	else if (statePongGame == "remote") {
-		mousePositionHelper.position(mousePosition, scene, camera);
+		// mousePositionHelper.position(mousePosition, scene, camera);
 		paddle.update()
 		if (paddle.y != paddle.lastY) {
 			paddle.lastY = paddle.y;
 			moveRemotePaddle();
 		}
 	}
-	// if (k)
-	// 	sendToken();
+	if (k)
+		sendToken();
 }
 
 

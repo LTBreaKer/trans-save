@@ -125,18 +125,15 @@ export async function fnGameOver(state = "rtn_menu") {
     (scene) && disposeScene();
     if (statePongGame !== "tournament")
         window.location.hash = "/ping"
-    else {
-        // (tournament_match_data.matchNumber === 7) ?
-        // window.location.hash = "/ping" :
-        // window.location.hash = "/tournament";
+    else
         window.location.hash = "/tournament";
-    }
     assingGameApiToNULL();
 }
 
 function userConnectionInfo() {
     let data = game_data;
     data.type_msg = 'add_user_data';
+    data.statePongGame = statePongGame;
     // data.group_name = data_remote_player.game_id;
     data.token = localStorage.getItem("token");
     data.refresh = localStorage.getItem("refresh");
@@ -204,6 +201,7 @@ export async function paddleSocket(group_name) {
             console.log('paddle game WebSocket conection established.');
             ws.send(JSON.stringify({'type_msg': 'add_group', 'group_name': game_data.game_id}));
             ws.send(JSON.stringify({'type_msg': 'assigning_paddle', 'paddle': choicePaddle(game_data)}));
+            ws.send(JSON.stringify(userConnectionInfo()));
             // await sendPlayerPaddleCreated();
         }
         ws.onmessage = async (event) => {

@@ -9,6 +9,7 @@ from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
 from .paddle_class import Paddle
 from .ball_class import width, height, ballRaduis, paddleHeight, paddleWidth
+import requests
 
 goals_to_win = 2
 
@@ -19,6 +20,10 @@ class PlayerConsumer(AsyncWebsocketConsumer):
 		self.ball_channel_name = ''
 		self.room_group_name = 0
 		self.paddle = Paddle()
+		self.data = {}
+		self.goal_scored = False
+		self.left_paddle_score = 0
+		self.right_paddle_score = 0
 
 	async def connect(self):
 		await self.accept()
@@ -71,17 +76,22 @@ class PlayerConsumer(AsyncWebsocketConsumer):
 		elif (type == "move"):
 			print("self.ball_channel_name: ", self.ball_channel_name)
 			await self.launsh_game()
-			# if (self.ball_channel_name != ''):
-			# 	await self.channel_layer.send(
-			# 	self.ball_channel_name,
-			# 	{ 'type': 'move'})
 		elif (type == "add_group"):
 			await self.add_group(text_data_json)
 		elif (type == "assigning_paddle"):
 			await self.assigning_paddle(text_data_json)
 		elif (type == "close"):
 			await self.close_game_consumers()
+		elif (type == "add_user_data"):
+			await self.add_user_data(text_data_json)
+			
+	async def add_user_data(self, e):
+		self.data = e
+		self.token = self.data["token"]
 	
+	async def update_token(self, e):
+		self.token = e["token"]
+		
 	async def launsh_game(self):
 		print("----------launsh_game----------------", file=sys.stderr)
 		try:
@@ -108,14 +118,14 @@ class PlayerConsumer(AsyncWebsocketConsumer):
 	async def close_game_consumers(self):
 		if (not self.room_group_name):
 			return
-		left_paddle_score = 0 if (self.paddle.x == 0) else goals_to_win
-		right_paddle_score = 0 if (left_paddle_score == goals_to_win) else goals_to_win
+		self.left_paddle_score = 0 if (self.paddle.x == 0) else goals_to_win
+		self.right_paddle_score = 0 if (self.left_paddle_score == goals_to_win) else goals_to_win
 		try:
 			await self.channel_layer.group_send(
 				self.room_group_name, {
 					'type': 'desconnect_consumer',
-					'left_paddle_score': left_paddle_score,
-					'right_paddle_score': right_paddle_score
+					'left_paddle_score': self.left_paddle_score,
+					'right_paddle_score': self.right_paddle_score
 				})
 		except Exception as e:
 			print("Exception: ", e, file=sys.stderr)
@@ -150,6 +160,9 @@ class PlayerConsumer(AsyncWebsocketConsumer):
 		print("ball_channel_name: ", self.ball_channel_name, file=sys.stderr)
 	
 	async def desconnect_consumer(self, e):
+		self.left_paddle_score = e['left_paddle_score']
+		self.right_paddle_score = e['right_paddle_score']
+		await self.finish_game()
 		try:
 			await self.send(text_data=json.dumps({
 				'type_msg': 'game_over',
@@ -158,5 +171,21 @@ class PlayerConsumer(AsyncWebsocketConsumer):
 			}))
 		except Exception as e:
 			print("Exception: ", e, file=sys.stderr)
-			await self.close(code=1000)
+		await self.close(code=1000)
+
+	async def finish_game(self):
+		if (not self.goal_scored):
+			endpoint = "https://server:9006/api/gamedb/add-game-score/"
+			session_id = self.data["session_id"]
+			auth_header = f"Bearer {self.token}"
+			headers = {
+				'Authorization': auth_header,
+				'Content-Type': 'application/x-www-form-urlencoded',
+				'Session-ID': session_id
+			}
+			self.data["player1_score"] = self.left_paddle_score
+			self.data["player2_score"] = self.right_paddle_score
+			response = requests.post(url=endpoint, headers=headers, data=self.data, verify=False)
+			print("----------------response: ", response, file=sys.stderr)
+		self.goal_scored = True
 		

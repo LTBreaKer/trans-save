@@ -32,13 +32,14 @@ class LocalGameConsumer(AsyncWebsocketConsumer):
         self.gameOver = False
         self.bot = False
         self.data = {}
+        self.goal_scored = False
 
     async def connect(self):
         print("aaaaaaaaaaaaaaaaaaaaaaa", file=sys.stderr)
         await self.accept()
     
     async def disconnect(self, close_code):
-        pass
+        await self.finish_game("game disconnected")
         
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)
@@ -126,7 +127,7 @@ class LocalGameConsumer(AsyncWebsocketConsumer):
 
     async def send_scores(self):
         print("--------------send score------------", file=sys.stderr)
-        await self.finish_game()
+        await self.finish_game("game over")
         try:
             await self.send(text_data=json.dumps({
                 'type': 'game_over',
@@ -144,25 +145,20 @@ class LocalGameConsumer(AsyncWebsocketConsumer):
         # }
         # response = requests.post(url=endpoint, headers=headers, data=data, verify=False)
 
-    async def finish_game(self):
-        endpoint = "https://server:9006/api/gamedb/add-game-score/"
-        # token = self.data["token"]
-        session_id = self.data["session_id"]
-        auth_header = f"Bearer {self.token}"
-        headers = {
-            'Authorization': auth_header,
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'Session-ID': session_id
-        }
-        self.data["player1_score"] = self.lpaddle.nb_goal
-        self.data["player2_score"] = self.rpaddle.nb_goal
-        response = requests.post(url=endpoint, headers=headers, data=self.data, verify=False)
-        print("----------------------------response: ", response, file=sys.stderr)
-        if response.status_code == 200:
-            # Print the response content
-            print("Response Content:", response.content, file=sys.stderr)  # For raw bytes
-            # or
-            print("Response Text:", response.text, file=sys.stderr)        # For a decoded string
-        else:
-            print("Request failed with status code:", response.status_code, file=sys.stderr)
-            print("Response Content:", response.content, file=sys.stderr) 
+    async def finish_game(self, e):
+        if (not self.goal_scored):
+            if (self.data["statePongGame"] == "tournament" and e != "game over"):
+                endpoint = "https://server:9008/api/tournament/cancel-match/"
+            else:
+                endpoint = "https://server:9006/api/gamedb/add-game-score/"
+            session_id = self.data["session_id"]
+            auth_header = f"Bearer {self.token}"
+            headers = {
+                'Authorization': auth_header,
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Session-ID': session_id
+            }
+            self.data["player1_score"] = self.lpaddle.nb_goal
+            self.data["player2_score"] = self.rpaddle.nb_goal
+            response = requests.post(url=endpoint, headers=headers, data=self.data, verify=False)
+        self.goal_scored = True

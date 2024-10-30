@@ -29,7 +29,7 @@ export async  function postRequest(url, body) {
 
 export async function cancelTournamentMatch() {
 	console.log("cancelTournamentMatch--------------> ",game_data);
-    await postRequest("https://127.0.0.1:9008/api/tournament/cancel-match/", JSON.stringify(game_data))
+    // await postRequest("https://127.0.0.1:9008/api/tournament/cancel-match/", JSON.stringify(game_data))
 }
 
 // export async function sendScore(left_paddle_score = lpaddle.nb_goal, right_paddle_score = rpaddle.nb_goal) {

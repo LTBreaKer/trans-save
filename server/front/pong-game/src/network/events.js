@@ -183,7 +183,7 @@ export async function loadPongGame() {
 		if (n%4 == 0)
 			counter.textContent = "Loading.." + (n / 4).toString();
 		if (n >= 120) {
-			const res = await sendWinnerScore();
+			const res = await postRequest(url, winner_score);
 			(res.status === 404) ? await showWinner(true): await showWinner();
 			break;
 		}
