@@ -82,41 +82,6 @@ function isAuthenticated() {
 
   }
 
-  function change_access() {
-    const data = {
-      Refresh: get_localstorage('refresh')
-  };
-  
-    fetch(api + '/auth/verify-token/', {
-      method: 'POST',
-      headers: {
-          'Content-Type': 'application/json',
-          // 'X-CSRFToken': csrftoken,
-      },
-      credentials: 'include',
-      body: JSON.stringify(data)
-      })
-      .then(response => {
-          console.log(response);
-          return response.json();
-      })
-      .then(data => {
-          console.log(data);
-          console.log(data.message, "    <=  message");
-          // console.log("it is okay=>  ", response.ok);
-          if (data.message === 'Invalid token'){
-            const hd = get_localstorage("token");
-            console.log(hd);
-          }
-        
-      })
-      .catch(error => {
-          console.error('There was a problem with the fetch operation:', error);
-      });
-  
-  
-  }
-
 
 
 
@@ -170,5 +135,5 @@ function isAuthenticated() {
 
 
   
-  export { log_out_func, change_access, logoutf, isAuthenticated, login, get_localstorage, getCookie };
+  export { log_out_func, logoutf, isAuthenticated, login, get_localstorage, getCookie };
   
