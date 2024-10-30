@@ -113,7 +113,6 @@ export async function localGameSocket(group_name) {
                     loadPopupReply();
             }
         }
-        ws.onclose = (e) => { fnGameOver() }
         return (ws);
     } catch (error) {
         console.error('error: ', error)

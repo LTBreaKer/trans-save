@@ -19,7 +19,7 @@ async function TournamentScore() {
   //   await add_tournament_match_score(tournament_match_data)
   //   (tournament_match_data.matchNumber === 7) ?
   //    window.location.hash = "/ping" :
-  //    window.location.hash = "/tournament";
+  //    window.location.hash = "/tournament";ƒ
   // })
 
 // console.log("text that i need to use it's here => : ", tournament_match_data)

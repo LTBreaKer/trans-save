@@ -11,22 +11,14 @@ function isAuthenticated() {
 }
   
   function login(token, refresh, session_id) {
+    console.log("hello change token or refresh or session id", session_id)
     localStorage.setItem('token', token);
     localStorage.setItem('refresh', refresh);
     localStorage.setItem('session_id', session_id);
   }
   
   function logoutf() {
-    function clearOnlineStatuses() {
-      const allFriends = document.querySelectorAll('.friends');
-      allFriends.forEach(friend => {
-        const onlineDiv = friend.querySelector('.onlinen');
-        if (onlineDiv) {
-          onlineDiv.style.backgroundColor = 'gray';
-        }
-      });
-    }
-    
+    console.log("====== logout ----------------- ");
     if (friendsocket && friendsocket.readyState === WebSocket.OPEN)
       friendsocket.close();
     // friendsocket = null

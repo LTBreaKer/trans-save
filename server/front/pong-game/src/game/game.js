@@ -9,7 +9,7 @@ import { connectGame, localGameSocket, paddleSocket } from '../network/socket.js
 import { game_data, statePongGame } from '../../../components/ping/script.js';
 import { mousePosition, mousePositionHelper } from '../events/mouseEvent.js';
 import { resizeCanvas } from '../network/events.js';
-import { changeAccess } from '../../../components/profile/profile.js';
+// import { changeAccess } from '../../../components/profile/profile.js';
 
 export let startGame = false;
 export let game_connected = false;
@@ -145,17 +145,47 @@ export function animate() {
 	animationFrameId = requestAnimationFrame( animate );
 }
 
+ async function changeAccess() {
+	const data = {
+	  refresh: get_localstorage('refresh')
+	};
+  
+	try {
+	  const response = await fetch(api + 'auth/token/refresh/', {
+		method: 'POST',
+		headers: {
+		  'Content-Type': 'application/json',
+		},
+		credentials: 'include',
+		body: JSON.stringify(data)
+	  });
+	  if (response.status === 401) {
+		logoutf();  
+		window.location.hash = '/login';
+	  }
+	  if (!response.ok) {
+		throw new Error(`HTTP error! Status: ${response.status}`);
+	  }
+	  if (response.status === 200) {
+		const jsonData = await response.json();
+		login(jsonData.access, jsonData.refresh, get_localstorage('session_id'));
+	  }
+	} catch (error) {
+	  console.error('There was a problem with the fetch operation:', error);
+	}
+  }
+  
 
 async function sendToken() {
 	k = false;
-	await sleep(60 * 4);
-	await changeAccess();
+	(!end_game) && await changeAccess();
 	const ws = (statePongGame == "remote")? await paddle_socket :await local_game_socket;
 	if (ws && ws.readyState == 1)
 		await ws.send(JSON.stringify({
 			'type_msg': 'update_token',
 			'token': localStorage.getItem("token")
 		}))
+	await sleep(60 * 4);
 	k = true;
 }
 
