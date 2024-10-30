@@ -147,16 +147,16 @@ export function animate() {
 
 
 async function sendToken() {
-	k = false;
-	await sleep(60 * 4);
-	await changeAccess();
+	// k = false;
+	// await sleep(60 * 4);
+	// await changeAccess();
 	const ws = (statePongGame == "remote")? await paddle_socket :await local_game_socket;
 	if (ws && ws.readyState == 1)
 		await ws.send(JSON.stringify({
 			'type_msg': 'update_token',
 			'token': localStorage.getItem("token")
 		}))
-	k = true;
+	// k = true;
 }
 
 
@@ -185,8 +185,8 @@ async function updatePaddles(){
 			moveRemotePaddle();
 		}
 	}
-	if (k)
-		sendToken();
+	// if (k)
+	sendToken();
 }
 
 
