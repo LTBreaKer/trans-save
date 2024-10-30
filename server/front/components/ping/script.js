@@ -1,4 +1,4 @@
-import { loadHTML, loadCSS, remove_ping_remote_game, remove_game_pong_f_database } from '../../utils.js';
+import { loadHTML, loadCSS, player_webSocket, socket_friend_request, remove_ping_remote_game, remove_game_pong_f_database } from '../../utils.js';
 import { login ,log_out_func, logoutf, get_localstorage, getCookie, check_access_token } from '../../auth.js';
 var api = "https://127.0.0.1:9004/api/";
 var api_game = "https://127.0.0.1:9006/api/gamedb/";
@@ -108,6 +108,8 @@ async function Ping() {
   await remove_game_pong_f_database();
 
   await checkFirst();
+  if (!socket_friend_request)
+    player_webSocket();
 
   setNotification();
   const butt = document.querySelector('#butt');
