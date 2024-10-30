@@ -492,7 +492,7 @@ function start_game()
     socket.addEventListener("close", disconnect)
     window.addEventListener("beforeunload", handleRelodQuit)
 
-    async function handleRelodQuit(event)
+    function handleRelodQuit()
     {
         if (socket.readyState === WebSocket.OPEN)
         {
@@ -502,11 +502,7 @@ function start_game()
 
             localStorage.setItem("winner", winner)
             localStorage.setItem("game_id", tag_game_info.game_id)
-            // game_score(winner)
-            // await noAwaitScore(winner)
         }
-    
-        // event.preventDefault() // This triggers the alert
     }
 
     async function disconnect()
@@ -551,35 +547,6 @@ function start_game()
         window.removeEventListener("beforeunload", handleRelodQuit)
         clearInterval(blinK)
     }
-    async function noAwaitScore(winner)
-    {
-        await check_access_token()
-        const data = {
-            game_id: tag_game_info.game_id,
-            winner_name: winner
-        }
-        try{
-            const response = fetch(api + 'add-game-score/', {
-                method: 'POST',
-                headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + get_localstorage('token'),
-                'Session-ID': get_localstorage('session_id')
-                },
-                credentials: 'include',
-                body: JSON.stringify(data)
-            });
-            const jsonData = response.json()
-            if (!response.ok) {
-              console.error(`Status: ${response.status}, Message: ${jsonData.message || 'Unknown error'}`)
-            }
-        }
-        catch(error){
-            console.error('Request failed', error)
-        }
-    }
-       
-
 }
 
 export {start_game}

@@ -19,7 +19,8 @@ async function Home() {
   
   setHeaderContent();
   setNaveBarContent();
-  if (!friendsocket)
+  console.log("online status --------------- > ", friendsocket)
+  if (!friendsocket || friendsocket.readyState === WebSocket.CLOSED)
     check_friends_status();
   await checkFirst();
   if (!socket_friend_request)
@@ -31,28 +32,6 @@ async function Home() {
 
 // =========================== here i will work with media ===========================
 
-// i will work with #butt
-
-  // const butt = document.querySelector('#butt');
-  // const side = document.querySelector('.sidebar');
-
-  // butt.addEventListener('click', function() {
-    
-  //   side.classList.toggle('active');
-  // });
-
-  // document.addEventListener('click', (event) => {
-  //   if (!side.contains(event.target) && !butt.contains(event.target)) {
-  //     side.classList.remove('active');
-  //   }
-  // });
-
-  // const notific = document.querySelector('.notification');
-  // const notifi_display = document.querySelector('.notifi_btn');
-
-  // notific.addEventListener('click', function() {
-  //   notifi_display.classList.toggle('active');
-  // })
 
 // ===== ===== ===== ====== ===== ====== ======
 
@@ -95,6 +74,10 @@ async function changeAccess() {
       body: JSON.stringify(data)
     });
     const jsonData = await response.json();
+    if (response.status === 401) {
+      logoutf();  
+      window.location.hash = '/login';
+    }
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
@@ -107,6 +90,7 @@ async function changeAccess() {
 
 async function checkFirst() {
   const token = get_localstorage('token');
+  console.log("token from check token : ", token);
   try {
     const response = await fetch(api + 'auth/verify-token/', {
       method: 'POST',

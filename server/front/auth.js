@@ -11,14 +11,17 @@ function isAuthenticated() {
 }
   
   function login(token, refresh, session_id) {
+    console.log("hello change token or refresh or session id", session_id)
     localStorage.setItem('token', token);
     localStorage.setItem('refresh', refresh);
     localStorage.setItem('session_id', session_id);
   }
   
   function logoutf() {
-    if (friendsocket)
+    console.log("====== logout ----------------- ");
+    if (friendsocket && friendsocket.readyState === WebSocket.OPEN)
       friendsocket.close();
+    // friendsocket = null
     localStorage.removeItem('token'); 
     localStorage.removeItem('refresh'); 
     localStorage.removeItem('session_id');
@@ -54,6 +57,7 @@ function isAuthenticated() {
 
 
   export async function check_access_token() {
+    const token = get_localstorage('token');
     try {
       const response = await fetch(api + 'auth/verify-token/', {
         method: 'POST',

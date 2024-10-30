@@ -6,7 +6,7 @@ import {get_localstorage, check_access_token} from '../../auth.js'
 var api = "https://127.0.0.1:9004/api/";
 var api_tag = "https://127.0.0.1:9007/api/tag-gamedb/"
 
-async function fetchUserName() {
+export async function fetchUserName() {
     await check_access_token()
       try {
         const userResponse = await fetch(api + 'auth/get-user/', {
