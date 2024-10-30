@@ -28,8 +28,12 @@ export function initGameVariable() {
 }
 
 export function launchGame() {
-	startGame = true;
-	game_connected = true;
+	if (game_connected)
+		(startGame = true);
+}
+
+export function setGameConnected() {
+	game_connected = true
 }
 
 export function stopGame() {
