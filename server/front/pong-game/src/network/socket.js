@@ -5,7 +5,7 @@ import { TABLE_DEPTH, TABLE_WIDTH, PADDLE_LONG, height, width, first_player_goal
 import  {statePongGame } from '../../../../components/ping/script.js'
 import {  descounter,  loadPopupGameOver, loadPopupReply, removeEventsListener, replayLocalGame } from './events.js';
 import { assingGameApiToNULL, game_data, initPlayRemoteGame, sendPlayerPaddleCreated } from '../../../components/ping/script.js';
-import { animationFrameId,  endGameConnection, game_connected, launchGame, playRemotePongGame, sendSocket, setGameConnected, stopGame } from '../game/game.js';
+import { animationFrameId,  endGameConnection, game_connected, launshGame, playRemotePongGame, sendSocket, setGameConnected, startGame, stopGame } from '../game/game.js';
 import { moveCamera } from '../components/camera.js';
 import { renderer } from '../components/renderer.js';
 import { scene } from '../components/scene.js';
@@ -27,7 +27,7 @@ async function draw_info(data) {
     if (!game_data)
         return;
     // console.log("game_data: ", game_data);
-    launchGame();
+    if (!startGame) (setGameConnected(), launshGame());
     const data_ball = JSON.parse(data.ball);
     const data_right_paddle = JSON.parse(data.right_paddle);
     const data_left_paddle = JSON.parse(data.left_paddle);
@@ -190,5 +190,5 @@ async function descounterRemoteGame() {
     await sleep(3);
     await playRemotePongGame();
     console.log("-----descounterRemoteGame: ", game_connected);
-    launchGame();
+    launshGame();
 }

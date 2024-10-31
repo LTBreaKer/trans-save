@@ -27,7 +27,7 @@ export function initGameVariable() {
 	end_game = false;
 }
 
-export function launchGame() {
+export function launshGame() {
 	if (game_connected)
 		(startGame = true);
 }
@@ -92,7 +92,7 @@ export async function sendSocket(){
 		await ws.send(JSON.stringify({'type_msg': 'play'}));
 		back_counter.style.display = "none";
 		(!game_connected) && await connectGame();
-		launchGame();
+		launshGame();
 	}
 }
 
