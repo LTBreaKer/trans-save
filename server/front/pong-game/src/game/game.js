@@ -2,11 +2,11 @@ import * as THREE from 'three';
 import WebGL from 'three/addons/capabilities/WebGL.js';
 import { lpaddle, paddle, rpaddle } from './paddle.js'
 import { camera } from '../components/camera.js'
-import { first_player_goal, second_player_goal, box_result, canvas, back_counter, sleep } from '../utils/globaleVariable.js'
+import { back_counter, sleep } from '../utils/globaleVariable.js'
 import { scene } from '../components/scene.js'
 import { renderer } from '../components/renderer.js'
 import { connectGame, localGameSocket, paddleSocket } from '../network/socket.js';
-import { game_data, statePongGame } from '../../../components/ping/script.js';
+import { statePongGame } from '../../../components/ping/script.js';
 import { mousePosition, mousePositionHelper } from '../events/mouseEvent.js';
 import { resizeCanvas } from '../network/events.js';
 // import { changeAccess } from '../../../components/profile/profile.js';
@@ -149,7 +149,8 @@ async function sendToken() {
 	// k = false;
 	// await sleep(60 * 4);
 	// await changeAccess();
-	const ws = (statePongGame == "remote")? await paddle_socket :await local_game_socket;
+	await check_access_token();
+	const ws = (statePongGame == "remote") ? await paddle_socket : await local_game_socket;
 	if (ws && ws.readyState == 1)
 		await ws.send(JSON.stringify({
 			'type_msg': 'update_token',
@@ -157,7 +158,6 @@ async function sendToken() {
 		}))
 	// k = true;
 }
-
 
 async function updatePaddles(){
 	if (statePongGame == "local" || statePongGame == "tournament") {

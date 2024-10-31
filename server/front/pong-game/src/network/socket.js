@@ -77,7 +77,7 @@ export async function fnGameOver(state = "rtn_menu") {
 }
 
 function userConnectionInfo() {
-    let data = game_data;
+    let data = {...game_data};
     data.type_msg = 'add_user_data';
     data.statePongGame = statePongGame;
     // data.group_name = data_remote_player.game_id;

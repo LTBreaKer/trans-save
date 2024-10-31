@@ -49,8 +49,6 @@ export async function loadDocument() {
 	double_point = document.querySelector(".double_point");
 	first_player_name = document.querySelector("#first_player_name");
 	second_player_name = document.querySelector("#second_player_name");
-	// replay = document.querySelector('#replay');
-	// pong_menu = document.querySelector('#pong_menu');
 	box_result = document.querySelector(".p_box_result");
 	canvas = document.querySelector('#c');
 	back_counter = document.querySelector('#back_counter');
@@ -58,25 +56,12 @@ export async function loadDocument() {
 	popup_replay = document.querySelector('.p_popup_replay');
 }
 loadDocument();
-// export const connect_ai = document.querySelector('#connect_ai');
-export const loader = new THREE.TextureLoader();
 
-// export const reversePaddleDirection = () => {
-// 	paddle_way *= -1;
-// }
 export const leftPaddle = () => {
 	paddle_way = 1;
 }
 export const rightPaddle = () => {
 	paddle_way = -1;
 }
-
-// document.addEventListener("mouseup", (e) => {
-// 	click = false;
-// })
-
-// document.addEventListener("mousedown", (e) => {
-// 	click = true
-// })
 
 export let sleep = (s) => new Promise(r => setTimeout(r, s*1000));
