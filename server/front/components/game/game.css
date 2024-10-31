@@ -9,8 +9,8 @@
 html, body {
     height: 100%;
     margin: 0;
+    background: #1e1e2f !important;
 }
-
 
 .vv {
     height: 100vh; /* Set to 100% of the viewport height */

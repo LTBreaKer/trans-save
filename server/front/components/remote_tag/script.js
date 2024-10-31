@@ -3,6 +3,7 @@ import { loadHTML, loadCSS } from '../../utils.js';
 import {tag_game_info} from '../ta/script.js';
 import {start_game} from './tag.js'
 let socket
+let api = "https://127.0.0.1:9007/api/tag-gamedb/"
 
 async function connect_game()
 {
