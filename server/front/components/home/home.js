@@ -26,7 +26,12 @@ async function Home() {
     player_webSocket();
   else
     displayNotifications(accumulatedNotifications);
+<<<<<<< HEAD
   
+=======
+  // await get_friends();
+
+>>>>>>> ca305f0504f7523674b9778730bdf16a3039fa73
   const logout = document.getElementById('logout')
   logout.addEventListener('click', log_out_func);
 
@@ -46,6 +51,51 @@ pingimage.addEventListener('click', ()=> {
 })
 
 }
+<<<<<<< HEAD
+=======
+
+
+// async function local_game_func() {
+//   const player_name = document.getElementById('input');
+//   const name = player_name.value;
+//   const data = {
+//     player2_name: name
+//   };
+//   window.location.hash = '/game';
+// }
+
+
+
+// async function changeAccess() {
+//   const data = {
+//     refresh: get_localstorage('refresh')
+//   };
+
+//   try {
+//     const response = await fetch(api + 'auth/token/refresh/', {
+//       method: 'POST',
+//       headers: {
+//         'Content-Type': 'application/json',
+//       },
+//       credentials: 'include',
+//       body: JSON.stringify(data)
+//     });
+//     const jsonData = await response.json();
+//     if (response.status === 401) {
+//       logoutf();  
+//       window.location.hash = '/login';
+//     }
+//     if (!response.ok) {
+//       throw new Error(`HTTP error! Status: ${response.status}`);
+//     }
+//     login(jsonData.access, jsonData.refresh, get_localstorage('session_id'));
+    
+//   } catch (error) {
+//     console.error('There was a problem with the fetch operation:', error);
+//   }
+// }
+
+>>>>>>> ca305f0504f7523674b9778730bdf16a3039fa73
 export async function checkFirst() {
   console.log("fetch data from here home");
   const token = get_localstorage('token');

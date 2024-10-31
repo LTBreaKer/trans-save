@@ -24,6 +24,12 @@ async function TournamentScore() {
     player_webSocket();
   else
     displayNotifications(accumulatedNotifications);
+<<<<<<< HEAD
+=======
+  // updateContent();
+
+  // set_players_sh();
+>>>>>>> ca305f0504f7523674b9778730bdf16a3039fa73
 
 console.log("hello we are from morroc ;;o ", id_of_tournament);
   const logout = document.getElementById('logout')
@@ -311,6 +317,103 @@ document.addEventListener('click', (event) => {
   }
 });
 
+<<<<<<< HEAD
 }  
+=======
+}
+
+// async function changeAccess() {
+//     const data = {
+//       refresh: get_localstorage('refresh')
+//     };
+  
+//     try {
+//       const response = await fetch(api + 'auth/token/refresh/', {
+//         method: 'POST',
+//         headers: {
+//           'Content-Type': 'application/x-www-form-urlencoded',
+//         },
+//         credentials: 'include',
+//         body: JSON.stringify(data)
+//       });
+//       if (response.status === 401) {
+//         logoutf();  
+//         window.location.hash = '/login';
+//       }
+
+//       const jsonData = await response.json();
+//       if (!response.ok) {
+//         throw new Error(`HTTP error! Status: ${response.status}`);
+//       }
+//       login(jsonData.access, jsonData.refresh, get_localstorage('session_id'));
+      
+//     } catch (error) {
+//       console.error('There was a problem with the fetch operation:', error);
+//     }
+//   }
+  
+  // async function checkFirst() {
+  //   const token = get_localstorage('token');
+  //   try {
+  //     const response = await fetch(api + 'auth/verify-token/', {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //       credentials: 'include',
+  //       body: JSON.stringify({ token }) 
+  //     });
+  //     console.log(response);
+  //     if (response.status === 404){
+  //       logoutf();
+  //       window.location.hash = '/login';
+  //     }  
+  //     if (response.status !== 200) {
+  //       await changeAccess();
+  //       await fetchUserHomeData();
+  //     } else if (!response.ok) {
+  //       throw new Error(`HTTP error! Status: ${response.status}`);
+  //     } else {
+  //       const jsonData = await response.json();
+  //       await fetchUserHomeData();
+  //     }
+  //   } catch (error) {
+  //     console.error('There was a problem with the fetch operation:', error);
+  //   }
+  // }
+  
+  // async function fetchUserHomeData() {
+  //   try {
+  //     const userResponse = await fetch(api + 'auth/get-user/', {
+  //       method: 'GET',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //         'Authorization': 'Bearer ' + get_localstorage('token'),
+  //         'Session-ID': get_localstorage('session_id')
+  //       },
+  //       credentials: 'include',
+  //     });
+      
+  //     if (userResponse.status === 404) {
+  //       logoutf();
+  //       window.location.hash = '/login';
+  //     }
+
+  //     if (!userResponse.ok) {
+  //       throw new Error('Network response was not ok');
+  //     }
+  //     const userData = await userResponse.json();
+      
+  //     const change_user = document.getElementById('UserName');
+  //     const change_imge = document.getElementById('image_user');
+      
+  //     change_user.innerHTML = userData.user_data.username;
+  //     change_imge.src = userData.user_data.avatar;
+  //   } catch(error)  {
+  //     console.error('There was a problem with the fetch operation:', error);
+  //   }
+  // }
+  
+>>>>>>> ca305f0504f7523674b9778730bdf16a3039fa73
 
 export default TournamentScore;
