@@ -161,4 +161,6 @@ class LocalGameConsumer(AsyncWebsocketConsumer):
             self.data["player1_score"] = self.lpaddle.nb_goal
             self.data["player2_score"] = self.rpaddle.nb_goal
             response = requests.post(url=endpoint, headers=headers, data=self.data, verify=False)
+            print("----------------------------------response", response.text, file=sys.stderr)
         self.goal_scored = True
+

@@ -5,7 +5,7 @@ import { TABLE_DEPTH, TABLE_WIDTH, PADDLE_LONG, height, width, first_player_goal
 import  {statePongGame } from '../../../../components/ping/script.js'
 import {  descounter,  loadPopupGameOver, loadPopupReply, removeEventsListener, replayLocalGame } from './events.js';
 import { assingGameApiToNULL, game_data, initPlayRemoteGame, sendPlayerPaddleCreated } from '../../../components/ping/script.js';
-import { animationFrameId,  endGameConnection, game_connected, launshGame, playRemotePongGame, sendSocket, setGameConnected, startGame, stopGame } from '../game/game.js';
+import { animationFrameId,  closeGameSocket,  endGameConnection, game_connected, launshGame, playRemotePongGame, sendSocket, setGameConnected, startGame, stopGame } from '../game/game.js';
 import { moveCamera } from '../components/camera.js';
 import { renderer } from '../components/renderer.js';
 import { scene } from '../components/scene.js';
@@ -65,6 +65,7 @@ export async function showWinner(disconnected = false) {
 }
 
 export async function fnGameOver(state = "rtn_menu") {
+    await closeGameSocket();
     removeEventsListener();
     cancelAnimationFrame(animationFrameId);
     (renderer) && renderer.dispose();

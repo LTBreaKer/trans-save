@@ -75,7 +75,7 @@ export async function closeGameSocket() {
 		await paddle_socket :
 		await local_game_socket;
 	if (ws && ws.readyState == 1)
-		await ws.send(JSON.stringify({"type_msg": "close"}));
+		await ws.close();
 }
 
 export async function checkSocketConnection() {
