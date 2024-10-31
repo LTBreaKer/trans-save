@@ -9,7 +9,7 @@ import { connectGame, localGameSocket, paddleSocket } from '../network/socket.js
 import { statePongGame } from '../../../components/ping/script.js';
 import { mousePosition, mousePositionHelper } from '../events/mouseEvent.js';
 import { resizeCanvas } from '../network/events.js';
-// import { changeAccess } from '../../../components/profile/profile.js';
+import { changeAccess } from '../../../components/profile/profile.js';
 
 export let startGame = false;
 export let game_connected = false;
@@ -145,19 +145,22 @@ export function animate() {
 	animationFrameId = requestAnimationFrame( animate );
 }
 
+async function updateToken() {
+	k = false;
+	(!end_game) && await changeAccess();
+	await sleep(60 * 4);
+	k = true;
+}
+
 async function sendToken() {
-	// k = false;
-	// await sleep(60 * 4);
-	// await changeAccess();
-	await check_access_token();
-	const ws = (statePongGame == "remote") ? await paddle_socket : await local_game_socket;
+	const ws = (statePongGame == "remote")? await paddle_socket :await local_game_socket;
 	if (ws && ws.readyState == 1)
 		await ws.send(JSON.stringify({
 			'type_msg': 'update_token',
 			'token': localStorage.getItem("token")
 		}))
-	// k = true;
 }
+
 
 async function updatePaddles(){
 	if (statePongGame == "local" || statePongGame == "tournament") {
@@ -177,15 +180,16 @@ async function updatePaddles(){
 		}
 	}
 	else if (statePongGame == "remote") {
-		// mousePositionHelper.position(mousePosition, scene, camera);
+		mousePositionHelper.position(mousePosition, scene, camera);
 		paddle.update()
 		if (paddle.y != paddle.lastY) {
 			paddle.lastY = paddle.y;
 			moveRemotePaddle();
 		}
 	}
-	// if (k)
 	sendToken();
+	if (k)
+		updateToken();
 }
 
 

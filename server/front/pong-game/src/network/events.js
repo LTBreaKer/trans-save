@@ -108,10 +108,10 @@ export function setupEventListeners() {
 		window.addEventListener("hashchange", handleHashChange);
 	else
 		window.addEventListener("hashchange", handleTournamentHashChange);
-	// if (statePongGame == "remote") {
-	// 	setMousePositionHelper();
-	// 	window.addEventListener('mousemove', setMousePosition);
-	// }
+	if (statePongGame == "remote") {
+		setMousePositionHelper();
+		window.addEventListener('mousemove', setMousePosition);
+	}
 	console.log("-- setupEventListeners ==>", statePongGame);
 }
 
