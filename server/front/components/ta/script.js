@@ -1,7 +1,9 @@
-import { loadHTML, loadCSS,  player_webSocket ,remove_tag_remote_game, remove_game_tag_f_database, socket_friend_request} from '../../utils.js';
+import { loadHTML, loadCSS,  player_webSocket ,remove_tag_remote_game, remove_game_tag_f_database, socket_friend_request, accumulatedNotifications, displayNotifications} from '../../utils.js';
 import { login ,log_out_func, logoutf, get_localstorage, getCookie, check_access_token } from '../../auth.js';
 import {setHeaderContent, setNaveBarContent} from '../tournament/script.js';
 import { fetchUserName } from '../remote_tag/tag.js';
+// import {changeAccess} from '../profile/profile.js';
+import {checkFirst} from '../home/home.js';
 
 // https://{{ip}}:9007:ws/tag-game-db/
 var api = "https://127.0.0.1:9004/api/";
@@ -13,10 +15,6 @@ async function Ta() {
   window.onload = async function() {
 
     await remove_tag_remote_game();
-    // document.querySelector('#cancel_game').style.display = 'none';
-    // document.querySelector('#butt_game').style.display = 'flex';
-    // document.querySelector('.spinner').style.display = 'none';
-
   };
 
   const html = await loadHTML('./components/ta/index.html');
@@ -31,8 +29,12 @@ async function Ta() {
   document.getElementById("description").textContent = `${user_name.toUpperCase()} moves using the keys W, A and D, while the opponent uses the arrow keys (Up, Right, Left).`
 
   await checkFirst();
+
   if (!socket_friend_request)
     player_webSocket();
+  else
+  displayNotifications(accumulatedNotifications);
+
   if (localStorage.getItem("winner") && localStorage.getItem("game_id") )
     await add_game_score();
   const remote_butt_game = document.getElementById('butt_game');
@@ -67,7 +69,6 @@ cancel_game_func.addEventListener('click', await remove_tag_remote_game);
         document.querySelector('#butt_game').style.display = 'none';
         document.querySelector('.spinner').style.display = 'flex';
       }
-
       else if (jsonData.message) {
         const game_tag_err = document.getElementById('game_tag_err');
         game_tag_err.innerHTML = `<i class="bi bi-check2-circle"></i> ${jsonData.message}`;
@@ -88,40 +89,21 @@ cancel_game_func.addEventListener('click', await remove_tag_remote_game);
     }
   })
 
-
-
-
   local_butt_game.addEventListener('click', localgame_tag);
   tag_socket();
-  
-  // window.addEventListener('beforeunload', function (event) {
-  //   cancel_game_func.click();
-  //   console.log("==========================================")
-  //   console.log("==========================================")
-  //   console.log("==========================================")
-  //   console.log("==========================================")
-  // });
-
-
-
 }
-function setTagGameInfo(value)
-{
+
+function setTagGameInfo(value) {
   tag_game_info = value
 }
-// data dyal game tag kayan fhad object just import it 
+
 export  {tag_game_info, setTagGameInfo};
 
-
-
 function tag_socket() {
-
 try {
-  const subprotocols = ['token', get_localstorage('token')];
   const ws = new WebSocket("wss://127.0.0.1:9007/ws/tag-game-db/",  ["token", get_localstorage('token'), "session_id", get_localstorage('session_id')]);
   ws.onmessage = async function(event) {
     const data = await JSON.parse(event.data);
-    console.log(' ------------------- Message from server socket tag: ---------------- ', data);
     console.log("type ===> ", data.data.type)
     if (data.data.type === "remote_game_created")
       {
@@ -132,23 +114,17 @@ try {
           player1_id: data.data.game.player1_id,
           player2_id: data.data.game.player2_id
         }
-        console.log("hello -----------");
         window.location.hash = "/remoteTag";
       }
-
   };
   ws.onerror = function(error) {
     console.log("socket error: ", error);
     setTimeout(tag_socket, 5000)
   }
-
 } catch (e) {
   console.error('Failed to parse message:', e);
 }
-
 }
-
-
 
 async function localgame_tag() {
   const input = document.getElementById('input_tag');
@@ -170,10 +146,7 @@ async function localgame_tag() {
       },
       credentials: 'include',
       body: JSON.stringify(data)
-
     });
-
-
     
     console.log(response);
     const jsonData = await response.json();
@@ -211,107 +184,14 @@ async function localgame_tag() {
     }
     if (response.status === 201)
       window.location.hash = '/game'
-    // console.log(jsonData.message)
     
     if (!response.ok) {
-      // console.log(jsonData.message)
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
   } catch (error) {
     console.error('There was a problem with the fetch operation:', error);
   }
 }
-
-async function changeAccess() {
-    const data = {
-      refresh: get_localstorage('refresh')
-    };
-  
-    try {
-      const response = await fetch(api + 'auth/token/refresh/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-        body: JSON.stringify(data)
-      });
-      if (response.status === 401) {
-        logoutf();  
-        window.location.hash = '/login';
-      } 
-      const jsonData = await response.json();
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-      login(jsonData.access, jsonData.refresh, get_localstorage('session_id'));
-      
-    } catch (error) {
-      console.error('There was a problem with the fetch operation:', error);
-    }
-  }
-  
-  async function checkFirst() {
-    const token = get_localstorage('token');
-    try {
-      const response = await fetch(api + 'auth/verify-token/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-        body: JSON.stringify({ token }) 
-      });
-      console.log(response);
-      if (response.status === 404){
-        logoutf();
-        window.location.hash = '/login';
-      }  
-      if (response.status !== 200) {
-        await changeAccess();
-        await fetchUserHomeData();
-      } else if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      } else {
-        const jsonData = await response.json();
-        await fetchUserHomeData();
-      }
-    } catch (error) {
-      console.error('There was a problem with the fetch operation:', error);
-    }
-  }
-  
-  async function fetchUserHomeData() {
-    try {
-      const userResponse = await fetch(api + 'auth/get-user/', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + get_localstorage('token'),
-          'Session-ID': get_localstorage('session_id')
-        },
-        credentials: 'include',
-      });
-      
-      if (userResponse.status === 404) {
-        logoutf();
-        window.location.hash = '/login';
-      }
-
-      if (!userResponse.ok) {
-        throw new Error('Network response was not ok');
-      }
-      const userData = await userResponse.json();
-      
-      const change_user = document.getElementById('UserName');
-      const change_imge = document.getElementById('image_user');
-      
-      change_user.innerHTML = userData.user_data.username;
-      change_imge.src = userData.user_data.avatar;
-    } catch(error)  {
-      console.error('There was a problem with the fetch operation:', error);
-    }
-  }
 
   async function add_game_score()
   {

@@ -1,8 +1,8 @@
 
-import { loadHTML, loadCSS, player_webSocket, socket_friend_request } from '../../utils.js';
+import { loadHTML, loadCSS, player_webSocket, socket_friend_request, accumulatedNotifications, displayNotifications } from '../../utils.js';
 import { login ,log_out_func, logoutf, get_localstorage } from '../../auth.js';
 import {tag_game_info} from '../ta/script.js'
-import {check_friends_status, friendsocket} from '../profile/profile.js'
+import {check_friends_status, changeAccess , friendsocket} from '../profile/profile.js'
 import {setHeaderContent, setNaveBarContent} from '../tournament/script.js';
 
 
@@ -19,14 +19,14 @@ async function Home() {
   
   setHeaderContent();
   setNaveBarContent();
-  console.log("online status --------------- > ", friendsocket)
   if (!friendsocket || friendsocket.readyState === WebSocket.CLOSED)
     await check_friends_status();
   await checkFirst();
   if (!socket_friend_request)
     player_webSocket();
-  // await get_friends();
-
+  else
+    displayNotifications(accumulatedNotifications);
+  
   const logout = document.getElementById('logout')
   logout.addEventListener('click', log_out_func);
 
@@ -46,49 +46,8 @@ pingimage.addEventListener('click', ()=> {
 })
 
 }
-
-
-// async function local_game_func() {
-//   const player_name = document.getElementById('input');
-//   const name = player_name.value;
-//   const data = {
-//     player2_name: name
-//   };
-//   window.location.hash = '/game';
-// }
-
-
-
-async function changeAccess() {
-  const data = {
-    refresh: get_localstorage('refresh')
-  };
-
-  try {
-    const response = await fetch(api + 'auth/token/refresh/', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
-      body: JSON.stringify(data)
-    });
-    const jsonData = await response.json();
-    if (response.status === 401) {
-      logoutf();  
-      window.location.hash = '/login';
-    }
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
-    }
-    login(jsonData.access, jsonData.refresh, get_localstorage('session_id'));
-    
-  } catch (error) {
-    console.error('There was a problem with the fetch operation:', error);
-  }
-}
-
-async function checkFirst() {
+export async function checkFirst() {
+  console.log("fetch data from here home");
   const token = get_localstorage('token');
   console.log("token from check token : ", token);
   try {
@@ -101,7 +60,6 @@ async function checkFirst() {
       body: JSON.stringify({ token }) 
     });
     const jsonData = await response.json();
-    await fetchUserHomeData();
 
     console.log("===== verify user -->    ", jsonData);
     console.log("=====code status-->    ",response.status);
