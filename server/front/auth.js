@@ -58,6 +58,7 @@ function isAuthenticated() {
 
   export async function check_access_token() {
     const token = get_localstorage('token');
+    console.log("-----*****-------->    ", token)
     try {
       const response = await fetch(api + 'auth/verify-token/', {
         method: 'POST',
@@ -67,6 +68,7 @@ function isAuthenticated() {
         credentials: 'include',
         body: JSON.stringify({ token }) 
       });
+      console.log(await response.json())
       if (response.status === 404){
         logoutf();
         window.location.hash = '/login';

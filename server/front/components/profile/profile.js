@@ -593,6 +593,8 @@ export async function send_freinds_request(userna) {
 
 }
 
+let sleep = (s) => new Promise(r => setTimeout(r, s*1000));
+
 export async function changeAccess() {
   const data = {
     refresh: get_localstorage('refresh')
@@ -607,15 +609,31 @@ export async function changeAccess() {
       credentials: 'include',
       body: JSON.stringify(data)
     });
-    if (response.status === 401) {
-      logoutf();  
-      window.location.hash = '/login';
+    const jsonData = await response.json()
+    console.log("here are exit status=> :", response.status);
+    console.log("here are exit status= ------------ > :", typeof response.status);
+    console.log("===========> : ", jsonData)
+    if (response.status !== 200) {
+      if (jsonData.detail && jsonData.detail === "the token just changed"){
+        // await sleep(1);
+        await check_access_token()
+        return;
+      }
+      else {
+        logoutf();  
+        window.location.hash = '/login';
+      }
+      console.log("dkjfkdjkjkddfdfdfd ========= ========= =============");
     }
+    // if (response.status === 401) {
+    //   logoutf();  
+    //   window.location.hash = '/login';
+    // }
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
     if (response.status === 200) {
-      const jsonData = await response.json();
+      console.log("changed ==========================   ")
       login(jsonData.access, jsonData.refresh, get_localstorage('session_id'));
     }
   } catch (error) {
