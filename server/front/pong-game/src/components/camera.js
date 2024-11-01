@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { TABLE_DEPTH, TABLE_WIDTH, canvas, paddle_way } from '../utils/globaleVariable.js';
+import { TABLE_DEPTH, paddle_way } from '../utils/globaleVariable.js';
 
 // const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
 let camera = new THREE.PerspectiveCamera( 75, 1, 0.1, 1000 );

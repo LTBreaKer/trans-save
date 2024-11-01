@@ -18,8 +18,6 @@ export function disposeMesh(mesh) {
             mesh.material.dispose();
             }
     }
-    if (mesh.texture)
-        mesh.texture.dispose();
     scene.remove(mesh);
 }
   

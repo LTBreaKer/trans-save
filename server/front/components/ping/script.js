@@ -1,9 +1,11 @@
-import { loadHTML, loadCSS, remove_ping_remote_game, remove_game_pong_f_database } from '../../utils.js';
+import { loadHTML, loadCSS, player_webSocket, socket_friend_request, remove_ping_remote_game, remove_game_pong_f_database } from '../../utils.js';
 import { login ,log_out_func, logoutf, get_localstorage, getCookie, check_access_token } from '../../auth.js';
 var api = "https://127.0.0.1:9004/api/";
 var api_game = "https://127.0.0.1:9006/api/gamedb/";
 let game_socket = "wss://127.0.0.1:9006/ws/game-db/";
 let tournament = "https://127.0.0.1:9008/api/tournament/"
+const url = "https://127.0.0.1:9006/api/gamedb/add-game-score/";
+
 let name = "";
 let html = "";
 export let game_data;
@@ -95,12 +97,19 @@ async function Ping() {
   
   const app = document.getElementById('app');
   app.innerHTML = html;
+
+
+  if (localStorage.getItem("dataPongMatch"))
+    await pong_game_score();
+
   window.onload = async function() {
     await remove_ping_remote_game();
   };
   await remove_game_pong_f_database();
 
   await checkFirst();
+  if (!socket_friend_request)
+    player_webSocket();
 
   setNotification();
   const butt = document.querySelector('#butt');
@@ -497,4 +506,32 @@ function setNotification() {
 
 }
 
+async function pong_game_score()
+{
+    await check_access_token()
+    try{
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + get_localstorage('token'),
+            'Session-ID': get_localstorage('session_id')
+            },
+            credentials: 'include',
+            body: localStorage.getItem("dataPongMatch")
+        });
+        const jsonData = await response.json()
+        if (jsonData.message === 'game score added') {
+          localStorage.removeItem("dataPongMatch")
+        }
+        if (!response.ok) {
+          console.error(`Status: ${response.status}, Message: ${jsonData.message || 'Unknown error'}`)
+        }
+    }
+    catch(error){
+        console.error('Request failed', error)
+    }
+}
+
 export default Ping;
+export {pong_game_score}

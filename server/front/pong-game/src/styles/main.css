@@ -42,7 +42,8 @@
 	padding-top: 60px;
 	padding-left: 50px;
 	font-size: min(30px, 6.5vw);
-    padding-right: 10px;
+	font-size: 	min(calc(100vw / 33), calc(100vh / 33));
+    /* padding-right: 10px; */
 	display: flex;
     flex-direction: row;
 	justify-content: space-between;
@@ -53,7 +54,9 @@
 	color: #11698C;
 	display: flex;
 	padding-top: 51.06px;
-	font-size: min(30px, 6.5vw);
+	font-size: 	calc(100vw / 33);
+	font-size: min(calc(100vw / 33), calc(100vh / 33));
+	padding-inline: min(calc(200vw / 330), calc(200vh / 330));
 }
 
 .p_second {
@@ -66,8 +69,9 @@
 	text-shadow: 1px 1px rgb(255, 255, 255, 0.8);
 	padding-top: 60px;
 	padding-right: 50px;
-	font-size: min(30px, 6.5vw);
-    padding-left: 10px;
+	font-size: 	calc(100vw / 33);
+	font-size: min(calc(100vw / 33), calc(100vh / 33));
+    /* padding-left: 10px; */
 	display: flex;
     flex-direction: row;
 	justify-content: space-between;

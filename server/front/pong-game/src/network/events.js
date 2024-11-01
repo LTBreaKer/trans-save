@@ -1,30 +1,18 @@
 
-import {canvas, click, TABLE_WIDTH, paddleHeight, height, box_result, first_player_goal, second_player_goal, counter, replay, popup_replay, pong_menu, loadDocument, sleep, back_counter, leftPaddle, paddle_way, first_player_name, second_player_name, p_second, p_first, loadReplayDocument, loadQuitDocument, double_point} from '../utils/globaleVariable.js';
-// import { setPointerMouse, rotateTable, zoomCamera } from '../game/staduim.js'
-import { closeGameSocket, connectAI, connectLocalGameSocket, connectPaddleSocket, end_game, initGameVariable, startGame } from '../game/game.js';
-import {sendSocket} from '../game/game.js'
+import {canvas, box_result, counter, replay, pong_menu, loadDocument, sleep, back_counter, leftPaddle, first_player_name, second_player_name, p_second, p_first, loadReplayDocument, loadQuitDocument, double_point} from '../utils/globaleVariable.js';
+import { connectLocalGameSocket, connectPaddleSocket, end_game, initGameVariable, startGame, sendSocket } from '../game/game.js';
 import { moveCamera } from '../components/camera.js';
-
-////////       ------ LOCAL -----        //////////
 import { initPaddleInstance } from '../game/paddle.js';
 import { keyDownHandler, keyUpHandler } from '../events/keyboardEvent.js';
 import { aiGame, game_data, localgame, statePongGame } from '../../../components/ping/script.js';
 import { initPlayGame } from '../../../components/pingpong/ping.js';
-
-////////       ------ REMOTE ----------        //////////
-import {  } from '../game/paddle.js';
 import { lancePongGame } from '../main3d.js';
 import { setMousePosition, setMousePositionHelper } from '../events/mouseEvent.js';
 import { initGameComponents } from '../components/renderer.js';
-import { fnGameOver, sendLoserScore, sendReloadScore, sendScore, sendWinnerScore, showWinner } from './socket.js';
+import { fnGameOver, showWinner } from './socket.js';
 import { loadHTML } from '../../../utils.js';
-import { get_localstorage } from '../../../auth.js';
-import { cancelTournamentMatch } from '../utils/request.js';
-const url = "https://127.0.0.1:9008/api/tournament/cancel-match/";
 let html_popup_replay;
 let html_popup_game_over;
-let html_pong_loader;
-console.log("0 statePongGame: ", statePongGame);
 
 export function resizeCanvas(){
 	let minHW = Math.min(window.innerWidth*0.99, window.innerHeight*0.99);
@@ -45,7 +33,6 @@ export function resizeCanvas(){
 	double_point.style.paddingTop = padding_top + "px";
 	p_first.style.paddingLeft = padding_left + "px";
 	p_second.style.paddingRight = padding_left + "px";
-	console.log("--------- resize Canvas: ", canvas.style.height, " ", canvas.style.width);
 	moveCamera(statePongGame);
 }
 
@@ -64,21 +51,6 @@ export async function loadPopupReply() {
 	pong_menu.addEventListener("click", fnGameOver);
 }
 
-export async function pongLoader() {
-	if (!html_pong_loader) {
-		html_pong_loader = document.createElement('div');
-		html_pong_loader.innerHTML = await loadHTML('./pong-game/public/pong_loader.html');
-	}
-	const container = document.querySelector('.p_container');
-	container.appendChild(html_pong_loader);
-
-}
-
-async function removePongLoader() {
-	const container = document.querySelector('.p_container');
-	container.removeChild(html_pong_loader);
-}
-
 export async function loadPopupGameOver(disconnected = false) {
 	if (!html_popup_game_over) {
 		html_popup_game_over = document.createElement('div');
@@ -87,7 +59,7 @@ export async function loadPopupGameOver(disconnected = false) {
 	const data = game_data ;
 	console.log("----data-----: ", data);
 	let winner = (data.player1_score <= data.player2_score) ? data.player2_name : data.player1_name;
-	html_popup_game_over.querySelector('.overlay-text').textContent = (data.player1_score === data.player2_score) ? "Draw":  winner + " win";
+	html_popup_game_over.querySelector('.overlay-text').textContent = winner + " win";
 	if (disconnected) html_popup_game_over.querySelector('.overlay-text').textContent =  "Game Disconnected";
 	const container = document.querySelector('.p_container');
 	container.appendChild(html_popup_game_over);
@@ -98,7 +70,8 @@ export async function loadPopupGameOver(disconnected = false) {
 async function removePopupReplay() {
 	const container = document.querySelector('.p_container');
 	console.log("html_popup_replay: ", html_popup_replay);
-	html_popup_replay && container.removeChild(html_popup_replay);
+	if (html_popup_replay && container.contains(html_popup_replay))
+		container.removeChild(html_popup_replay);
 }
 
 async function assignPlayers({player1_name, player2_name}) {
@@ -112,42 +85,18 @@ export async function replayLocalGame() {
 	initGameVariable();
 	initPaddleInstance();
 	resizeCanvas();
-	// back_counter.style.display = 'none';
-	// popup_replay.style.display = 'none';
 	removePopupReplay();
 	leftPaddle();
 	await connectLocalGameSocket();
 	await descounter();
 }
 
-async function handleRelodQuit(event) {
-	(statePongGame != "remote") ?
-	await sendReloadScore() :
-	await sendLoserScore();
-	// closeGameSocket();
-	// event.preventDefault();
-}
-
 async function handleHashChange() {
-	(statePongGame != "remote") ?
-	await sendScore() :
-	await sendLoserScore();
-	await closeGameSocket();
 	await fnGameOver();
-}
-
-
-async function handleTournamentRelodQuit(event) {
-	console.log("-------------------handleTournamentRelodQuit ---------------");
-	await cancelTournamentMatch();
-	// event.preventDefault();
-	// closeGameSocket();
 }
 
 async function handleTournamentHashChange() {
 	console.log("-------------------handleTournamentHashChange ---------------");
-	await cancelTournamentMatch();
-	await closeGameSocket();
 	await fnGameOver();
 }
 
@@ -155,20 +104,10 @@ export function setupEventListeners() {
 	window.addEventListener('resize', resizeCanvas);
 	document.addEventListener("keydown", keyDownHandler, false);
 	document.addEventListener("keyup", keyUpHandler, false);
-	if (statePongGame !== "tournament") {
-		window.addEventListener("beforeunload", handleRelodQuit);
+	if (statePongGame !== "tournament")
 		window.addEventListener("hashchange", handleHashChange);
-	}
-	else {
-		window.addEventListener("beforeunload", handleTournamentRelodQuit);
+	else
 		window.addEventListener("hashchange", handleTournamentHashChange);
-	}
-
-	
-	// if (statePongGame == "local" || statePongGame == "ai_bot") {
-	// 	replay.addEventListener("click", replayLocalGame);
-	// 	pong_menu.addEventListener("click", fnGameOver);
-	// }
 	if (statePongGame == "remote") {
 		setMousePositionHelper();
 		window.addEventListener('mousemove', setMousePosition);
@@ -183,11 +122,8 @@ export function removeEventsListener() {
 	document.removeEventListener("keydown", keyDownHandler);
 	document.removeEventListener("keyup", keyUpHandler);
 	window.removeEventListener('mousemove', setMousePosition);
-	window.removeEventListener('beforeunload', handleRelodQuit);
 	window.removeEventListener("hashchange", handleHashChange);
-	window.removeEventListener('beforeunload', handleTournamentRelodQuit);
 	window.removeEventListener("hashchange", handleTournamentHashChange);
-
 }
 
 
@@ -213,8 +149,7 @@ export async function loadPongGame() {
 		if (n%4 == 0)
 			counter.textContent = "Loading.." + (n / 4).toString();
 		if (n >= 120) {
-			const res = await sendWinnerScore();
-			(res.status === 404) ? await showWinner(true): await showWinner();
+			await showWinner(true);
 			break;
 		}
 		await sleep(0.25);
@@ -248,10 +183,7 @@ let replayGame = async () => {
 	resizeCanvas();
 }
 
-let lanceGame = async () => {
-	console.log("------ lanceGame ==>>>", statePongGame);
-	await replayGame();
-}
+let lanceGame = async () => { await replayGame() }
 
 initPlayGame(lanceGame);
 replayGame();

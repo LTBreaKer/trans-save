@@ -2,29 +2,23 @@ const api = "https://127.0.0.1:9004/api/";
 const csrftoken = getCookie('csrftoken');
 const token  = localStorage.getItem('token');
 const refresh  = localStorage.getItem('refresh');
+import { pong_game_score } from "./components/ping/script.js";
 import { friendsocket, changeAccess } from "./components/profile/profile.js"
+import { add_game_score } from "./components/ta/script.js";
 
 function isAuthenticated() {
     return !!localStorage.getItem('token');
 }
   
   function login(token, refresh, session_id) {
+    console.log("hello change token or refresh or session id", session_id)
     localStorage.setItem('token', token);
     localStorage.setItem('refresh', refresh);
     localStorage.setItem('session_id', session_id);
   }
   
   function logoutf() {
-    function clearOnlineStatuses() {
-      const allFriends = document.querySelectorAll('.friends');
-      allFriends.forEach(friend => {
-        const onlineDiv = friend.querySelector('.onlinen');
-        if (onlineDiv) {
-          onlineDiv.style.backgroundColor = 'gray';
-        }
-      });
-    }
-    
+    console.log("====== logout ----------------- ");
     if (friendsocket && friendsocket.readyState === WebSocket.OPEN)
       friendsocket.close();
     // friendsocket = null
@@ -33,6 +27,7 @@ function isAuthenticated() {
     localStorage.removeItem('session_id');
     localStorage.removeItem("winner");
     localStorage.removeItem("game_id");
+    localStorage.removeItem("dataPongMatch");
 
   }
 
@@ -131,6 +126,10 @@ function isAuthenticated() {
     console.log("---------------------------------- hello ")
     await check_access_token();
     console.log("---------------------------------- hello ")
+    if (localStorage.getItem("winner") && localStorage.getItem("game_id") )
+      await add_game_score();
+    if (localStorage.getItem("dataPongMatch"))
+      await pong_game_score();
     const bod = {
       refresh: get_localstorage('refresh')
     }

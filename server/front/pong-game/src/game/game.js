@@ -2,37 +2,41 @@ import * as THREE from 'three';
 import WebGL from 'three/addons/capabilities/WebGL.js';
 import { lpaddle, paddle, rpaddle } from './paddle.js'
 import { camera } from '../components/camera.js'
-import { first_player_goal, second_player_goal, box_result, canvas, back_counter } from '../utils/globaleVariable.js'
+import { back_counter, sleep } from '../utils/globaleVariable.js'
 import { scene } from '../components/scene.js'
 import { renderer } from '../components/renderer.js'
 import { connectGame, localGameSocket, paddleSocket } from '../network/socket.js';
-import { game_data, statePongGame } from '../../../components/ping/script.js';
+import { statePongGame } from '../../../components/ping/script.js';
 import { mousePosition, mousePositionHelper } from '../events/mouseEvent.js';
 import { resizeCanvas } from '../network/events.js';
+import { changeAccess } from '../../../components/profile/profile.js';
 
 export let startGame = false;
-// export let game_over = false;
 export let game_connected = false;
 export let end_game = false;
+let k = true;
 
 let local_game_socket;
 let paddle_socket;
 export let animationFrameId;
 
 export function initGameVariable() {
+	k = true;
 	startGame = false;
-	// game_over = false;
 	game_connected = false;
 	end_game = false;
 }
 
-export function launchGame() {
-	startGame = true;
-	game_connected = true;
+export function launshGame() {
+	if (game_connected)
+		(startGame = true);
+}
+
+export function setGameConnected() {
+	game_connected = true
 }
 
 export function stopGame() {
-	// game_over = true;
 	startGame = false;
 	console.log("stopGame startGame: ", startGame);
 }
@@ -41,6 +45,7 @@ export function endGameConnection() {
 	game_connected = false;
 	startGame = false;
 	end_game = true;
+	k = true;
 }
 
 
@@ -70,7 +75,7 @@ export async function closeGameSocket() {
 		await paddle_socket :
 		await local_game_socket;
 	if (ws && ws.readyState == 1)
-		await ws.send(JSON.stringify({"type_msg": "close"}));
+		await ws.close();
 }
 
 export async function checkSocketConnection() {
@@ -87,7 +92,7 @@ export async function sendSocket(){
 		await ws.send(JSON.stringify({'type_msg': 'play'}));
 		back_counter.style.display = "none";
 		(!game_connected) && await connectGame();
-		launchGame();
+		launshGame();
 	}
 }
 
@@ -120,38 +125,48 @@ export async function connectPaddleSocket() {
 
 function resizeRendererToDisplaySize(renderer) {	
 	const canvas = renderer.domElement;
-	// camera.aspect = canvas.clientWidth / canvas.clientHeight;
-	// camera.updateProjectionMatrix();
 	const pixelRatio = window.devicePixelRatio;
 	const width  = Math.floor( canvas.clientWidth * pixelRatio) - 100;
 	const height = Math.floor( canvas.clientHeight * pixelRatio) - 100;
 	const needResize = canvas.width !== width || canvas.height !== height;
-	if (needResize) {
+	if (needResize)
 		renderer.setSize(width, height, false);
-		// resizeCanvas();
-	}
 	return (needResize);
 }
 
 export function animate() {
 	if (resizeRendererToDisplaySize(renderer)) {
-		// console.log("--- need Resize ----");
 		const canvas = renderer.domElement;
 		camera.aspect = canvas.clientWidth / canvas.clientHeight;
 		camera.updateProjectionMatrix();
 	}
-	// if (startGame) {
-	updatePaddles();
-		// }
-	renderer.render( scene, camera );
+	if (startGame) updatePaddles();
+	renderer.render( scene, camera );	
 	animationFrameId = requestAnimationFrame( animate );
 }
 
+async function updateToken() {
+	k = false;
+	(!end_game) && await changeAccess();
+	await sleep(60 * 4);
+	k = true;
+}
+
+async function sendToken() {
+	const ws = (statePongGame == "remote")? await paddle_socket :await local_game_socket;
+	if (ws && ws.readyState == 1)
+		await ws.send(JSON.stringify({
+			'type_msg': 'update_token',
+			'token': localStorage.getItem("token")
+		}))
+}
+
+
 async function updatePaddles(){
 	if (statePongGame == "local" || statePongGame == "tournament") {
-		lpaddle.update()
-		rpaddle.update()
-		if (lpaddle.y != lpaddle.lastY || rpaddle.y != lpaddle.lastY) {
+		lpaddle.update();
+		rpaddle.update();
+		if (lpaddle.y != lpaddle.lastY || rpaddle.y != rpaddle.lastY) {
 			lpaddle.lastY = lpaddle.y;
 			rpaddle.lastY = rpaddle.y;
 			movePaddle();
@@ -172,6 +187,9 @@ async function updatePaddles(){
 			moveRemotePaddle();
 		}
 	}
+	sendToken();
+	if (k)
+		updateToken();
 }
 
 

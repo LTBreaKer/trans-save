@@ -1,6 +1,7 @@
-import { loadHTML, loadCSS,  remove_tag_remote_game, remove_game_tag_f_database} from '../../utils.js';
+import { loadHTML, loadCSS,  player_webSocket ,remove_tag_remote_game, remove_game_tag_f_database, socket_friend_request} from '../../utils.js';
 import { login ,log_out_func, logoutf, get_localstorage, getCookie, check_access_token } from '../../auth.js';
 import {setHeaderContent, setNaveBarContent} from '../tournament/script.js';
+import { fetchUserName } from '../remote_tag/tag.js';
 
 // https://{{ip}}:9007:ws/tag-game-db/
 var api = "https://127.0.0.1:9004/api/";
@@ -26,7 +27,12 @@ async function Ta() {
   setHeaderContent();
   setNaveBarContent();
 
+  let user_name = await fetchUserName()
+  document.getElementById("description").textContent = `${user_name.toUpperCase()} moves using the keys W, A and D, while the opponent uses the arrow keys (Up, Right, Left).`
+
   await checkFirst();
+  if (!socket_friend_request)
+    player_webSocket();
   if (localStorage.getItem("winner") && localStorage.getItem("game_id") )
     await add_game_score();
   const remote_butt_game = document.getElementById('butt_game');
@@ -38,44 +44,6 @@ async function Ta() {
   
   logout.addEventListener('click', log_out_func);
 cancel_game_func.addEventListener('click', await remove_tag_remote_game);
-
-  // cancel_game_func.addEventListener('click', async () => {
-
-
-  //   try {
-  //     const response = await fetch(game_api + 'cancel-remote-game-creation/', {
-  //       method: 'POST',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //         'AUTHORIZATION': 'Bearer ' + get_localstorage('token'),
-  //         'Session-ID': get_localstorage('session_id')
-  //       },
-  //       credentials: 'include',
-  //     });
-  //     console.log(response);
-  //     const jsonData = await response.json();
-  //     console.log("data=>  : ", jsonData);
-  //     if (jsonData.message === "player removed from game queue") {
-  //       document.querySelector('#cancel_game').style.display = 'none';
-  //       document.querySelector('#butt_game').style.display = 'flex';
-  //       document.querySelector('.spinner').style.display = 'none';
-  //     }
-     
-        
-  //     if (!response.ok) 
-  //       throw new Error(`HTTP error! Status: ${response.status}`);
-  //   } catch (error) {
-  //     console.error('There was a problem with the fetch operation:', error);
-  //   }
-
-
-
-
-
-  // })
-  // input = document.getElementById('input_tag');
-  // player_name = input.value; 
-  // remote_butt_game.addEventListener('click', remote_game_function);
 
 
   remote_butt_game.addEventListener('click', async () => {
@@ -378,3 +346,4 @@ async function changeAccess() {
   }
 
 export default Ta;
+export {add_game_score}
