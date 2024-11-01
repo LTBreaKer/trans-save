@@ -1,6 +1,6 @@
 
 import {canvas, box_result, counter, replay, pong_menu, loadDocument, sleep, back_counter, leftPaddle, first_player_name, second_player_name, p_second, p_first, loadReplayDocument, loadQuitDocument, double_point} from '../utils/globaleVariable.js';
-import { connectLocalGameSocket, connectPaddleSocket, end_game, initGameVariable, startGame, sendSocket } from '../game/game.js';
+import { connectLocalGameSocket, connectPaddleSocket, end_game, initGameVariable, startGame, sendSocket, endGameConnection } from '../game/game.js';
 import { moveCamera } from '../components/camera.js';
 import { initPaddleInstance } from '../game/paddle.js';
 import { keyDownHandler, keyUpHandler } from '../events/keyboardEvent.js';
@@ -92,11 +92,13 @@ export async function replayLocalGame() {
 }
 
 async function handleHashChange() {
+	endGameConnection();
 	await fnGameOver();
 }
 
 async function handleTournamentHashChange() {
 	console.log("-------------------handleTournamentHashChange ---------------");
+	endGameConnection();
 	await fnGameOver();
 }
 
@@ -130,7 +132,7 @@ export function removeEventsListener() {
 export async function descounter() {
 	back_counter.style.display = 'flex';
 	let n = 0;
-	while (!startGame && !end_game) {
+	while (!startGame && !end_game && !end_game) {
 		if (n%4 == 0)
 			counter.textContent = "Loading.." + (n / 4).toString();
 		await sleep(0.25);
@@ -145,7 +147,7 @@ export async function loadPongGame() {
 	console.log("------------loadPongGame-------");
 	back_counter.style.display = 'flex';
 	let n = 0;
-	while (!startGame && !end_game) {
+	while (!startGame && !end_game && !end_game) {
 		if (n%4 == 0)
 			counter.textContent = "Loading.." + (n / 4).toString();
 		if (n >= 120) {

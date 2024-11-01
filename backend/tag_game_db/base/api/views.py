@@ -8,6 +8,7 @@ from .helpers import check_auth, get_user_info, is_user_authenticated, get_user
 import base.global_vars as global_vars
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
+from base.validators import CustomUsernameValidator
 
 game_queue = global_vars.game_queue
 
@@ -56,6 +57,15 @@ def create_local_game(request):
     player2_name = request.data.get('player2_name')
     if not player2_name:
         return Response({'message': 'player2_name required'}, status=400)
+
+    validator = CustomUsernameValidator()
+    try:
+        validator(player2_name)
+    except ValidationError:
+        return Response({'message': 'Invalid player name'}, status=400)
+    if len(player2_name) > 9:
+        return Response({'message': 'Invalid player name'}, status=400)
+        
     serializer = TagGameDbSerialiser(data={
             'player1_name': user_availablity['username'],
             'player2_name': player2_name,
