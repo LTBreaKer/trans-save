@@ -12,7 +12,9 @@ import { scene } from '../components/scene.js';
 import { disposeScene } from '../components/disposeComponent.js';
 import { endTournamentMatchScore } from '../../../components/tournamentscore/match_tournament.js';
 import { postRequest } from '../utils/request.js';
-import {host} from '../../../utils.js';
+
+const host = "127.0.0.1";
+
 const url = `https://${host}:9006/api/gamedb/add-game-score/`;
 window.env = {
     DJANGO_HOSTNAME : "c3r4p5.1337.ma"

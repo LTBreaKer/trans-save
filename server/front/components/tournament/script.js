@@ -45,7 +45,6 @@ export {tournament_match_data};
 function updateContent() {
   const contentDiv = document.getElementById('content');
   const width = window.innerWidth;
-  console.log("from tournament page ============= ")
   if (window.location.hash === '#/tournament') {
   
     if (width < 1235) {

@@ -1,4 +1,4 @@
-import { host } from './utils.js';
+const host = "127.0.0.1";
 
 const api = `https://${host}:9004/api/`;
 const csrftoken = getCookie('csrftoken');

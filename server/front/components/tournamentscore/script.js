@@ -43,14 +43,11 @@ console.log("hello we are from morroc ;;o ", id_of_tournament);
 function updateContent() {
   const contentDiv = document.getElementById('content');
   const width = window.innerWidth;
-  console.log("from tournamentscore  page ============= ")
 if (window.location.hash === '#/tournamentScore') {
   if (width < 1235) {
     set_players_sh1(tournament_element_data);
-    // loadCSS('./components/tournament/style.css');
   } else {
     set_players_sh(tournament_element_data);
-    // loadCSS('./components/tournament/style.css');
   }
 }
 }
