@@ -1,4 +1,6 @@
-const api = "https://127.0.0.1:9004/api/";
+const host = "127.0.0.1";
+
+const api = `https://${host}:9004/api/`;
 const csrftoken = getCookie('csrftoken');
 const token  = localStorage.getItem('token');
 const refresh  = localStorage.getItem('refresh');
@@ -58,6 +60,7 @@ function isAuthenticated() {
 
   export async function check_access_token() {
     const token = get_localstorage('token');
+    console.log("-----*****-------->    ", token)
     try {
       const response = await fetch(api + 'auth/verify-token/', {
         method: 'POST',
@@ -67,6 +70,7 @@ function isAuthenticated() {
         credentials: 'include',
         body: JSON.stringify({ token }) 
       });
+      console.log(await response.json())
       if (response.status === 404){
         logoutf();
         window.location.hash = '/login';

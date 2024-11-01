@@ -1,15 +1,21 @@
 import { get_localstorage, check_access_token } from './auth.js';
 import { get_friends_home } from './components/profile/profile.js';
 
-let game_api = 'https://127.0.0.1:9007/api/tag-gamedb/';
-var api_game = "https://127.0.0.1:9006/api/gamedb/";
+
+export var host = "127.0.0.1";
+let game_api = `https://${host}:9007/api/tag-gamedb/`;
+var api_game = `https://${host}:9006/api/gamedb/`;
 let socket_friend_request;
+let accumulatedNotifications = [];
+
+// export {host};
+
 export function loadHTML(url) {
   console.log(url);
     return fetch(url).then(response => response.text());
   }
   
-export {socket_friend_request};
+export {socket_friend_request, accumulatedNotifications};
 
   export function loadCSS(url) {
     console.log()
@@ -32,7 +38,7 @@ export {socket_friend_request};
 }
 
 
-const api = "https://127.0.0.1:9005/api/"
+const api = `https://${host}:9005/api/`
 function removeAllCSSLinks() {
   const links = document.querySelectorAll('head link[rel="stylesheet"]');
   links.forEach(link => link.remove());
@@ -40,13 +46,12 @@ function removeAllCSSLinks() {
 
 
   
-  let accumulatedNotifications = [];
 
 export async function player_webSocket() {
   // console.log("utils ----------------> ", localStorage.getItem('token'))
   // await check_access_token();
   return new Promise((resolve) => {
-    socket_friend_request = new WebSocket("wss://127.0.0.1:9005/ws/friend-requests/", ["token", get_localstorage('token'), "session_id", get_localstorage('session_id')]);
+    socket_friend_request = new WebSocket(`wss://${host}:9005/ws/friend-requests/`, ["token", get_localstorage('token'), "session_id", get_localstorage('session_id')]);
     
     socket_friend_request.onopen = function () {
       console.log('WebSocket connection =======================================================================.');
@@ -66,15 +71,9 @@ export async function player_webSocket() {
         return;
       }
       else {
-        const isDuplicate = accumulatedNotifications.some(notification => notification.friend_request.id === newNotification.friend_request.id
-        );
-        if (!isDuplicate)
           accumulatedNotifications.push(newNotification);
-        
         await displayNotifications(accumulatedNotifications);
-        accumulatedNotifications = [];
       }
-    
     };
 
     socket_friend_request.onerror = function (error) {
@@ -88,7 +87,7 @@ export async function player_webSocket() {
   });
 }
 
-async function displayNotifications(notifications) {
+export async function displayNotifications(notifications) {
 
     console.log("hhhhhhhhhhhhhhhhhhhhh");
     console.log("notification here check what's the problem =>    ", notifications);
@@ -124,11 +123,6 @@ async function displayNotifications(notifications) {
       });
 }
 
-
-// https://{{ip}}:9006/api/gamedb/delete-zombie-games/ : Method: DELETE | Header : AUTHORIZATION Bearer {access token}, Session-ID: {session_id}
-// https://{{ip}}:9007/api/tag-gamedb/delete-zombie-games/ : Method: DELETE | Header : AUTHORIZATION Bearer {access token}, Session-ID: {session_id}
-
-
 export async function remove_game_pong_f_database(params) {
   try {
     const response = await fetch(api_game + 'delete-zombie-games/', {
@@ -151,9 +145,7 @@ export async function remove_game_pong_f_database(params) {
     console.error('There was a problem with the fetch operation:', error);
   }
 
-
 }
-
 
 export async function remove_game_tag_f_database(params) {
   try {
@@ -177,10 +169,6 @@ export async function remove_game_tag_f_database(params) {
   }
 
 }
-
-
-
-
 
 async function handleAccept(event) {
   await check_access_token();
@@ -209,9 +197,11 @@ console.log(notificationId);
   }
   const loca = window.location.hash;
   for(let i = 0; i < accumulatedNotifications.length; i++) {
-    if (accumulatedNotifications[i].friend_request.id === notificationId) 
-      array.splice(i, 1);
+    if (accumulatedNotifications[i].friend_request.id === Number(notificationId)) {
+      accumulatedNotifications.splice(i, 1);
+    }
   }
+  console.log("ouia here is notification => ", accumulatedNotifications);
   if (loca.startsWith('/user') || loca === '#/profile')
     await get_friends_home();
 }
@@ -242,7 +232,11 @@ async function handleDecline(event) {
     console.log((`HTTP error! Status: ${response.status}`), Error);
   }
 
-
+  for(let i = 0; i < accumulatedNotifications.length; i++) {
+    if (accumulatedNotifications[i].friend_request.id === Number(notificationId)) {
+      accumulatedNotifications.splice(i, 1);
+    }
+  }
   
 }
 

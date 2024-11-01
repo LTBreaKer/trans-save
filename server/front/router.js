@@ -13,10 +13,12 @@ import RemoteTag from './components/remote_tag/script.js';
 import TournamentScore from './components/tournamentscore/script.js';
 import {remove_tag_remote_game, remove_ping_remote_game, remove_game_pong_f_database, remove_game_tag_f_database} from './utils.js';
 
-var api_game = "https://127.0.0.1:9006/api/gamedb/";
-let game_api = 'https://127.0.0.1:9007/api/tag-gamedb/';
+const host = "127.0.0.1";
 
-const api_one = "https://127.0.0.1:9005/api/";
+var api_game = `https://${host}:9006/api/gamedb/`;
+let game_api = `https://${host}:9007/api/tag-gamedb/`;
+
+const api_one = `https://${host}:9005/api/`;
 let friends_array = [];
 let component;
 let path;

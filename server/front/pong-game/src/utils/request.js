@@ -3,6 +3,7 @@ import { game_data } from "../../../components/ping/script.js";
 import { lpaddle, rpaddle } from "../game/paddle.js";
 
 
+
 export async  function postRequest(url, body) {
 	await check_access_token();
 	try {

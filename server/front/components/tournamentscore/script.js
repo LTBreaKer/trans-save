@@ -1,9 +1,12 @@
-import { loadHTML, loadCSS, player_webSocket, socket_friend_request} from '../../utils.js';
+import { loadHTML, loadCSS, player_webSocket, socket_friend_request, accumulatedNotifications, displayNotifications} from '../../utils.js';
 import { log_out_func ,login , logoutf, get_localstorage, getCookie } from '../../auth.js';
- import {id_of_tournament} from '../profile/profile.js';
-let tournament = "https://127.0.0.1:9008/api/tournament/";
+import {id_of_tournament, changeAccess} from '../profile/profile.js';
+import {checkFirst} from '../home/home.js';
 
-var api = "https://127.0.0.1:9004/api/";
+const host = "127.0.0.1";
+
+let tournament = `https://${host}:9008/api/tournament/`;
+var api = `https://${host}:9004/api/`;
 let tournament_element_data;
 
 async function TournamentScore() {
@@ -16,15 +19,13 @@ async function TournamentScore() {
   loadCSS('./components/tournamentscore/style.css');
   const app = document.getElementById('app');
   app.innerHTML = html;
-  console.log("******************************************** ")
   setHeaderContent();
   setNaveBarContent();
   await checkFirst();
   if (!socket_friend_request)
     player_webSocket();
-  // updateContent();
-
-  // set_players_sh();
+  else
+    displayNotifications(accumulatedNotifications);
 
 console.log("hello we are from morroc ;;o ", id_of_tournament);
   const logout = document.getElementById('logout')
@@ -42,14 +43,13 @@ console.log("hello we are from morroc ;;o ", id_of_tournament);
 function updateContent() {
   const contentDiv = document.getElementById('content');
   const width = window.innerWidth;
-// 1235 1227
+if (window.location.hash === '#/tournamentScore') {
   if (width < 1235) {
     set_players_sh1(tournament_element_data);
-    // loadCSS('./components/tournament/style.css');
   } else {
     set_players_sh(tournament_element_data);
-    // loadCSS('./components/tournament/style.css');
   }
+}
 }
 
 
@@ -163,7 +163,7 @@ function set_players_sh1(tournament_data) {
   const main_content  = document.getElementById('players_sh_content');
   main_content.innerHTML = `
    <div class="matches_hist"  style="flex-direction: column;">
-            <h3 id="text-final">hna ghadi ykon wach nisf ola roboaa ola final</h3>
+            <h3 id="text-final">1/4</h3>
             <div class="first_8">
             <div class="first_match">
                 <div class="match_n1 string">
@@ -192,7 +192,7 @@ function set_players_sh1(tournament_data) {
 
 
             </div>
-            <h3 id="text-final">hna ghadi ykon wach nisf ola roboaa ola final</h3>
+            <h3 id="text-final">1/2</h3>
 
             <div class="center_matches">
                 <fiv class="match_2">
@@ -208,7 +208,7 @@ function set_players_sh1(tournament_data) {
 
                 </fiv>
             </div>
-            <h3 id="text-final">hna ghadi ykon wach nisf ola roboaa ola final</h3>
+            <h3 id="text-final">1/1</h3>
 
             <fiv class="match_final">
                 <p id="player1_match7" class="player_name">${tournament_data[6]?.playerOneName}<span class="left_score">${tournament_data[6]?.playerOneScore}</span></p>
@@ -310,99 +310,6 @@ document.addEventListener('click', (event) => {
   }
 });
 
-}
-
-async function changeAccess() {
-    const data = {
-      refresh: get_localstorage('refresh')
-    };
-  
-    try {
-      const response = await fetch(api + 'auth/token/refresh/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        credentials: 'include',
-        body: JSON.stringify(data)
-      });
-      if (response.status === 401) {
-        logoutf();  
-        window.location.hash = '/login';
-      }
-
-      const jsonData = await response.json();
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-      login(jsonData.access, jsonData.refresh, get_localstorage('session_id'));
-      
-    } catch (error) {
-      console.error('There was a problem with the fetch operation:', error);
-    }
-  }
-  
-  async function checkFirst() {
-    const token = get_localstorage('token');
-    try {
-      const response = await fetch(api + 'auth/verify-token/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-        body: JSON.stringify({ token }) 
-      });
-      console.log(response);
-      if (response.status === 404){
-        logoutf();
-        window.location.hash = '/login';
-      }  
-      if (response.status !== 200) {
-        await changeAccess();
-        await fetchUserHomeData();
-      } else if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      } else {
-        const jsonData = await response.json();
-        await fetchUserHomeData();
-      }
-    } catch (error) {
-      console.error('There was a problem with the fetch operation:', error);
-    }
-  }
-  
-  async function fetchUserHomeData() {
-    try {
-      const userResponse = await fetch(api + 'auth/get-user/', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + get_localstorage('token'),
-          'Session-ID': get_localstorage('session_id')
-        },
-        credentials: 'include',
-      });
-      
-      if (userResponse.status === 404) {
-        logoutf();
-        window.location.hash = '/login';
-      }
-
-      if (!userResponse.ok) {
-        throw new Error('Network response was not ok');
-      }
-      const userData = await userResponse.json();
-      
-      const change_user = document.getElementById('UserName');
-      const change_imge = document.getElementById('image_user');
-      
-      change_user.innerHTML = userData.user_data.username;
-      change_imge.src = userData.user_data.avatar;
-    } catch(error)  {
-      console.error('There was a problem with the fetch operation:', error);
-    }
-  }
-  
+}  
 
 export default TournamentScore;

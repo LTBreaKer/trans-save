@@ -4,7 +4,10 @@ import {get_localstorage, login } from '../../auth.js';
 let tokenn;
 let error_nbr = 0;
 let refrech;
-const api = "https://127.0.0.1:9004/api/";
+
+const host = "127.0.0.1";
+
+const api = `https://${host}:9004/api/`;
 async function Login() {
     const token  = localStorage.getItem('token');
     const csrftoken = getCookie('csrftoken');

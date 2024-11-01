@@ -1,10 +1,15 @@
-import { loadHTML, loadCSS, player_webSocket, socket_friend_request, remove_ping_remote_game, remove_game_pong_f_database } from '../../utils.js';
+import { loadHTML, loadCSS, player_webSocket, socket_friend_request, remove_ping_remote_game, remove_game_pong_f_database, accumulatedNotifications, displayNotifications } from '../../utils.js';
 import { login ,log_out_func, logoutf, get_localstorage, getCookie, check_access_token } from '../../auth.js';
-var api = "https://127.0.0.1:9004/api/";
-var api_game = "https://127.0.0.1:9006/api/gamedb/";
-let game_socket = "wss://127.0.0.1:9006/ws/game-db/";
-let tournament = "https://127.0.0.1:9008/api/tournament/"
-const url = "https://127.0.0.1:9006/api/gamedb/add-game-score/";
+import { changeAccess } from '../profile/profile.js';
+import {checkFirst} from '../home/home.js';;
+
+const host = "127.0.0.1";
+
+var api = `https://${host}:9004/api/`;
+var api_game = `https://${host}:9006/api/gamedb/`;
+let game_socket = `wss://${host}:9006/ws/game-db/`;
+let tournament = `https://${host}:9008/api/tournament/`
+const url = `https://${host}:9006/api/gamedb/add-game-score/`;
 
 let name = "";
 let html = "";
@@ -111,6 +116,9 @@ async function Ping() {
   await checkFirst();
   if (!socket_friend_request)
     player_webSocket();
+  else
+    displayNotifications(accumulatedNotifications);
+
 
   setNotification();
   const butt = document.querySelector('#butt');
@@ -397,95 +405,95 @@ async function lanceLocalGame() {
   }
 }
 
-async function changeAccess() {
-    const data = {
-      refresh: get_localstorage('refresh')
-    };
+// async function changeAccess() {
+//     const data = {
+//       refresh: get_localstorage('refresh')
+//     };
   
-    try {
-      const response = await fetch(api + 'auth/token/refresh/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Session-ID': get_localstorage('session_id')
-        },
-        credentials: 'include',
-        body: JSON.stringify(data)
-      });
-      if (response.status === 401) {
-        logoutf();  
-        window.location.hash = '/login';
-      }  
-      const jsonData = await response.json();
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-      login(jsonData.access, jsonData.refresh, get_localstorage('session_id'));
+//     try {
+//       const response = await fetch(api + 'auth/token/refresh/', {
+//         method: 'POST',
+//         headers: {
+//           'Content-Type': 'application/json',
+//           'Session-ID': get_localstorage('session_id')
+//         },
+//         credentials: 'include',
+//         body: JSON.stringify(data)
+//       });
+//       if (response.status === 401) {
+//         logoutf();  
+//         window.location.hash = '/login';
+//       }  
+//       const jsonData = await response.json();
+//       if (!response.ok) {
+//         throw new Error(`HTTP error! Status: ${response.status}`);
+//       }
+//       login(jsonData.access, jsonData.refresh, get_localstorage('session_id'));
       
-    } catch (error) {
-      console.error('There was a problem with the fetch operation:', error);
-    }
-  }
+//     } catch (error) {
+//       console.error('There was a problem with the fetch operation:', error);
+//     }
+//   }
   
-  async function checkFirst() {
-    const token = get_localstorage('token');
-    try {
-      const response = await fetch(api + 'auth/verify-token/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Session-ID': get_localstorage('session_id')
-        },
-        credentials: 'include',
-        body: JSON.stringify({ token }) 
-      });
-      console.log(response);
-      if (response.status === 404){
-        logoutf();
-        window.location.hash = '/login';
-      }  
-      if (response.status !== 200) {
-        await changeAccess();
-        await fetchUserHomeData();
-      } else if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      } else {
-        const jsonData = await response.json();
-        await fetchUserHomeData();
-      }
-    } catch (error) {
-      console.error('There was a problem with the fetch operation:', error);
-    }
-  }
+  // async function checkFirst() {
+  //   const token = get_localstorage('token');
+  //   try {
+  //     const response = await fetch(api + 'auth/verify-token/', {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //         'Session-ID': get_localstorage('session_id')
+  //       },
+  //       credentials: 'include',
+  //       body: JSON.stringify({ token }) 
+  //     });
+  //     console.log(response);
+  //     if (response.status === 404){
+  //       logoutf();
+  //       window.location.hash = '/login';
+  //     }  
+  //     if (response.status !== 200) {
+  //       await changeAccess();
+  //       await fetchUserHomeData();
+  //     } else if (!response.ok) {
+  //       throw new Error(`HTTP error! Status: ${response.status}`);
+  //     } else {
+  //       const jsonData = await response.json();
+  //       await fetchUserHomeData();
+  //     }
+  //   } catch (error) {
+  //     console.error('There was a problem with the fetch operation:', error);
+  //   }
+  // }
   
-  async function fetchUserHomeData() {
-    try {
-      const userResponse = await fetch(api + 'auth/get-user/', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + get_localstorage('token'),
-          'Session-ID': get_localstorage('session_id')
-        },
-        credentials: 'include',
-      });
+  // async function fetchUserHomeData() {
+  //   try {
+  //     const userResponse = await fetch(api + 'auth/get-user/', {
+  //       method: 'GET',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //         'Authorization': 'Bearer ' + get_localstorage('token'),
+  //         'Session-ID': get_localstorage('session_id')
+  //       },
+  //       credentials: 'include',
+  //     });
       
-      if (!userResponse.ok) {
-        throw new Error('Network response was not ok');
-      }
-      const userData = await userResponse.json();
-      tournament_name = userData.user_data.tournament_username;
-      console.log("here iwill print user fata to check user for ===:", userData)
+  //     if (!userResponse.ok) {
+  //       throw new Error('Network response was not ok');
+  //     }
+  //     const userData = await userResponse.json();
+  //     tournament_name = userData.user_data.tournament_username;
+  //     console.log("here iwill print user fata to check user for ===:", userData)
       
-      const change_user = document.getElementById('UserName');
-      const change_imge = document.getElementById('image_user');
+  //     const change_user = document.getElementById('UserName');
+  //     const change_imge = document.getElementById('image_user');
       
-      change_user.innerHTML = userData.user_data.username;
-      change_imge.src = userData.user_data.avatar;
-    } catch(error)  {
-      console.error('There was a problem with the fetch operation:', error);
-    }
-  }
+  //     change_user.innerHTML = userData.user_data.username;
+  //     change_imge.src = userData.user_data.avatar;
+  //   } catch(error)  {
+  //     console.error('There was a problem with the fetch operation:', error);
+  //   }
+  // }
   
   function errorhere(string) {
     const game_tag_err = document.getElementById('game_tag_err');

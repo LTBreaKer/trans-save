@@ -1,10 +1,11 @@
-import { loadHTML, loadCSS } from '../../utils.js';
+import { loadHTML, loadCSS} from '../../utils.js';
 import { tournament_match_data } from '../tournament/script.js';
 import { log_out_func ,login , logoutf, get_localstorage, getCookie, check_access_token } from '../../auth.js';
 import { isGameDataFull, loadHtmlWidthModuleScript, playGame } from '../pingpong/ping.js';
 
+const host = "127.0.0.1";
 
-let tournament = "https://127.0.0.1:9008/api/tournament/";
+let tournament = `https://${host}:9008/api/tournament/`;
 
 async function TournamentScore() {
 //   const html = await loadHTML('./components/tournamentscore/index.html');

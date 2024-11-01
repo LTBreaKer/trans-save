@@ -1,9 +1,8 @@
-import { loadHTML, loadCSS, player_webSocket, socket_friend_request } from '../../utils.js';
+import { loadHTML, loadCSS, player_webSocket, socket_friend_request, accumulatedNotifications, displayNotifications } from '../../utils.js';
 import {log_out_func,  logoutf, get_localstorage, check_access_token, getCookie, login } from '../../auth.js';
 import {setHeaderContent, setNaveBarContent} from '../tournament/script.js';
 let friendsocket;
 let id_of_tournament;
-
 
 let tag_win;
 let tag_unk;
@@ -13,12 +12,13 @@ let ping_win;
 let tourn_win;
 let tourn_los;
 
+const host = "127.0.0.1";
 
-const api = "https://127.0.0.1:9004/api/";
-const api_one = "https://127.0.0.1:9005/api/";
-const tourna_game = "https://127.0.0.1:9008/api/tournament/";
-const pong_game = "https://127.0.0.1:9006/api/gamedb/";
-const tag_game = "https://127.0.0.1:9007/api/tag-gamedb/";
+const api = `https://${host}:9004/api/`;
+const api_one = `https://${host}:9005/api/`;
+const tourna_game = `https://${host}:9008/api/tournament/`;
+const pong_game = `https://${host}:9006/api/gamedb/`;
+const tag_game = `https://${host}:9007/api/tag-gamedb/`;
 var photo = null;
 let username_;
 async function Friends() {
@@ -34,6 +34,8 @@ async function Friends() {
   await checkFirst();
   if (!socket_friend_request)
     player_webSocket();
+  else
+    displayNotifications(accumulatedNotifications);
 
   const editProfileButton = document.querySelector('.edit_profi');
   const updateProfile = document.querySelector('.update_data');
@@ -42,13 +44,8 @@ async function Friends() {
 
   update_btn.addEventListener('click', async () => {
     await update_profile_fun();
-    // updateProfile.classList.remove('active');
-  //   document.querySelector('.success_update').style.display = "flex";
-  //   setTimeout(function() {
-  //     document.querySelector('.success_update').style.display = 'none';
-  // }, 2000);
-    
   })
+
   editProfileButton.addEventListener('click', () => {
     updateProfile.classList.add('active');
   });
@@ -100,11 +97,6 @@ async function Friends() {
     else 
       perso_list.style.display = 'flex';
   });
-
-  // if (newNotification){
-  //   console.log("=====notification ======================", newNotification)
-  //   check_and_set_online(newNotification);
-  // }
 
   const tag_history = document.querySelector('.tag_game_click');
   const pong_history = document.querySelector('.pong_game_click');
@@ -170,10 +162,7 @@ async function Friends() {
   })
 
   get_pong_history();
-  // get_pong_history_by_name('afanti');
   get_tag_history();
-  // set_pong_score()
-  // set_tag_score()
   get_tournament_history();
 }
 
@@ -191,17 +180,14 @@ async function get_tournament_history() {
   });
   const jsonData = await response.json();
 
-  console.log("history of game of tournament ==> : ", jsonData);
-  console.log("--------------------------------------------------");
-
   if (!response.ok) {
     console.log((`HTTP error! Status: ${response.status}`), Error);
   }
 
   set_tournament_data(jsonData.message);
 }
-// here i will set function that i set the players and id of everyfunctio
 
+// here i will set function that i set the players and id of everyfunctio
 
 export function set_tournament_data(data) {
   if (data)
@@ -238,7 +224,6 @@ export function set_tournament_data(data) {
     window.location.hash = '/tournamentScore';
     console.log(id_of_tournament);
 
-
     });
     games_container.appendChild(gameDiv);
   })
@@ -247,7 +232,6 @@ export function set_tournament_data(data) {
     const nom = document.querySelectorAll('.nom');
     const mw = document.querySelectorAll('.mw');
     const ml = document.querySelectorAll('.ml');
-  
   
     nom.forEach(element => {
       element.textContent =  tourn_los + tourn_win;
@@ -260,9 +244,6 @@ export function set_tournament_data(data) {
     });
 
 }
-
-
-
 
 async function get_pong_history() {
   const response = await fetch(pong_game + 'get-game-history/', {
@@ -317,7 +298,6 @@ export async function set_pong_history(friendList) {
       `;
       gamesContainer.appendChild(gameDiv);
     });
-    console.log("wammmmmmmmmmmmmmmiiiiiiiiiii", win, los );
     if (username_ === name) {
         ping_win = win;
         ping_los = los;
@@ -429,35 +409,6 @@ export async function set_tag_history(friendList) {
 
 }
 
-
-async function set_pong_score() {
-  const data = {
-    game_id:2,
-    player1_score: 1,
-    player2_score: 7,
-    player1_name: "afanti", 
-    player2_name: "fanti"
-
-  }
-  const response = await fetch(pong_game + 'add-game-score/', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer ' + get_localstorage('token'),
-      'Session-ID': get_localstorage('session_id')
-    },
-    credentials: 'include',
-    body: JSON.stringify(data)
-  });
-  const jsonData = await response.json();
-
-  console.log("create game here -----==> : ", jsonData);
-
-  if (!response.ok) {
-    console.log((`HTTP error! Status: ${response.status}`), Error);
-  }
-
-}
 
 
 export async function get_friends_home() {
@@ -644,6 +595,8 @@ export async function send_freinds_request(userna) {
 
 }
 
+let sleep = (s) => new Promise(r => setTimeout(r, s*1000));
+
 export async function changeAccess() {
   const data = {
     refresh: get_localstorage('refresh')
@@ -658,15 +611,31 @@ export async function changeAccess() {
       credentials: 'include',
       body: JSON.stringify(data)
     });
-    if (response.status === 401) {
-      logoutf();  
-      window.location.hash = '/login';
+    const jsonData = await response.json()
+    console.log("here are exit status=> :", response.status);
+    console.log("here are exit status= ------------ > :", typeof response.status);
+    console.log("===========> : ", jsonData)
+    if (response.status !== 200) {
+      if (jsonData.detail && jsonData.detail === "the token just changed"){
+        // await sleep(1);
+        await check_access_token()
+        return;
+      }
+      else {
+        logoutf();  
+        window.location.hash = '/login';
+      }
+      console.log("dkjfkdjkjkddfdfdfd ========= ========= =============");
     }
+    // if (response.status === 401) {
+    //   logoutf();  
+    //   window.location.hash = '/login';
+    // }
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
     if (response.status === 200) {
-      const jsonData = await response.json();
+      console.log("changed ==========================   ")
       login(jsonData.access, jsonData.refresh, get_localstorage('session_id'));
     }
   } catch (error) {
@@ -702,7 +671,7 @@ function check_and_set_online(newNotification) {
 
 export async function check_friends_status() {
   await check_access_token();
-  friendsocket = new WebSocket("wss://127.0.0.1:9005/ws/online-status/", ["token", get_localstorage('token'), "session_id", get_localstorage('session_id')]);
+  friendsocket = new WebSocket(`wss://${host}:9005/ws/online-status/`, ["token", get_localstorage('token'), "session_id", get_localstorage('session_id')]);
     
   friendsocket.onopen = function () {
     console.log('online status Websocket connection established.');
@@ -723,7 +692,7 @@ export async function check_friends_status() {
 }
 
 // Define the `checkFirst` function
-async function checkFirst() {
+export async function checkFirst() {
   const token = get_localstorage('token');
 
   try {
