@@ -13,16 +13,12 @@ const ta_socket = `wss://${host}:9007/ws/tag-game-db/`;
 let tag_game_info;
 async function Ta() {
   await remove_game_tag_f_database();
-  window.onload = async function() {
-
-    await remove_tag_remote_game();
-  };
-
   const html = await loadHTML('./components/ta/index.html');
   loadCSS('./components/ta/style.css');
 
   const app = document.getElementById('app');
   app.innerHTML = html;
+  await remove_tag_remote_game();
   setHeaderContent();
   setNaveBarContent();
 

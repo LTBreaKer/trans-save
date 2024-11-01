@@ -45,24 +45,6 @@ async function Router() {
 
   window.addEventListener('hashchange', async () => {
 
-    if (path && path === '/pingpong') {
-      
-    }
-
-    if (path && path === '/ta' || path === '/ping') {
-      if (path === '/ta') {
-        await remove_tag_remote_game();
-      }
-
-      else if (path === '/ping') {    
-        await remove_ping_remote_game();
-      }
-
-    }
-
-
-    
-      console.log("here componenet to show up what the befor=>: ", path)
      path = window.location.hash.slice(1);
     console.log("path===>: ", path);
     if (path === '')
