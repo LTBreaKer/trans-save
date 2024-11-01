@@ -3,12 +3,14 @@ import { log_out_func ,login , logoutf, get_localstorage, getCookie, check_acces
 import { assingDataToGameData, statePongGameToTournament } from '../ping/script.js';
 import {checkFirst} from '../home/home.js';
 // import {changeAccess} from '../profile/profile.js';
-let tournament = "https://127.0.0.1:9008/api/tournament/";
+const host = "127.0.0.1";
+
+let tournament = `https://${host}:9008/api/tournament/`;
 
 let tournament_data;
-var api = "https://127.0.0.1:9004/api/";
-var api_game = "https://127.0.0.1:9006/api/gamedb/";
-let game_socket = "wss://127.0.0.1:9006/ws/game-db/"
+var api = `https://${host}:9004/api/`;
+var api_game = `https://${host}:9006/api/gamedb/`;
+let game_socket = `wss://${host}:9006/ws/game-db/`
 let name = "";
 let tournament_match_data;
 

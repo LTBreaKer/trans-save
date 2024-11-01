@@ -1,10 +1,14 @@
 import { get_localstorage, check_access_token } from './auth.js';
 import { get_friends_home } from './components/profile/profile.js';
 
-let game_api = 'https://127.0.0.1:9007/api/tag-gamedb/';
-var api_game = "https://127.0.0.1:9006/api/gamedb/";
+
+export var host = "127.0.0.1";
+let game_api = `https://${host}:9007/api/tag-gamedb/`;
+var api_game = `https://${host}:9006/api/gamedb/`;
 let socket_friend_request;
 let accumulatedNotifications = [];
+
+// export {host};
 
 export function loadHTML(url) {
   console.log(url);
@@ -34,7 +38,7 @@ export {socket_friend_request, accumulatedNotifications};
 }
 
 
-const api = "https://127.0.0.1:9005/api/"
+const api = `https://${host}:9005/api/`
 function removeAllCSSLinks() {
   const links = document.querySelectorAll('head link[rel="stylesheet"]');
   links.forEach(link => link.remove());
@@ -47,7 +51,7 @@ export async function player_webSocket() {
   // console.log("utils ----------------> ", localStorage.getItem('token'))
   // await check_access_token();
   return new Promise((resolve) => {
-    socket_friend_request = new WebSocket("wss://127.0.0.1:9005/ws/friend-requests/", ["token", get_localstorage('token'), "session_id", get_localstorage('session_id')]);
+    socket_friend_request = new WebSocket(`wss://${host}:9005/ws/friend-requests/`, ["token", get_localstorage('token'), "session_id", get_localstorage('session_id')]);
     
     socket_friend_request.onopen = function () {
       console.log('WebSocket connection =======================================================================.');

@@ -1,13 +1,12 @@
 import { loadHTML, loadCSS, player_webSocket, socket_friend_request, accumulatedNotifications, displayNotifications } from '../../utils.js';
 import {log_out_func, logoutf, get_localstorage, getCookie, login, check_access_token } from '../../auth.js';
 import {get_friends_home, set_pong_history , send_freinds_request, changeAccess, set_tag_history, set_tournament_data, tag_win, tag_unk, tag_los, ping_los, ping_win, tourn_win, tourn_los} from '../profile/profile.js';
-
-const api = "https://127.0.0.1:9004/api/";
-const api_one = "https://127.0.0.1:9005/api/";
-const pong_game = "https://127.0.0.1:9006/api/gamedb/";
-const tourna_game = "https://127.0.0.1:9008/api/tournament/";
-let game_api = 'https://127.0.0.1:9007/api/tag-gamedb/';
-
+const host = "127.0.0.1";
+const api = `https://${host}:9004/api/`;
+const api_one = `https://${host}:9005/api/`;
+const pong_game = `https://${host}:9006/api/gamedb/`;
+const tourna_game = `https://${host}:9008/api/tournament/`;
+let game_api = `https://${host}:9007/api/tag-gamedb/`;
 var friend_user_id = 0;
 // var friends_array = [];
 var friend_username = "";

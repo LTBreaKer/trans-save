@@ -3,8 +3,10 @@ import {imageR1, imageL1, imageIR1, imageIL1, imageR2, imageL2, imageIR2, imageI
 import {tag_game_info, setTagGameInfo} from '../ta/script.js'
 import {get_localstorage, check_access_token} from '../../auth.js'
 
-var api = "https://127.0.0.1:9004/api/";
-var api_tag = "https://127.0.0.1:9007/api/tag-gamedb/"
+const host = "127.0.0.1";
+
+var api = `https://${host}:9004/api/`;
+var api_tag = `https://${host}:9007/api/tag-gamedb/`
 
 export async function fetchUserName() {
     await check_access_token()

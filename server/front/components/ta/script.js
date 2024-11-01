@@ -5,10 +5,11 @@ import { fetchUserName } from '../remote_tag/tag.js';
 // import {changeAccess} from '../profile/profile.js';
 import {checkFirst} from '../home/home.js';
 
+const host = "127.0.0.1";
 // https://{{ip}}:9007:ws/tag-game-db/
-var api = "https://127.0.0.1:9004/api/";
-let game_api = 'https://127.0.0.1:9007/api/tag-gamedb/';
-const ta_socket = 'wss://127.0.0.1:9007/ws/tag-game-db/';
+var api = `https://${host}:9004/api/`;
+let game_api = `https://${host}:9007/api/tag-gamedb/`;
+const ta_socket = `wss://${host}:9007/ws/tag-game-db/`;
 let tag_game_info;
 async function Ta() {
   await remove_game_tag_f_database();
@@ -100,7 +101,7 @@ export  {tag_game_info, setTagGameInfo};
 
 function tag_socket() {
 try {
-  const ws = new WebSocket("wss://127.0.0.1:9007/ws/tag-game-db/",  ["token", get_localstorage('token'), "session_id", get_localstorage('session_id')]);
+  const ws = new WebSocket(`wss://${host}:9007/ws/tag-game-db/`,  ["token", get_localstorage('token'), "session_id", get_localstorage('session_id')]);
   ws.onmessage = async function(event) {
     const data = await JSON.parse(event.data);
     console.log("type ===> ", data.data.type)

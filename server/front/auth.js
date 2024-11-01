@@ -1,4 +1,6 @@
-const api = "https://127.0.0.1:9004/api/";
+import { host } from './utils.js';
+
+const api = `https://${host}:9004/api/`;
 const csrftoken = getCookie('csrftoken');
 const token  = localStorage.getItem('token');
 const refresh  = localStorage.getItem('refresh');

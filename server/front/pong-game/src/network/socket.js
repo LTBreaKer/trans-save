@@ -12,14 +12,15 @@ import { scene } from '../components/scene.js';
 import { disposeScene } from '../components/disposeComponent.js';
 import { endTournamentMatchScore } from '../../../components/tournamentscore/match_tournament.js';
 import { postRequest } from '../utils/request.js';
-const url = "https://127.0.0.1:9006/api/gamedb/add-game-score/";
+import {host} from '../../../utils.js';
+const url = `https://${host}:9006/api/gamedb/add-game-score/`;
 window.env = {
     DJANGO_HOSTNAME : "c3r4p5.1337.ma"
 };
 
 export async function connectGame() {
     console.log("=====connect Game: ");
-    await postRequest("https://127.0.0.1:9006/api/gamedb/connect-game/", JSON.stringify(game_data));
+    await postRequest(`https://${host}:9006/api/gamedb/connect-game/`, JSON.stringify(game_data));
     setGameConnected();
 }
 
@@ -92,7 +93,7 @@ export async function localGameSocket(group_name) {
     console.log("group name: ", group_name);
     try {
         // const wssUrl = "ws://" + window.env.DJANGO_HOSTNAME + ":9009/ws/pong_game/";
-        const wssUrl = "ws://127.0.0.1:9009/ws/local_pong_game/";
+        const wssUrl = `ws://${host}:9009/ws/local_pong_game/`;
         let ws = new WebSocket(wssUrl);
         ws.onopen = async (event) => {
             ws.send(JSON.stringify(userConnectionInfo()));
@@ -129,7 +130,7 @@ export async function paddleSocket(group_name) {
     console.log("group name: ", group_name);
     try {
         // const wssUrl = "ws://" + window.env.DJANGO_HOSTNAME + ":9009/ws/pong_game/";
-        const wssUrl = "ws://127.0.0.1:9009/ws/paddle_pong_game/";
+        const wssUrl = `ws://${host}:9009/ws/paddle_pong_game/`;
         let ws = new WebSocket(wssUrl);
         ws.onopen = async (event) => {
             console.log('paddle game WebSocket conection established.');
@@ -161,7 +162,7 @@ export async function paddleSocket(group_name) {
 
 async function connectBallSocket() {
     try {
-        const wssUrl = "ws://127.0.0.1:9009/ws/remote_pong_game/";
+        const wssUrl = `ws://${host}:9009/ws/remote_pong_game/`;
         // const wssUrl = "ws://" + window.env.DJANGO_HOSTNAME + ":8080/wss/start/g1/";
         let ws = new WebSocket(wssUrl);
         ws.onopen = async (event) => {

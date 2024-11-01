@@ -6,10 +6,10 @@ import {check_friends_status, changeAccess , friendsocket} from '../profile/prof
 import {setHeaderContent, setNaveBarContent} from '../tournament/script.js';
 
 
-
-var api = "https://127.0.0.1:9004/api/";
-var api_game = "https://127.0.0.1:9007/api/";
-var api1 = "https://127.0.0.1:9005/api/";
+const host = "127.0.0.1";
+var api = `https://${host}:9004/api/`;
+var api_game = `https://${host}:9007/api/`;
+var api1 = `https://${host}:9005/api/`;
 async function Home() {
   const html = await loadHTML('./components/home/home.html');
   

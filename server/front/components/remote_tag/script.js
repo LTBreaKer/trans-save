@@ -3,6 +3,7 @@ import { loadHTML, loadCSS } from '../../utils.js';
 import {tag_game_info} from '../ta/script.js';
 import {start_game} from './tag.js'
 let socket
+const host = "127.0.0.1";
 
 async function connect_game()
 {
@@ -65,7 +66,7 @@ async function RemoteTag() {
   async function initializeApp()
   {
       try{
-          const socket = await connectWebSocket('ws://127.0.0.1:8007/ws/remote/');
+          const socket = await connectWebSocket(`ws://${host}:8007/ws/remote/`);
           return socket;
       }
       catch(error){

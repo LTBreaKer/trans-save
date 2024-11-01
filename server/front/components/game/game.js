@@ -3,7 +3,9 @@ import {start_game} from './tag.js';
 import {tag_game_info} from '../ta/script.js'
 import { get_localstorage } from '../../auth.js';
 let socket;
-let api = "https://127.0.0.1:9007/api/tag-gamedb/"
+const host = "127.0.0.1";
+
+let api = `https://${host}:9007/api/tag-gamedb/`
 
 async function Game() {
 
@@ -40,7 +42,7 @@ async function Game() {
   async function initializeApp()
   {
     try{
-        const socket = await connectWebSocket('ws://127.0.0.1:8005/ws/tag-game/');
+        const socket = await connectWebSocket(`ws://${host}:8005/ws/tag-game/`);
         return socket;
     }
     catch(error){

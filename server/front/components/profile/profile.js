@@ -12,11 +12,13 @@ let ping_win;
 let tourn_win;
 let tourn_los;
 
-const api = "https://127.0.0.1:9004/api/";
-const api_one = "https://127.0.0.1:9005/api/";
-const tourna_game = "https://127.0.0.1:9008/api/tournament/";
-const pong_game = "https://127.0.0.1:9006/api/gamedb/";
-const tag_game = "https://127.0.0.1:9007/api/tag-gamedb/";
+const host = "127.0.0.1";
+
+const api = `https://${host}:9004/api/`;
+const api_one = `https://${host}:9005/api/`;
+const tourna_game = `https://${host}:9008/api/tournament/`;
+const pong_game = `https://${host}:9006/api/gamedb/`;
+const tag_game = `https://${host}:9007/api/tag-gamedb/`;
 var photo = null;
 let username_;
 async function Friends() {
@@ -669,7 +671,7 @@ function check_and_set_online(newNotification) {
 
 export async function check_friends_status() {
   await check_access_token();
-  friendsocket = new WebSocket("wss://127.0.0.1:9005/ws/online-status/", ["token", get_localstorage('token'), "session_id", get_localstorage('session_id')]);
+  friendsocket = new WebSocket(`wss://${host}:9005/ws/online-status/`, ["token", get_localstorage('token'), "session_id", get_localstorage('session_id')]);
     
   friendsocket.onopen = function () {
     console.log('online status Websocket connection established.');

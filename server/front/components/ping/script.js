@@ -1,13 +1,14 @@
 import { loadHTML, loadCSS, player_webSocket, socket_friend_request, remove_ping_remote_game, remove_game_pong_f_database, accumulatedNotifications, displayNotifications } from '../../utils.js';
 import { login ,log_out_func, logoutf, get_localstorage, getCookie, check_access_token } from '../../auth.js';
-import { changeAccess } from '../profile/profile.js'
-import {checkFirst} from '../home/home.js'
-var api = "https://127.0.0.1:9004/api/";
-var api_game = "https://127.0.0.1:9006/api/gamedb/";
-let game_socket = "wss://127.0.0.1:9006/ws/game-db/";
-let tournament = "https://127.0.0.1:9008/api/tournament/"
-const url = "https://127.0.0.1:9006/api/gamedb/add-game-score/";
+import { changeAccess } from '../profile/profile.js';
+import {checkFirst} from '../home/home.js';;
+var api = `https://${host}:9004/api/`;
+var api_game = `https://${host}:9006/api/gamedb/`;
+let game_socket = `wss://${host}:9006/ws/game-db/`;
+let tournament = `https://${host}:9008/api/tournament/`
+const url = `https://${host}:9006/api/gamedb/add-game-score/`;
 
+const host = "127.0.0.1";
 let name = "";
 let html = "";
 export let game_data;
