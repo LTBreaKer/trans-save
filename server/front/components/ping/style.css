@@ -765,6 +765,12 @@ display: none;
    /*  ======= ====== ====== ======= ======= ====== ======= ======= */
 
 
+   #description {
+    font-size: 20px;
+    color: #06b4cf
+
+  }
+
 
    .container .tournament_players {
       position: fixed;

@@ -97,7 +97,8 @@ async function Ping() {
   
   const app = document.getElementById('app');
   app.innerHTML = html;
-
+  let user_name = await fetchUserName()
+  document.getElementById("description").textContent = `In local game ${user_name.toUpperCase()} moves using the keys W and S; While in the remote game uses the arrow keys (Up and Down). And the opponent uses the arrow keys (Up and Down).`
 
   if (localStorage.getItem("dataPongMatch"))
     await pong_game_score();
