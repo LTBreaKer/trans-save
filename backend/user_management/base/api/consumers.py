@@ -100,7 +100,8 @@ class FriendRequestConsumer(AsyncWebsocketConsumer):
             await self.accept(subprotocol='token')
 
             friend_requests = await sync_to_async(lambda: list(FriendRequest.objects.filter(to_user_id=self.user_id)))()
-
+            import sys
+            print("friend_requests ---------------------->", friend_requests, file=sys.stderr)
             for friend_request in friend_requests:
                 response = await sync_to_async(get_user)(user_id=friend_request.from_user_id, auth_header=auth_header, session_id=session_id)
                 from_user_data = await sync_to_async(response.json)()

@@ -2,11 +2,12 @@ import { loadHTML, loadCSS,  player_webSocket ,remove_tag_remote_game, remove_ga
 import { login ,log_out_func, logoutf, get_localstorage, getCookie, check_access_token } from '../../auth.js';
 import {setHeaderContent, setNaveBarContent} from '../tournament/script.js';
 import { fetchUserName } from '../remote_tag/tag.js';
+const host = "127.0.0.1"
 
 // https://{{ip}}:9007:ws/tag-game-db/
-var api = "https://127.0.0.1:9004/api/";
-let game_api = 'https://127.0.0.1:9007/api/tag-gamedb/';
-const ta_socket = 'wss://127.0.0.1:9007/ws/tag-game-db/';
+var api = `https://${host}:9004/api/`;
+let game_api = `https://${host}:9007/api/tag-gamedb/`;
+const ta_socket = `wss://${host}:9007/ws/tag-game-db/`;
 let tag_game_info;
 async function Ta() {
   await remove_game_tag_f_database();
@@ -28,7 +29,7 @@ async function Ta() {
   setNaveBarContent();
 
   let user_name = await fetchUserName()
-  document.getElementById("description").textContent = `${user_name.toUpperCase()} moves using the keys W, A and D, while the opponent uses the arrow keys (Up, Right, Left).`
+  document.getElementById("description").textContent = `${user_name.toUpperCase()} moves using the keys W, A and D in the local game; and uses the arrow keys (Up, Right, Left) in the remote game .While the opponent uses the arrow keys (Up, Right, Left).`
 
   await checkFirst();
   if (!socket_friend_request)
@@ -118,7 +119,7 @@ function tag_socket() {
 
 try {
   const subprotocols = ['token', get_localstorage('token')];
-  const ws = new WebSocket("wss://127.0.0.1:9007/ws/tag-game-db/",  ["token", get_localstorage('token'), "session_id", get_localstorage('session_id')]);
+  const ws = new WebSocket(`wss://${host}:9007/ws/tag-game-db/`,  ["token", get_localstorage('token'), "session_id", get_localstorage('session_id')]);
   ws.onmessage = async function(event) {
     const data = await JSON.parse(event.data);
     console.log(' ------------------- Message from server socket tag: ---------------- ', data);

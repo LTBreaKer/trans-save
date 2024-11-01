@@ -21,7 +21,7 @@ async function Home() {
   setNaveBarContent();
   console.log("online status --------------- > ", friendsocket)
   if (!friendsocket || friendsocket.readyState === WebSocket.CLOSED)
-    check_friends_status();
+    await check_friends_status();
   await checkFirst();
   if (!socket_friend_request)
     player_webSocket();

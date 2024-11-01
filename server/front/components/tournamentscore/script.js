@@ -322,8 +322,6 @@ async function changeAccess() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
-          'Authorization': 'Bearer ' + get_localstorage('token'),
-          'Session-ID': get_localstorage('session_id')
         },
         credentials: 'include',
         body: JSON.stringify(data)
