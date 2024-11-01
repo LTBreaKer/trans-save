@@ -42,7 +42,7 @@ async function Game() {
   async function initializeApp()
   {
     try{
-        const socket = await connectWebSocket(`ws://${host}:8005/ws/tag-game/`);
+        const socket = await connectWebSocket(`wss://${host}:8005/ws/tag-game/`);
         return socket;
     }
     catch(error){

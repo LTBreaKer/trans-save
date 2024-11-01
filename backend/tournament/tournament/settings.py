@@ -29,7 +29,7 @@ SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-host = os.getenv('HOST')
+host = os.getenv('HOST_NAME')
 
 ALLOWED_HOSTS = [host, '127.0.0.1', 'localhost', '10.14.8.9', '10.14.6.10', 'user-management-api', 'auth-api', 'server', 'game-db']
 

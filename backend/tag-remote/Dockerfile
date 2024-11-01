@@ -17,6 +17,9 @@ COPY ./tools/script.sh /script.sh
 
 RUN chmod +x /script.sh
 
+COPY ./tools/server.key /etc/ssl/private/server.key
+COPY ./tools/server.crt /etc/ssl/certs/server.crt
+
 ENTRYPOINT ["sh", "/script.sh"]
 
 # ENTRYPOINT ["sleep", "infinity"]

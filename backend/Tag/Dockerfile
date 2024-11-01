@@ -21,6 +21,9 @@ COPY ./project/ /usr/src/app/
 
 # CMD [ "python", "manage.py", "migrate"]
 
+COPY ./tools/server.key /etc/ssl/private/server.key
+COPY ./tools/server.crt /etc/ssl/certs/server.crt
+
 WORKDIR /usr/src/app/vv
 
 ENTRYPOINT [ "ash", "../script.sh" ]

@@ -92,7 +92,8 @@ export async function displayNotifications(notifications) {
     console.log("hhhhhhhhhhhhhhhhhhhhh");
     console.log("notification here check what's the problem =>    ", notifications);
     const notificationsArray =  Array.isArray(notifications) ? notifications : [notifications];
-    console.log(notifications[0].type);
+    if (notifications && notifications[0])
+      console.log(notifications[0].type);
     
     
     const notifiDisplay = document.querySelector('.notifi_btn');

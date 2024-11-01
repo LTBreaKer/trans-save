@@ -14,6 +14,8 @@ destination=(
     "../backend/tag-remote/tools"
     "../backend/tournament/tools"
     "../backend/user_management/tools"
+    "../backend/pong_backend/tools"
+    "../server/tools"
 )
 
 for dest in "${destination[@]}"; do

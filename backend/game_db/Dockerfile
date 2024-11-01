@@ -13,8 +13,11 @@ RUN pip install -r requirements.txt
 
 COPY ./tools/entrypoint.sh /entrypoint.sh
 
-COPY ./tools/cert-key.pem /etc/ssl/private/cert-key.pem
-COPY ./tools/cert.pem /etc/ssl/certs/cert.pem
+#COPY ./tools/cert-key.pem /etc/ssl/private/cert-key.pem
+#COPY ./tools/cert.pem /etc/ssl/certs/cert.pem
+
+COPY ./tools/server.key /etc/ssl/private/server.key
+COPY ./tools/server.crt /etc/ssl/certs/server.crt
 
 RUN chmod +x /entrypoint.sh
 

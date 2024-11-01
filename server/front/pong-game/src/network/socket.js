@@ -89,7 +89,7 @@ function userConnectionInfo() {
 export async function localGameSocket(group_name) {
     console.log("group name: ", group_name);
     try {
-        const wssUrl = `ws://${host}:9009/ws/local_pong_game/`;
+        const wssUrl = `wss://${host}:9009/ws/local_pong_game/`;
         let ws = new WebSocket(wssUrl);
         ws.onopen = async (event) => {
             ws.send(JSON.stringify(userConnectionInfo()));
@@ -125,7 +125,7 @@ function choicePaddle({name_current_user, player1_name}) {
 export async function paddleSocket(group_name) {
     console.log("group name: ", group_name);
     try {
-        const wssUrl = `ws://${host}:9009/ws/paddle_pong_game/`;
+        const wssUrl = `wss://${host}:9009/ws/paddle_pong_game/`;
         let ws = new WebSocket(wssUrl);
         ws.onopen = async (event) => {
             console.log('paddle game WebSocket conection established.');
@@ -157,7 +157,7 @@ export async function paddleSocket(group_name) {
 
 async function connectBallSocket() {
     try {
-        const wssUrl = `ws://${host}:9009/ws/remote_pong_game/`;
+        const wssUrl = `wss://${host}:9009/ws/remote_pong_game/`;
         let ws = new WebSocket(wssUrl);
         ws.onopen = async (event) => {
             console.log('remote game WebSocket conection established.');

@@ -11,6 +11,10 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,7 +29,9 @@ SECRET_KEY = 'django-insecure-7#8712do255+9c&63@7s%iij&y+j%($1@*zuh0vc*%&#5981n8
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'tag-remote']
+host = os.getenv('HOST_NAME')
+
+ALLOWED_HOSTS = [host, '127.0.0.1', 'localhost', 'tag-remote']
 
 
 # Application definition

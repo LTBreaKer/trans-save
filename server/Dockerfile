@@ -10,8 +10,8 @@ RUN rm /etc/nginx/sites-enabled/default
 
 RUN ln -s /etc/nginx/sites-available/example.com /etc/nginx/sites-enabled/
 
-COPY ./tools/cert.pem /etc/ssl/certs/cert.pem
-COPY ./tools/cert-key.pem /etc/ssl/private/cert-key.pem
+COPY ./tools/server.crt /etc/ssl/certs/server.crt
+COPY ./tools/server.key /etc/ssl/private/server.key
 
 # RUN openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/example.com.key -out /etc/ssl/certs/example.com.crt -subj "/C=FR/ST=Paris/L=Paris/O=42/OU=42/CN=example.com"
 

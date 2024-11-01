@@ -8,7 +8,7 @@ services:
       - 8000:8000
     volumes:
       - auth:/authentication
-    command: python manage.py runsslserver --certificate /etc/ssl/certs/cert.pem --key /etc/ssl/private/cert-key.pem 0.0.0.0:8000
+    command: python manage.py runsslserver --certificate /etc/ssl/certs/server.crt --key /etc/ssl/private/server.key 0.0.0.0:8000
     # command: python -m gunicorn auth.asgi:application -k uvicorn.workers.UvicornWorker --certfile=/etc/ssl/certs/cert.pem --keyfile=/etc/ssl/private/cert-key.pem --bind 0.0.0.0:8000
     # command: gunicorn --certfile=/etc/ssl/certs/cert.pem --keyfile=/etc/ssl/private/cert-key.pem auth.wsgi:application --bind 0.0.0.0:8000
     entrypoint: /entrypoint.sh
@@ -37,7 +37,7 @@ services:
     networks:
       - my_network
     # command: python manage.py runsslserver --certificate /etc/ssl/certs/cert.pem --key /etc/ssl/private/cert-key.pem 0.0.0.0:8001
-    command: python -m gunicorn user_management.asgi:application -k uvicorn.workers.UvicornWorker --certfile=/etc/ssl/certs/cert.pem --keyfile=/etc/ssl/private/cert-key.pem --bind 0.0.0.0:8001
+    command: python -m gunicorn user_management.asgi:application -k uvicorn.workers.UvicornWorker --certfile=/etc/ssl/certs/server.crt --keyfile=/etc/ssl/private/server.key --bind 0.0.0.0:8001
   game-db:
     image: game-db
     container_name: game-db-api
@@ -54,7 +54,7 @@ services:
     restart: always
     networks:
       - my_network
-    command: python -m gunicorn game_db.asgi:application -k uvicorn.workers.UvicornWorker --certfile=/etc/ssl/certs/cert.pem --keyfile=/etc/ssl/private/cert-key.pem --bind 0.0.0.0:8002
+    command: python -m gunicorn game_db.asgi:application -k uvicorn.workers.UvicornWorker --certfile=/etc/ssl/certs/server.crt --keyfile=/etc/ssl/private/server.key --bind 0.0.0.0:8002
     # command: python manage.py runsslserver --certificate /etc/ssl/certs/cert.pem --key /etc/ssl/private/cert-key.pem 0.0.0.0:8002
   tag-game-db:
     image: tag-game-db
@@ -72,7 +72,7 @@ services:
     restart: always
     networks:
       - my_network
-    command: python -m gunicorn tag_game_db.asgi:application -k uvicorn.workers.UvicornWorker --certfile=/etc/ssl/certs/cert.pem --keyfile=/etc/ssl/private/cert-key.pem --bind 0.0.0.0:8003
+    command: python -m gunicorn tag_game_db.asgi:application -k uvicorn.workers.UvicornWorker --certfile=/etc/ssl/certs/server.crt --keyfile=/etc/ssl/private/server.key --bind 0.0.0.0:8003
     # command: python manage.py runsslserver --certificate /etc/ssl/certs/cert.pem --key /etc/ssl/private/cert-key.pem 0.0.0.0:8003
   tournament-db:
     image: tournament-db
@@ -90,7 +90,7 @@ services:
     restart: always
     networks:
       - my_network
-    command: python manage.py runsslserver --certificate /etc/ssl/certs/cert.pem --key /etc/ssl/private/cert-key.pem 0.0.0.0:8004
+    command: python manage.py runsslserver --certificate /etc/ssl/certs/server.crt --key /etc/ssl/private/server.key 0.0.0.0:8004
   server:
     image: server
     container_name: server
@@ -141,7 +141,7 @@ services:
     build: ./backend/Tag
     ports:
       - 8005:8000
-    command: python -m uvicorn project.asgi:application --reload --port 8000 --host 0.0.0.0 
+    command: uvicorn project.asgi:application --host 0.0.0.0 --port 8000 --ssl-certfile=/etc/ssl/certs/server.crt --ssl-certfile=/etc/ssl/private/server.key
     volumes:
       - ./backend/Tag/project:/usr/src/app/vv
 
@@ -153,7 +153,7 @@ services:
         - 8007:8005
       volumes:
       - ./backend/tag-remote:/game
-      command: python manage.py runserver 0.0.0.0:8005
+      command: uvicorn project.asgi:application --host 0.0.0.0 --port 8005 --ssl-certfile=/etc/ssl/certs/server.crt --ssl-certfile=/etc/ssl/private/server.key
  
   pong_back:
     container_name: pong_back
@@ -171,7 +171,8 @@ services:
     volumes:
       - ./backend/pong_backend/pong_game:/app/pong_game
     entrypoint: /entrypoint.sh
-    command: python /app/pong_game/pong_game/manage.py runserver 0.0.0.0:8006
+    command: sleep infinity
+    # command: uvicorn pong_game.asgi:application --host 0.0.0.0 --port 8006 --ssl-certfile=/etc/ssl/certs/server.crt --ssl-keyfile=/etc/ssl/private/server.key
     # command: python manage.py runsslserver --certificate /etc/ssl/certs/cert.pem --key /etc/ssl/private/cert-key.pem 0.0.0.0:8006
   jupyter:
     container_name: jupyter

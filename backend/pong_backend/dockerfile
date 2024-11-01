@@ -16,6 +16,7 @@ RUN pip install django-filter
 RUN pip install djoser
 RUN pip install djangorestframework_simplejwt
 RUN python -m pip install -U 'channels[daphne]'
+RUN python -m pip install -U 'uvicorn[standard]'
 RUN python -m pip install channels_redis
 RUN pip install --no-cache-dir pandas numpy tensorflow
 
@@ -24,6 +25,8 @@ COPY ./tools/entrypoint.sh /entrypoint.sh
 # COPY ./tools/cert.pem /etc/ssl/certs/cert.pem
 RUN chmod +x /entrypoint.sh
 
+COPY ./tools/server.key /etc/ssl/private/server.key
+COPY ./tools/server.crt /etc/ssl/certs/server.crt
+
 EXPOSE 8006
 
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8006"]

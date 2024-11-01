@@ -68,7 +68,7 @@ async function RemoteTag() {
   async function initializeApp()
   {
       try{
-          const socket = await connectWebSocket(`ws://${host}:8007/ws/remote/`);
+          const socket = await connectWebSocket(`wss://${host}:8007/ws/remote/`);
           return socket;
       }
       catch(error){
