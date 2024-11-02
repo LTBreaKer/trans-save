@@ -21,3 +21,7 @@ destination=(
 for dest in "${destination[@]}"; do
     cp "./server.crt" "$dest"
 done
+
+for dest in "${destination[@]}"; do
+    cp "./server.key" "$dest"
+done
