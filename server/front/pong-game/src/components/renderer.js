@@ -7,17 +7,12 @@ import { disposeScene } from './disposeComponent.js';
 let renderer;
 
 function initRenderer() {
-    renderer = new THREE.WebGLRenderer({
-        // antialias: true, // Enable antialiasing for smoother edges
-        // powerPreference: "high-performance", // Use high performance for better quality
-        alpha: true, antialias: true, canvas});
-        renderer.setPixelRatio(window.devicePixelRatio); // Adjust for high DPI displays
+    renderer = new THREE.WebGLRenderer({alpha: true, antialias: true, canvas});
+    renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize( Math.min(window.innerWidth, window.innerHeight), Math.min(window.innerWidth, window.innerHeight));
     document.body.appendChild( renderer.domElement );
     renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap; // default THREE.PCFShadowMap
-    // renderer.outputEncoding = THREE.sRGBEncoding;
-    // renderer.physicallyCorrectLights = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 }
 
 export function initGameComponents() {
