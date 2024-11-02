@@ -11,7 +11,7 @@ from .paddle_class import Paddle
 from .ball_class import width, height, ballRaduis, paddleHeight, paddleWidth
 import requests
 
-goals_to_win = 2
+goals_to_win = 5
 
 ########################## PlayerConsumer #########################
 class PlayerConsumer(AsyncWebsocketConsumer):
@@ -84,6 +84,8 @@ class PlayerConsumer(AsyncWebsocketConsumer):
 			await self.close_game_consumers()
 		elif (type == "add_user_data"):
 			await self.add_user_data(text_data_json)
+		elif (type == "update_token"):
+			await self.update_token(text_data_json)
 			
 	async def add_user_data(self, e):
 		self.data = e

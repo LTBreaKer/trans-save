@@ -1,0 +1,384 @@
+.:
+total 8
+drwxr-xr-x 2 aharrass 4219  138 Nov  2 16:28 conf
+-rw-r--r-- 1 aharrass 4219  563 Nov  2 16:28 default.conf
+-rw-r--r-- 1 aharrass 4219 1151 Nov  2 16:28 Dockerfile
+drwxr-xr-x 6 aharrass 4219  220 Nov  2 16:28 front
+-rw-r--r-- 1 aharrass 4219    0 Nov  2 18:42 gg
+drwxr-xr-x 2 aharrass 4219   95 Nov  2 16:28 tools
+
+./conf:
+total 24
+-rw-r--r-- 1 aharrass 4219 388 Nov  2 16:28 auth.conf
+-rw-r--r-- 1 aharrass 4219 537 Nov  2 16:28 game-db.conf
+-rw-r--r-- 1 aharrass 4219 549 Nov  2 16:28 pong.conf
+-rw-r--r-- 1 aharrass 4219 538 Nov  2 16:28 tag-game-db.conf
+-rw-r--r-- 1 aharrass 4219 385 Nov  2 16:28 tournament-db.conf
+-rw-r--r-- 1 aharrass 4219 545 Nov  2 16:28 user-management.conf
+
+./front:
+total 44
+-rw-r--r--  1 aharrass 4219   668 Nov  2 18:38 app.js
+drwxr-xr-x  2 aharrass 4219  4096 Nov  2 16:28 assets
+-rw-r--r--  1 aharrass 4219  4450 Nov  2 18:32 auth.js
+drwxr-xr-x 15 aharrass 4219   217 Nov  2 16:28 components
+drwxr-xr-x  7 aharrass 4219   122 Nov  2 16:28 images
+-rw-r--r--  1 aharrass 4219   835 Nov  2 16:28 index.html
+drwxr-xr-x  4 aharrass 4219    31 Nov  2 16:28 pong-game
+-rw-r--r--  1 aharrass 4219  4527 Nov  2 18:32 router.js
+-rw-r--r--  1 aharrass 4219     0 Nov  2 16:23 somefunctions
+-rw-r--r--  1 aharrass 4219   533 Nov  2 16:23 store.js
+-rw-r--r--  1 aharrass 4219     0 Nov  2 16:23 style.css
+-rw-r--r--  1 aharrass 4219 10216 Nov  2 16:28 utils.js
+
+./front/assets:
+total 472
+-rw-r--r-- 1 aharrass 4219 230694 Nov  2 16:28 back.jpg
+-rw-r--r-- 1 aharrass 4219    401 Nov  2 16:28 blue_box_IdleL1.png
+-rw-r--r-- 1 aharrass 4219    402 Nov  2 16:28 blue_box_IdleL2.png
+-rw-r--r-- 1 aharrass 4219    401 Nov  2 16:28 blue_box_IdleL.png
+-rw-r--r-- 1 aharrass 4219    401 Nov  2 16:28 blue_box_IdleR1.png
+-rw-r--r-- 1 aharrass 4219    403 Nov  2 16:28 blue_box_IdleR2.png
+-rw-r--r-- 1 aharrass 4219    401 Nov  2 16:28 blue_box_IdleR.png
+-rw-r--r-- 1 aharrass 4219    412 Nov  2 16:28 blue_box_left.png
+-rw-r--r-- 1 aharrass 4219    413 Nov  2 16:28 blue_box_right.png
+-rw-r--r-- 1 aharrass 4219    521 Nov  2 16:28 GO.png
+-rw-r--r-- 1 aharrass 4219 113252 Nov  2 16:28 Hexenkoetel-qZRv1.ttf
+-rw-r--r-- 1 aharrass 4219    399 Nov  2 16:28 num0.png
+-rw-r--r-- 1 aharrass 4219    407 Nov  2 16:28 num1.png
+-rw-r--r-- 1 aharrass 4219    414 Nov  2 16:28 num2.png
+-rw-r--r-- 1 aharrass 4219    430 Nov  2 16:28 num3.png
+-rw-r--r-- 1 aharrass 4219    396 Nov  2 16:28 num4.png
+-rw-r--r-- 1 aharrass 4219    415 Nov  2 16:28 num5.png
+-rw-r--r-- 1 aharrass 4219    418 Nov  2 16:28 num6.png
+-rw-r--r-- 1 aharrass 4219    399 Nov  2 16:28 num7.png
+-rw-r--r-- 1 aharrass 4219    402 Nov  2 16:28 num8.png
+-rw-r--r-- 1 aharrass 4219    418 Nov  2 16:28 num9.png
+-rw-r--r-- 1 aharrass 4219    584 Nov  2 16:28 platform.png
+-rw-r--r-- 1 aharrass 4219    401 Nov  2 16:28 red_box_IdleL1.png
+-rw-r--r-- 1 aharrass 4219    402 Nov  2 16:28 red_box_IdleL2.png
+-rw-r--r-- 1 aharrass 4219    401 Nov  2 16:28 red_box_IdleL.png
+-rw-r--r-- 1 aharrass 4219    401 Nov  2 16:28 red_box_IdleR1.png
+-rw-r--r-- 1 aharrass 4219    403 Nov  2 16:28 red_box_IdleR2.png
+-rw-r--r-- 1 aharrass 4219    401 Nov  2 16:28 red_box_IdleR.png
+-rw-r--r-- 1 aharrass 4219    412 Nov  2 16:28 red_box_left.png
+-rw-r--r-- 1 aharrass 4219    413 Nov  2 16:28 red_box_right.png
+-rw-r--r-- 1 aharrass 4219    363 Nov  2 16:28 tagger.png
+-rw-r--r-- 1 aharrass 4219  13480 Nov  2 16:28 Valorax-lg25V.otf
+
+./front/components:
+total 4
+drwxr-xr-x 2 aharrass 4219 4096 Nov  2 16:28 assets
+drwxr-xr-x 2 aharrass 4219   63 Nov  2 16:28 friends
+drwxr-xr-x 2 aharrass 4219   88 Nov  2 16:28 game
+drwxr-xr-x 2 aharrass 4219   54 Nov  2 16:28 home
+drwxr-xr-x 2 aharrass 4219   57 Nov  2 16:28 login
+drwxr-xr-x 2 aharrass 4219   66 Nov  2 16:28 notfound
+drwxr-xr-x 2 aharrass 4219   75 Nov  2 16:28 ping
+drwxr-xr-x 2 aharrass 4219   54 Nov  2 16:28 pingpong
+drwxr-xr-x 2 aharrass 4219   63 Nov  2 16:28 profile
+drwxr-xr-x 2 aharrass 4219   92 Nov  2 16:28 remote_tag
+drwxr-xr-x 2 aharrass 4219   58 Nov  2 16:28 ta
+drwxr-xr-x 2 aharrass 4219   58 Nov  2 16:28 tournament
+drwxr-xr-x 2 aharrass 4219   85 Nov  2 16:28 tournamentscore
+
+./front/components/assets:
+total 472
+-rw-r--r-- 1 aharrass 4219 230694 Nov  2 16:23 back.jpg
+-rw-r--r-- 1 aharrass 4219    401 Nov  2 16:23 blue_box_IdleL1.png
+-rw-r--r-- 1 aharrass 4219    402 Nov  2 16:23 blue_box_IdleL2.png
+-rw-r--r-- 1 aharrass 4219    401 Nov  2 16:23 blue_box_IdleL.png
+-rw-r--r-- 1 aharrass 4219    401 Nov  2 16:23 blue_box_IdleR1.png
+-rw-r--r-- 1 aharrass 4219    403 Nov  2 16:23 blue_box_IdleR2.png
+-rw-r--r-- 1 aharrass 4219    401 Nov  2 16:23 blue_box_IdleR.png
+-rw-r--r-- 1 aharrass 4219    412 Nov  2 16:23 blue_box_left.png
+-rw-r--r-- 1 aharrass 4219    413 Nov  2 16:23 blue_box_right.png
+-rw-r--r-- 1 aharrass 4219    521 Nov  2 16:23 GO.png
+-rw-r--r-- 1 aharrass 4219 113252 Nov  2 16:28 Hexenkoetel-qZRv1.ttf
+-rw-r--r-- 1 aharrass 4219    399 Nov  2 16:23 num0.png
+-rw-r--r-- 1 aharrass 4219    407 Nov  2 16:23 num1.png
+-rw-r--r-- 1 aharrass 4219    414 Nov  2 16:23 num2.png
+-rw-r--r-- 1 aharrass 4219    430 Nov  2 16:23 num3.png
+-rw-r--r-- 1 aharrass 4219    396 Nov  2 16:23 num4.png
+-rw-r--r-- 1 aharrass 4219    415 Nov  2 16:23 num5.png
+-rw-r--r-- 1 aharrass 4219    418 Nov  2 16:23 num6.png
+-rw-r--r-- 1 aharrass 4219    399 Nov  2 16:23 num7.png
+-rw-r--r-- 1 aharrass 4219    402 Nov  2 16:23 num8.png
+-rw-r--r-- 1 aharrass 4219    418 Nov  2 16:23 num9.png
+-rw-r--r-- 1 aharrass 4219    584 Nov  2 16:28 platform.png
+-rw-r--r-- 1 aharrass 4219    401 Nov  2 16:23 red_box_IdleL1.png
+-rw-r--r-- 1 aharrass 4219    402 Nov  2 16:23 red_box_IdleL2.png
+-rw-r--r-- 1 aharrass 4219    401 Nov  2 16:23 red_box_IdleL.png
+-rw-r--r-- 1 aharrass 4219    401 Nov  2 16:23 red_box_IdleR1.png
+-rw-r--r-- 1 aharrass 4219    403 Nov  2 16:23 red_box_IdleR2.png
+-rw-r--r-- 1 aharrass 4219    401 Nov  2 16:23 red_box_IdleR.png
+-rw-r--r-- 1 aharrass 4219    412 Nov  2 16:23 red_box_left.png
+-rw-r--r-- 1 aharrass 4219    413 Nov  2 16:23 red_box_right.png
+-rw-r--r-- 1 aharrass 4219    363 Nov  2 16:23 tagger.png
+-rw-r--r-- 1 aharrass 4219  13480 Nov  2 16:28 Valorax-lg25V.otf
+
+./front/components/friends:
+total 52
+-rw-r--r-- 1 aharrass 4219 26515 Nov  2 16:28 friends.css
+-rw-r--r-- 1 aharrass 4219 10058 Nov  2 16:28 friends.html
+-rw-r--r-- 1 aharrass 4219 11343 Nov  2 18:32 friends.js
+
+./front/components/game:
+total 36
+-rw-r--r-- 1 aharrass 4219  1343 Nov  2 16:28 game.css
+-rw-r--r-- 1 aharrass 4219   577 Nov  2 16:28 game.html
+-rw-r--r-- 1 aharrass 4219  2336 Nov  2 18:33 game.js
+-rw-r--r-- 1 aharrass 4219  1836 Nov  2 16:28 image_src.js
+-rw-r--r-- 1 aharrass 4219 16725 Nov  2 18:33 tag.js
+
+./front/components/home:
+total 24
+-rw-r--r-- 1 aharrass 4219 13671 Nov  2 16:28 home.css
+-rw-r--r-- 1 aharrass 4219  1459 Nov  2 16:28 home.html
+-rw-r--r-- 1 aharrass 4219  3703 Nov  2 18:33 home.js
+
+./front/components/login:
+total 32
+-rw-r--r-- 1 aharrass 4219  6061 Nov  2 16:28 login.css
+-rw-r--r-- 1 aharrass 4219  4407 Nov  2 16:28 login.html
+-rw-r--r-- 1 aharrass 4219 15318 Nov  2 18:33 login.js
+
+./front/components/notfound:
+total 12
+-rw-r--r-- 1 aharrass 4219 285 Nov  2 16:23 notfound.css
+-rw-r--r-- 1 aharrass 4219 396 Nov  2 16:28 notfound.html
+-rw-r--r-- 1 aharrass 4219 312 Nov  2 16:23 notfound.js
+
+./front/components/ping:
+total 52
+-rw-r--r-- 1 aharrass 4219   994 Nov  2 16:28 cookie.js
+-rw-r--r-- 1 aharrass 4219  6302 Nov  2 16:28 index.html
+-rw-r--r-- 1 aharrass 4219 17628 Nov  2 18:33 script.js
+-rw-r--r-- 1 aharrass 4219 19333 Nov  2 16:28 style.css
+
+./front/components/pingpong:
+total 12
+-rw-r--r-- 1 aharrass 4219  307 Nov  2 16:23 ping.css
+-rw-r--r-- 1 aharrass 4219  277 Nov  2 16:23 ping.html
+-rw-r--r-- 1 aharrass 4219 1335 Nov  2 16:28 ping.js
+
+./front/components/profile:
+total 68
+-rw-r--r-- 1 aharrass 4219 28480 Nov  2 16:28 profile.css
+-rw-r--r-- 1 aharrass 4219  8687 Nov  2 16:28 profile.html
+-rw-r--r-- 1 aharrass 4219 25121 Nov  2 18:33 profile.js
+
+./front/components/remote_tag:
+total 36
+-rw-r--r-- 1 aharrass 4219  1836 Nov  2 16:28 image_src.js
+-rw-r--r-- 1 aharrass 4219   578 Nov  2 16:28 index.html
+-rw-r--r-- 1 aharrass 4219  2592 Nov  2 18:34 script.js
+-rw-r--r-- 1 aharrass 4219  1343 Nov  2 16:28 style.css
+-rw-r--r-- 1 aharrass 4219 16394 Nov  2 18:34 tag.js
+
+./front/components/ta:
+total 28
+-rw-r--r-- 1 aharrass 4219  2524 Nov  2 16:28 index.html
+-rw-r--r-- 1 aharrass 4219  8057 Nov  2 18:34 script.js
+-rw-r--r-- 1 aharrass 4219 12453 Nov  2 16:28 style.css
+
+./front/components/tournament:
+total 36
+-rw-r--r-- 1 aharrass 4219  3915 Nov  2 16:28 index.html
+-rw-r--r-- 1 aharrass 4219 19653 Nov  2 18:34 script.js
+-rw-r--r-- 1 aharrass 4219  9523 Nov  2 16:28 style.css
+
+./front/components/tournamentscore:
+total 36
+-rw-r--r-- 1 aharrass 4219  3794 Nov  2 16:28 index.html
+-rw-r--r-- 1 aharrass 4219  4010 Nov  2 18:34 match_tournament.js
+-rw-r--r-- 1 aharrass 4219 13996 Nov  2 18:34 script.js
+-rw-r--r-- 1 aharrass 4219  9579 Nov  2 16:28 style.css
+
+./front/images:
+total 660
+drwxr-xr-x 2 aharrass 4219   4096 Nov  2 16:28 background-images
+-rw-r--r-- 1 aharrass 4219 667932 Nov  2 16:23 hello.png
+drwxr-xr-x 2 aharrass 4219    329 Nov  2 16:28 home
+drwxr-xr-x 2 aharrass 4219    173 Nov  2 16:28 login
+drwxr-xr-x 2 aharrass 4219     81 Nov  2 16:28 login-images
+drwxr-xr-x 4 aharrass 4219     63 Nov  2 16:28 pong
+
+./front/images/background-images:
+total 9496
+-rw-r--r-- 1 aharrass 4219 1166987 Nov  2 16:28 backgroundimge3.png
+-rw-r--r-- 1 aharrass 4219 1266081 Nov  2 16:28 backgroundimge4.png
+-rw-r--r-- 1 aharrass 4219   60409 Nov  2 16:28 ba.jpg
+-rw-r--r-- 1 aharrass 4219   20712 Nov  2 16:28 ba.webp
+-rw-r--r-- 1 aharrass 4219 1221302 Nov  2 16:28 Color Theory Presentation (1).png
+-rw-r--r-- 1 aharrass 4219 1240102 Nov  2 16:28 Color Theory Presentation.png
+-rw-r--r-- 1 aharrass 4219  211601 Nov  2 16:23 ezgif-3-6afedc263c.png
+-rw-r--r-- 1 aharrass 4219  155277 Nov  2 16:23 loginimage.png
+-rw-r--r-- 1 aharrass 4219   87688 Nov  2 16:23 Match-de-ping-pong-23.jpg
+-rw-r--r-- 1 aharrass 4219  800969 Nov  2 16:28 output-onlinepngtools (1)1.png
+-rw-r--r-- 1 aharrass 4219 1375435 Nov  2 16:28 output-onlinepngtools (15).png
+-rw-r--r-- 1 aharrass 4219 1123268 Nov  2 16:28 output-onlinepngtools (1).png
+-rw-r--r-- 1 aharrass 4219  427772 Nov  2 16:28 output-onlinepngtools (2).png
+-rw-r--r-- 1 aharrass 4219  538840 Nov  2 16:28 Untitled design (2).png
+
+./front/images/home:
+total 17980
+-rw-r--r-- 1 aharrass 4219   88413 Nov  2 16:28 backgroundgame.jpg
+-rw-r--r-- 1 aharrass 4219  230694 Nov  2 16:28 back.jpg
+-rw-r--r-- 1 aharrass 4219  931247 Nov  2 16:28 chibani.png
+-rw-r--r-- 1 aharrass 4219  148730 Nov  2 16:28 chibani.webp
+-rw-r--r-- 1 aharrass 4219  150654 Nov  2 16:28 file.png
+-rw-r--r-- 1 aharrass 4219 1780609 Nov  2 16:28 pingpong.png
+-rw-r--r-- 1 aharrass 4219   91302 Nov  2 16:28 pingpong.webp
+-rw-r--r-- 1 aharrass 4219   45274 Nov  2 16:23 Screenshot_15-5-2024_164545_www.bing.com.jpeg
+-rw-r--r-- 1 aharrass 4219 9161294 Nov  2 16:28 vecteezy_basketball-player-png-with-ai-generated_26759422.png
+-rw-r--r-- 1 aharrass 4219 5760270 Nov  2 16:28 vecteezy_golf-player-png-with-ai-generated_27309195.png
+
+./front/images/login:
+total 244
+-rw-r--r-- 1 aharrass 4219  12092 Nov  2 16:28 background.webp
+-rw-r--r-- 1 aharrass 4219  87594 Nov  2 16:23 Design sans titre.png
+-rw-r--r-- 1 aharrass 4219   2930 Nov  2 16:28 downloadd.png
+-rw-r--r-- 1 aharrass 4219   6415 Nov  2 16:28 download.png
+-rw-r--r-- 1 aharrass 4219   2386 Nov  2 16:28 logo.webp
+-rw-r--r-- 1 aharrass 4219 107055 Nov  2 16:28 switch_LE.png
+-rw-r--r-- 1 aharrass 4219  18372 Nov  2 16:23 switch.webp
+
+./front/images/login-images:
+total 5084
+-rw-r--r-- 1 aharrass 4219    3276 Nov  2 16:23 download-1.png
+-rw-r--r-- 1 aharrass 4219    1112 Nov  2 16:23 download.png
+-rw-r--r-- 1 aharrass 4219   20865 Nov  2 16:23 google.png
+-rw-r--r-- 1 aharrass 4219 5170611 Nov  2 16:28 otp.png
+
+./front/images/pong:
+total 28
+drwxr-xr-x 2 aharrass 4219   179 Nov  2 16:28 images
+-rw-r--r-- 1 aharrass 4219 23195 Nov  2 16:28 pong_background.png
+drwxr-xr-x 2 aharrass 4219  4096 Nov  2 16:28 textures
+
+./front/images/pong/images:
+total 4688
+-rw-r--r-- 1 aharrass 4219  646642 Nov  2 16:28 background_desert.jpg
+-rw-r--r-- 1 aharrass 4219 1484668 Nov  2 16:28 background-desert-road copy.jpg
+-rw-r--r-- 1 aharrass 4219 1484668 Nov  2 16:28 background-desert-road.jpg
+-rw-r--r-- 1 aharrass 4219  210344 Nov  2 16:28 pong2.png
+-rw-r--r-- 1 aharrass 4219  179035 Nov  2 16:28 pong3.png
+-rw-r--r-- 1 aharrass 4219  389681 Nov  2 16:28 pong copy.jpg
+-rw-r--r-- 1 aharrass 4219  389681 Nov  2 16:28 pong.png
+
+./front/images/pong/textures:
+total 80136
+-rw-r--r-- 1 aharrass 4219  1916459 Nov  2 16:28 ball_floor.jpeg
+-rw-r--r-- 1 aharrass 4219  6095751 Nov  2 16:28 ball_metal.jpeg
+-rw-r--r-- 1 aharrass 4219   209483 Nov  2 16:28 Glass_Window.jpg
+-rw-r--r-- 1 aharrass 4219 12481695 Nov  2 16:28 running_track_diff_4k.jpg
+-rw-r--r-- 1 aharrass 4219  1141966 Nov  2 16:28 SciFiShapesHoneycomb_flatsphere_large.jpg
+-rwxr-xr-x 1 aharrass 4219  2505558 Nov  2 16:28 silver_metal.jpg
+-rwxr-xr-x 1 aharrass 4219   812913 Nov  2 16:28 silver_metal.png
+-rwxr-xr-x 1 aharrass 4219  2921077 Nov  2 16:28 stadium-Planks.jpg
+-rw-r--r-- 1 aharrass 4219 12556766 Nov  2 16:28 stadium_stone.jpeg
+-rw-r--r-- 1 aharrass 4219 12097188 Nov  2 16:28 staduim_wood_worn.jpeg
+-rw-r--r-- 1 aharrass 4219 12910875 Nov  2 16:28 staduim_worn_planks.jpeg
+-rw-r--r-- 1 aharrass 4219 15060966 Nov  2 16:28 stone.jpeg
+-rw-r--r-- 1 aharrass 4219  1322454 Nov  2 16:28 Tiles.png
+
+./front/pong-game:
+total 0
+drwxr-xr-x 2 aharrass 4219 102 Nov  2 16:28 public
+drwxr-xr-x 9 aharrass 4219 123 Nov  2 16:28 src
+
+./front/pong-game/public:
+total 16
+-rw-r--r-- 1 aharrass 4219 1188 Nov  2 16:28 3dgame.html
+-rw-r--r-- 1 aharrass 4219  265 Nov  2 16:28 pong_loader.html
+-rw-r--r-- 1 aharrass 4219  278 Nov  2 16:28 popup_game_over.html
+-rw-r--r-- 1 aharrass 4219  404 Nov  2 16:28 popup_replay.html
+
+./front/pong-game/src:
+total 4
+drwxr-xr-x 5 aharrass 4219  47 Nov  2 16:28 assets
+drwxr-xr-x 2 aharrass 4219 166 Nov  2 16:28 components
+drwxr-xr-x 2 aharrass 4219  51 Nov  2 16:28 events
+drwxr-xr-x 2 aharrass 4219  38 Nov  2 16:28 game
+-rw-r--r-- 1 aharrass 4219 994 Nov  2 16:28 main3d.js
+drwxr-xr-x 2 aharrass 4219  40 Nov  2 16:28 network
+drwxr-xr-x 2 aharrass 4219  22 Nov  2 16:28 styles
+drwxr-xr-x 2 aharrass 4219  50 Nov  2 16:28 utils
+
+./front/pong-game/src/assets:
+total 0
+drwxr-xr-x 2 aharrass 4219  88 Nov  2 16:28 images
+drwxr-xr-x 2 aharrass 4219  96 Nov  2 16:28 svg
+drwxr-xr-x 2 aharrass 4219 295 Nov  2 16:28 textures
+
+./front/pong-game/src/assets/images:
+total 372
+-rw-r--r-- 1 aharrass 4219 276481 Nov  2 16:28 coverPicture.jpg
+-rw-r--r-- 1 aharrass 4219  86406 Nov  2 16:28 ibrahim3.png
+-rw-r--r-- 1 aharrass 4219   6914 Nov  2 16:28 list.png
+-rw-r--r-- 1 aharrass 4219    809 Nov  2 16:28 list-solid.svg
+
+./front/pong-game/src/assets/svg:
+total 12
+-rw-r--r-- 1 aharrass 4219  455 Nov  2 16:28 left-long-solid.svg
+-rw-r--r-- 1 aharrass 4219  443 Nov  2 16:28 list.html
+-rw-r--r-- 1 aharrass 4219 1946 Nov  2 16:28 notification-bell-1397-svgrepo-com.svg
+
+./front/pong-game/src/assets/textures:
+total 67412
+-rw-r--r-- 1 aharrass 4219   646642 Nov  2 16:28 background_desert.jpg
+-rw-r--r-- 1 aharrass 4219  1484668 Nov  2 16:28 background-desert-road.jpg
+-rw-r--r-- 1 aharrass 4219  1916459 Nov  2 16:28 ball_floor.jpeg
+-rw-r--r-- 1 aharrass 4219  6095751 Nov  2 16:28 ball_metal.jpeg
+-rwxr-xr-x 1 aharrass 4219  2505558 Nov  2 16:28 silver_metal.jpg
+-rwxr-xr-x 1 aharrass 4219   812913 Nov  2 16:28 silver_metal.png
+-rwxr-xr-x 1 aharrass 4219  2921077 Nov  2 16:28 stadium-Planks.jpg
+-rw-r--r-- 1 aharrass 4219 12556766 Nov  2 16:28 stadium_stone.jpeg
+-rw-r--r-- 1 aharrass 4219 12097188 Nov  2 16:28 staduim_wood_worn.jpeg
+-rw-r--r-- 1 aharrass 4219 12910875 Nov  2 16:28 staduim_worn_planks.jpeg
+-rw-r--r-- 1 aharrass 4219 15060966 Nov  2 16:28 stone.jpeg
+
+./front/pong-game/src/components:
+total 36
+-rw-r--r-- 1 aharrass 4219 1346 Nov  2 16:28 camera.js
+-rw-r--r-- 1 aharrass 4219 1262 Nov  2 16:28 disposeComponent.js
+-rw-r--r-- 1 aharrass 4219 1374 Nov  2 16:28 light.js
+-rw-r--r-- 1 aharrass 4219 1951 Nov  2 16:28 paddle.js
+-rw-r--r-- 1 aharrass 4219 1192 Nov  2 16:28 renderer.js
+-rw-r--r-- 1 aharrass 4219 2399 Nov  2 16:28 room.js
+-rw-r--r-- 1 aharrass 4219 1202 Nov  2 16:28 scene.js
+-rw-r--r-- 1 aharrass 4219  644 Nov  2 16:28 sphere.js
+-rw-r--r-- 1 aharrass 4219 2430 Nov  2 16:28 table.js
+
+./front/pong-game/src/events:
+total 8
+-rw-r--r-- 1 aharrass 4219 1084 Nov  2 16:28 keyboardEvent.js
+-rw-r--r-- 1 aharrass 4219 1374 Nov  2 16:28 mouseEvent.js
+
+./front/pong-game/src/game:
+total 12
+-rw-r--r-- 1 aharrass 4219 5473 Nov  2 16:28 game.js
+-rw-r--r-- 1 aharrass 4219 1414 Nov  2 16:28 paddle.js
+
+./front/pong-game/src/network:
+total 20
+-rw-r--r-- 1 aharrass 4219 6902 Nov  2 16:28 events.js
+-rw-r--r-- 1 aharrass 4219 8329 Nov  2 18:35 socket.js
+
+./front/pong-game/src/styles:
+total 8
+-rw-r--r-- 1 aharrass 4219 4275 Nov  2 16:28 main.css
+
+./front/pong-game/src/utils:
+total 8
+-rw-r--r-- 1 aharrass 4219 2091 Nov  2 16:28 globaleVariable.js
+-rw-r--r-- 1 aharrass 4219  964 Nov  2 16:28 request.js
+
+./tools:
+total 20
+-rw-r--r-- 1 aharrass 4219 3272 Nov  2 16:23 cert-key.pem
+-rw-r--r-- 1 aharrass 4219 1866 Nov  2 16:23 cert.pem
+-rw-r--r-- 1 aharrass 4219  506 Nov  2 16:28 script.sh
+-rw-r--r-- 1 aharrass 4219 1590 Nov  2 18:22 server.crt
+-rw-r--r-- 1 aharrass 4219 1679 Nov  2 18:22 server.key

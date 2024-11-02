@@ -64,6 +64,8 @@ def create_local_game(request):
         return Response({'message': 'Invalid player name'}, status=400)
     if len(player2_name) > 9:
         return Response({'message': 'Invalid player name'}, status=400)
+    if player2_name == user_availablity['username']:
+        return Response({'message': 'Invalid player name'}, status=400)
 
     print(user_availablity['avatar'])
     serializer = GameDbSerialiser(data={
@@ -241,10 +243,14 @@ def get_game_history_by_username(request):
     username = request.data.get('username')
     if not username:
         return Response(data={'message': 'username is required'}, status=400)
+    user_reponse = get_user(username=username, auth_header=AUTH_HEADER, session_id=session_id)
+    if user_reponse.status_code != 200:
+        return Response({'message': 'invalid username'}, status=400)
+    user_id = user_reponse.json()['user_data']['id']
     games = GameDb.objects.filter(
         Q(is_active=False) & (
-            (Q(is_remote=True) & (Q(player1_name=username) | Q(player2_name=username))) |
-            (Q(is_remote=False) & Q(player1_name=username))
+            (Q(is_remote=True) & (Q(player1_id=user_id) | Q(player2_id=user_id))) |
+            (Q(is_remote=False) & Q(player1_id=user_id))
         )
     )
     serializer = GameDbSerialiser(games, many=True)

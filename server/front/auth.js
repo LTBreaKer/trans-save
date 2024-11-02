@@ -1,4 +1,4 @@
-const host = "127.0.0.1";
+// const host = "127.0.0.1";
 
 const api = `https://${host}:9004/api/`;
 const csrftoken = getCookie('csrftoken');
@@ -7,6 +7,7 @@ const refresh  = localStorage.getItem('refresh');
 import { pong_game_score } from "./components/ping/script.js";
 import { friendsocket, changeAccess } from "./components/profile/profile.js"
 import { add_game_score } from "./components/ta/script.js";
+import { host } from "./config.js";
 
 function isAuthenticated() {
     return !!localStorage.getItem('token');

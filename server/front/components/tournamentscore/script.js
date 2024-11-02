@@ -2,8 +2,8 @@ import { loadHTML, loadCSS, player_webSocket, socket_friend_request, accumulated
 import { log_out_func ,login , logoutf, get_localstorage, getCookie } from '../../auth.js';
 import {id_of_tournament, changeAccess} from '../profile/profile.js';
 import {checkFirst} from '../home/home.js';
-
-const host = "127.0.0.1";
+import { host } from '../../config.js';
+// const host = "127.0.0.1";
 
 let tournament = `https://${host}:9008/api/tournament/`;
 var api = `https://${host}:9004/api/`;

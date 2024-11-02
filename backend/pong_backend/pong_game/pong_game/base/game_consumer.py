@@ -10,7 +10,7 @@ from .ball_class import Ball
 from .paddle_class import Paddle
 from .ball_class import width, height
 
-goals_to_win = 2
+goals_to_win = 5
 
 class GameConsumer(AsyncWebsocketConsumer):
 	def __init__(self, *args, **kwargs):

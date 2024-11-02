@@ -12,7 +12,8 @@ import { scene } from '../components/scene.js';
 import { disposeScene } from '../components/disposeComponent.js';
 import { endTournamentMatchScore } from '../../../components/tournamentscore/match_tournament.js';
 import { postRequest } from '../utils/request.js';
-const host = "127.0.0.1";
+import { host } from '../../../config.js';
+// const host = "127.0.0.1";
 
 export async function connectGame() {
     console.log("=====connect Game: ");

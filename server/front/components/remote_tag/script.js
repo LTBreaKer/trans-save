@@ -2,7 +2,8 @@ import { get_localstorage } from '../../auth.js';
 import { loadHTML, loadCSS } from '../../utils.js';
 import {tag_game_info} from '../ta/script.js';
 import {start_game} from './tag.js'
-const host = "127.0.0.1"
+import { host } from '../../config.js';
+// const host = "127.0.0.1"
 
 let socket
 let api = `https://${host}:9007/api/tag-gamedb/`

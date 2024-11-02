@@ -4,9 +4,9 @@ import { login ,log_out_func, logoutf, get_localstorage } from '../../auth.js';
 import {tag_game_info} from '../ta/script.js'
 import {check_friends_status, changeAccess , friendsocket} from '../profile/profile.js'
 import {setHeaderContent, setNaveBarContent} from '../tournament/script.js';
+import { host } from '../../config.js';
 
 
-const host = "127.0.0.1";
 var api = `https://${host}:9004/api/`;
 var api_game = `https://${host}:9007/api/`;
 var api1 = `https://${host}:9005/api/`;

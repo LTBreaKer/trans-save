@@ -12,8 +12,8 @@ import Tournament from './components/tournament/script.js';
 import RemoteTag from './components/remote_tag/script.js';
 import TournamentScore from './components/tournamentscore/script.js';
 import {remove_tag_remote_game, remove_ping_remote_game, remove_game_pong_f_database, remove_game_tag_f_database} from './utils.js';
-
-const host = "127.0.0.1";
+import { host } from './config.js';
+// const host = "127.0.0.1";
 
 var api_game = `https://${host}:9006/api/gamedb/`;
 let game_api = `https://${host}:9007/api/tag-gamedb/`;

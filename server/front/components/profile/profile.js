@@ -1,6 +1,7 @@
 import { loadHTML, loadCSS, player_webSocket, socket_friend_request, accumulatedNotifications, displayNotifications } from '../../utils.js';
 import {log_out_func,  logoutf, get_localstorage, check_access_token, getCookie, login } from '../../auth.js';
 import {setHeaderContent, setNaveBarContent} from '../tournament/script.js';
+import { host } from '../../config.js';
 let friendsocket;
 let id_of_tournament;
 
@@ -12,7 +13,7 @@ let ping_win;
 let tourn_win;
 let tourn_los;
 
-const host = "127.0.0.1";
+// const host = "127.0.0.1";
 
 const api = `https://${host}:9004/api/`;
 const api_one = `https://${host}:9005/api/`;

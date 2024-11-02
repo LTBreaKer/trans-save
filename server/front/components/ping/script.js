@@ -2,8 +2,8 @@ import { loadHTML, loadCSS, player_webSocket, socket_friend_request, remove_ping
 import { login ,log_out_func, logoutf, get_localstorage, getCookie, check_access_token } from '../../auth.js';
 import { changeAccess } from '../profile/profile.js';
 import {checkFirst} from '../home/home.js';;
-
-const host = "127.0.0.1";
+import { host } from '../../config.js';
+// const host = "127.0.0.1";
 
 var api = `https://${host}:9004/api/`;
 var api_game = `https://${host}:9006/api/gamedb/`;

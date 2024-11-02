@@ -1,8 +1,9 @@
+import { host } from './config.js';
 import { get_localstorage, check_access_token } from './auth.js';
 import { get_friends_home } from './components/profile/profile.js';
 
 
-export var host = "127.0.0.1";
+// export var host = "127.0.0.1";
 let game_api = `https://${host}:9007/api/tag-gamedb/`;
 var api_game = `https://${host}:9006/api/gamedb/`;
 let socket_friend_request;

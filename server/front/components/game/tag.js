@@ -3,7 +3,8 @@ import { socket } from './game.js'
 import {imageR1, imageL1, imageIR1, imageIL1, imageR2, imageL2, imageIR2, imageIL2, arrow, go_arrow, numbers, background, platform} from './image_src.js'
 import {tag_game_info, setTagGameInfo} from '../ta/script.js'
 import {get_localstorage, check_access_token} from '../../auth.js'
-const host = "127.0.0.1"
+import { host } from '../../config.js'
+// const host = "127.0.0.1"
 
 var api = `https://${host}:9007/api/tag-gamedb/`
 function start_game()

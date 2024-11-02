@@ -15,7 +15,7 @@ from .models import TrainingData, Turn
 import requests
 
 
-goals_to_win = 2
+goals_to_win = 5
 @database_sync_to_async
 def output_pos_hit(pos_hit):
     try:

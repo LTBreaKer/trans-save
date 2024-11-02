@@ -1,7 +1,8 @@
 import { loadHTML, loadCSS, player_webSocket, socket_friend_request, accumulatedNotifications, displayNotifications } from '../../utils.js';
 import {log_out_func, logoutf, get_localstorage, getCookie, login, check_access_token } from '../../auth.js';
 import {get_friends_home, set_pong_history , send_freinds_request, changeAccess, set_tag_history, set_tournament_data, tag_win, tag_unk, tag_los, ping_los, ping_win, tourn_win, tourn_los} from '../profile/profile.js';
-const host = "127.0.0.1";
+import { host } from '../../config.js';
+// const host = "127.0.0.1";
 const api = `https://${host}:9004/api/`;
 const api_one = `https://${host}:9005/api/`;
 const pong_game = `https://${host}:9006/api/gamedb/`;

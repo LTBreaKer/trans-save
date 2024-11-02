@@ -3,7 +3,8 @@ import { log_out_func ,login , logoutf, get_localstorage, getCookie, check_acces
 import { assingDataToGameData, statePongGameToTournament } from '../ping/script.js';
 import {checkFirst} from '../home/home.js';
 // import {changeAccess} from '../profile/profile.js';
-const host = "127.0.0.1";
+import { host } from '../../config.js';
+// const host = "127.0.0.1";
 
 let tournament = `https://${host}:9008/api/tournament/`;
 

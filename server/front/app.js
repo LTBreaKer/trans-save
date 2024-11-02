@@ -1,6 +1,9 @@
+
+import { host } from './config.js';
 import Router from './router.js';
 import { getState, setState, subscribe } from './store.js';
 import {get_localstorage } from './auth.js';
+
 
 console.log('hello maaraft ma9999999l hadchi walakin blan ghadi naaraf')
 await Router();

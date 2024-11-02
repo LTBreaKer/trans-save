@@ -4,8 +4,9 @@ import {setHeaderContent, setNaveBarContent} from '../tournament/script.js';
 import { fetchUserName } from '../remote_tag/tag.js';
 // import {changeAccess} from '../profile/profile.js';
 import {checkFirst} from '../home/home.js';
+import { host } from '../../config.js';
 
-const host = "127.0.0.1";
+// const host = "127.0.0.1";
 // https://{{ip}}:9007:ws/tag-game-db/
 var api = `https://${host}:9004/api/`;
 let game_api = `https://${host}:9007/api/tag-gamedb/`;

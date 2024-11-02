@@ -1,11 +1,12 @@
 import { loadHTML, loadCSS, getQueryParams, player_webSocket} from '../../utils.js';
 import {get_localstorage, login } from '../../auth.js';
+import { host } from '../../config.js';
 
 let tokenn;
 let error_nbr = 0;
 let refrech;
 
-const host = "127.0.0.1";
+// const host = "127.0.0.1";
 
 const api = `https://${host}:9004/api/`;
 async function Login() {
