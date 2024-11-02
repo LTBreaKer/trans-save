@@ -21,6 +21,7 @@ const pong_game = `https://${host}:9006/api/gamedb/`;
 const tag_game = `https://${host}:9007/api/tag-gamedb/`;
 var photo = null;
 let username_;
+let username_tourn;
 async function Friends() {
   const html = await loadHTML('./components/profile/profile.html');
   loadCSS('./components/profile/profile.css');
@@ -197,7 +198,7 @@ export function set_tournament_data(data) {
   var los = 0;
 
   data.forEach((index) => {
-    if (username_ === index.firstPlayerName)
+    if (username_tourn === index.firstPlayerName)
       win++;
     else
       los++;
@@ -528,18 +529,34 @@ let error_check = false;
     if (message.email) {
       error_check = true;
       update_email_err.innerHTML = message.email[0]
-    } if (message.username) {
+      setTimeout(function() {
+        update_email_err.innerHTML = '';
+      }, 3000);
+    } else if (message.username) {
       error_check = true;
       update_user_err.innerHTML = "invalid username"
-    } if (message.old_password) {
+      setTimeout(function() {
+        update_user_err.innerHTML = '';
+      }, 3000);
+
+    } else if (message.old_password) {
       error_check = true;
       update_old_err.innerHTML = message.old_password[0]
-    } if (message.password) {
+      setTimeout(function() {
+        update_old_err.innerHTML = '';
+      }, 3000);
+    } else if (message.password) {
       error_check = true;
       update_new_err.innerHTML = message.password[0]
-    }if (message.avatar) {
+      setTimeout(function() {
+        update_new_err.innerHTML = '';
+      }, 3000);
+    }else if (message.avatar) {
       error_check = true;
       update_ava_err.innerHTML = "invalid image"
+      setTimeout(function() {
+        update_ava_err.innerHTML = '';
+      }, 3000);
     }
   } else if (error_check === false){
     const updateProfile = document.querySelector('.update_data');
@@ -627,10 +644,6 @@ export async function changeAccess() {
       }
       console.log("dkjfkdjkjkddfdfdfd ========= ========= =============");
     }
-    // if (response.status === 401) {
-    //   logoutf();  
-    //   window.location.hash = '/login';
-    // }
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
@@ -743,7 +756,7 @@ async function fetchUserData() {
       throw new Error('Network response was not ok');
     }
     const userData = await userResponse.json();
-
+    console.log("data --------------------- > ", userData);
 
     const change_user = document.getElementById('UserName');
     const avata = document.getElementById('avatar');
@@ -752,6 +765,7 @@ async function fetchUserData() {
     const update_avatar = document.getElementById('update_avatar');
     const check_bo = document.getElementById('check_box');
     username_ = userData.user_data.username;
+    username_tourn = userData.user_data.tournament_username;
     update_avatar.src = userData.user_data.avatar;
     avata.src = userData.user_data.avatar
     change_image.src = userData.user_data.avatar;

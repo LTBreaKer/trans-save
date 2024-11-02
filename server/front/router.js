@@ -36,6 +36,10 @@ const routes = {
   '/remoteTag': RemoteTag,
   '/tournamentScore': TournamentScore,
 };
+export function isUrlEncoded(str) {
+  const pattern = /%[0-9A-Fa-f]{2}/;
+  return pattern.test(str);
+}
 
 async function Router() {
   var usern;
@@ -59,6 +63,8 @@ async function Router() {
       return;
     }
     usern = path.split('/')[2];
+    if (isUrlEncoded(usern))
+      usern = decodeURIComponent(usern);
     if (path.startsWith('/user'))
       await get_friends_list();
     if (path.startsWith('/user') || (path == '/user' && !friends_array.includes(usern))){
@@ -83,6 +89,9 @@ async function Router() {
   }
   
   usern = path.split('/')[2];
+  if (isUrlEncoded(usern))
+    usern = decodeURIComponent(usern);
+
   if (path.startsWith('/user'))
     await get_friends_list();
 

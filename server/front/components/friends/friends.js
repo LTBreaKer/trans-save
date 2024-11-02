@@ -1,7 +1,9 @@
 import { loadHTML, loadCSS, player_webSocket, socket_friend_request, accumulatedNotifications, displayNotifications } from '../../utils.js';
 import {log_out_func, logoutf, get_localstorage, getCookie, login, check_access_token } from '../../auth.js';
 import {get_friends_home, set_pong_history , send_freinds_request, changeAccess, set_tag_history, set_tournament_data, tag_win, tag_unk, tag_los, ping_los, ping_win, tourn_win, tourn_los} from '../profile/profile.js';
+import {isUrlEncoded} from '../../router.js';
 const host = "127.0.0.1";
+
 const api = `https://${host}:9004/api/`;
 const api_one = `https://${host}:9005/api/`;
 const pong_game = `https://${host}:9006/api/gamedb/`;
@@ -75,7 +77,6 @@ notific.addEventListener('click', function() {
 
 // ====== ======== ========= ========= =========
 
-
 window.addEventListener('resize', () => {
   if (window.innerWidth > 666) 
     perso_list.style.display = 'flex';
@@ -87,16 +88,13 @@ const perso = document.querySelector('.bi-person-add');
 const perso_list = document.querySelector('.friends_list');
 
 perso.addEventListener('click', () => {
-  perso_list.classList.toggle('active');
+  if (perso_list.style.display === 'flex')
+    perso_list.style.display = 'none';
+  else 
+    perso_list.style.display = 'flex';
 });
 
-
-
-
-
-
 // here i'm working with match history
-
 
 const tag_history = document.querySelector('.tag_game_click');
 const pong_history = document.querySelector('.pong_game_click');
@@ -107,7 +105,6 @@ const ping_game_history = document.querySelector('.ping_game_history');
 const nom = document.querySelectorAll('.nom');
 const mw = document.querySelectorAll('.mw');
 const ml = document.querySelectorAll('.ml');
-
 
 tag_history.addEventListener('click', () => {
   if (tag_game_history.style.display !== 'flex'){
@@ -126,6 +123,7 @@ tag_history.addEventListener('click', () => {
   });
 
 })
+
 pong_history.addEventListener('click', () => {
   if (ping_game_history.style.display !== 'flex'){
     ping_game_history.style.display = 'flex';
@@ -142,7 +140,6 @@ pong_history.addEventListener('click', () => {
     element.textContent = ping_win;
   });
 
-  
 })
 tourn_history.addEventListener('click', () => {
   if (tur_game_history.style.display !== 'flex'){
@@ -162,12 +159,10 @@ tourn_history.addEventListener('click', () => {
 
 })
 
-// ====== ======== ========= ========= =========
-get_pong_history_by_name(friend_username);
-get_tag_history_by_name(friend_username);
-get_tournament_by_name(friend_username);
+  get_pong_history_by_name(friend_username);
+  get_tag_history_by_name(friend_username);
+  get_tournament_by_name(friend_username);
 }
-
 
 async function get_tournament_by_name(name) {
   console.log("here are name of ", name)
@@ -186,7 +181,6 @@ async function get_tournament_by_name(name) {
   });
   const jsonData = await response.json();
 
-
   console.log("history of game of pong using user ==== name  ==> : ", jsonData);
 
   if (!response.ok) {
@@ -196,10 +190,8 @@ async function get_tournament_by_name(name) {
   set_tournament_data(jsonData.message);
 }
 
-
-
-
 async function get_tag_history_by_name(name) {
+
   const data = {
     username: name
   }
@@ -250,9 +242,6 @@ async function get_pong_history_by_name(name) {
   set_pong_history(jsonData);
 }
 
-
-
-
 async function remove_friend() {
   await check_access_token();
   const data = {
@@ -273,20 +262,6 @@ async function remove_friend() {
     console.log((`HTTP error! Status: ${response.status}`), Error);
   }
 }
-
-// var id_of_friends;
-// var name_of_friends;
-// function readit(event) {
-
-//   id_of_friends = event.target.getAttribute('data-id');
-//   name_of_friends = event.target.getAttribute('data-name');
-//   console.log('hello wer are here fine', id_of_friends);
-//   window.location.hash = `/user/${name_of_friends}`
-// }
-
-// export function return_id() {
-//   return id_of_friends;
-// }
 
 async function checkFirst() {
 
@@ -362,7 +337,10 @@ async function fetchUserData() {
 
 async function fetch_friend_data() {
   const path = window.location.hash.slice(1);
-  const usern = path.split('/')[2]
+  let usern = path.split('/')[2]
+  if (isUrlEncoded(usern))
+    usern = decodeURIComponent(usern);
+
   const data = {
     username: usern
   };
