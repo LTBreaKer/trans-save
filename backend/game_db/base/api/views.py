@@ -310,3 +310,32 @@ def remove_zombie_games(request):
     games = GameDb.objects.filter(Q(player1_id=user_id) | Q(player2_id=user_id), is_active=True, is_connected=False)
     deleted_count, _ = games.delete()
     return Response({'message': f'deleted {deleted_count} zombie games'}, status=200)
+
+@api_view(['POST'])
+def update_username(request):
+    import sys
+    AUTH_HEADER = request.META.get('HTTP_AUTHORIZATION')
+    session_id = request.headers.get('Session-ID')
+    auth_check_response = check_auth(AUTH_HEADER, session_id)
+    if auth_check_response.status_code != 200:
+        return Response(data=auth_check_response.json(), status=auth_check_response.status_code)
+    
+    id = auth_check_response.json()['user_data']['id']
+    new_username = request.data.get('new_username')
+
+    if not new_username:
+        return Response({'message': 'new_username is required'}, status=400)
+    print("new_username = ", new_username, file=sys.stderr)
+    games = GameDb.objects.filter(
+        Q(is_active=False) & (
+            (Q(is_remote=True) & (Q(player1_id=id) | Q(player2_id=id))) |
+            (Q(is_remote=False) & Q(player1_id=id))
+        )
+    )
+    for game in games:
+        if game.player1_id == id:
+            game.player1_name = new_username
+        elif game.player2_id == id:
+            game.player2_name == new_username
+        game.save()
+    return Response({'message': 'ok'}, status=200)

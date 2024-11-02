@@ -442,6 +442,7 @@ def get_user_by_username(request):
 @api_view(['PUT'])
 @permission_classes([IsAuthenticated])
 def update_user(request, *args, **kwargs):
+    AUTH_HEADER = request.META.get('HTTP_AUTHORIZATION')
     user = request.user
     session_id = request.headers.get('Session-ID')
     try:
@@ -458,6 +459,16 @@ def update_user(request, *args, **kwargs):
     serializer = UserSerializer(instance=user, data=request.data, partial=True)
     if not serializer.is_valid():
         return Response(data={'message': serializer.errors}, status=400)
+    new_username = request.data.get('username')
+    if new_username:
+        update_game_response = requests.post(url="https://server:9006/api/gamedb/update-username/",
+                                             headers={'Authorization': AUTH_HEADER,'Session-ID': session_id},
+                                             data={'new_username': new_username},
+                                             verify=False)
+        update_tag_game_response = requests.post(url="https://server:9007/api/tag-gamedb/update-username/",
+                                             headers={'Authorization': AUTH_HEADER,'Session-ID': session_id},
+                                             data={'new_username': new_username},
+                                             verify=False)
     if 'avatar' in request.data:
         avatar = request.FILES['avatar']
 
