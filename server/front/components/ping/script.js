@@ -108,9 +108,7 @@ async function Ping() {
   if (localStorage.getItem("dataPongMatch"))
     await pong_game_score();
 
-  window.onload = async function() {
-    await remove_ping_remote_game();
-  };
+  await remove_ping_remote_game();
   await remove_game_pong_f_database();
 
   await checkFirst();

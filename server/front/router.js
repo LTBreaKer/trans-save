@@ -36,6 +36,10 @@ const routes = {
   '/remoteTag': RemoteTag,
   '/tournamentScore': TournamentScore,
 };
+export function isUrlEncoded(str) {
+  const pattern = /%[0-9A-Fa-f]{2}/;
+  return pattern.test(str);
+}
 
 async function Router() {
   var usern;
@@ -45,24 +49,6 @@ async function Router() {
 
   window.addEventListener('hashchange', async () => {
 
-    if (path && path === '/pingpong') {
-      
-    }
-
-    if (path && path === '/ta' || path === '/ping') {
-      if (path === '/ta') {
-        await remove_tag_remote_game();
-      }
-
-      else if (path === '/ping') {    
-        await remove_ping_remote_game();
-      }
-
-    }
-
-
-    
-      console.log("here componenet to show up what the befor=>: ", path)
      path = window.location.hash.slice(1);
     console.log("path===>: ", path);
     if (path === '')
@@ -77,6 +63,8 @@ async function Router() {
       return;
     }
     usern = path.split('/')[2];
+    if (isUrlEncoded(usern))
+      usern = decodeURIComponent(usern);
     if (path.startsWith('/user'))
       await get_friends_list();
     if (path.startsWith('/user') || (path == '/user' && !friends_array.includes(usern))){
@@ -101,6 +89,9 @@ async function Router() {
   }
   
   usern = path.split('/')[2];
+  if (isUrlEncoded(usern))
+    usern = decodeURIComponent(usern);
+
   if (path.startsWith('/user'))
     await get_friends_list();
 

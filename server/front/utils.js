@@ -126,6 +126,8 @@ export async function displayNotifications(notifications) {
 }
 
 export async function remove_game_pong_f_database(params) {
+    await check_access_token();
+
   try {
     const response = await fetch(api_game + 'delete-zombie-games/', {
       method: 'DELETE',
@@ -150,6 +152,8 @@ export async function remove_game_pong_f_database(params) {
 }
 
 export async function remove_game_tag_f_database(params) {
+    await check_access_token();
+
   try {
     const response = await fetch(game_api + 'delete-zombie-games/', {
       method: 'DELETE',
