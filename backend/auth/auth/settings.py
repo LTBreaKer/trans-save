@@ -90,7 +90,7 @@ CORS_ALLOW_HEADERS = [
 OAUTH2_PROVIDER = {
     'CLIENT_ID': 'u-s4t2ud-ce1bbd56610daa62e5cd08d1c413cd6ddbb88b04c99ace9e6bb7a87dd6d1dbd8',
     'CLIENT_SECRET': os.getenv('INTRA_API_KEY'),
-    'REDIRECT_URI': 'https://127.0.0.1:9002/',
+    'REDIRECT_URI': 'https://10.14.7.4:9002/',
 }
 
 CSRF_COOKIE_SECURE = True

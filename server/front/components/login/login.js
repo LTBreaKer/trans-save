@@ -101,7 +101,7 @@ async function Login() {
             if (data.message !== 'Failed to get access token') {
 
                 intra_errors.forEach(element=> {
-                    element.innerHTML = "username or email already exists";
+                    element.innerHTML = data.message;
                 })
                 console.log(response.message);
             }
