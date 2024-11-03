@@ -30,6 +30,7 @@ body {
 
 
 .pong_container {
+  font-family: "Hexen", sans-serif;
   margin: 0;
   padding: 0;
   width: 100%;
@@ -88,6 +89,7 @@ body {
 
 .pong_header .pong_profile .text {
   color: #e8ebfb;
+  font-family: "Itim", cursive;
 }
 
 .pong_header .notification {

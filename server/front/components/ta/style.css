@@ -49,10 +49,10 @@ body {
 
 .container {
   margin: 0;
+  font-family: "Hexen", sans-serif;
   padding: 0;
   width: 100%;
   min-height: 100vh;
-  font-family: "Volax", sans-serif;
 }
 
 .container .header {  
@@ -111,6 +111,7 @@ body {
 
 .header .profile .text {
   color: #e8ebfb;
+  font-family: "Itim", cursive
 }
 
 .header .notification {
@@ -238,12 +239,14 @@ display: none;
 .send_request .img_text {
   align-items: center;
   display: flex;
+  font-family: "Volax", sans-serif;
 }
 
 .send_request .img_text h6{
   text-align:start;
   margin: 5px;
   width: 80px;
+  color: black;
 }
 
 .send_request .img_text img{

@@ -116,7 +116,8 @@ body {
 }
 
 .header .profile .text {
-  font-family: "Volax", sans-serif;
+  /* font-family: "Volax", sans-serif; */
+  font-family: "Itim", cursive;
   color: #e8ebfb;
 }
 
@@ -374,7 +375,8 @@ body {
 
 .content .profile #profile_username  {
   /* justify-content: center; */
-  font-family: "Volax", sans-serif;
+  /* font-family: "Volax", sans-serif; */
+  font-family: "Itim", cursive;
   display: flex;
   align-items: center;
   font-size: 25px;
@@ -861,6 +863,7 @@ display: none;
 
 
 .send_request .img_text {
+  font-family: "Volax", sans-serif;
   align-items: center;
   display: flex;
 }
@@ -1288,7 +1291,7 @@ display: none;
       display: flex;
       align-items: center;
       font-size: 25px;
-      padding-left: 80px;
+      padding-left: 100px;
       color: #9090f0;
     }
     
@@ -1466,10 +1469,10 @@ display: none;
           }
           
           .content .profile #profile_username  {
-            font-family: "Volax", sans-serif;
+            font-family: "Itim", cursive;
             display: flex;
             align-items: center;
-            font-size: 15px;
+            font-size: 25px;
             padding-left: 110px;
             color: #9090f0;
             }

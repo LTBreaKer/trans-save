@@ -13,18 +13,38 @@
   font-style: italic;
   
 }
+@import url('https://fonts.googleapis.com/css2?family=Itim&family=Slabo+27px&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Itim&display=swap');
 
 @font-face {
   font-family: 'Volax';
   src: url('../assets/Valorax-lg25V.otf') format('opentype');
   font-weight: bold;
   font-style: italic;
-  
 }
+
+/* font-family: "Itim", cursive;
+font-weight: 400;
+font-style: normal; */
+
 
 body {
   height: 100vh;
   background: var(--body-color);
+}
+/* .player1, .player2 {
+  max-width: 150px; 
+  white-space: nowrap; 
+  overflow: hidden; 
+  text-overflow: ellipsis; 
+  display: block; 
+} */
+.player1, .player2 {
+  max-width: 100px; 
+  white-space: nowrap; 
+  overflow: hidden; 
+  text-overflow: ellipsis; 
+  display: block; 
 }
 
 
@@ -59,6 +79,10 @@ body {
 .container {
   /* color: #9090f0; */
   font-family: "Hexen", sans-serif;
+   /* font-family: "Itim", cursive; */
+   font-weight: 400;
+   font-style: normal;
+   
   margin: 0;
   padding: 0;
   width: 100%;
@@ -121,7 +145,13 @@ body {
 }
 
 .header .profile .text {
-  font-family: "Volax", sans-serif;
+  /* font-family: "Volax", sans-serif; */
+  font-family: "Itim", cursive;
+  /* font-family: "Slabo 27px", serif; */
+  font-weight: 800;
+  font-style: normal;
+  
+
   color: #e8ebfb;
 }
 
@@ -372,7 +402,9 @@ body {
 
 .content .profile #profile_username  {
   /* justify-content: center; */
-  font-family: "Volax", sans-serif;
+  /* font-family: "Slabo 27px", serif; */
+  font-family: "Itim", cursive;
+
   display: flex;
   align-items: center;
   font-size: 25px;
@@ -873,6 +905,7 @@ display: none;
 .send_request .img_text {
   align-items: center;
   display: flex;
+  font-family: "Volax", sans-serif;
 }
 
 .send_request .img_text h6{
@@ -1293,13 +1326,14 @@ display: none;
       /* z-index: 1; */
     
     }
+
     
     .content .profile #profile_username  {
       /* justify-content: center; */
       display: flex;
       align-items: center;
       font-size: 25px;
-      padding-left: 80px;
+      padding-left: 100px;
       color: #e8ebfb;
     }
     
@@ -1477,14 +1511,14 @@ display: none;
           
           }
           
-          .content .profile #profile_username  {
-            /* justify-content: center; */
-            display: flex;
-            align-items: center;
-            font-size: 15px;
-            padding-left: 110px;
-            color: #e8ebfb;
+            .content .profile #profile_username {
+              display: flex;
+              align-items: center;
+              font-size: 18px;
+              padding-left: 110px;
+              color: #e8ebfb;
           }
+                
       
   }
 
