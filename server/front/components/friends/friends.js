@@ -1,6 +1,6 @@
 import { loadHTML, loadCSS, player_webSocket, socket_friend_request, accumulatedNotifications, displayNotifications } from '../../utils.js';
 import {log_out_func, logoutf, get_localstorage, getCookie, login, check_access_token } from '../../auth.js';
-import {get_friends_home, set_pong_history , send_freinds_request, changeAccess, set_tag_history, set_tournament_data, tag_win, tag_unk, tag_los, ping_los, ping_win, tourn_win, tourn_los} from '../profile/profile.js';
+import {get_friends_home, set_pong_history , send_freinds_request, changeAccess, set_tag_history, set_tournament_data, ping_unk ,tag_win, tag_unk, tag_los, ping_los, ping_win, tourn_win, tourn_los} from '../profile/profile.js';
 import {isUrlEncoded} from '../../router.js';
 import { host } from '../../config.js';
 // const host = "127.0.0.1";
@@ -132,13 +132,13 @@ pong_history.addEventListener('click', () => {
     tag_game_history.style.display = 'none';
   }
   nom.forEach(element => {
-    element.textContent =  ping_los + ping_win;
+    element.textContent =  ping_los + ping_win + ping_unk;
   });
   mw.forEach(element => {
-    element.textContent = ping_los;
+    element.textContent = ping_win;
   });
   ml.forEach(element => {
-    element.textContent = ping_win;
+    element.textContent = ping_los;
   });
 
 })
@@ -152,10 +152,10 @@ tourn_history.addEventListener('click', () => {
     element.textContent =  tourn_los + tourn_win;
   });
   mw.forEach(element => {
-    element.textContent = tourn_los;
+    element.textContent = 0;
   });
   ml.forEach(element => {
-    element.textContent = tourn_win;
+    element.textContent = 0;
   });
 
 })

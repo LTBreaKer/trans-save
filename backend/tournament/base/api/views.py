@@ -98,6 +98,9 @@ def create_tournament(request):
     for participant in participants:
         try:
             validator(participant)
+            
+            if len(participant) > 9:
+                raise ValidationError('error')
         except ValidationError as e:
             return Response({'message': f"Invalid username {participant}: {e.message}"}, status=400)
     owner_username = participants[0]

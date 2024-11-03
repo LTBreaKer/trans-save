@@ -102,7 +102,7 @@ body {
 }
 
 .header .profile .text {
-  font-family: "Volax", sans-serif;
+  font-family: "Itim", cursive;
   color: #e8ebfb;
 }
 
@@ -431,6 +431,7 @@ display: none;
   .send_request .img_text {
     align-items: center;
     display: flex;
+    font-family: "Volax", sans-serif;
   }
   
   .send_request .img_text h6{

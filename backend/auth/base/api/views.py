@@ -193,32 +193,14 @@ def registerView(request, *args, **kwargs):
             'refresh': str(refresh),
             'access': str(refresh.access_token)
         }
-        # otp = generate_otp()
-        # otp_expiry = timezone.now() + datetime.timedelta(minutes=5)
-        # max_otp_try = int(user.max_otp_try) - 1
-
-        # user.otp = otp
-        # user.otp_expiry = otp_expiry
-        # user.max_otp_try = max_otp_try
-        # user.save()
-
-        # need to send the otp to user email
-        # try:
-        #     send_otp_email(user.otp, user.email)
-        # except Exception as e:
-        #     return Response({'message': str(e)}, status=500)
         try:
             response = requests.post(
                 'https://server:9005/api/user/create-profile/',
                 data={'user_id': user.id},
                 verify=False
             )
-            # response.raise_for_status()  # Raise an exception for HTTP errors
         except RequestException as e:
-            return Response({'message': str(e)}, status=500)
-        # Handle the error appropriately
-        # response_data = response.json()
-        # print(response_data)
+            return Response({'message': str(e)}, status=400)
         return Response(data={'message':'User created', 'token':token, 'session_id':session_id}, status=201)
     else:
         data = {'message': serializer.errors}
@@ -320,7 +302,7 @@ def callback_42(request):
         )
         # response.raise_for_status()  # Raise an exception for HTTP errors
     except RequestException as e:
-        return Response({'message': str(e)}, status=500)
+        return Response({'message': str(e)}, status=400)
     session_id = uuid.uuid4()
     user_session = UserSession.objects.create(user=user, session_id=session_id)
     if user.twofa_active:

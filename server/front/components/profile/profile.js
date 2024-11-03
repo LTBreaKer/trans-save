@@ -10,6 +10,7 @@ let tag_unk;
 let tag_los;
 let ping_los;
 let ping_win;
+let ping_unk;
 let tourn_win;
 let tourn_los;
 
@@ -134,7 +135,7 @@ async function Friends() {
       tag_game_history.style.display = 'none';
     }
     nom.forEach(element => {
-      element.textContent =  ping_los + ping_win;
+      element.textContent =  ping_los + ping_win + ping_unk;
     });
     mw.forEach(element => {
       element.textContent = ping_win ;
@@ -155,10 +156,10 @@ async function Friends() {
       element.textContent =  tourn_los + tourn_win;
     });
     mw.forEach(element => {
-      element.textContent = tourn_win;
+      element.textContent = 0;
     });
     ml.forEach(element => {
-      element.textContent = tourn_los;
+      element.textContent = 0;
     });
 
   })
@@ -168,7 +169,7 @@ async function Friends() {
   get_tournament_history();
 }
 
-export {friendsocket, id_of_tournament, tag_win, tag_unk, tag_los, ping_los, ping_win, tourn_win, tourn_los};
+export {friendsocket, id_of_tournament, tag_win, tag_unk, tag_los, ping_los, ping_unk, ping_win, tourn_win, tourn_los};
 
 async function get_tournament_history() {
   const response = await fetch(tourna_game + 'get-tournament-history/', {
@@ -209,13 +210,13 @@ export function set_tournament_data(data) {
     gameDiv.style.cursor = 'pointer';
     gameDiv.innerHTML = `
       <div class="first_pl">
-        <img id="player1" src="/images/hello.png" alt="">
+        <img id="player1" src="/media/avatars/avatar-default.webp" alt="">
         <h2 class="player1">${index.firstPlayerName}</h2>
       </div>
       <h2>First</h2>
       <h2>Second</h2>
       <div class="second_pl">
-        <img id="player2" src="/images/hello.png" alt="">
+        <img id="player2" src="/media/avatars/avatar-default.webp" alt="">
         <h2 class="player2">${index.secondPlayerName}</h2>
       </div>
     `;
@@ -239,10 +240,10 @@ export function set_tournament_data(data) {
       element.textContent =  tourn_los + tourn_win;
     });
     mw.forEach(element => {
-      element.textContent = tourn_win;
+      element.textContent = 0;
     });
     ml.forEach(element => {
-      element.textContent = tourn_los;
+      element.textContent = 0;
     });
 
 }
@@ -271,6 +272,7 @@ async function get_pong_history() {
 export async function set_pong_history(friendList) {
   var win = 0;
   var los = 0;
+  var unk = 0;
   var name;
 
   if (!friendList) {
@@ -281,8 +283,10 @@ export async function set_pong_history(friendList) {
     const gamesContainer = document.querySelector('.ping_game_history');
     friendList.games.forEach((game, index) => {
       name = game.player1_name;
-      if (game.player1_score > game.player2_score)
-          win++;
+      if (game.player1_score === game.player2_score)
+        unk++;
+      else if (game.player1_score > game.player2_score)
+        win++;
       else
         los++;
 
@@ -300,6 +304,7 @@ export async function set_pong_history(friendList) {
       `;
       gamesContainer.appendChild(gameDiv);
     });
+      ping_unk = unk;
     if (username_ === name) {
         ping_win = win;
         ping_los = los;

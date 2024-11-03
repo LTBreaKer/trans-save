@@ -163,7 +163,7 @@ async function Ping() {
     console.log("hello wa9ila khasoo yji hnaaa");
     await check_tournament_finish();
     tournament_players.style.display = 'flex';
-    document.getElementById("player1").value = tournament_name;
+    document.getElementById("player1").value = tournament_name ? tournament_name : "";
   })
 
   tournament_close.addEventListener('click', () => {
