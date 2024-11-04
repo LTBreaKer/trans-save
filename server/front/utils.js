@@ -51,7 +51,6 @@ function removeAllCSSLinks() {
 export async function player_webSocket() {
   // console.log("utils ----------------> ", localStorage.getItem('token'))
   // await check_access_token();
-  return new Promise((resolve) => {
     socket_friend_request = new WebSocket(`wss://${host}:9005/ws/friend-requests/`, ["token", get_localstorage('token'), "session_id", get_localstorage('session_id')]);
     
     socket_friend_request.onopen = function () {
@@ -85,7 +84,6 @@ export async function player_webSocket() {
     socket_friend_request.onclose = function () {
       console.log('WebSocket connection closed.');
     };
-  });
 }
 
 export async function displayNotifications(notifications) {
